@@ -64,7 +64,7 @@ module.exports.loop = function() {
 
                 // Create our new function
                 Creep.prototype.harvest = function() {
-                    
+
                     // Add custom functionality
 
                     // Call and return the original method
@@ -245,7 +245,7 @@ module.exports.loop = function() {
                             terminal3.send(RESOURCE_ENERGY, terminalSend, 'E44N3', 'Max to Min')
                         }
                     }
-                }   
+                }
 
                 if (terminalt4 === terminalTMa) {
                     if (terminalt1 === terminalTMi && terminalTMi < terminalSend) {
@@ -503,7 +503,7 @@ module.exports.loop = function() {
             }
 
             const linkFrom61 = Game.getObjectById("5d7f42f2e8764e721d95cee7");
-            const linkTo61 = Game.getObjectById("5db1c6dd0976205b86a14247"); 
+            const linkTo61 = Game.getObjectById("5db1c6dd0976205b86a14247");
             const linkTo62 = Game.getObjectById("5d7e2aeae8764e721d956210");
 
             if (linkFrom61.store[RESOURCE_ENERGY] > 100) {
@@ -516,7 +516,7 @@ module.exports.loop = function() {
             // E43N4 //
             const linkFrom71 = Game.getObjectById("5dcb7808164235065d127fec");
             const linkFrom72 = Game.getObjectById("5dd58eb474452608e52c9531");
-            const linkTo71 = Game.getObjectById("5e0883a835f1a523a22548cc"); 
+            const linkTo71 = Game.getObjectById("5e0883a835f1a523a22548cc");
             const linkTo72 = Game.getObjectById("5dff8b07f0aef968911368c1");
 
             linkFrom71.transferEnergy(linkTo71);
@@ -527,8 +527,8 @@ module.exports.loop = function() {
 
             // E44N3 //
             const linkFrom81 = Game.getObjectById("5dca862e8247cf5255b236cf");
-            const linkFrom82 = Game.getObjectById("5e00a4e486cb6b08f510294e"); 
-            const linkTo81 = Game.getObjectById("5e09e37a0cf0c5684c81aa56"); 
+            const linkFrom82 = Game.getObjectById("5e00a4e486cb6b08f510294e");
+            const linkTo81 = Game.getObjectById("5e09e37a0cf0c5684c81aa56");
             const linkTo82 = Game.getObjectById("5dcbe41857ce88a6f3582d2c");
 
             linkFrom81.transferEnergy(linkTo81);
@@ -577,7 +577,7 @@ module.exports.loop = function() {
             function marketPrice(resource, currentPrice) {
                 let price = Game.market.getAllOrders({type: ORDER_SELL, resourceType: resource});
                 price.sort((a, b) => a.price - b.price);
-                
+
                 if (price[0].price * 1,15 > price[2].price && price[0].price * 1,4 > price[5].price) {
                     let newPrice = price[0].price *0.975;
                     return newPrice
@@ -601,7 +601,7 @@ module.exports.loop = function() {
 
             // Every creep name in Game.creeps
             let array = [];
-            for (let name in Game.creeps) {            
+            for (let name in Game.creeps) {
                 let creep = Game.creeps[name];
                 let role = creep.memory.role
                 array.push(role);
@@ -694,7 +694,7 @@ module.exports.loop = function() {
                 Memory.stats['cpu.avg.role4'] += end7;
 
                 let start8 = Game.cpu.getUsed()
-                
+
                 if (creep.memory.role === 'transfererLiTe1') {
                     roleTransfererLinkToTerminal.run(creep);
                 }
@@ -831,8 +831,8 @@ module.exports.loop = function() {
                         scientist++
                     }
                 }
-                Memory.stats['creeps.avg.harvester'] = harvester 
- 
+                Memory.stats['creeps.avg.harvester'] = harvester
+
                 Memory.stats['creeps.avg.extractor'] = extractor
 
                 Memory.stats['creeps.avg.transferer'] = transferer
@@ -942,7 +942,7 @@ module.exports.loop = function() {
             Memory.stats['cpu.avg10.creep'] = 0.9 * Memory.stats['cpu.avg10.creep'] + 0.1 * Memory.stats['cpu.avg.creep'];
             Memory.stats['cpu.avg100.creep'] = 0.99 * Memory.stats['cpu.avg100.creep'] + 0.01 * Memory.stats['cpu.avg.creep'];
             Memory.stats['cpu.avg1000.creep'] = 0.999 * Memory.stats['cpu.avg1000.creep'] + 0.001 * Memory.stats['cpu.avg.creep'];
-             
+
             let start = Game.cpu.getUsed()
 
             function needsCreeps(role, roomName, numbers) {
@@ -993,7 +993,7 @@ module.exports.loop = function() {
                         flag.enemy = room.find(FIND_HOSTILE_CREEPS);
                     }
 
-                    if (controller.level >= 6 && room.terminal !== undefined && room.storage !== null) {
+                    /*if (controller.level >= 6 && room.terminal !== undefined && room.storage !== null) {
                         let mineralType = Memory.rooms[roomName + '.mineral'][0].mineralType;
                         let currentAmount = flag.marketAmount;
                         let addAmount = 25 * 1000;
@@ -1029,7 +1029,7 @@ module.exports.loop = function() {
                                 flag.marketAmount = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].remainingAmount;
                             }
                         }
-                    }
+                    }*/
                 }
             });
 
@@ -1043,11 +1043,11 @@ module.exports.loop = function() {
                         let roomName = room.name;
                         let harvester;
                         let transferer;
-    
+
                         let harvesterSo;
                         let harvesterCo;
                         let harvesterLi;
-                        
+
                         let transfererSo;
                         let transfererCo;
                         let transfererLiTe;
@@ -1065,7 +1065,7 @@ module.exports.loop = function() {
 
                         let repairerCo;
 
-                           
+
                         let enemy = flag.enemy;
                         let construction = flag.constructions;
                         let sources = flag.sources;
@@ -1075,14 +1075,14 @@ module.exports.loop = function() {
 
                         let normalDirections = [TOP_LEFT,LEFT,BOTTOM_LEFT,BOTTOM,BOTTOM_RIGHT];
                         let transfererDirections = [TOP_RIGHT];
-                        
+
                         let spawn2 = room.spawns[1]
                         let spawn = room.find(FIND_MY_SPAWNS, {
                             filter: (structure) => {
                                 return (structure.structureType === STRUCTURE_SPAWN && structure.spawning == null);
                             }
                         });
-                        
+
                         if (Game.flags[roomName] == undefined) {
                             room.createFlag(25,25, roomName)
                         }
@@ -1151,7 +1151,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[0].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1165,7 +1165,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[1].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1299,7 +1299,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[0].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1313,7 +1313,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[1].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1461,7 +1461,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[0].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1475,7 +1475,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[1].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1606,7 +1606,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[0].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1620,7 +1620,7 @@ module.exports.loop = function() {
                                         working: false,
                                         sourceId: sources[0].id,
                                         room: roomName,
-                                        
+
                                     }
                                 });
                             }
@@ -1700,7 +1700,7 @@ module.exports.loop = function() {
                             }
                         }
                         else if (controller.level >= 5 && controller.level <= 6 && extension >= 30 && extension < 40 && spawn[0] !== undefined) {
-                            
+
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"
@@ -1754,7 +1754,7 @@ module.exports.loop = function() {
                                         role: 'harvesterSo1',
                                         working: false,
                                         sourceId: sources[0].id,
-                                        room: roomName, 
+                                        room: roomName,
                                     }, directions: normalDirections
                                 });
                             }
@@ -1825,7 +1825,7 @@ module.exports.loop = function() {
                                 spawn[0].spawnCreep(
                                     upgraderLi,
                                 'Upgrader' + Game.time,
-                                {   
+                                {
                                     memory: {
                                         role: 'upgrader1',
                                         working: false,
@@ -2275,7 +2275,7 @@ module.exports.loop = function() {
                             }
                             else if (needsCreeps("transferer1", roomName, 1) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
-                                    transfererTe,   
+                                    transfererTe,
                                 'Transferer' + Game.time,
                                 {
                                     memory: {
@@ -2369,7 +2369,7 @@ module.exports.loop = function() {
                                                 WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,
                                                 CARRY,CARRY,CARRY,CARRY,CARRY];
                             let repairerLD = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]
-                            
+
 
                             if (needsCreeps("reserver1", roomName, 1) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
@@ -2501,7 +2501,7 @@ module.exports.loop = function() {
                             let harvesterLD = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
                                 WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,
                                 CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY];
-                            
+
 
                                 let reserver = [MOVE,MOVE,MOVE,MOVE,MOVE,CLAIM,CLAIM,CLAIM,CLAIM,CLAIM,CLAIM,CLAIM,CLAIM];
                             if (needsCreeps("transfererLD1", roomName, 2) && spawn[0] !== undefined) {
@@ -2567,7 +2567,7 @@ module.exports.loop = function() {
                             let harvesterLD = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
                                                 WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,
                                                 CARRY,CARRY,CARRY,CARRY,CARRY];
-                            
+
                             if (needsCreeps("reserver1", roomName, 1) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
                                     reserver,
@@ -2715,7 +2715,7 @@ module.exports.loop = function() {
             Memory.stats['cpu.avg100.spawning'] = 0.99 * Memory.stats['cpu.avg100.spawning'] + 0.01 * Memory.stats['cpu.avg.spawning'];
             Memory.stats['cpu.avg1000.spawning'] = 0.999 * Memory.stats['cpu.avg1000.spawning'] + 0.001 * Memory.stats['cpu.avg.spawning'];
 
-            
+
 
 /*
 =
@@ -2741,7 +2741,7 @@ module.exports.loop = function() {
                         working: false,
                     }
                 });
-         
+
 
 
         let structs = Game.rooms["E47N2"].find(FIND_STRUCTURES);
@@ -2771,16 +2771,16 @@ module.exports.loop = function() {
             Memory.stats['cpu.limit'] = Game.cpu.limit;
             Memory.stats['cpu.bucket'] = Game.cpu.bucket;
             Memory.stats['cpu.tickLimit'] = Game.cpu.tickLimit;
-    
+
             Memory.stats['te.total'] = terminalTotal;
             Memory.stats['st.total'] = storageTotal;
-    
+
             Memory.stats['gcl.progress'] = Game.gcl.progress;
             Memory.stats['gcl.progressTotal'] = Game.gcl.progressTotal;
             Memory.stats['gcl.level'] = Game.gcl.level;
-    
+
             Memory.stats['market.credits'] = Game.market.credits;
-    
+
             Memory.stats['creeps.total'] = _.size(Memory.creeps);
 
 
@@ -2790,27 +2790,27 @@ module.exports.loop = function() {
                     filter: (s) => s.structureType === STRUCTURE_WALL
                 });
                 let wall2 = _.sum(room.find(FIND_STRUCTURES), s => (s.structureType === STRUCTURE_WALL) ? s.hits : 0);
-    
+
                 let rampart = room.find(FIND_STRUCTURES, {
                     filter: (s) => s.structureType === STRUCTURE_RAMPART
                 });
                 let rampart2 = _.sum(room.find(FIND_STRUCTURES), s => (s.structureType === STRUCTURE_RAMPART) ? s.hits : 0);
-        
-    
+
+
                 if (room.controller && room.controller.my) {
                     Memory.stats['rooms.' + roomName + '.rcl.level'] = room.controller.level;
                     Memory.stats['rooms.' + roomName + '.rcl.progress'] = room.controller.progress;
                     Memory.stats['rooms.' + roomName + '.rcl.progressTotal'] = room.controller.progressTotal;
-    
+
                     Memory.stats['rooms.' + roomName + '.spawn.energy'] = room.energyAvailable;
                     Memory.stats['rooms.' + roomName + '.spawn.energyTotal'] = room.energyCapacityAvailable;
-    
+
                     Memory.stats['rooms.' + roomName + '.wall.hits'] = wall2 / wall.length;
                     Memory.stats['rooms.' + roomName + '.rampart.hits'] = rampart2 / rampart.length;
-    
-    
+
+
                     Memory.stats['rooms.' + roomName + '.creeps.total'] = _.sum(Game.creeps, (c) => c.memory.room === roomName);
-    
+
                     if (room.storage) {
                         Memory.stats['rooms.' + roomName + '.storage.energy'] = room.storage.store.energy[RESOURCE_ENERGY];
                         Memory.stats['rooms.' + roomName + '.st'] = room.storage.store[RESOURCE_ENERGY];
@@ -2818,13 +2818,13 @@ module.exports.loop = function() {
                     if (room.terminal) {
                         Memory.stats['rooms.' + roomName + '.terminal.energy'] = room.terminal.store.energy[RESOURCE_ENERGY];
                         Memory.stats['rooms.' + roomName + '.te'] = room.terminal.store[RESOURCE_ENERGY];
-                    }         
-    
+                    }
+
                     _.forEach(RESOURCES_ALL, function (minerals) {
                         let room = Game.rooms[roomName];
                         let terminal = room.terminal;
                         let storage = room.storage;
-    
+
                         if (room.controller && room.controller.my) {
                             if (storage) {
                                 Memory.stats['rooms.' + roomName + '.minerals.' + minerals + '.storage'] = storage.store[minerals];
@@ -2834,18 +2834,18 @@ module.exports.loop = function() {
                             }
                         }
                     });
-                }    
+                }
             });
         }
 
 
 
-        
+
         Memory.stats['cpu.getUsed'] = Game.cpu.getUsed();
         Memory.stats['cpu.cpuAvg10'] = 0.9 * Memory.stats['cpu.cpuAvg10'] + 0.1 * Memory.stats['cpu.getUsed'];
         Memory.stats['cpu.cpuAvg100'] = 0.99 * Memory.stats['cpu.cpuAvg100'] + 0.01 * Memory.stats['cpu.getUsed'];
         Memory.stats['cpu.cpuAvg1000'] = 0.999 * Memory.stats['cpu.cpuAvg1000'] + 0.001 * Memory.stats['cpu.getUsed'];
-        
+
         /*_.forEach(Object.keys(Game.rooms), function (roomName) {
             let room = Game.rooms[roomName];
             if (room.controller && room.controller.my) {
@@ -2853,8 +2853,8 @@ module.exports.loop = function() {
                 let harvestEvents = _.filter(eventLog, {event: EVENT_HARVEST});
                 if (harvestEvents.length > 0) {
                     Memory.rooms['harvest.' + roomName] = harvestEvents;
-                } 
-                
+                }
+
                 _.forEach(Object(Memory.rooms['harvest.' + roomName]), function (event) {
                     let amount = event.data.amount;
                     Memory.stats['rooms.' + roomName + '.events.EnergyHarvested'] += amount
@@ -2868,8 +2868,8 @@ module.exports.loop = function() {
                 let upgradeEvents = _.filter(eventLog, {event: EVENT_UPGRADE_CONTROLLER});
                 if (upgradeEvents.length > 0) {
                     Memory.rooms['upgrade.' + roomName] = upgradeEvents;
-                } 
-                
+                }
+
                 _.forEach(Object(Memory.rooms['upgrade.' + roomName]), function (event) {
                     let amount = event.data.energySpent;
                     Memory.stats['rooms.' + roomName + '.events.UpgradeEnergy'] += amount
@@ -2883,8 +2883,8 @@ module.exports.loop = function() {
                 let repairEvents = _.filter(eventLog, {event: EVENT_REPAIR});
                 if (repairEvents.length > 0) {
                     Memory.rooms['repair.' + roomName] = repairEvents;
-                } 
-                
+                }
+
                 _.forEach(Object(Memory.rooms['repair.' + roomName]), function (event) {
                     let amount = event.data.energySpent;
                     Memory.stats['rooms.' + roomName + '.events.RepairEnergy'] += amount
@@ -2898,8 +2898,8 @@ module.exports.loop = function() {
                 let buildEvents = _.filter(eventLog, {event: EVENT_BUILD});
                 if (buildEvents.length > 0) {
                     Memory.rooms['build.' + roomName] = buildEvents;
-                }   
-                
+                }
+
                 _.forEach(Object(Memory.rooms['build.' + roomName]), function (event) {
                     let amount = (event.data.energySpent);
                     Memory.stats['rooms.' + roomName + '.events.BuildEnergy'] += amount
@@ -2907,13 +2907,13 @@ module.exports.loop = function() {
                 if (Game.time % 25000 == 0) {
                     let nul = 0
                     Memory.stats['rooms.' + roomName + '.events.BuildEnergy'] = nul;
-                }    
+                }
             }
         });*/
 
         let end2 = Game.cpu.getUsed() - start2
         Memory.stats['cpu.avg.grafana'] = end2;
-        
+
         Memory.stats['cpu.avg10.grafana'] = 0.9 * Memory.stats['cpu.avg10.grafana'] + 0.1 * Memory.stats['cpu.avg.grafana'];
         Memory.stats['cpu.avg100.grafana'] = 0.99 * Memory.stats['cpu.avg100.grafana'] + 0.01 * Memory.stats['cpu.avg.grafana'];
         Memory.stats['cpu.avg1000.grafana'] = 0.999 * Memory.stats['cpu.avg1000.grafana'] + 0.001 * Memory.stats['cpu.avg.grafana'];
