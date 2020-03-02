@@ -23,7 +23,12 @@ module.exports = {
         if (creep.memory.working === true) {
             let start1 = Game.cpu.getUsed()
             if (Game.getObjectById(creep.memory.targetId) == null) {
+              if (creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES) == null) {
+                creep.suicide();
+              }
+              else {
                 creep.memory.targetId = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES).id
+              }
             }
             if (Game.getObjectById(creep.memory.targetId) !== null) {
                 let target = Game.getObjectById(creep.memory.targetId)
