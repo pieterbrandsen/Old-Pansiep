@@ -39,6 +39,9 @@ module.exports = {
                     creep.travelTo(target)
                 }
             }
+            else {
+                creep.suicide();
+            }
         }
     }
 };

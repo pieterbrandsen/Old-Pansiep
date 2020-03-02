@@ -16,8 +16,10 @@ module.exports = {
         if (creep.memory.working === false) {
             if (creep.memory.sourceId !== undefined) {
                 let target = Game.getObjectById(creep.memory.sourceId);
-                if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
-                    creep.travelTo(target)
+                if (target.energy > 0) {
+                    if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
+                        creep.travelTo(target)
+                    }
                 }
             }
             else {console.log("This creep has no source! - " + creep.room.name + " - " + creep.name)}
@@ -54,6 +56,19 @@ module.exports = {
             else if (creep.room.links.length < 2 && creep.room.containers.length == 0 && creep.room.terminal !== undefined) {
                 if (creep.transfer(creep.room.terminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.travelTo(creep.room.terminal)
+                }
+            }
+            else {
+                let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+                    filter: (s) => (s.structureType === STRUCTURE_SPAWN
+                        || s.structureType === STRUCTURE_EXTENSION
+                        || s.structureType === STRUCTURE_TOWER && s.energy < 500 && creep.store[RESOURCE_ENERGY] >= 150)
+                        && s.energy < s.energyCapacity
+                });
+                if (target !== null) {
+                    if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.travelTo(target)
+                    }
                 }
             }
         }

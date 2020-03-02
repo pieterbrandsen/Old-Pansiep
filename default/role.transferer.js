@@ -16,11 +16,16 @@ module.exports = {
             creep.memory.container2 = {}
         }
 
+        function needsCreeps(role, numbers) {
+            let numberOfCreeps = _.sum(Game.creeps, (c) => c.memory.role === role && c.memory.room === creep.room.name);
+            return numberOfCreeps < numbers
+        }
+
         if (creep.memory.working === true) {
             let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                 filter: (s) => (s.structureType === STRUCTURE_SPAWN
                     || s.structureType === STRUCTURE_EXTENSION
-                    || s.structureType === STRUCTURE_TOWER && s.energy < 500 && creep.store[RESOURCE_ENERGY] >= 150)
+                    || s.structureType === STRUCTURE_TOWER && s.energy < 500 && creep.store[RESOURCE_ENERGY] >= 150 && (needsCreeps("transferer1",2) ==  false) || creep.store[RESOURCE_ENERGY] >= 300)
                     && s.energy < s.energyCapacity
             });
             let target2Test = creep.pos.findClosestByRange(creep.room.containers, {
@@ -103,10 +108,6 @@ module.exports = {
                     }
                 }
             }
-        }
-        function needsCreeps(role, numbers) {
-            let numberOfCreeps = _.sum(Game.creeps, (c) => c.memory.role === role && c.memory.room === creep.room.name);
-            return numberOfCreeps < numbers
         }
         if (creep.memory.role == "transfererSo1" && needsCreeps("transferer1",1) ==  false) {
             creep.suicide();

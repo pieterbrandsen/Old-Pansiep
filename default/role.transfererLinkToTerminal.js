@@ -44,7 +44,9 @@ module.exports = {
         let resource;
         let flag;
         let x;
-        /*if (Game.flags["RESOURCE_HYDROGEN"] !== undefined && Game.flags["RESOURCE_HYDROGEN"].room === creep.room || needsResource(RESOURCE_HYDROGEN, 20000)) {
+        
+        
+        if (Game.flags["RESOURCE_HYDROGEN"] !== undefined && Game.flags["RESOURCE_HYDROGEN"].room === creep.room || needsResource(RESOURCE_HYDROGEN, 20000)) {
             resource = RESOURCE_HYDROGEN;
             flag = "RESOURCE_HYDROGEN";
 
@@ -2089,7 +2091,7 @@ module.exports = {
                     }
                 }
             }
-        }*/
+        }
         if (creep.memory.working === true) {
             if (creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 50000) {
                 if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
@@ -2108,7 +2110,7 @@ module.exports = {
                     creep.travelTo(creep.room.storage)
                 }
             }
-            else if ((creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 50000 && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 1000) || target.energy > 500) {
+            else if (target.energy > 500) {
                 if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.travelTo(target)
                 }

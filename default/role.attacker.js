@@ -1,8 +1,10 @@
 module.exports = {
     run: function(creep) {
-        //let target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        let target = Game.getObjectById("5e0d5237c71f514ecd645bbc");
-        if(target) {
+        let flag = Game.rooms[creep.room.name];
+        //let target = Game.getObjectById("5e0d5237c71f514ecd645bbc");
+        if(_.size(flag.enemy) > 0) {
+            let target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
             if(creep.attack(target) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target);
             }

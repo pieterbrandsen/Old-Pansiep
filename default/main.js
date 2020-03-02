@@ -561,222 +561,35 @@ module.exports.loop = function() {
                 }
             }
 
-            function haveResource(resource, amount, room) {
-                let numberOfResource = room.storage.store[resource];
-                if (numberOfResource === undefined) {
-                    return 2
-                } else {
-                    return numberOfResource > amount
+            function haveResource(resource, amount, roomName) {
+                let numberOfResource = 0;
+
+                let room = Game.rooms[roomName];
+
+                if (room.storage.store[resource] !== undefined) {
+                    numberOfResource += room.storage.store[resource];
                 }
+                if (room.terminal.store[resource] !== undefined) {
+                    numberOfResource += room.terminal.store[resource];
+                }
+                return numberOfResource > amount
             }
-            function marketPrice(resource) {
+            function marketPrice(resource, currentPrice) {
                 let price = Game.market.getAllOrders({type: ORDER_SELL, resourceType: resource});
                 price.sort((a, b) => a.price - b.price);
                 
-                if (price[0].price * 1,15 > price[1].price) {
-                    let newPrice = price[0].price;
+                if (price[0].price * 1,15 > price[2].price && price[0].price * 1,4 > price[5].price) {
+                    let newPrice = price[0].price *0.975;
                     return newPrice
                 }
                 else {
-                    let secondPrice = price[1].price;
+                    let secondPrice = price[3].price;
                     return secondPrice;
                 }
             }
 
 
 
-            /*//MINERALS
-            room = 'E43N3';
-            if (Game.rooms[room].terminal.store[RESOURCE_HYDROGEN] > 50000) {
-                Game.notify(room + 'has to much resources!')
-            }
-            if (needsResource(RESOURCE_OXYGEN, 5000, 'E43N3') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_OXYGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_UTRIUM, 5000, 'E43N3') && spawn[0] !== undefined) {
-                terminal4.send(RESOURCE_UTRIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_KEANIUM, 5000, 'E43N3') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_KEANIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_LEMERGIUM, 5000, 'E43N3') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_LEMERGIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_ZYNTHIUM, 5000, 'E43N3') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_ZYNTHIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_CATALYST, 5000, 'E43N3') && spawn[0] !== undefined) {
-                terminal5.send(RESOURCE_CATALYST, 1000, room)
-            }
-
-            //MINERALS
-            room = 'E43N2';
-            if (needsResource(RESOURCE_HYDROGEN, 5000, 'E43N2') && spawn[0] !== undefined) {
-                terminal1.send(RESOURCE_HYDROGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_OXYGEN, 5000, 'E43N2') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_OXYGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_UTRIUM, 5000, 'E43N2') && spawn[0] !== undefined) {
-                terminal4.send(RESOURCE_UTRIUM, 1000, room)
-            }
-            if (Game.rooms[room].terminal.store[RESOURCE_KEANIUM] > 50000) {
-                Game.notify(room + 'has to much resources!')
-            }
-            if (Game.rooms[room].terminal.store[RESOURCE_LEMERGIUM] > 50000) {
-                Game.notify(room + 'has to much resources!')
-            }
-            if (needsResource(RESOURCE_ZYNTHIUM, 5000, 'E43N2') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_ZYNTHIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_CATALYST, 5000, 'E43N2') && spawn[0] !== undefined) {
-                terminal5.send(RESOURCE_CATALYST, 1000, room)
-            }
-
-            //MINERALS
-            room = 'E42N2';
-            if (needsResource(RESOURCE_HYDROGEN, 5000, 'E42N2') && spawn[0] !== undefined) {
-                terminal1.send(RESOURCE_HYDROGEN, 1000, room)
-            }
-            if (Game.rooms[room].terminal.store[RESOURCE_OXYGEN] > 50000) {
-                Game.notify(room + 'has to much resources!')
-            }
-            if (needsResource(RESOURCE_UTRIUM, 5000, 'E42N2') && spawn[0] !== undefined) {
-                terminal4.send(RESOURCE_UTRIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_KEANIUM, 5000, 'E42N2') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_KEANIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_LEMERGIUM, 5000, 'E42N2') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_LEMERGIUM, 1000, room)
-            }
-            if (Game.rooms[room].terminal.store[RESOURCE_ZYNTHIUM] > 50000) {
-                Game.notify(room + 'has to much resources!')
-            }
-            if (needsResource(RESOURCE_CATALYST, 5000, 'E42N2') && spawn[0] !== undefined) {
-                terminal5.send(RESOURCE_CATALYST, 1000, room)
-            }
-
-            //MINERALS
-            room = 'E42N3';
-            if (needsResource(RESOURCE_HYDROGEN, 5000, 'E42N3') && spawn[0] !== undefined) {
-                terminal1.send(RESOURCE_HYDROGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_OXYGEN, 5000, 'E42N3') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_OXYGEN, 1000, room)
-            }
-            if (Game.rooms[room].terminal.store[RESOURCE_UTRIUM] > 50000) {
-                Game.notify(room + 'has to much resources!')
-            }
-            if (needsResource(RESOURCE_KEANIUM, 5000, 'E42N3') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_KEANIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_LEMERGIUM, 5000, 'E42N3') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_LEMERGIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_ZYNTHIUM, 5000, 'E42N3') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_ZYNTHIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_CATALYST, 5000, 'E42N3') && spawn[0] !== undefined) {
-                terminal5.send(RESOURCE_CATALYST, 1000, room)
-            }
-
-            //MINERALS
-            room = 'E42N1';
-            if (needsResource(RESOURCE_HYDROGEN, 5000, 'E42N1') && spawn[0] !== undefined) {
-                terminal1.send(RESOURCE_HYDROGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_OXYGEN, 5000, 'E42N1') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_OXYGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_UTRIUM, 5000, 'E42N1') && spawn[0] !== undefined) {
-                terminal4.send(RESOURCE_UTRIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_KEANIUM, 5000, 'E42N1') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_KEANIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_LEMERGIUM, 5000, 'E42N1') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_LEMERGIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_ZYNTHIUM, 5000, 'E42N1') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_ZYNTHIUM, 1000, room)
-            }
-            if (Game.rooms[room].terminal.store[RESOURCE_CATALYST] > 50000) {
-                Game.notify(room + 'has to much resources!')
-            }
-
-            //MINERALS
-            room = 'E43N1';
-            if (needsResource(RESOURCE_HYDROGEN, 5000, 'E43N1') && spawn[0] !== undefined) {
-                terminal1.send(RESOURCE_HYDROGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_OXYGEN, 5000, 'E43N1') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_OXYGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_UTRIUM, 5000, 'E43N1') && spawn[0] !== undefined) {
-                terminal4.send(RESOURCE_UTRIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_KEANIUM, 5000, 'E43N1') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_KEANIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_LEMERGIUM, 5000, 'E43N1') && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_LEMERGIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_ZYNTHIUM, 5000, 'E43N1') && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_ZYNTHIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_CATALYST, 5000, 'E43N1') && spawn[0] !== undefined) {
-                terminal5.send(RESOURCE_CATALYST, 1000, room)
-            }
-
-            //MINERALS
-            room = 'E44N3';
-            if (needsResource(RESOURCE_HYDROGEN, 5000, room) && spawn[0] !== undefined) {
-                terminal1.send(RESOURCE_HYDROGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_OXYGEN, 5000, room) && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_OXYGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_UTRIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal4.send(RESOURCE_UTRIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_KEANIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_KEANIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_LEMERGIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_LEMERGIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_ZYNTHIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_ZYNTHIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_CATALYST, 5000, room) && spawn[0] !== undefined) {
-                terminal5.send(RESOURCE_CATALYST, 1000, room)
-            }
-
-            //MINERALS
-            room = 'E43N4';
-            if (needsResource(RESOURCE_HYDROGEN, 5000, room) && spawn[0] !== undefined) {
-                terminal1.send(RESOURCE_HYDROGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_OXYGEN, 5000, room) && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_OXYGEN, 1000, room)
-            }
-            if (needsResource(RESOURCE_UTRIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal4.send(RESOURCE_UTRIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_KEANIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_KEANIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_LEMERGIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal2.send(RESOURCE_LEMERGIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_ZYNTHIUM, 5000, room) && spawn[0] !== undefined) {
-                terminal3.send(RESOURCE_ZYNTHIUM, 1000, room)
-            }
-            if (needsResource(RESOURCE_CATALYST, 5000, room) && spawn[0] !== undefined) {
-                terminal5.send(RESOURCE_CATALYST, 1000, room)
-            }
-*/
             for (let name in Memory.creeps) {
                 if (Game.creeps[name] === undefined) {
                     delete Memory.creeps[name];
@@ -785,13 +598,16 @@ module.exports.loop = function() {
 
             let start3 = Game.cpu.getUsed()
 
+
             // Every creep name in Game.creeps
+            let array = [];
             for (let name in Game.creeps) {            
                 let creep = Game.creeps[name];
+                let role = creep.memory.role
+                array.push(role);
+                //Memory.flags["E43N3"].creeps = array
 
-                //creep.signController(creep.room.controller,"Please learn me this game, im bad")
-
-
+                let start4 = Game.cpu.getUsed()
                 if (creep.memory.role === 'claimer1') {
                     roleClaimer.run(creep);
                 }
@@ -802,9 +618,14 @@ module.exports.loop = function() {
                     roleReserver.run(creep);
                 }
 
+                let end4 = Game.cpu.getUsed() - start4
+                Memory.stats['cpu.avg.role1'] += end4;
+
                 if (creep.memory.role === 'scout1') {
                     roleScout.run(creep);
                 }
+
+                let start5 = Game.cpu.getUsed()
 
                 if (creep.memory.role === 'harvesterSo11') {
                     roleHarvesterSource.run(creep);
@@ -836,11 +657,19 @@ module.exports.loop = function() {
                 if (creep.memory.role === 'harvesterLD4') {
                     roleLongDistanceHarvester.run(creep);
                 }
-                
+
+                Memory.stats['cpu.avg.role2'] += Game.cpu.getUsed() - start5;
+
+                let start6 = Game.cpu.getUsed()
+
                 if (creep.memory.role === 'extractorSt') {
                     roleExtractorStorage.run(creep);
                 }
 
+                let end6 = Game.cpu.getUsed() - start6
+                Memory.stats['cpu.avg.role3'] += end6;
+
+                let start7 = Game.cpu.getUsed()
 
                 if (creep.memory.role === 'transfererFromTo') {
                     roleTransfererFromTo.run(creep);
@@ -861,14 +690,28 @@ module.exports.loop = function() {
                     roleLongDistanceTransferer.run(creep);
                 }
 
+                let end7 = Game.cpu.getUsed() - start7
+                Memory.stats['cpu.avg.role4'] += end7;
+
+                let start8 = Game.cpu.getUsed()
                 
                 if (creep.memory.role === 'transfererLiTe1') {
                     roleTransfererLinkToTerminal.run(creep);
                 }
+
+                let end8 = Game.cpu.getUsed() - start8
+                Memory.stats['cpu.avg.role5'] += end8;
+
+                let start9 = Game.cpu.getUsed()
+
                 if (creep.memory.role === 'scientist1') {
                     roleScientist.run(creep);
                 }
 
+                let end9 = Game.cpu.getUsed() - start9
+                Memory.stats['cpu.avg.role6'] += end9;
+
+                let start10 = Game.cpu.getUsed()
 
                 if (creep.memory.role === 'attackerMelee1') {
                     roleAttacker.run(creep);
@@ -889,6 +732,10 @@ module.exports.loop = function() {
                     roleHealer.run(creep);
                 }
 
+                let end10 = Game.cpu.getUsed() - start10;
+                Memory.stats['cpu.avg.role7'] += end10;
+
+                let start11 = Game.cpu.getUsed()
 
                 if (creep.memory.role === 'upgraderSo1') {
                     roleUpgraderSource.run(creep);
@@ -906,6 +753,10 @@ module.exports.loop = function() {
                     roleLongDistanceUpgrader.run(creep);
                 }
 
+                let end11 = Game.cpu.getUsed() - start11
+                Memory.stats['cpu.avg.role8'] += end11;
+
+                let start12 = Game.cpu.getUsed()
 
                 if (creep.memory.role === 'builderSo1') {
                     roleBuilderSource.run(creep);
@@ -919,7 +770,11 @@ module.exports.loop = function() {
                 if (creep.memory.role === 'builderLD1') {
                     roleLongDistanceBuilder.run(creep);
                 }
-                
+
+                let end12 = Game.cpu.getUsed() - start12;
+                Memory.stats['cpu.avg.role9'] += end12;
+
+                let start13 = Game.cpu.getUsed()
 
                 if (creep.memory.role === 'repairerSo1') {
                     roleRepairerSource.run(creep);
@@ -930,7 +785,158 @@ module.exports.loop = function() {
                 if (creep.memory.role === 'repairerLD1') {
                     roleLongDistanceRepairer.run(creep);
                 }
+
+                let end13 = Game.cpu.getUsed() - start13
+                Memory.stats['cpu.avg.role10'] += end13;
             }
+
+
+            if (Game.time % 20 == 0) {
+                let harvester = 0;
+                let extractor = 0;
+                let transferer = 0;
+                let upgrader = 0;
+                let builder = 0;
+                let repairer = 0;
+                let attacker = 0;
+                let reserver = 0;
+                let scientist = 0;
+
+                for (let i = 0; i< array.length; i++) {
+                    if (array[i].includes("harvester") == true) {
+                        harvester++
+                    }
+                    if (array[i].includes("extractor") == true) {
+                        extractor++
+                    }
+                    if (array[i].includes("transferer") == true) {
+                        transferer++
+                    }
+                    if (array[i].includes("upgrader") == true) {
+                        upgrader++
+                    }
+                    if (array[i].includes("builder") == true) {
+                        builder++
+                    }
+                    if (array[i].includes("repairer") == true) {
+                        repairer++
+                    }
+                    if (array[i].includes("attacker") == true) {
+                        attacker++
+                    }
+                    if (array[i].includes("reserver") == true) {
+                        reserver++
+                    }
+                    if (array[i].includes("scientist") == true) {
+                        scientist++
+                    }
+                }
+                Memory.stats['creeps.avg.harvester'] = harvester 
+ 
+                Memory.stats['creeps.avg.extractor'] = extractor
+
+                Memory.stats['creeps.avg.transferer'] = transferer
+
+                Memory.stats['creeps.avg.upgrader'] = upgrader
+
+                Memory.stats['creeps.avg.builder'] = builder
+
+                Memory.stats['creeps.avg.repairer'] = repairer
+
+                Memory.stats['creeps.avg.attacker'] = attacker
+
+                Memory.stats['creeps.avg.reserver'] = reserver
+
+                Memory.stats['creeps.avg.scientist'] = scientist
+            }
+            Memory.stats['creeps.avg10.harvester'] = 0.9 * Memory.stats['creeps.avg10.harvester'] + 0.1 * Memory.stats['creeps.avg.harvester'];
+            Memory.stats['creeps.avg100.harvester'] = 0.99 * Memory.stats['creeps.avg100.harvester'] + 0.01 * Memory.stats['creeps.avg.harvester'];
+            Memory.stats['creeps.avg1000.harvester'] = 0.999 * Memory.stats['creeps.avg1000.harvester'] + 0.001 * Memory.stats['creeps.avg.harvester'];
+
+            Memory.stats['creeps.avg10.extractor'] = 0.9 * Memory.stats['creeps.avg10.extractor'] + 0.1 * Memory.stats['creeps.avg.extractor'];
+            Memory.stats['creeps.avg100.extractor'] = 0.99 * Memory.stats['creeps.avg100.extractor'] + 0.01 * Memory.stats['creeps.avg.extractor'];
+            Memory.stats['creeps.avg1000.extractor'] = 0.999 * Memory.stats['creeps.avg1000.extractor'] + 0.001 * Memory.stats['creeps.avg.extractor'];
+
+            Memory.stats['creeps.avg10.transferer'] = 0.9 * Memory.stats['creeps.avg10.transferer'] + 0.1 * Memory.stats['creeps.avg.transferer'];
+            Memory.stats['creeps.avg100.transferer'] = 0.99 * Memory.stats['creeps.avg100.transferer'] + 0.01 * Memory.stats['creeps.avg.transferer'];
+            Memory.stats['creeps.avg1000.transferer'] = 0.999 * Memory.stats['creeps.avg1000.transferer'] + 0.001 * Memory.stats['creeps.avg.transferer'];
+
+            Memory.stats['creeps.avg10.upgrader'] = 0.9 * Memory.stats['creeps.avg10.upgrader'] + 0.1 * Memory.stats['creeps.avg.upgrader'];
+            Memory.stats['creeps.avg100.upgrader'] = 0.99 * Memory.stats['creeps.avg100.upgrader'] + 0.01 * Memory.stats['creeps.avg.upgrader'];
+            Memory.stats['creeps.avg1000.upgrader'] = 0.999 * Memory.stats['creeps.avg1000.upgrader'] + 0.001 * Memory.stats['creeps.avg.upgrader'];
+
+            Memory.stats['creeps.avg10.builder'] = 0.9 * Memory.stats['creeps.avg10.builder'] + 0.1 * Memory.stats['creeps.avg.builder'];
+            Memory.stats['creeps.avg100.builder'] = 0.99 * Memory.stats['creeps.avg100.builder'] + 0.01 * Memory.stats['creeps.avg.builder'];
+            Memory.stats['creeps.avg1000.builder'] = 0.999 * Memory.stats['creeps.avg1000.builder'] + 0.001 * Memory.stats['creeps.avg.builder'];
+
+            Memory.stats['creeps.avg10.repairer'] = 0.9 * Memory.stats['creeps.avg10.repairer'] + 0.1 * Memory.stats['creeps.avg.repairer'];
+            Memory.stats['creeps.avg100.repairer'] = 0.99 * Memory.stats['creeps.avg100.repairer'] + 0.01 * Memory.stats['creeps.avg.repairer'];
+            Memory.stats['creeps.avg1000.repairer'] = 0.999 * Memory.stats['creeps.avg1000.repairer'] + 0.001 * Memory.stats['creeps.avg.repairer'];
+
+            Memory.stats['creeps.avg10.attacker'] = 0.9 * Memory.stats['creeps.avg10.attacker'] + 0.1 * Memory.stats['creeps.avg.attacker'];
+            Memory.stats['creeps.avg100.attacker'] = 0.99 * Memory.stats['creeps.avg100.attacker'] + 0.01 * Memory.stats['creeps.avg.attacker'];
+            Memory.stats['creeps.avg1000.attacker'] = 0.999 * Memory.stats['creeps.avg1000.attacker'] + 0.001 * Memory.stats['creeps.avg.attacker'];
+
+            Memory.stats['creeps.avg10.reserver'] = 0.9 * Memory.stats['creeps.avg10.reserver'] + 0.1 * Memory.stats['creeps.avg.reserver'];
+            Memory.stats['creeps.avg100.reserver'] = 0.99 * Memory.stats['creeps.avg100.reserver'] + 0.01 * Memory.stats['creeps.avg.reserver'];
+            Memory.stats['creeps.avg1000.reserver'] = 0.999 * Memory.stats['creeps.avg1000.reserver'] + 0.001 * Memory.stats['creeps.avg.reserver'];
+
+            Memory.stats['creeps.avg10.scientist'] = 0.9 * Memory.stats['creeps.avg10.scientist'] + 0.1 * Memory.stats['creeps.avg.scientist'];
+            Memory.stats['creeps.avg100.scientist'] = 0.99 * Memory.stats['creeps.avg100.scientist'] + 0.01 * Memory.stats['creeps.avg.scientist'];
+            Memory.stats['creeps.avg1000.scientist'] = 0.999 * Memory.stats['creeps.avg1000.scientist'] + 0.001 * Memory.stats['creeps.avg.scientist'];
+
+
+
+            Memory.stats['cpu.avg10.role1'] = 0.9 * Memory.stats['cpu.avg10.role1'] + 0.1 * Memory.stats['cpu.avg.role1'];
+            Memory.stats['cpu.avg100.role1'] = 0.99 * Memory.stats['cpu.avg100.role1'] + 0.01 * Memory.stats['cpu.avg.role1'];
+            Memory.stats['cpu.avg1000.role1'] = 0.999 * Memory.stats['cpu.avg1000.role1'] + 0.001 * Memory.stats['cpu.avg.role1'];
+            Memory.stats['cpu.avg.role1'] = 0;
+
+            Memory.stats['cpu.avg10.role2'] = 0.9 * Memory.stats['cpu.avg10.role2'] + 0.1 * Memory.stats['cpu.avg.role2'];
+            Memory.stats['cpu.avg100.role2'] = 0.99 * Memory.stats['cpu.avg100.role2'] + 0.01 * Memory.stats['cpu.avg.role2'];
+            Memory.stats['cpu.avg1000.role2'] = 0.999 * Memory.stats['cpu.avg1000.role2'] + 0.001 * Memory.stats['cpu.avg.role2'];
+            Memory.stats['cpu.avg.role2'] = 0;
+
+            Memory.stats['cpu.avg10.role3'] = 0.9 * Memory.stats['cpu.avg10.role3'] + 0.1 * Memory.stats['cpu.avg.role3'];
+            Memory.stats['cpu.avg100.role3'] = 0.99 * Memory.stats['cpu.avg100.role3'] + 0.01 * Memory.stats['cpu.avg.role3'];
+            Memory.stats['cpu.avg1000.role3'] = 0.999 * Memory.stats['cpu.avg1000.role3'] + 0.001 * Memory.stats['cpu.avg.role3'];
+            Memory.stats['cpu.avg.role3'] = 0;
+
+            Memory.stats['cpu.avg10.role4'] = 0.9 * Memory.stats['cpu.avg10.role4'] + 0.1 * Memory.stats['cpu.avg.role4'];
+            Memory.stats['cpu.avg100.role4'] = 0.99 * Memory.stats['cpu.avg100.role4'] + 0.01 * Memory.stats['cpu.avg.role4'];
+            Memory.stats['cpu.avg1000.role4'] = 0.999 * Memory.stats['cpu.avg1000.role4'] + 0.001 * Memory.stats['cpu.avg.role4'];
+            Memory.stats['cpu.avg.role4'] = 0;
+
+            Memory.stats['cpu.avg10.role5'] = 0.9 * Memory.stats['cpu.avg10.role5'] + 0.1 * Memory.stats['cpu.avg.role5'];
+            Memory.stats['cpu.avg100.role5'] = 0.99 * Memory.stats['cpu.avg100.role5'] + 0.01 * Memory.stats['cpu.avg.role5'];
+            Memory.stats['cpu.avg1000.role5'] = 0.999 * Memory.stats['cpu.avg1000.role5'] + 0.001 * Memory.stats['cpu.avg.role5'];
+            Memory.stats['cpu.avg.role5'] = 0;
+
+            Memory.stats['cpu.avg10.role6'] = 0.9 * Memory.stats['cpu.avg10.role6'] + 0.1 * Memory.stats['cpu.avg.role6'];
+            Memory.stats['cpu.avg100.role6'] = 0.99 * Memory.stats['cpu.avg100.role6'] + 0.01 * Memory.stats['cpu.avg.role6'];
+            Memory.stats['cpu.avg1000.role6'] = 0.999 * Memory.stats['cpu.avg1000.role6'] + 0.001 * Memory.stats['cpu.avg.role6'];
+            Memory.stats['cpu.avg.role6'] = 0;
+
+            Memory.stats['cpu.avg10.role7'] = 0.9 * Memory.stats['cpu.avg10.role7'] + 0.1 * Memory.stats['cpu.avg.role7'];
+            Memory.stats['cpu.avg100.role7'] = 0.99 * Memory.stats['cpu.avg100.role7'] + 0.01 * Memory.stats['cpu.avg.role7'];
+            Memory.stats['cpu.avg1000.role7'] = 0.999 * Memory.stats['cpu.avg1000.role7'] + 0.001 * Memory.stats['cpu.avg.role7'];
+            Memory.stats['cpu.avg.role7'] = 0;
+
+            Memory.stats['cpu.avg10.role8'] = 0.9 * Memory.stats['cpu.avg10.role8'] + 0.1 * Memory.stats['cpu.avg.role8'];
+            Memory.stats['cpu.avg100.role8'] = 0.99 * Memory.stats['cpu.avg100.role8'] + 0.01 * Memory.stats['cpu.avg.role8'];
+            Memory.stats['cpu.avg1000.role8'] = 0.999 * Memory.stats['cpu.avg1000.role8'] + 0.001 * Memory.stats['cpu.avg.role8'];
+            Memory.stats['cpu.avg.role8'] = 0;
+
+            Memory.stats['cpu.avg10.role9'] = 0.9 * Memory.stats['cpu.avg10.role9'] + 0.1 * Memory.stats['cpu.avg.role9'];
+            Memory.stats['cpu.avg100.role9'] = 0.99 * Memory.stats['cpu.avg100.role9'] + 0.01 * Memory.stats['cpu.avg.role9'];
+            Memory.stats['cpu.avg1000.role9'] = 0.999 * Memory.stats['cpu.avg1000.role9'] + 0.001 * Memory.stats['cpu.avg.role9'];
+            Memory.stats['cpu.avg.role9'] = 0;
+
+            Memory.stats['cpu.avg10.role10'] = 0.9 * Memory.stats['cpu.avg10.role10'] + 0.1 * Memory.stats['cpu.avg.role10'];
+            Memory.stats['cpu.avg100.role10'] = 0.99 * Memory.stats['cpu.avg100.role10'] + 0.01 * Memory.stats['cpu.avg.role10'];
+            Memory.stats['cpu.avg1000.role10'] = 0.999 * Memory.stats['cpu.avg1000.role10'] + 0.001 * Memory.stats['cpu.avg.role10'];
+            Memory.stats['cpu.avg.role10'] = 0;
+
             let end3 = Game.cpu.getUsed() - start3
             Memory.stats['cpu.avg.creep'] = end3;
             Memory.stats['cpu.avg10.creep'] = 0.9 * Memory.stats['cpu.avg10.creep'] + 0.1 * Memory.stats['cpu.avg.creep'];
@@ -951,9 +957,10 @@ module.exports.loop = function() {
             _.forEach(Object.keys(Game.rooms), function (roomName) {
                 let room = Game.rooms[roomName];
                 let controller = room.controller;
+                let flag = Memory.flags[roomName];
                 if (controller && controller.my) {
                     let towers = room.towers;
-                    let mineralType = Memory.rooms[roomName + '.mineral'][0].mineralType;
+                    let mineralType = flag.mineral[0].mineralType;
 
                     for (let tower of towers) {
                         tower.defend();
@@ -963,7 +970,7 @@ module.exports.loop = function() {
                             let targetRepair;
                             if (1==1) {
                                 targetRepair = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                                    filter: (s) => s.hits < s.hitsMax && s.hits < 3000000
+                                    filter: (s) => s.hits < s.hitsMax && s.hits < 4500 * 1000
                                 });
                             }
                             if (targetRepair !== undefined) {
@@ -972,46 +979,63 @@ module.exports.loop = function() {
                         }
                     }
 
-                    if (Game.time % 500 == 0) {
-                        Memory.rooms[roomName + '.sources'] = room.find(FIND_SOURCES);
-                        Memory.rooms[roomName + '.mineral'] = room.find(FIND_MINERALS);
+                    if (Game.time % 2500 == 0) {
+                        flag.sources = room.find(FIND_SOURCES);
+                        flag.mineral = room.find(FIND_MINERALS);
                     }
-                    if (Game.time % 500 == 0) {
-                        Memory.rooms[roomName + '.constructions'] = room.find(FIND_CONSTRUCTION_SITES);
+                    if (Game.time % 10000 == 0) {
+                        creep.signController(creep.room.controller,"Please learn me this game, im bad")
                     }
-                    if (Game.time % 50 == 0) {
-                        Memory.rooms[roomName + '.enemy'] = room.find(FIND_HOSTILE_CREEPS);
+                    if (Game.time % 250 == 0) {
+                        flag.constructions = room.find(FIND_CONSTRUCTION_SITES);
+                    }
+                    if (Game.time % 25 == 0) {
+                        flag.enemy = room.find(FIND_HOSTILE_CREEPS);
                     }
 
-                    if (controller.level >= 6 && room.terminal !== undefined && room.storage !== null && Game.time % 2 == 0) {
-                        let flag = Memory.flags[roomName];
+                    if (controller.level >= 6 && room.terminal !== undefined && room.storage !== null) {
                         let mineralType = Memory.rooms[roomName + '.mineral'][0].mineralType;
                         let currentAmount = flag.marketAmount;
                         let addAmount = 25 * 1000;
                         let orderId = flag.orderId;
-                        let newPrice = marketPrice(mineralType);
+                        let newPrice = marketPrice(mineralType, flag.price);
 
-                        if (Game.time % 500 == 0) {
-                            Game.market.changeOrderPrice(orderId, newPrice)
-                        }
-                        if (Game.time % 5 == 0) {
-                            if (haveResource(mineralType, 250000, room) && currentAmount < 50000) {
-                                Game.market.extendOrder(orderId, addAmount)
+                        if (Game.time % 250 == 0) {
+                            flag.order = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0];
+                            if (_.size(flag.order) == 0 && _.size(currentAmount) == 0) {
+                                Game.market.createOrder({
+                                    type: ORDER_SELL,
+                                    resourceType: mineralType,
+                                    price: 2,
+                                    totalAmount: 1,
+                                    roomName: roomName
+                                });
+                                console.log("Created new order for: " + mineralType + " in room: " + roomName)
+                            }
+                            if (_.size(flag.order) > 0) {
+                                flag.orderId = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].id
+                                flag.marketAmount = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].remainingAmount;
+                                flag.price = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].price
                             }
                         }
-
-
-                        if (Game.time % 2 == 0) {
-                            flag.orderId = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].id
-                            flag.marketAmount = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].amount
-                            flag.price = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].price
+                        if (Game.time % 250 == 0) {
+                            Game.market.changeOrderPrice(orderId, newPrice)
+                            console.log("Changed the price of the resource: " + mineralType + " from: " + flag.price + " to: " + newPrice)
+                        }
+                        if (Game.time % 500 == 0) {
+                            if (haveResource(mineralType, 250000, roomName) == true && currentAmount < 50000) {
+                                Game.market.extendOrder(orderId, addAmount)
+                                console.log(mineralType + " - " + room + " - " + addAmount);
+                                flag.marketAmount = Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})[0].remainingAmount;
+                            }
                         }
                     }
                 }
             });
 
-            if (Game.time % 5 == 0) {
+            if (Game.time % 20 == 0) {
                 _.forEach(Object.keys(Game.rooms), function (roomName) {
+                    let flag = Memory.flags[roomName];
                     let room = Game.rooms[roomName];
                     let controller = room.controller;
 
@@ -1042,13 +1066,11 @@ module.exports.loop = function() {
                         let repairerCo;
 
                            
-
-                        let enemy = Memory.rooms[roomName + '.enemy'];
-                        let construction = Memory.rooms[roomName + '.constructions'];
-                        let sources = Memory.rooms[roomName + '.sources'];
-                        let minerals = Memory.rooms[roomName + '.mineral'][0].mineralAmount;
-                        let mineralType = Memory.rooms[roomName + '.mineral'][0].mineralType;
-                        let flag = Memory.flags[roomName];
+                        let enemy = flag.enemy;
+                        let construction = flag.constructions;
+                        let sources = flag.sources;
+                        let minerals = flag.mineral[0].mineralAmount;
+                        let mineralType = flag.mineral[0].mineralType;
                         let extension = room.extensions.length
 
                         let normalDirections = [TOP_LEFT,LEFT,BOTTOM_LEFT,BOTTOM,BOTTOM_RIGHT];
@@ -1077,20 +1099,29 @@ module.exports.loop = function() {
                             });
                         }
 
-                        if (_.size(Game.market.getAllOrders({type: ORDER_SELL, resourceType: mineralType, roomName: roomName})) == 0 && room.terminal !== undefined) {
-                            Game.market.createOrder({
-                                type: ORDER_SELL,
-                                resourceType: mineralType,
-                                price: 2,
-                                totalAmount: 1,
-                                roomName: roomName
-                            });
+                        if (room.terminal !== undefined) {
+                            if (needsResource(RESOURCE_HYDROGEN, 5000, roomName) && mineralType !== RESOURCE_HYDROGEN) {
+                                Game.rooms['E43N3'].terminal.send(RESOURCE_HYDROGEN, 1000, roomName)
+                            }
+                            if (needsResource(RESOURCE_OXYGEN, 5000, roomName) && mineralType !== RESOURCE_OXYGEN) {
+                                Game.rooms['E42N2'].terminal.send(RESOURCE_OXYGEN, 1000, roomName)
+                            }
+                            if (needsResource(RESOURCE_UTRIUM, 5000, roomName) && mineralType !== RESOURCE_UTRIUM) {
+                                Game.rooms['E42N3'].terminal.send(RESOURCE_UTRIUM, 1000, roomName)
+                            }
+                            /*if (needsResource(RESOURCE_KEANIUM, 5000, roomName) && mineralType !== RESOURCE_KEANIUM) {
+                                Game.rooms['E43N3'].terminal.send(RESOURCE_KEANIUM, 1000, roomName)
+                            }*/
+                            if (needsResource(RESOURCE_LEMERGIUM, 5000, roomName) && mineralType !== RESOURCE_LEMERGIUM) {
+                                Game.rooms['E43N3'].terminal.send(RESOURCE_LEMERGIUM, 1000, roomName)
+                            }
+                            if (needsResource(RESOURCE_ZYNTHIUM, 5000, roomName) && mineralType !== RESOURCE_ZYNTHIUM) {
+                                Game.rooms['E43N1'].terminal.send(RESOURCE_ZYNTHIUM, 1000, roomName)
+                            }
+                            /*if (needsResource(RESOURCE_CATALYST, 5000, roomName) && mineralType !== RESOURCE_CATALYST) {
+                                Game.rooms['E43N3'].terminal.send(RESOURCE_CATALYST, 1000, roomName)
+                            }*/
                         }
-
-
-
-
-
 
 
                         if (controller.level >= 1 && controller.level <= 2 && extension >= 0 && spawn[0] !== undefined) {
@@ -1298,7 +1329,7 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("harvester1", roomName, 2) && spawn[0] !== undefined) {
+                            else if (needsCreeps("harvester1", roomName, 2) && spawn[0] !== undefined && room.containers.length > 0) {
                                 spawn[0].spawnCreep(
                                     harvesterCo,
                                 'Harvester' + Game.time,
@@ -1324,6 +1355,18 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
+                            else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
+                                spawn[0].spawnCreep(
+                                    builderCo,
+                                'Builder' + Game.time,
+                                {
+                                    memory: {
+                                        role: 'builder1',
+                                        working: false,
+                                        room: roomName
+                                    }
+                                });
+                            }
                             else if (needsCreeps("attackerMelee1", roomName, 3) && _.size(enemy) > 0) {
                                 spawn[0].spawnCreep(
                                     attackerMelee,
@@ -1343,18 +1386,6 @@ module.exports.loop = function() {
                                 {
                                     memory: {
                                         role: 'upgrader1',
-                                        working: false,
-                                        room: roomName
-                                    }
-                                });
-                            }
-                            else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
-                                spawn[0].spawnCreep(
-                                    builderCo,
-                                'Builder' + Game.time,
-                                {
-                                    memory: {
-                                        role: 'builder1',
                                         working: false,
                                         room: roomName
                                     }
@@ -1395,9 +1426,9 @@ module.exports.loop = function() {
                             upgraderCo = [MOVE,MOVE,
                                             WORK,WORK,WORK,WORK,WORK,
                                             CARRY,CARRY]; "700 Energy"
-                            builderCo = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
+                            builderCo = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
                                             WORK,WORK,WORK,
-                                            CARRY,CARRY,CARRY,CARRY,CARRY]; "800 Energy"
+                                            CARRY,CARRY,CARRY,CARRY]; "800 Energy"
 
                             harvester = spawn[0].spawnCreep(
                                 harvesterCo,
@@ -1448,7 +1479,7 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("transferer1", roomName, 3) && spawn[0] !== undefined) {
+                            else if (needsCreeps("transferer1", roomName, 3) && spawn[0] !== undefined && room.containers.length > 0) {
                                 spawn[0].spawnCreep(
                                     transfererCo,
                                 'Transferer' + Game.time,
@@ -1593,7 +1624,7 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("transferer1", roomName, 1) && spawn[0] !== undefined) {
+                            else if (needsCreeps("transferer1", roomName, 3) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
                                     transfererCo,
                                 'Transferer' + Game.time,
@@ -2329,7 +2360,7 @@ module.exports.loop = function() {
                                 });
                             }
                         }
-                        if (roomName == "E43N1" && spawn[0] !== undefined) { // 2 Source
+                        /*if (roomName == "E43N1" && spawn[0] !== undefined) { // 2 Source
                             let target = "E44N1"
                             let reserver = [MOVE,MOVE,MOVE,MOVE,MOVE,CLAIM,CLAIM];
                             let transfererLD = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
@@ -2458,7 +2489,7 @@ module.exports.loop = function() {
                                 });
                             }
                         }
-                        /*else if (roomName == "E44N3") { // 2 Source
+                        else if (roomName == "E44N3") { // 2 Source
                             let target = "E44N4"
 
 
@@ -2527,7 +2558,7 @@ module.exports.loop = function() {
                                     }, directions: normalDirections
                                 });
                             }
-                        }*/
+                        }
                         else if (roomName == "E43N2") { // 1 Source
                             let target = "E44N2"
                             let reserver = [MOVE,MOVE,MOVE,MOVE,MOVE,CLAIM,CLAIM];
@@ -2577,7 +2608,7 @@ module.exports.loop = function() {
                                     }, directions: normalDirections
                                 });
                             }
-                            else if (needsCreeps("builderLD1", roomName, 2) && spawn[0] !== undefined) {
+                            else if (needsCreeps("builderLD1", roomName, 0) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
                                     harvesterLD,
                                 'Builder' + Game.time,
@@ -2591,7 +2622,7 @@ module.exports.loop = function() {
                                 });
                             }
                         }
-                        /*else if (roomName == "E43N4") { // 3 X 4K Source
+                        else if (roomName == "E43N4") { // 3 X 4K Source
                             let target = "E44N4"
                             let scout = [MOVE]
                             let reserver = [MOVE,MOVE,MOVE,MOVE,MOVE,CLAIM,CLAIM];
@@ -2710,8 +2741,17 @@ module.exports.loop = function() {
                         working: false,
                     }
                 });
-         */
+         
 
+
+        let structs = Game.rooms["E47N2"].find(FIND_STRUCTURES);
+        for (let i = 0; i < structs.length; i++)
+          {
+          if (structs[i].structureType == STRUCTURE_WALL)
+            structs[i].destroy();
+          }
+
+*/
         let start2 = Game.cpu.getUsed();
 
 
@@ -2768,16 +2808,16 @@ module.exports.loop = function() {
                     Memory.stats['rooms.' + roomName + '.wall.hits'] = wall2 / wall.length;
                     Memory.stats['rooms.' + roomName + '.rampart.hits'] = rampart2 / rampart.length;
     
-                    Memory.stats['rooms.' + roomName + '.te'] = terminalTotal;
-                    Memory.stats['rooms.' + roomName + '.st'] = storageTotal;
     
                     Memory.stats['rooms.' + roomName + '.creeps.total'] = _.sum(Game.creeps, (c) => c.memory.room === roomName);
     
                     if (room.storage) {
                         Memory.stats['rooms.' + roomName + '.storage.energy'] = room.storage.store.energy[RESOURCE_ENERGY];
+                        Memory.stats['rooms.' + roomName + '.st'] = room.storage.store[RESOURCE_ENERGY];
                     }
                     if (room.terminal) {
                         Memory.stats['rooms.' + roomName + '.terminal.energy'] = room.terminal.store.energy[RESOURCE_ENERGY];
+                        Memory.stats['rooms.' + roomName + '.te'] = room.terminal.store[RESOURCE_ENERGY];
                     }         
     
                     _.forEach(RESOURCES_ALL, function (minerals) {
@@ -2806,7 +2846,7 @@ module.exports.loop = function() {
         Memory.stats['cpu.cpuAvg100'] = 0.99 * Memory.stats['cpu.cpuAvg100'] + 0.01 * Memory.stats['cpu.getUsed'];
         Memory.stats['cpu.cpuAvg1000'] = 0.999 * Memory.stats['cpu.cpuAvg1000'] + 0.001 * Memory.stats['cpu.getUsed'];
         
-        _.forEach(Object.keys(Game.rooms), function (roomName) {
+        /*_.forEach(Object.keys(Game.rooms), function (roomName) {
             let room = Game.rooms[roomName];
             if (room.controller && room.controller.my) {
                 let eventLog = room.getEventLog();
@@ -2858,10 +2898,10 @@ module.exports.loop = function() {
                 let buildEvents = _.filter(eventLog, {event: EVENT_BUILD});
                 if (buildEvents.length > 0) {
                     Memory.rooms['build.' + roomName] = buildEvents;
-                } 
+                }   
                 
                 _.forEach(Object(Memory.rooms['build.' + roomName]), function (event) {
-                    let amount = (event.data.amount) / 100;
+                    let amount = (event.data.energySpent);
                     Memory.stats['rooms.' + roomName + '.events.BuildEnergy'] += amount
                 });
                 if (Game.time % 25000 == 0) {
@@ -2869,7 +2909,7 @@ module.exports.loop = function() {
                     Memory.stats['rooms.' + roomName + '.events.BuildEnergy'] = nul;
                 }    
             }
-        });
+        });*/
 
         let end2 = Game.cpu.getUsed() - start2
         Memory.stats['cpu.avg.grafana'] = end2;
