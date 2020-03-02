@@ -996,7 +996,7 @@ module.exports.loop = function() {
                     }
                     if (Game.time % 25 == 0) {
                       for (x of RESOURCES_ALL) {
-                        if (resourceInStorage(x) > needed) {
+                        if (resourceInStorage(x) < 10000) {
                           flag.labs = {};
                           Memory.flags["E44N3"].labs.push(x);
                         }
