@@ -20,22 +20,12 @@ module.exports = {
         }
         let flag = Game.rooms[creep.room.name];
 
-        if (Game.time % 5 == 0) {
-          flag.labs = [];
-          for (x of RESOURCES_ALL) {
-            if (resourceInStorage(x) > needed) {
-              flag.labs.push(x);
-              break;
-            }
-          }
-        }
-
-        console.log(creep.room.name)
         if (creep.memory.working === true) {
             let start1 = Game.cpu.getUsed()
             if (Game.getObjectById(creep.memory.targetId) == null) {
               if (creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES) == null) {
-                //creep.suicide();
+                flag.constructions = {};
+                creep.suicide();
               }
               else {
                 creep.memory.targetId = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES).id
