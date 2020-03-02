@@ -979,11 +979,6 @@ module.exports.loop = function() {
                         }
                     }
 
-                    function resourceInStorage(resource) {
-                      //room = creep.room.name;
-                      return Game.rooms[roomName].storage.store.getUsedCapacity(resource);
-                    }
-
                     if (Game.time % 2500 == 0) {
                         flag.sources = room.find(FIND_SOURCES);
                         flag.mineral = room.find(FIND_MINERALS);
@@ -993,14 +988,6 @@ module.exports.loop = function() {
                     }
                     if (Game.time % 250 == 0) {
                         flag.constructions = room.find(FIND_CONSTRUCTION_SITES);
-                    }
-                    if (Game.time % 25 == 0) {
-                      for (x of RESOURCES_ALL) {
-                        if (resourceInStorage(x) < 10000) {
-                          flag.labs = {};
-                          Memory.flags["E44N3"].labs.push(x);
-                        }
-                      }
                     }
                     if (Game.time % 25 == 0) {
                         flag.enemy = room.find(FIND_HOSTILE_CREEPS);
