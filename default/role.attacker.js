@@ -10,6 +10,7 @@ module.exports = {
             }
         }
         else {
+          if (creep.pos.inRangeTo(creep.room.controller,2) == true)
             creep.travelTo(creep.room.controller)
         }
     }
