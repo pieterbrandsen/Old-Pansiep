@@ -1,17 +1,6 @@
 
 
-/*
-Game.spawns["E43N3-2"].spawnCreep(
-    [MOVE,CARRY],
-'Test',
-{
-    memory: {
-        role: 'scientist1',
-        working: false,
-        room: "E43N3",
-    }
-});
-*/
+
 
 
 
@@ -30,3 +19,14 @@ Memory.stats['test.cpu.avg10.test2'] = 0.9 * Memory.stats['test.cpu.avg10.test2'
 Memory.stats['test.cpu.avg100.test2'] = 0.99 * Memory.stats['test.cpu.avg100.test2'] + 0.01 * Memory.stats['test.cpu.avg.test2'];
 Memory.stats['test.cpu.avg1000.test2'] = 0.999 * Memory.stats['test.cpu.avg1000.test2'] + 0.001 * Memory.stats['test.cpu.avg.test2'];
 console.log(Memory.stats['test.cpu.avg100.test2'] + ": Test 2")
+
+Game.spawns["E43N3-2"].spawnCreep(
+    [CARRY,MOVE],
+'TEST1',
+{
+    memory: {
+        role: 'scientist1',
+        working: false,
+        room: "E43N3",
+    }
+});
