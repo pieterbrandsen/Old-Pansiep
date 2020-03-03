@@ -37,7 +37,7 @@ const roleClaimer = require('role.claimer');
 const roleReserver = require('role.reserver');
 
 
-const roleScientist = require('role.scientist');
+const roleScientist = require('role.scientist2');
 
 const roleScout = require('role.scout');
 
@@ -984,7 +984,7 @@ module.exports.loop = function() {
                         flag.mineral = room.find(FIND_MINERALS);
                     }
                     if (Game.time % 10000 == 0) {
-                        //creep.signController(creep.room.controller,"Please learn me this game, im bad")
+                        creep.signController(creep.room.controller,"Please learn me this game, im bad")
                     }
                     if (Game.time % 250 == 0) {
                         flag.constructions = room.find(FIND_CONSTRUCTION_SITES);

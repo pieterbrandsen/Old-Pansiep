@@ -1,6 +1,17 @@
 
 
-
+/*
+Game.spawns["E43N3-2"].spawnCreep(
+    [MOVE,CARRY],
+'Test',
+{
+    memory: {
+        role: 'scientist1',
+        working: false,
+        room: "E43N3",
+    }
+});
+*/
 
 
 

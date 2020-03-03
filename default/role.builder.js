@@ -24,7 +24,6 @@ module.exports = {
             let start1 = Game.cpu.getUsed()
             if (Game.getObjectById(creep.memory.targetId) == null) {
               if (creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES) == null) {
-                flag.constructions = {};
                 creep.suicide();
               }
               else {

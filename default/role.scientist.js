@@ -878,7 +878,7 @@ module.exports = {
             if (needsResource(resource3, flagNeededBase) && Game.flags.GHODIUM === undefined) {creep.room.createFlag(10,10, 'GHODIUM')}
             if (storageGHODIUM > flagNeededBase && Game.flags.GHODIUM !== undefined && Game.flags.GHODIUM.room === creep.room) {Game.flags.GHODIUM.remove()}
             if (needsResource(resource3, flagNeededBase) && Game.flags.GHODIUM !== undefined && Game.flags.GHODIUM.room === creep.room) {
-
+            
             //WRONG CREEP
             if (_.sum(creep.carry) > 0 && creep.carry[resource]  === 0 && creep.carry[resource2] === 0) {
                 for (x of RESOURCES_ALL) {
