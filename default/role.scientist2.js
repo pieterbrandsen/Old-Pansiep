@@ -144,7 +144,7 @@ module.exports = {
         }
       }
 
-      creep.memory.test = RESOURCES_ALL
+      creep.memory.test = REACTIONS
 
       console.log(RESOURCES_ALL.length)
 
