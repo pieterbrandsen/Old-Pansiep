@@ -955,7 +955,7 @@ module.exports.loop = function() {
             }
 
             _.forEach(Object.keys(Game.rooms), function (roomName) {
-                let room = Game.rooms[roomNaame];
+                let room = Game.rooms[roomName];
                 let controller = room.controller;
                 let flag = Memory.flags[roomName];
                 if (controller && controller.my) {
