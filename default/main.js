@@ -955,7 +955,7 @@ module.exports.loop = function() {
             }
 
             _.forEach(Object.keys(Game.rooms), function (roomName) {
-                let room = Game.rooms[roomName];
+                let room = Game.rooms[roomNaame];
                 let controller = room.controller;
                 let flag = Memory.flags[roomName];
                 if (controller && controller.my) {
@@ -983,9 +983,9 @@ module.exports.loop = function() {
                         flag.sources = room.find(FIND_SOURCES);
                         flag.mineral = room.find(FIND_MINERALS);
                     }
-                    if (Game.time % 10000 == 0) {
-                        creep.signController(creep.room.controller,"Please learn me this game, im bad")
-                    }
+                    // if (Game.time % 10000 == 0) {
+                    //     creep.signController(creep.room.controller,"Please learn me this game, im bad")
+                    // }
                     if (Game.time % 250 == 0) {
                         flag.constructions = room.find(FIND_CONSTRUCTION_SITES);
                     }
