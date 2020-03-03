@@ -25,6 +25,7 @@ module.exports = {
       let inputLabs = [];
       let outputLabs = [];
       let labs = creep.room.find(FIND_MY_STRUCTURES, {structureType: STRUCTURE_LAB});
+
       if (creepMemory.labsFinal.length < 10)
       {
         for (lab of labs)
