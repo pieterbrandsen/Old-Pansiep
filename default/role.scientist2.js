@@ -45,58 +45,57 @@ module.exports = {
         }
       }
 
-      if (creepMemory.labsFinal.length == null) {
+      if (creepMemory.labsFinal.length == 0) {
         let finalArray = inputLabs.concat(outputLabs)
         creepMemory.labsFinal = finalArray
       }
 
-      let lab1 = Game.getObjectById(creep.memory.lab1);
-      let lab2 = Game.getObjectById(creep.memory.lab2);
-      let lab3 = Game.getObjectById(creep.memory.lab3);
-      let lab4 = Game.getObjectById(creep.memory.lab4);
-      let lab5 = Game.getObjectById(creep.memory.lab5);
-      let lab6 = Game.getObjectById(creep.memory.lab6);
-      let lab7 = Game.getObjectById(creep.memory.lab7);
-      let lab8 = Game.getObjectById(creep.memory.lab8);
-      let lab9 = Game.getObjectById(creep.memory.lab9);
-      let lab10 = Game.getObjectById(creep.memory.lab10);
-
-      let lab1MineralAmount = lab1.mineralAmount;
-      let lab2MineralAmount = lab2.mineralAmount;
-      let lab3MineralAmount = lab3.mineralAmount;
-      let lab4MineralAmount = lab4.mineralAmount;
-      let lab5MineralAmount = lab1.mineralAmount;
-      let lab6MineralAmount = lab6.mineralAmount;
-      let lab7MineralAmount = lab7.mineralAmount;
-      let lab8MineralAmount = lab8.mineralAmount;
-      let lab9MineralAmount = lab9.mineralAmount;
-      let lab10MineralAmount = lab10.mineralAmount;
-
-      lab3.runReaction(lab1, lab2);
-      lab4.runReaction(lab1, lab2);
-      lab5.runReaction(lab1, lab2);
-      lab6.runReaction(lab1, lab2);
-      lab7.runReaction(lab1, lab2);
-      lab8.runReaction(lab1, lab2);
-      lab9.runReaction(lab1, lab2);
-      lab10.runReaction(lab1, lab2);
-
-      let labMin = Math.min(lab1MineralAmount,lab2MineralAmount,lab3MineralAmount,lab4MineralAmount,lab5MineralAmount,lab6MineralAmount,lab7MineralAmount,lab8MineralAmount,lab9MineralAmount,lab10MineralAmount);
-      if (creep.ticksToLive < 50 && _.sum(creep.carry) === 0) {
-          creep.suicide()
-      }
+      // let lab1 = Game.getObjectById(creep.memory.lab1);
+      // let lab2 = Game.getObjectById(creep.memory.lab2);
+      // let lab3 = Game.getObjectById(creep.memory.lab3);
+      // let lab4 = Game.getObjectById(creep.memory.lab4);
+      // let lab5 = Game.getObjectById(creep.memory.lab5);
+      // let lab6 = Game.getObjectById(creep.memory.lab6);
+      // let lab7 = Game.getObjectById(creep.memory.lab7);
+      // let lab8 = Game.getObjectById(creep.memory.lab8);
+      // let lab9 = Game.getObjectById(creep.memory.lab9);
+      // let lab10 = Game.getObjectById(creep.memory.lab10);
+      //
+      // let lab1MineralAmount = lab1.mineralAmount;
+      // let lab2MineralAmount = lab2.mineralAmount;
+      // let lab3MineralAmount = lab3.mineralAmount;
+      // let lab4MineralAmount = lab4.mineralAmount;
+      // let lab5MineralAmount = lab1.mineralAmount;
+      // let lab6MineralAmount = lab6.mineralAmount;
+      // let lab7MineralAmount = lab7.mineralAmount;
+      // let lab8MineralAmount = lab8.mineralAmount;
+      // let lab9MineralAmount = lab9.mineralAmount;
+      // let lab10MineralAmount = lab10.mineralAmount;
+      //
+      // lab3.runReaction(lab1, lab2);
+      // lab4.runReaction(lab1, lab2);
+      // lab5.runReaction(lab1, lab2);
+      // lab6.runReaction(lab1, lab2);
+      // lab7.runReaction(lab1, lab2);
+      // lab8.runReaction(lab1, lab2);
+      // lab9.runReaction(lab1, lab2);
+      // lab10.runReaction(lab1, lab2);
+      //
+      // let labMin = Math.min(lab1MineralAmount,lab2MineralAmount,lab3MineralAmount,lab4MineralAmount,lab5MineralAmount,lab6MineralAmount,lab7MineralAmount,lab8MineralAmount,lab9MineralAmount,lab10MineralAmount);
+      // if (creep.ticksToLive < 50 && _.sum(creep.carry) === 0) {
+      //     creep.suicide()
+      // }
 
       //LAB CODE
-      let room;
+      let room = creep.room.name;
 
       //MINERALS
-      let possbileReactions = {RESOURCE_HYDROXIDE,RESOURCE_ZYNTHIUM_KEANITE,RESOURCE_UTRIUM_LEMERGITE,RESOURCE_GHODIUM,
+      let possbileReactions = [RESOURCE_HYDROXIDE,RESOURCE_ZYNTHIUM_KEANITE,RESOURCE_UTRIUM_LEMERGITE,RESOURCE_GHODIUM,
         RESOURCE_UTRIUM_HYDRIDE,RESOURCE_UTRIUM_OXIDE,RESOURCE_KEANIUM_HYDRIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_LEMERGIUM_HYDRIDE,RESOURCE_LEMERGIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_ZYNTHIUM_OXIDE,RESOURCE_GHODIUM_HYDRIDE,RESOURCE_GHODIUM_OXIDE,
         RESOURCE_UTRIUM_ACID,RESOURCE_UTRIUM_ALKALIDE,RESOURCE_KEANIUM_ACID,RESOURCE_KEANIUM_ALKALIDE,RESOURCE_LEMERGIUM_ACID,RESOURCE_LEMERGIUM_ALKALIDE,RESOURCE_ZYNTHIUM_ACID,RESOURCE_ZYNTHIUM_ALKALIDE,RESOURCE_GHODIUM_ACID,RESOURCE_GHODIUM_ALKALIDE,
-        RESOURCE_CATALYZED_UTRIUM_ACID,RESOURCE_CATALYZED_UTRIUM_ALKALIDE,RESOURCE_CATALYZED_KEANIUM_ACID,RESOURCE_CATALYZED_KEANIUM_ALKALIDE,RESOURCE_CATALYZED_LEMERGIUM_ACID,RESOURCE_CATALYZED_LEMERGIUM_ALKALIDE,RESOURCE_CATALYZED_ZYNTHIUM_ACID,RESOURCE_CATALYZED_ZYNTHIUM_ALKALIDE,RESOURCE_CATALYZED_GHODIUM_ACID,RESOURCE_CATALYZED_GHODIUM_ALKALIDE};
+        RESOURCE_CATALYZED_UTRIUM_ACID,RESOURCE_CATALYZED_UTRIUM_ALKALIDE,RESOURCE_CATALYZED_KEANIUM_ACID,RESOURCE_CATALYZED_KEANIUM_ALKALIDE,RESOURCE_CATALYZED_LEMERGIUM_ACID,RESOURCE_CATALYZED_LEMERGIUM_ALKALIDE,RESOURCE_CATALYZED_ZYNTHIUM_ACID,RESOURCE_CATALYZED_ZYNTHIUM_ALKALIDE,RESOURCE_CATALYZED_GHODIUM_ACID,RESOURCE_CATALYZED_GHODIUM_ALKALIDE];
 
       //VARIABLES
-      room = creep.room.name;
 
       function resourceInStorage(resource) {
         room = creep.room.name;
@@ -118,7 +117,7 @@ module.exports = {
       let resource2;
       let resource3;
 
-      let flag = Memory.flags[roomName];
+      let flag = Memory.flags[room];
 
       let needed = 10000;
       let base = 5000;
@@ -135,19 +134,22 @@ module.exports = {
 
       let x;
 
-      if (Game.time % 5 == 0) {
+      if (Game.time % 2500 == 0) {
         flag.reactionsNeeded = [];
 
         for (let i = 0;i < possbileReactions.length; i++) {
           if (resourceInStorage(possbileReactions[i]) < needed) {
-            flag.labs.push(possbileReactions[i]);
+            flag.reactionsNeeded.push(possbileReactions[i]);
           }
         }
-        console.log(flag.reactionsNeeded.length)
       }
 
+      creep.memory.test = RESOURCES_ALL
 
-      /*if (flag.labs[0].length > 0) {
+      console.log(RESOURCES_ALL.length)
+
+
+      if (flag.labs[0].length > 99999999) {
 
         if (resourceInStorage(flag.labs[0] > needed)) {
             flag.labs.splice(0,1);
@@ -370,7 +372,7 @@ module.exports = {
                       }
                   }
               }
-          }*/
+          }
       }
   }
 };
