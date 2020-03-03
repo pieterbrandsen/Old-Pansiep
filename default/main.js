@@ -1674,18 +1674,6 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("upgrader1", roomName, 1) && spawn[0] !== undefined) {
-                                spawn[0].spawnCreep(
-                                    upgraderCo,
-                                'Upgrader' + Game.time,
-                                {
-                                    memory: {
-                                        role: 'upgrader1',
-                                        working: false,
-                                        room: roomName
-                                    }
-                                });
-                            }
                             else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
                                 spawn[0].spawnCreep(
                                     builderCo,
@@ -1693,6 +1681,18 @@ module.exports.loop = function() {
                                 {
                                     memory: {
                                         role: 'builder1',
+                                        working: false,
+                                        room: roomName
+                                    }
+                                });
+                            }
+                            else if (needsCreeps("upgrader1", roomName, 1) && spawn[0] !== undefined) {
+                                spawn[0].spawnCreep(
+                                    upgraderCo,
+                                'Upgrader' + Game.time,
+                                {
+                                    memory: {
+                                        role: 'upgrader1',
                                         working: false,
                                         room: roomName
                                     }
