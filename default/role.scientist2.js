@@ -149,7 +149,7 @@ module.exports = {
       console.log(RESOURCES_ALL.length)
 
 
-      if (flag.labs[0].length > 99999999) {
+      if (flag.reactionsNeeded.length > 99999999 && creepMemory.labsFinal == 10) {
 
         if (resourceInStorage(flag.labs[0] > needed)) {
             flag.labs.splice(0,1);
