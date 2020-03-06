@@ -30,10 +30,16 @@ module.exports = {
             });
             let target2Test = creep.pos.findClosestByRange(creep.room.containers, {
                 filter: (structure) => {
-                    return (structure.pos.inRangeTo(creep.room.controller, 7));
+                    return (structure.pos.inRangeTo(creep.room.controller, 10));
                 }
             });
-
+            if (_.size(creep.memory.container2) == 0 || Game.time % 5 == 0) {
+                creep.memory.container2 = creep.pos.findClosestByRange(creep.room.containers, {
+                    filter: (structure) => {
+                        return (structure.pos.inRangeTo(creep.room.controller, 10));
+                    }
+                });
+            }
             if (target !== null) {
                 if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.travelTo(target)
@@ -75,7 +81,7 @@ module.exports = {
                 if (_.size(creep.memory.container) == 0|| Game.time % 25 == 0) {
                     creep.memory.container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                         filter: (structure) => {
-                            return (structure.structureType === STRUCTURE_CONTAINER && !structure.pos.inRangeTo(creep.room.controller, 5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.carryCapacity);
+                            return (structure.structureType === STRUCTURE_CONTAINER && !structure.pos.inRangeTo(creep.room.controller, 5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 500);
                         }
                     });
                 }

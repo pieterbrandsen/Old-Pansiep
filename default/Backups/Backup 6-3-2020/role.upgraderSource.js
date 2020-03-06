@@ -38,11 +38,11 @@ module.exports = {
             if (_.size(creep.memory.container2) == 0|| Game.time % 250 == 0) {
                 creep.memory.container2 = creep.pos.findClosestByRange(creep.room.containers, {
                     filter: (structure) => {
-                        return (structure.structureType === STRUCTURE_CONTAINER);
+                        return (structure.structureType === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 500);
                     }
                 });
             }
-
+            
             if (creep.room.links.length > 2) {
                 let link = Game.getObjectById(creep.memory.link.id);
 

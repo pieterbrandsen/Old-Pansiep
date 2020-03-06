@@ -37,7 +37,7 @@ const roleClaimer = require('role.claimer');
 const roleReserver = require('role.reserver');
 
 
-const roleScientist = require('role.scientist');
+const roleScientist = require('role.scientist2');
 
 const roleScout = require('role.scout');
 
@@ -1076,8 +1076,6 @@ module.exports.loop = function() {
                         let normalDirections = [TOP_LEFT,LEFT,BOTTOM_LEFT,BOTTOM,BOTTOM_RIGHT];
                         let transfererDirections = [TOP_RIGHT];
 
-                        let totalEnergy = room.energyCapacityAvailable;
-
                         let spawn2 = room.spawns[1]
                         let spawn = room.find(FIND_MY_SPAWNS, {
                             filter: (structure) => {
@@ -1126,7 +1124,7 @@ module.exports.loop = function() {
                         }
 
 
-                        if (controller.level == 1) {
+                        if (controller.level >= 1 && controller.level <= 2 && extension >= 0 && spawn[0] !== undefined) {
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"
@@ -1222,7 +1220,7 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("repairerSo1", roomName, 2) && sources[1] !== undefined && room.towers.length == 0) {
+                            else if (needsCreeps("repairerSo1", roomName, 2) && sources[1] !== undefined) {
                                 spawn[0].spawnCreep(
                                     [MOVE,
                                     WORK, WORK,
@@ -1243,7 +1241,7 @@ module.exports.loop = function() {
 
 
 
-                        else if (spawn[0] !== undefined && controller.level == 2) {
+                        else if (controller.level >= 2 && controller.level <= 3 && extension >= 5 && extension < 10 && spawn[0] !== undefined) {
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"
@@ -1393,7 +1391,7 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("repairer1", roomName, 2) && spawn[0] !== undefined && room.towers.length == 0) {
+                            else if (needsCreeps("repairer1", roomName, 2) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
                                     repairerCo,
                                 'Repairer' + Game.time,
@@ -1411,7 +1409,7 @@ module.exports.loop = function() {
 
 
 
-                        else if (spawn[0] !== undefined && controller.level == 3) {
+                        else if (controller.level >= 3 && controller.level <= 4 && extension >= 10 && extension < 20 && spawn[0] !== undefined) {
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"
@@ -1519,18 +1517,6 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
-                                spawn[0].spawnCreep(
-                                    builderCo,
-                                'Builder' + Game.time,
-                                {
-                                    memory: {
-                                        role: 'builder1',
-                                        working: false,
-                                        room: roomName
-                                    }
-                                });
-                            }
                             else if (needsCreeps("upgrader1", roomName, 1) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
                                     upgraderCo,
@@ -1555,8 +1541,20 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
+                            else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
+                                spawn[0].spawnCreep(
+                                    builderCo,
+                                'Builder' + Game.time,
+                                {
+                                    memory: {
+                                        role: 'builder1',
+                                        working: false,
+                                        room: roomName
+                                    }
+                                });
+                            }
                         }
-                        else if (spawn[0] !== undefined && controller.level == 4) {
+                        else if (controller.level >= 4 && controller.level <= 5 && extension >= 20 && extension < 30 && spawn[0] !== undefined) {
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"
@@ -1573,12 +1571,9 @@ module.exports.loop = function() {
                             upgraderCo = [MOVE,MOVE,MOVE,MOVE,MOVE,
                                             WORK,WORK,WORK,WORK,WORK,
                                             CARRY,CARRY]; "850 Energy"
-                                            builderCo = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
-                                                            WORK,WORK,WORK,
-                                                            CARRY,CARRY,CARRY,CARRY]; "800 Energy"
-                            // builderCo = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
-                            //                 WORK,WORK,WORK,WORK,WORK,
-                            //                 CARRY,CARRY,CARRY,CARRY,CARRY]; "1000 Energy"
+                            builderCo = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
+                                            WORK,WORK,WORK,WORK,WORK,
+                                            CARRY,CARRY,CARRY,CARRY,CARRY]; "1000 Energy"
 
                             harvester = spawn[0].spawnCreep(
                                 harvesterCo,
@@ -1679,18 +1674,6 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
-                            else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
-                                spawn[0].spawnCreep(
-                                    builderCo,
-                                'Builder' + Game.time,
-                                {
-                                    memory: {
-                                        role: 'builder1',
-                                        working: false,
-                                        room: roomName
-                                    }
-                                });
-                            }
                             else if (needsCreeps("upgrader1", roomName, 1) && spawn[0] !== undefined) {
                                 spawn[0].spawnCreep(
                                     upgraderCo,
@@ -1703,8 +1686,20 @@ module.exports.loop = function() {
                                     }
                                 });
                             }
+                            else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
+                                spawn[0].spawnCreep(
+                                    builderCo,
+                                'Builder' + Game.time,
+                                {
+                                    memory: {
+                                        role: 'builder1',
+                                        working: false,
+                                        room: roomName
+                                    }
+                                });
+                            }
                         }
-                        else if (spawn[0] !== undefined && controller.level == 5) {
+                        else if (controller.level >= 5 && controller.level <= 6 && extension >= 30 && extension < 40 && spawn[0] !== undefined) {
 
                             harvesterSo = [MOVE,
                                             WORK,WORK,
@@ -1863,7 +1858,7 @@ module.exports.loop = function() {
                                 });
                             }
                         }
-                        else if (spawn[0] !== undefined && controller.level == 6) {
+                        else if (controller.level >= 6 && controller.level <= 7 && extension >= 40 && spawn.length >= 1 && spawn[0] !== undefined) {
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"
@@ -2030,7 +2025,7 @@ module.exports.loop = function() {
                                 });
                             }
                         }
-                        else if ((extension >= 50 && spawn.length >= 2 && spawn[0] !== undefined) || spawn[0] !== undefined && controller.level == 7) {
+                        else if (controller.level >= 7 && controller.level <= 8 && extension >= 50 && spawn.length == 2 && spawn[0] !== undefined) {
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"
@@ -2197,7 +2192,7 @@ module.exports.loop = function() {
                                 });
                             }
                         }
-                        else if ((extension > 50 && spawn.length >= 3 && spawn[0] !== undefined) || spawn[0] !== undefined && controller.level == 8) {
+                        else if (controller.level == 8 && extension > 50 && spawn.length >= 3 && spawn[0] !== undefined) {
                             harvesterSo = [MOVE,
                                             WORK,WORK,
                                             CARRY]; "300 Energy"

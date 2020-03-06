@@ -16,9 +16,15 @@ module.exports = {
             creep.memory.container2 = {}
         }
         if (creep.memory.working === true) {
-            if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-                creep.travelTo(creep.room.controller)
+            let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (s) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL && s.structureType !== STRUCTURE_RAMPART
+            });
+            if (target !== undefined) {
+                if (creep.repair(target) === ERR_NOT_IN_RANGE) {
+                    creep.travelTo(target)
+                }
             }
+            else {creep.memory.working = false}
         }
         else if (creep.memory.working === false) {
             if (_.size(creep.memory.link) == 0|| Game.time % 250 == 0) {
@@ -38,11 +44,11 @@ module.exports = {
             if (_.size(creep.memory.container2) == 0|| Game.time % 250 == 0) {
                 creep.memory.container2 = creep.pos.findClosestByRange(creep.room.containers, {
                     filter: (structure) => {
-                        return (structure.structureType === STRUCTURE_CONTAINER);
+                        return (structure.structureType === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 500);
                     }
                 });
             }
-
+            
             if (creep.room.links.length > 2) {
                 let link = Game.getObjectById(creep.memory.link.id);
 
@@ -75,7 +81,7 @@ module.exports = {
                     creep.travelTo(target)
                 }
             }
-            else {Game.notify("ERR: This room's Upgrader cant Withdraw (" + creep.room.name + ")!")}
+            else {Game.notify("ERR: This room's Repairer cant Withdraw (" + creep.room.name + ")!")}
         }
     }
 };
