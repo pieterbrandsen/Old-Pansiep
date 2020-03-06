@@ -1040,6 +1040,10 @@ module.exports.loop = function() {
                   //   }
                   // });
 
+                  if (Game.time % 1000 == 0) {
+                    flag.transfererMode == "";
+                  }
+
 
 
 

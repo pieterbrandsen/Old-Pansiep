@@ -16,6 +16,7 @@ module.exports = {
             creep.memory.container2 = {}
         }
 
+
         function needsCreeps(role, numbers) {
             let numberOfCreeps = _.sum(Game.creeps, (c) => c.memory.role === role && c.memory.room === creep.room.name);
             return numberOfCreeps < numbers
