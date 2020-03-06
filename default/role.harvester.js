@@ -85,3 +85,136 @@ module.exports = {
         }
     }
 };
+
+module.exports = {
+  run: function(creep) {
+    // Set Working State
+    let creepCarryCapacity = creep.store.getCapacity();
+    let creepCarryUsedCapacity = creep.store.getUsedCapacity();
+    if (creep.memory.working === true && creepCarryUsedCapacity === 0) {
+      creep.memory.working = false;
+    }
+    else if (creep.memory.working === false && creepCarryUsedCapacity == creepCarryCapacity) {
+      creep.memory.working = true;
+    }
+
+    let flag = Memory.flags[creep.room.name];
+    function needsCreeps(role, numbers) {
+        let numberOfCreeps = _.sum(Game.creeps, (c) => c.memory.role === role && c.memory.room === creep.room.name);
+        return numberOfCreeps < numbers
+    }
+
+    // Create required Memory if empty
+    if (!creep.memory.link) {
+      creep.memory.link = ""
+    }
+    if (!creep.memory.container) {
+      creep.memory.container = ""
+    }
+    if (!creep.memory.container2) {
+        creep.memory.container2 = ""
+    }
+    if (!creep.memory.targetId) {
+      creep.memory.targetId = ""
+    }
+    if (!flag.transfererMode) {
+      flag.transfererMode = ""
+    }
+
+
+    if (creep.memory.working === false) {
+      // If creep has no target
+
+      if (creep.memory.sourceId !== undefined) {
+          let target = Game.getObjectById(creep.memory.sourceId);
+          if (target.energy > 0) {
+              if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
+                  creep.travelTo(target)
+              }
+          }
+      }
+      else {console.log("This creep has no source! - " + creep.room.name + " - " + creep.name)}
+      if (creep.memory.sourceId == null) {
+        // Assign sourceId
+        if (creep.memory.role.includes("1") == true) {
+          creep.memory.sourceId = flag.sources[0];
+        }
+        else if (creep.memory.role.includes("2") == true) {
+          creep.memory.sourceId = flag.sources[1];
+        }
+      }
+      // If creep has target
+      if (creep.memory.sourceId !== null) {
+        let target = Game.getObjectById(creep.memory.sourceId);
+        if (target.energy > 0) {
+            if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
+                creep.travelTo(target)
+            }
+        }
+      }
+    }
+    else if (creep.memory.working === true) {
+      let mode = flag.transfererMode;
+      let room = Game.rooms[creep.room.name];
+
+      // If creep has no main pickup goal
+      if (flag.transfererMode.length == 0) {
+        if (Game.rooms[creep.room.name].links.length > 0) {
+          flag.transfererMode = "link";
+        }
+        else if (Game.rooms[creep.room.name].containers.length > 0) {
+          flag.transfererMode = "container";
+        }
+        else {
+          flag.transfererMode = "source"
+        }
+      }
+      // If creep has main pickup goal
+      if (flag.transfererMode.length > 0) {
+        if (mode == "link") {
+          // If mode is link
+          let target = Game.getObjectById(creep.memory.link);
+
+          // If creep has no link
+          if (creep.memory.link.length == 0) {
+          }
+
+          // If creep has link
+          if (creep.memory.link.length > 0) {
+          }
+        }
+        else if (mode == "container") {
+          // If mode is container
+          let target = Game.getObjectById(creep.memory.container);
+
+          // If creep has no container
+          if (creep.memory.container.length == 0) {
+
+          }
+
+          // If creep has container
+          if (creep.memory.container.length > 0) {
+
+          }
+        }
+        else if (mode == "source") {
+
+        }
+      }
+      // If there are problems, get notified
+      else {
+        Game.notify("ERR: This room's " + creep.memory.role + " cant Withdraw (" + creep.room.name + ")!")
+      }
+    }
+    function needsCreeps(role, numbers) {
+        let numberOfCreeps = _.sum(Game.creeps, (c) => c.memory.role === role && c.memory.room === creep.room.name);
+        return numberOfCreeps < numbers
+    }
+    if (creep.memory.role == "harvesterSo1" && needsCreeps("harvester1",1) ==  false) {
+        creep.suicide();
+    }
+    if (creep.memory.role == "harvesterSo2" && needsCreeps("harvester2",1) ==  false) {
+        creep.suicide();
+    }
+  }
+};

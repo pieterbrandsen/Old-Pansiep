@@ -44,7 +44,7 @@ module.exports = {
                 && s.energy < s.energyCapacity
         }).id;
         // If there is no target
-        if (target == 0 && flag.upgraderMode == "container") {
+        if (target == null && flag.upgraderMode == "container") {
           // If creep has no controller container and there is still a container in range to controller
           if (creep.memory.container2.length == 0) {
             let i = 0;
@@ -63,10 +63,22 @@ module.exports = {
             let target2 = Game.getObjectById(creep.memory.container2);
 
             // Check first if enough energy to withdraw
-            if (target2.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
+            if (target2.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity && target2.store.getUsedCapacity(RESOURCE_ENERGY) < 1000) {
               if (creep.transfer(target2, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                   creep.travelTo(target2)
               }
+            }
+            else if (target2.store.getUsedCapacity(RESOURCE_ENERGY) > 1000 && creep.room.storage.length == 1) {
+              if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.travelTo(creep.room.storage)
+              }
+            }
+          }
+        }
+        else if (target == null && (flag.builderMode == "storage" || flag.repairerMode == "storage")) {
+          if (creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 50000) {
+            if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+              creep.travelTo(creep.room.storage)
             }
           }
         }
@@ -89,21 +101,21 @@ module.exports = {
       let room = Game.rooms[creep.room.name];
 
       // If creep has no main pickup goal
-      if (_.size(flag.transfererMode) == 0) {
-        if (Game.rooms[creep.room.name].terminal.length > 0) {
-          flag.builderMode = "terminal";
+      if (flag.transfererMode.length == 0) {
+        if (creep.room.terminal.length == 1) {
+          flag.transfererMode = "terminal";
         }
-        // else if (Game.rooms[creep.room.name].storage.length > 0 && _.size(Game.rooms[creep.room.name].terminal) == 0) {
-        //     flag.builderMode = "storage";
-        // }
+        else if (creep.room.storage.length == 1 && creep.room.terminal.length == 0 && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
+            flag.transfererMode = "storage";
+        }
         else if (Game.rooms[creep.room.name].links.length > 0) {
-          flag.builderMode = "link";
+          flag.transfererMode = "link";
         }
         else if (Game.rooms[creep.room.name].containers.length > 0) {
-          flag.builderMode = "container";
+          flag.transfererMode = "container";
         }
         else {
-          flag.builderMode = "source"
+          flag.transfererMode = "source"
         }
       }
       // If creep has main pickup goal
@@ -180,7 +192,7 @@ module.exports = {
               }).id;
             }
 
-            // If storage in target is enoughy
+            // If storage in target is enough
             if (target.store.energy > creepCarryCapacity) {
               if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.travelTo(target)
