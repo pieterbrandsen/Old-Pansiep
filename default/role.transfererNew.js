@@ -152,7 +152,7 @@ module.exports = {
           // If creep has link
           if (_.size(creep.memory.link) > 0) {
             // If storage in target is too low
-            if (target.store.energy < creepCarryCapacity && creep.room.links.length > 1 && Game.time % 25  == 0) {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) < creepCarryCapacity && creep.room.links.length > 1 && Game.time % 25  == 0) {
               creep.memory.link = creep.pos.findClosestByRange(creep.room.links, {
                 filter: (structure) => {
                   return (!structure.pos.inRangeTo(creep.room.link, 5) && !structure.pos.inRangeTo(creep.memory.link,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100);
@@ -161,7 +161,7 @@ module.exports = {
             }
 
             // If storage in target is enough and check if enough energy
-            if (target.store.energy > creepCarryCapacity) {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
               if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.travelTo(target)
               }
@@ -184,7 +184,7 @@ module.exports = {
           // If creep has container
           if (_.size(creep.memory.container) > 0) {
             // If storage in target is too low
-            if (target.store.energy < creepCarryCapacity && creep.room.containers.length > 1 && Game.time % 25  == 0) {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) < creepCarryCapacity && creep.room.containers.length > 1 && Game.time % 25  == 0) {
               creep.memory.container = creep.pos.findClosestByRange(creep.room.containers, {
                 filter: (structure) => {
                   return (!structure.pos.inRangeTo(creep.room.controller, 5) && !structure.pos.inRangeTo(creep.memory.container,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100);
@@ -193,7 +193,7 @@ module.exports = {
             }
 
             // If storage in target is enough
-            if (target.store.energy > creepCarryCapacity) {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
               if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.travelTo(target)
               }

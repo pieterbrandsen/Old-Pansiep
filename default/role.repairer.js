@@ -178,7 +178,7 @@ module.exports = {
           // If creep has link
           if (creep.memory.link.length > 0) {
             // If storage in target is enough and check if enough energy
-            if (target.store.energy > creepCarryCapacity) {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
               if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.travelTo(target)
               }
@@ -205,7 +205,7 @@ module.exports = {
           // If creep has container
           if (creep.memory.container.length > 0) {
             // If storage in target is enough and check if enough energy
-            if (target.store.energy > creepCarryCapacity) {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
               if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.travelTo(target)
               }

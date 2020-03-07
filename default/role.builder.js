@@ -30,6 +30,7 @@ module.exports = {
         // If there is no target
         if (creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES) == null) {
           creep.suicide();
+          flag.constructions = room.find(FIND_CONSTRUCTION_SITES);
         }
         // Else get new target
         else {

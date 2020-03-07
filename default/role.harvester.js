@@ -117,8 +117,11 @@ module.exports = {
     if (!creep.memory.targetId) {
       creep.memory.targetId = ""
     }
-    if (!flag.transfererMode) {
-      flag.transfererMode = ""
+    if (!flag.harvesterMode) {
+      flag.harvesterMode = ""
+    }
+    if (!creep.memory.harvesterMode) {
+      creep.memory.harvesterMode = ""
     }
 
 
@@ -154,51 +157,281 @@ module.exports = {
       }
     }
     else if (creep.memory.working === true) {
-      let mode = flag.transfererMode;
+      let mode = creep.memory.harvesterMode;
       let room = Game.rooms[creep.room.name];
+      let target = creep.memory.targetId;
+
 
       // If creep has no main pickup goal
-      if (flag.transfererMode.length == 0) {
-        if (Game.rooms[creep.room.name].links.length > 0) {
-          flag.transfererMode = "link";
+      if (flag.harvesterMode.length == 0) {
+
+        // Define variables
+        let source = Game.getObjectById(creep.memory.targetId)
+        let container = creep.pos.findClosestByRange(creep.room.containers, {
+            filter: (structure) => {
+                return (structure.pos.inRangeTo(source, 2));
+            }
+        });
+        let link = creep.pos.findClosestByRange(creep.room.links, {
+            filter: (structure) => {
+                return (structure.pos.inRangeTo(source, 2));
+            }
+        });
+
+        // If container is found
+        if (container !== null) {
+          flag.harvesterMode = "object";
+          creep.memory.targetId = creep.pos.findClosestByRange(creep.room.containers, {
+              filter: (structure) => {
+                  return (structure.pos.inRangeTo(source, 2));
+              }
+          }).id;
         }
-        else if (Game.rooms[creep.room.name].containers.length > 0) {
-          flag.transfererMode = "container";
+
+        // If link is found
+        else if (link !== null) {
+          flag.harvesterMode = "object";
+          creep.memory.targetId= creep.pos.findClosestByRange(creep.room.links, {
+              filter: (structure) => {
+                  return (structure.pos.inRangeTo(source, 2));
+              }
+          }).id;
         }
-        else {
-          flag.transfererMode = "source"
+        // If creep need to wait or build new object
+        else if (creep.room.controller.level >= 2) {
+          // Here check if creep needs link or wait
+          let amount;
+          let amount2;
+          function buildConstructionSite(input, source) {
+            let sourceObject = Game.getObjectById(source);
+            let structureType;
+            let x = sourceObject.pos.x;
+            let y = sourceObject.pos.y;
+            function createConstruction(structureType,x,y) {
+              if (creep.room.createConstructionSite(x,y,structureType) == 0) {
+                return true;
+              }
+              else {
+                return false;
+              }
+            }
+
+            if (input == "container") {
+              structureType = STRUCTURE_CONTAINER;
+            }
+            else if (input == "link") {
+              structureType = STRUCTURE_LINK;
+            }
+
+            if (createConstruction(structureType,x+1,y+1) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else if (createConstruction(structureType,x,y+1) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else if (createConstruction(structureType,x-1,y+1) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else if (createConstruction(structureType,x-1,y) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else if (createConstruction(structureType,x-1,y-1) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else if (createConstruction(structureType,x,y-1) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else if (createConstruction(structureType,x+1,y-1) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else if (createConstruction(structureType,x,y-1) == true) {
+              creep.room.createConstructionSite(x+1,y+1,structureType)
+              return true
+            }
+            else {
+              return false
+            }
+          }
+
+          if (creep.room.controller.level == 1) {
+            amount = 5;
+            if (creep.room.containers.length == amount && (needsCreeps("transferer1",1) ==  false || needsCreeps("transfererSo1",1) ==  false)) {
+              flag.harvesterMode = "source";
+              creep.memory.harvesterMode = "source";
+            }
+            else if (creep.room.containers.length < amount) {
+              buildConstructionSite("container",creep.memory.sourceId);
+              flag.harvesterMode = "build";
+              creep.memory.harvesterMode = "build";
+            }
+          }
+          else if (creep.room.controller.level == 2) {
+            amount = 5;
+            if (creep.room.containers.length == amount && (needsCreeps("transferer1",1) ==  false || needsCreeps("transfererSo1",1) ==  false)) {
+              flag.harvesterMode = "source";
+              creep.memory.harvesterMode = "source";
+            }
+            else if (creep.room.containers.length < amount) {
+              buildConstructionSite("container",creep.memory.sourceId);
+              flag.harvesterMode = "build";
+              creep.memory.harvesterMode = "build";
+            }
+          }
+          else if (creep.room.controller.level == 3) {
+            amount = 5;
+            if (creep.room.containers.length == amount && (needsCreeps("transferer1",1) ==  false || needsCreeps("transfererSo1",1) ==  false)) {
+              flag.harvesterMode = "source";
+              creep.memory.harvesterMode = "source";
+            }
+            else if (creep.room.containers.length < amount) {
+              buildConstructionSite("container",creep.memory.sourceId);
+              flag.harvesterMode = "build";
+              creep.memory.harvesterMode = "build";
+            }
+          }
+          if (creep.room.controller.level == 4) {
+            amount = 5;
+            if (creep.room.containers.length == amount && (needsCreeps("transferer1",1) ==  false || needsCreeps("transfererSo1",1) ==  false)) {
+              flag.harvesterMode = "source";
+              creep.memory.harvesterMode = "source";
+            }
+            else if (creep.room.containers.length < amount) {
+              buildConstructionSite("container",creep.memory.sourceId);
+              flag.harvesterMode = "build";
+              creep.memory.harvesterMode = "build";
+            }
+          }
+          else if (creep.room.controller.level == 5) {
+            amount = 2;
+            if (creep.room.links.length == amount && (needsCreeps("transferer1",1) ==  false || needsCreeps("transfererSo1",1) ==  false)) {
+              if (creep.room.containers.length < 5) {
+                buildConstructionSite("container",creep.memory.sourceId);
+                flag.harvesterMode = "build";
+                creep.memory.harvesterMode = "build";
+              }
+              else {
+              flag.harvesterMode = "source";
+              creep.memory.harvesterMode = "source";
+              }
+            }
+            else if (creep.room.links.length < amount) {
+              buildConstructionSite("link",creep.memory.sourceId);
+              flag.harvesterMode = "build";
+              creep.memory.harvesterMode = "build";
+            }
+          }
+          else if (creep.room.controller.level == 6) {
+            amount = 3;
+            if (creep.room.links.length == amount && (needsCreeps("transferer1",1) ==  false || needsCreeps("transfererSo1",1) ==  false)) {
+              if (creep.room.containers.length < 5) {
+                buildConstructionSite("container",creep.memory.sourceId);
+                flag.harvesterMode = "build";
+                creep.memory.harvesterMode = "build";
+              }
+              else {
+              flag.harvesterMode = "source";
+              creep.memory.harvesterMode = "source";
+              }
+            }
+            else if (creep.room.links.length < amount) {
+              buildConstructionSite("link",creep.memory.sourceId);
+              flag.harvesterMode = "build";
+              creep.memory.harvesterMode = "build";
+            }
+          }
+          else if (creep.room.controller.level >= 7) {
+            amount = 4;
+            if (creep.room.links.length == amount && (needsCreeps("transferer1",1) ==  false || needsCreeps("transfererSo1",1) ==  false)) {
+              if (creep.room.containers.length < 5) {
+                buildConstructionSite("container",creep.memory.sourceId);
+                flag.harvesterMode = "build";
+                creep.memory.harvesterMode = "build";
+              }
+              else {
+              flag.harvesterMode = "source";
+              creep.memory.harvesterMode = "source";
+              }
+            }
+            else if (creep.room.links.length < amount) {
+              buildConstructionSite("link",creep.memory.sourceId);
+              flag.harvesterMode = "build";
+              creep.memory.harvesterMode = "build";
+            }
+          }
+          else {
+            flag.harvesterMode = "source"
+            creep.memory.harvesterMode = "source";
+          }
         }
       }
       // If creep has main pickup goal
-      if (flag.transfererMode.length > 0) {
-        if (mode == "link") {
-          // If mode is link
-          let target = Game.getObjectById(creep.memory.link);
-
-          // If creep has no link
-          if (creep.memory.link.length == 0) {
+      if (flag.harvesterMode.length > 0) {
+        if (mode == "object") {
+          // Assign linkId for later transfering
+          if (target.structureType == link && creep.memory.role.includes("1") == true && creep.memory.link2 == undefined) {
+            creep.memory.link2 = target.id;
+          }
+          else if (target.structureType == link && creep.memory.role.includes("2") == true && creep.memory.link3 == undefined) {
+            creep.memory.link3 = target.id;
           }
 
-          // If creep has link
-          if (creep.memory.link.length > 0) {
+          // Go transfer
+          if (target.store.getUsedCapacity(RESOURCE_ENERGY) < target.store.getCapacity()) {
+            if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+              creep.travelTo(target)
+            }
           }
         }
-        else if (mode == "container") {
-          // If mode is container
-          let target = Game.getObjectById(creep.memory.container);
-
-          // If creep has no container
-          if (creep.memory.container.length == 0) {
-
+        else if (mode == "build") {
+          // If creep needs to build target
+          if (Game.getObjectById(creep.memory.targetId) == null) {
+            // If there is no target
+            let constructionSite = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
+              filter: (structure) => {
+                return (structure.pos.inRangeTo(source, 2));
+              }
+            }).id;
+            if (constructionSites == null) {
+              mode = ""
+              flag.constructions = room.find(FIND_CONSTRUCTION_SITES);
+            }
+            // Else get new target
+            else {
+              creep.memory.targetId = creep.pos.findInRange(FIND_CONSTRUCTION_SITES,2).id
+            }
           }
-
-          // If creep has container
-          if (creep.memory.container.length > 0) {
-
+          // If creep has target
+          if (Game.getObjectById(creep.memory.targetId) !== null) {
+            let target = Game.getObjectById(creep.memory.targetId)
+            if (creep.build(target) === ERR_NOT_IN_RANGE) {
+              creep.travelTo(target)
+            }
           }
         }
         else if (mode == "source") {
-
+          // If creep has no target
+          if (Game.getObjectById(creep.memory.targetId) == null) {
+            // If there is no target
+            creep.memory.targetId = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+              filter: (s) => (s.structureType === STRUCTURE_SPAWN
+              || s.structureType === STRUCTURE_EXTENSION)
+              && s.energy < s.energyCapacity
+            }).id;
+          }
+          // If creep has target
+          if (Game.getObjectById(creep.memory.targetId) !== null) {
+            let target = Game.getObjectById(creep.memory.targetId)
+            if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+              creep.travelTo(target)
+            }
+          }
         }
       }
       // If there are problems, get notified
@@ -206,10 +439,7 @@ module.exports = {
         Game.notify("ERR: This room's " + creep.memory.role + " cant Withdraw (" + creep.room.name + ")!")
       }
     }
-    function needsCreeps(role, numbers) {
-        let numberOfCreeps = _.sum(Game.creeps, (c) => c.memory.role === role && c.memory.room === creep.room.name);
-        return numberOfCreeps < numbers
-    }
+
     if (creep.memory.role == "harvesterSo1" && needsCreeps("harvester1",1) ==  false) {
         creep.suicide();
     }
