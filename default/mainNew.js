@@ -966,29 +966,23 @@ module.exports.loop = function() {
 
                 if (Game.flags[roomName] !== undefined) {
 
-                  // let harvester;
-                  // let transferer;
-                  //
-                  // let harvesterSo;
-                  // let harvesterCo;
-                  // let harvesterLi;
-                  //
-                  // let transfererSo;
-                  // let transfererCo;
-                  // let transfererLiTe;
-                  // let transfererTe;
-                  //
-                  // let attackerMelee;
-                  //
-                  // let upgraderSo;
-                  // let upgraderCo;
-                  // let upgraderLi;
-                  //
-                  // let builderSo;
-                  // let builderCo;
-                  // let builderTe;
-                  //
-                  // let repairerCo;
+                  let harvester;
+                  let transferer;
+
+                  let harvesterSo;
+
+                  let transfererSo;
+                  let transferer;
+                  let transfererLiTe;
+
+                  let attackerMelee;
+
+                  let upgraderSo;
+                  let upgrader;
+
+                  let builder;
+
+                  let repairer;
 
                   if (Game.time % 1000 == 0) {
                     flag.transfererMode == "";
@@ -1011,7 +1005,7 @@ module.exports.loop = function() {
                       }
                     });
 
-                    flag.sources = room.find(FIND_SOURCES);
+                    flag.sources = room.find(FIND_SOURCES).id;
                     flag.mineral = room.find(FIND_MINERALS);
                   }
 
@@ -1038,11 +1032,20 @@ module.exports.loop = function() {
 
 
                   let transfererSpawn = flag.transfererSpawn;
-                  let spawn = room.find(room.spawns, {
-                    filter: (structure) => {
-                      return (structure.structureType === STRUCTURE_SPAWN && structure.spawning == null);
+                  function getFirstOpenSpawn() {
+                    let freeSpawns = room.find(room.spawns, {
+                      filter: (structure) => {
+                        return (structure.spawning == null);
+                      }
+                    });
+
+                    if (freeSpawns.length > 0) {
+                      return freeSpawns[0];
                     }
-                  });
+                    return null;
+                  }
+
+
 
 
                   if (room.terminal !== undefined && Game.time % 250 == 0) {
@@ -1146,57 +1149,546 @@ module.exports.loop = function() {
                   }
 
 
-                  // SPANWING PART!!!
 
-                  if (spawn[0] !== undefined) {
-                    let random = "-" + Math.round(Math.random() * 100)
-                    if (totalEnergyCapacity == 300) {
-                      // Create work parts
+                  function harvesterSpawnCreep(spawn,parts,role,roomName,source) {
+                    let name = role + "-" + Math.round(Math.random() * 100)
+                    spawn.spawnCreep(
+                        parts,
+                    name,
+                    {
+                        memory: {
+                            role: role,
+                            working: false,
+                            sourceId: source,
+                            room: roomName,
 
-
-
-                      // Small or Big creep, if low energy small creep
-
-                      // Min controller is 1
-                      if (totalEnergyAvailable > 200 && totalEnergyAvailable <= 300) {
-                        harvesterSo = [MOVE,
-                                      WORK,
-                                      CARRY]; "200 Energy"
-
-                        if (needsCreeps("harvesterSo1", roomName, 1) && needsCreeps("harvester1", roomName, 1)) {
-                          spawn[0].spawnCreep(
-                          harvesterSo,
-                          'Harvester' + random,
-                          {
-                            memory: {
-                              role: 'harvesterSo1',
-                              working: false,
-                              sourceId: sources[0].id,
-                              room: roomName,
-                            }
-                          });
                         }
-                        else if (needsCreeps("harvesterSo2", roomName, 1) && needsCreeps("harvester2", roomName, 1) && sources[1] !== undefined) {
-                          spawn[0].spawnCreep(
-                          harvesterSo,
-                          'Harvester' + random,
-                          {
-                            memory: {
-                              role: 'harvesterSo2',
-                              working: false,
-                              sourceId: sources[0].id,
-                              room: roomName,
-                            }
-                          });
-                        }
-                      }
-                      // Min controller is 2
-                      if (totalEnergyAvailable > 200 && totalEnergyAvailable <= 300) {
+                    });
+                  }
+                  function normalCreepsSpawnCreep(spawn,parts,role,roomName) {
+                    let name = role + "-" + Math.round(Math.random() * 100)
+                    spawn.spawnCreep(
+                        parts,
+                    name,
+                    {
+                        memory: {
+                            working: false,
+                            role: role,
+                            room: roomName,
 
-                      }
-                    }
+                        }
+                    });
                   }
 
+
+
+                  // SPANWING PART!!!
+                  let spawn = getFirstOpenSpawn()
+                  let source1 = sources[0];
+                  let source2 = sources[1];
+                  if (spawn) {
+                      // Small or Big creep, if low energy small creep
+
+
+                      harvesterSo = [MOVE,
+                                    WORK,
+                                    CARRY]; "200 Energy"
+
+
+                      // Min controller is 1
+                      if (totalEnergyAvailable > 200 && totalEnergyAvailable < 300) {
+                        if (needsCreeps("harvesterSo1", roomName, 3)) {
+                          harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                        }
+                        else if (needsCreeps("harvesterSo2", roomName, 3) && sources[1] !== undefined) {
+                          harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                        }
+                      }
+
+
+                      harvesterSo = [MOVE,
+                                    WORK,WORK,
+                                    CARRY]; "300 Energy"
+                      transfererSo = [MOVE,MOVE,MOVE,
+                                    CARRY,CARRY,CARRY]; "300 Energy"
+                      builder = [MOVE,MOVE,
+                                WORK,
+                                CARRY,CARRY]; "300 Energy"
+                      builder = [MOVE,MOVE,
+                                WORK,
+                                CARRY,CARRY]; "300 Energy"
+                      repairer = [MOVE,MOVE,
+                                WORK,
+                                CARRY,CARRY]; "300 Energy"
+                      upgrader = [MOVE,MOVE,
+                                WORK,
+                                CARRY,CARRY]; "300 Energy"
+
+
+                      // Min controller is 1
+                      if (totalEnergyAvailable == 300) {
+                        if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                          normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                        }
+                        else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                          harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                        }
+                        else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                          harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                        }
+                        else if (needsCreeps("harvester1", roomName, 2)) {
+                          harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        }
+                        else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                          harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        }
+                        else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                          normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                        }
+                        else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                          normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                        }
+                        else if (needsCreeps("upgrader1", roomName, 3)) {
+                          normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                        }
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,
+                                  CARRY]; "300 Energy"
+                    transferer = [MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY]; "300 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,
+                              CARRY]; "300 Energy"
+                    builder = [MOVE,MOVE,
+                              WORK,
+                              CARRY,CARRY]; "300 Energy"
+                    repairer = [MOVE,MOVE,
+                              WORK,
+                              CARRY,CARRY]; "300 Energy"
+
+
+
+                    // Min controller is 2
+                    if (totalEnergyCapacity > 300 && totalEnergyCapacity < 400) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 3)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 3) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 3)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,
+                                  CARRY]; "400 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY]; "400 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,
+                              CARRY]; "400 Energy"
+                    builder = [MOVE,MOVE,MOVE,
+                              WORK,
+                              CARRY,CARRY]; "400 Energy"
+                    repairer = [MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY]; "400 Energy"
+
+
+                    // Min controller is 2
+                    if (totalEnergyCapacity >= 400 && totalEnergyCapacity < 500) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 2)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,
+                                  CARRY]; "500 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY]; "500 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,
+                              CARRY]; "500 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,
+                              WORK,
+                              CARRY,CARRY,CARRY]; "500 Energy"
+                    repairer = [MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY]; "500 Energy"
+
+
+                    // Min controller is 2
+                    if (totalEnergyCapacity >= 500 && totalEnergyCapacity < 600) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 2)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,WORK,
+                                  CARRY]; "600 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]; "600 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK,
+                              CARRY]; "600 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY]; "600 Energy"
+                    repairer = [MOVE,MOVE,MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY]; "600 Energy"
+
+
+                    // Min controller is 2
+                    if (totalEnergyCapacity >= 600 && totalEnergyCapacity < 700) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,
+                                  CARRY]; "500 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY]; "500 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,
+                              CARRY]; "500 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,
+                              WORK,
+                              CARRY,CARRY,CARRY]; "450 Energy"
+                    repairer = [MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY]; "500 Energy"
+
+
+                    // Min controller is 2
+                    if (totalEnergyCapacity >= 500 && totalEnergyCapacity < 600) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 2)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,WORK,
+                                  CARRY]; "500 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]; "500 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK,
+                              CARRY]; "500 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY]; "500 Energy"
+                    repairer = [MOVE,MOVE,MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY]; "500 Energy"
+
+
+                    // Min controller is 2
+                    if (totalEnergyCapacity >= 600 && totalEnergyCapacity < 700) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 2)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,WORK "6:",WORK,
+                                  CARRY]; "700 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY]; "700 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,
+                              CARRY]; "700 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY]; "700 Energy"
+
+
+                    // Min controller is 2
+                    if (totalEnergyCapacity >= 700 && totalEnergyCapacity < 800) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,WORK "6:",WORK,WORK,
+                                  CARRY]; "800 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY]; "800 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,WORK,
+                              CARRY]; "800 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:"]; "800 Energy"
+
+
+                    // Min controller is 3
+                    if (totalEnergyCapacity >= 800 && totalEnergyCapacity < 900) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 2)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,WORK "6:",WORK,WORK,WORK,
+                                  CARRY]; "900 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY]; "900 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,WORK,WORK,
+                              CARRY]; "900 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY]; "900 Energy"
+
+
+                    // Min controller is 3
+                    if (totalEnergyCapacity >= 900 && totalEnergyCapacity < 1000) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 2)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 2)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    harvester = [MOVE,
+                                  WORK,WORK,WORK,WORK,WORK "6:",WORK,WORK,WORK,WORK,
+                                  CARRY]; "1000 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",
+                                  CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY,CARRY"11:"]; "1000 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,WORK,WORK,WORK,
+                              CARRY]; "1000 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,
+                              WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY]; "1000 Energy"
+
+
+                    // Min controller is 3
+                    if (totalEnergyCapacity >= 1000 && totalEnergyCapacity < 1250) {
+                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 2)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 1)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
 
 
                   }
