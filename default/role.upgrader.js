@@ -17,122 +17,114 @@ module.exports = {
     }
 
     // Create required Memory if empty
-    if (!creep.memory.link) {
-      creep.memory.link = ""
-    }
-    if (!creep.memory.container) {
-      creep.memory.container = ""
-    }
-    if (!creep.memory.container2) {
-        creep.memory.container2 = ""
+    if (!creep.memory.targetId) {
+      creep.memory.targetId = ""
     }
     if (!creep.memory.targetId) {
       creep.memory.targetId = ""
+    }
+    if (!creep.memory.targetId2) {
+        creep.memory.targetId2 = ""
+    }
+    if (!creep.memory.targetId) {
+      creep.memory.targetId = ""
+    }
+    if (!creep.memory.source) {
+      creep.memory.source = ""
     }
     if (!flag.upgraderMode) {
       flag.upgraderMode = ""
     }
 
-
-    if (creep.memory.working === false) {
-      // Go upgrade controller
-      if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+    if (creep.pos.inRangeTo(creep.room.controller,1) || creep.memory.targetId.length > 0) {
+      if (creep.memory.working === true) {
+        // Go upgrade controller
+        if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
           creep.travelTo(creep.room.controller)
+        }
+      }
+      else if (creep.memory.working === false) {
+        let mode = flag.upgraderMode;
+        let room = Game.rooms[creep.room.name];
+
+        // If creep has no main pickup goal
+        if (flag.upgraderMode.length == 0) {
+          if (Game.rooms[creep.room.name].links.length > 0) {
+            flag.upgraderMode = "link";
+          }
+          else if (Game.rooms[creep.room.name].containers.length > 0) {
+            flag.upgraderMode = "container";
+          }
+          else {
+            flag.upgraderMode = "source"
+          }
+        }
+        // If creep has main pickup goal
+        if (flag.upgraderMode.length > 0) {
+          if (mode == "link") {
+            // Withdraw from link
+
+
+            // If creep has no link
+            if (creep.memory.targetId.length == 0) {
+              creep.memory.targetId = creep.pos.findClosestByRange(creep.room.links).id
+            }
+
+            // If creep has link
+            if (creep.memory.targetId.length > 0) {
+              let target = Game.getObjectById(creep.memory.targetId);
+              // If storage in target is enough and check if enough energy
+              if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
+                if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                  creep.travelTo(target)
+                }
+              }
+            }
+          }
+          else if (mode == "container") {
+            // If mode is container
+            let target = Game.getObjectById(creep.memory.targetId);
+
+            // If creep has no container
+            if (creep.memory.targetId.length == 0) {
+              creep.memory.targetId = creep.pos.findClosestByRange(creep.room.containers).id
+            }
+
+            // If creep has container
+            if (creep.memory.targetId.length > 0) {
+              // If storage in target is enough and check if enough energy
+              if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
+                if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                  creep.travelTo(target)
+                }
+              }
+            }
+          }
+          else if (mode == "source") {
+            // If all other mode return false
+
+            // If creep has no source
+            if (creep.memory.source.length == 0 || Game.time % 250 == 0) {
+              creep.memory.source = creep.pos.findClosestByRange(FIND_SOURCES).id;
+            }
+
+            // If creep has source
+            else if (creep.memory.source.length > 0) {
+              let target = Game.getObjectById(creep.memory.source);
+              if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
+                creep.travelTo(target)
+              }
+            }
+          }
+          // If there are problems, get notified
+          else {
+            Game.notify("ERR: This room's " + creep.memory.role + " cant Withdraw (" + creep.room.name + ")!")
+          }
+        }
       }
     }
-    else if (creep.memory.working === true) {
-      let mode = flag.upgraderMode;
-      let room = Game.rooms[creep.room.name];
-
-      // If creep has no main pickup goal
-      if (flag.upgraderMode.length == 0) {
-        if (Game.rooms[creep.room.name].links.length > 0) {
-          flag.upgraderMode = "link";
-        }
-        else if (Game.rooms[creep.room.name].containers.length > 0) {
-          flag.upgraderMode = "container";
-        }
-        else {
-          flag.upgraderMode = "source"
-        }
-      }
-      // If creep has main pickup goal
-      if (flag.upgraderMode.length > 0) {
-        if (mode == "link") {
-          // Withdraw from link
-          let target = Game.getObjectById(creep.memory.link);
-
-          // If creep has no link
-          if (creep.memory.link.length == 0) {
-            let i = 0;
-            while (creep.memory.link.length == 0 && i < 15) {
-              creep.memory.link = creep.pos.findClosestByRange(creep.room.links, {
-                  filter: (structure) => {
-                      return (structure.pos.inRangeTo(creep.room.controller, i));
-                  }
-              }).id;
-              i++;
-            }
-          }
-
-          // If creep has link
-          if (creep.memory.link.length > 0) {
-            // If storage in target is enough and check if enough energy
-            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
-              if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.travelTo(target)
-              }
-            }
-          }
-        }
-        else if (mode == "container") {
-          // If mode is container
-          let target = Game.getObjectById(creep.memory.container);
-
-          // If creep has no container
-          if (creep.memory.container.length == 0) {
-            let i = 0;
-            while (creep.memory.container.length == 0 && i < 15) {
-              creep.memory.container = creep.pos.findClosestByRange(creep.room.containers, {
-                  filter: (structure) => {
-                      return (structure.pos.inRangeTo(creep.room.controller, i));
-                  }
-              }).id;
-              i++;
-            }
-          }
-
-          // If creep has container
-          if (creep.memory.container.length > 0) {
-            // If storage in target is enough and check if enough energy
-            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
-              if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.travelTo(target)
-              }
-            }
-          }
-        }
-        else if (mode == "source") {
-          // If all other mode return false
-
-          // If creep has no source
-          if (_.size(creep.memory.source) == 0 || Game.time % 250 == 0) {
-            creep.memory.source = creep.pos.findClosestByRange(creep.room.sources).id;
-          }
-
-          // If creep has source
-          else if (_.size(creep.memory.source) > 0) {
-            let target = Game.getObjectById(creep.memory.source);
-            if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
-              creep.travelTo(target)
-            }
-          }
-        }
-      }
-      // If there are problems, get notified
-      else {
-        Game.notify("ERR: This room's " + creep.memory.role + " cant Withdraw (" + creep.room.name + ")!")
-      }
+    else {
+      creep.travelTo(creep.room.controller)
     }
   }
 };

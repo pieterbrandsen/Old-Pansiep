@@ -1227,7 +1227,7 @@ module.exports.loop = function() {
 
                       // Min controller is 1
                       if (totalEnergyAvailable == 300) {
-                        if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                           normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                         }
                         else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1235,12 +1235,6 @@ module.exports.loop = function() {
                         }
                         else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                           harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
-                        }
-                        else if (needsCreeps("harvester1", roomName, 2)) {
-                          harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
-                        }
-                        else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                          harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
                         }
                         else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                           normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1274,7 +1268,7 @@ module.exports.loop = function() {
 
                     // Min controller is 2
                     if (totalEnergyCapacity > 300 && totalEnergyCapacity < 400) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1283,11 +1277,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
                       else if (needsCreeps("harvester1", roomName, 3)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
                       }
                       else if (needsCreeps("harvester2", roomName, 3) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1319,7 +1316,7 @@ module.exports.loop = function() {
 
                     // Min controller is 2
                     if (totalEnergyCapacity >= 400 && totalEnergyCapacity < 500) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1328,11 +1325,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
                       else if (needsCreeps("harvester1", roomName, 2)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
                       }
                       else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1364,7 +1364,7 @@ module.exports.loop = function() {
 
                     // Min controller is 2
                     if (totalEnergyCapacity >= 500 && totalEnergyCapacity < 600) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1373,11 +1373,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
                       else if (needsCreeps("harvester1", roomName, 2)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
                       }
                       else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1409,7 +1412,7 @@ module.exports.loop = function() {
 
                     // Min controller is 2
                     if (totalEnergyCapacity >= 600 && totalEnergyCapacity < 700) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1418,11 +1421,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
                       else if (needsCreeps("harvester1", roomName, 1)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
                       }
                       else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1454,7 +1460,7 @@ module.exports.loop = function() {
 
                     // Min controller is 2
                     if (totalEnergyCapacity >= 500 && totalEnergyCapacity < 600) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1463,11 +1469,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
                       else if (needsCreeps("harvester1", roomName, 2)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
                       }
                       else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1499,7 +1508,7 @@ module.exports.loop = function() {
 
                     // Min controller is 2
                     if (totalEnergyCapacity >= 600 && totalEnergyCapacity < 700) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1508,11 +1517,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
                       else if (needsCreeps("harvester1", roomName, 2)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
                       }
                       else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1541,7 +1553,7 @@ module.exports.loop = function() {
 
                     // Min controller is 2
                     if (totalEnergyCapacity >= 700 && totalEnergyCapacity < 800) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1550,11 +1562,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
                       else if (needsCreeps("harvester1", roomName, 1)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
                       }
                       else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
                         normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
@@ -1580,7 +1595,7 @@ module.exports.loop = function() {
 
                     // Min controller is 3
                     if (totalEnergyCapacity >= 800 && totalEnergyCapacity < 900) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1589,11 +1604,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
-                      else if (needsCreeps("harvester1", roomName, 2)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      else if (needsCreeps("transferer1", roomName, 3) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
                       }
-                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1622,7 +1640,7 @@ module.exports.loop = function() {
 
                     // Min controller is 3
                     if (totalEnergyCapacity >= 900 && totalEnergyCapacity < 1000) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1631,11 +1649,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
-                      else if (needsCreeps("harvester1", roomName, 2)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      else if (needsCreeps("transferer1", roomName, 2) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
                       }
-                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1664,7 +1685,7 @@ module.exports.loop = function() {
 
                     // Min controller is 3
                     if (totalEnergyCapacity >= 1000 && totalEnergyCapacity < 1250) {
-                      if (needsCreeps("transferer1", roomName, 4) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
                         normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                       }
                       else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
@@ -1673,11 +1694,14 @@ module.exports.loop = function() {
                       else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
                         harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
                       }
-                      else if (needsCreeps("harvester1", roomName, 2)) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester1",roomName,source1);
+                      else if (needsCreeps("transferer1", roomName, 2) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
                       }
-                      else if (needsCreeps("harvester2", roomName, 2) && source2 !== undefined) {
-                        harvesterSpawnCreep(spawn,harvesterSo,"harvester2",roomName,source2);
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
                       }
                       else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
                         normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
@@ -1691,6 +1715,242 @@ module.exports.loop = function() {
                     }
 
 
+                    harvester = [MOVE,MOVE,
+                                  WORK,WORK,WORK,WORK,WORK "6:",WORK,WORK,WORK,WORK,WORK,
+                                  CARRY,CARRY]; "1200 Energy"
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,MOVE,
+                                  CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY,CARRY"11:",CARRY,CARRY]; "1200 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,WORK,WORK,WORK,WORK"11:",WORK,
+                              CARRY]; "1200 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,
+                              WORK,WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY]; "1250 Energy"
+
+
+                    // Min controller is 3
+                    if (totalEnergyCapacity >= 1250 && totalEnergyCapacity < 1500) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("transferer1", roomName, 2) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 1)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    transferer = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,MOVE,MOVE,MOVE,MOVE"16:",
+                                  CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY,CARRY"11:",CARRY,CARRY,CARRY,CARRY,CARRY"16:"]; "1500 Energy"
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,WORK,WORK,WORK,WORK"11:",WORK,WORK,WORK,WORK,
+                              CARRY]; "1500 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,MOVE,MOVE,
+                              WORK,WORK,WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY]; "1500 Energy"
+
+
+                    // Min controller is 4
+                    if (totalEnergyCapacity >= 1500 && totalEnergyCapacity < 1750) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("transferer1", roomName, 1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 2) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 1)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    upgrader = [MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,WORK,WORK,WORK,WORK"11:",WORK,WORK,WORK,WORK,WORK,
+                              CARRY]; "1600 Energy"
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,MOVE,MOVE,MOVE,MOVE"16:",
+                              WORK,WORK,WORK,WORK,WORK"6:",
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY,CARRY"11:"]; "1750 Energy"
+
+
+                    // Min controller is 4
+                    if (totalEnergyCapacity >= 1750 && totalEnergyCapacity < 2000) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("transferer1", roomName, 1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 1)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,MOVE,MOVE,MOVE,MOVE"16:",MOVE,MOVE,MOVE,
+                              WORK,WORK,WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY,CARRY"11:",CARRY,CARRY,CARRY,CARRY]; "2000 Energy"
+
+
+                    // Min controller is 5
+                    if (totalEnergyCapacity >= 2000 && totalEnergyCapacity < 2500) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("transferer1", roomName, 1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 1)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,MOVE,MOVE,MOVE,MOVE"16:",MOVE,MOVE,MOVE,MOVE,MOVE"21:",MOVE,MOVE,
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY,CARRY"11:",CARRY,CARRY,CARRY,CARRY,CARRY"16:",CARRY]; "2500 Energy"
+
+
+                    // Min controller is 6
+                    if (totalEnergyCapacity >= 2500 && totalEnergyCapacity < 5600) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("transferer1", roomName, 1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 1)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
+
+
+                    builder = [MOVE,MOVE,MOVE,MOVE,MOVE"6:",MOVE,MOVE,MOVE,MOVE,MOVE"11:",MOVE,MOVE,MOVE,MOVE,MOVE"16:",MOVE,MOVE,MOVE,MOVE,MOVE"21:",MOVE,MOVE,MOVE,MOVE,MOVE"26:",
+                              WORK,WORK,WORK,WORK,WORK"6:",WORK,WORK,WORK,
+                              CARRY,CARRY,CARRY,CARRY,CARRY"6:",CARRY,CARRY,CARRY,CARRY,CARRY"11:",CARRY,CARRY,CARRY,CARRY,CARRY"16:",CARRY,CARRY]; "2900 Energy"
+
+
+                    // Min controller is 7
+                    if (totalEnergyCapacity >= 5600 && totalEnergyCapacity < 12900) {
+                      if (needsCreeps("transfererSo1", roomName, 4) && needsCreeps("transferer1",roomName,1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
+                      }
+                      else if (needsCreeps("harvesterSo1", roomName, 3) && needsCreeps("harvester1",roomName,1)) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvesterSo2", roomName, 3) && needsCreeps("harvester2",roomName,1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvesterSo,"harvesterSo2",roomName,source2);
+                      }
+                      else if (needsCreeps("transferer1", roomName, 1) && (room.containers.length > 0 || room.links.length > 0 || room.storage !== undefined || room.terminal !== undefined)) {
+                        normalCreepsSpawnCreep(spawn,transferer,"transferer1",roomName);
+                      }
+                      else if (needsCreeps("harvester1", roomName, 1)) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester1",roomName,source1);
+                      }
+                      else if (needsCreeps("harvester2", roomName, 1) && source2 !== undefined) {
+                        harvesterSpawnCreep(spawn,harvester,"harvester2",roomName,source2);
+                      }
+                      else if (needsCreeps("repairer1", roomName, 2) && towers !== undefined) {
+                        normalCreepsSpawnCreep(spawn,repairer,"repairer1",roomName);
+                      }
+                      else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
+                        normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
+                      }
+                      else if (needsCreeps("upgrader1", roomName, 1)) {
+                        normalCreepsSpawnCreep(spawn,upgrader,"upgrader1",roomName);
+                      }
+                    }
                   }
                 }
               }

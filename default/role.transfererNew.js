@@ -222,5 +222,9 @@ module.exports = {
         Game.notify("ERR: This room's " + creep.memory.role + " cant Withdraw (" + creep.room.name + ")!")
       }
     }
+    
+    if (creep.memory.role == "transfererSo1" && needsCreeps("transferer1",1) ==  false) {
+        creep.suicide();
+    }
   }
 };

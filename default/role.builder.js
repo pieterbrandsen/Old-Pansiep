@@ -1,10 +1,12 @@
 module.exports = {
   run: function(creep) {
     // Set Working State
-    if (creep.memory.working === true && _.sum(creep.carry) === 0) {
+    let creepCarryCapacity = creep.store.getCapacity();
+    let creepCarryUsedCapacity = creep.store.getUsedCapacity();
+    if (creep.memory.working === true && creepCarryUsedCapacity === 0) {
       creep.memory.working = false;
     }
-    else if (creep.memory.working === false && _.sum(creep.carry) === creep.carryCapacity) {
+    else if (creep.memory.working === false && creepCarryUsedCapacity == creepCarryCapacity) {
       creep.memory.working = true;
     }
 
@@ -30,7 +32,7 @@ module.exports = {
         // If there is no target
         if (creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES) == null) {
           creep.suicide();
-          flag.constructions = room.find(FIND_CONSTRUCTION_SITES);
+          flag.constructions = []
         }
         // Else get new target
         else {
@@ -87,26 +89,32 @@ module.exports = {
 
           // If creep has no link
           if (_.size(creep.memory.link) == 0) {
-            creep.memory.link = creep.pos.findClosestByRange(creep.room.links, {
+            let link = creep.pos.findClosestByRange(creep.room.links, {
               filter: (structure) => {
-                return (!structure.pos.inRangeTo(creep.room.controller, 5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100);
+                return (!structure.pos.inRangeTo(creep.room.links, 5) && !structure.pos.inRangeTo(creep.memory.link,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity);
               }
-            }).id;
+            });
+            if (link !== null) {
+              creep.memory.link = link.id;
+            }
           }
 
           // If creep has link
           if (_.size(creep.memory.link) > 0) {
             // If storage in target is too low
-            if (target.store.energy < 100 && creep.room.links.length > 1 && Game.time % 25  == 0) {
-              creep.memory.link = creep.pos.findClosestByRange(creep.room.links, {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) < creepCarryCapacity && creep.room.links.length > 1 && Game.time % 25  == 0) {
+              let link = creep.pos.findClosestByRange(creep.room.links, {
                 filter: (structure) => {
-                  return (!structure.pos.inRangeTo(creep.room.link, 5) && !structure.pos.inRangeTo(creep.memory.link,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100);
+                  return (!structure.pos.inRangeTo(creep.room.links, 5) && !structure.pos.inRangeTo(creep.memory.link,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity);
                 }
-              }).id;
+              });
+              if (link !== null) {
+                creep.memory.link = link.id;
+              }
             }
 
-            // If storage in target is enough
-            if (target.store.energy > 100) {
+            // If storage in target is enough and check if enough energy
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
               if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.travelTo(target)
               }
@@ -119,26 +127,34 @@ module.exports = {
 
           // If creep has no container
           if (_.size(creep.memory.container) == 0) {
-            creep.memory.container = creep.pos.findClosestByRange(creep.room.containers, {
+            let container = creep.pos.findClosestByRange(creep.room.containers, {
               filter: (structure) => {
-                return (!structure.pos.inRangeTo(creep.room.controller, 5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100);
+                return (!structure.pos.inRangeTo(creep.room.controller, 5));
               }
-            }).id;
+            });
+
+            if (container !== null) {
+              creep.memory.container = container.id;
+            }
           }
 
           // If creep has container
-          if (_.size(creep.memory.container) > 0) {
+          if (target !== null) {
             // If storage in target is too low
-            if (target.store.energy < 100 && creep.room.containers.length > 1 && Game.time % 25  == 0) {
-              creep.memory.container = creep.pos.findClosestByRange(creep.room.containers, {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) < creepCarryCapacity && creep.room.containers.length > 1 && Game.time % 25  == 0) {
+              let container = creep.pos.findClosestByRange(creep.room.containers, {
                 filter: (structure) => {
-                  return (!structure.pos.inRangeTo(creep.room.controller, 5) && !structure.pos.inRangeTo(creep.memory.container,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100);
+                  return (!structure.pos.inRangeTo(creep.room.controller, 5));
                 }
-              }).id;
+              });
+
+              if (container !== null) {
+                creep.memory.container = container.id;
+              }
             }
 
-            // If storage in target is enoughy
-            if (target.store.energy > 100) {
+            // If storage in target is enough
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
               if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.travelTo(target)
               }
@@ -150,7 +166,7 @@ module.exports = {
 
           // If creep has no source
           if (_.size(creep.memory.source) == 0 || Game.time % 250 == 0) {
-            creep.memory.source = creep.pos.findClosestByRange(creep.room.sources).id;
+            creep.memory.source = creep.pos.findClosestByRange(FIND_SOURCES).id;
           }
 
           // If creep has source
