@@ -1,6 +1,9 @@
 module.exports = {
   run: function (creep) {
 
+    let start = Game.cpu.getUsed();
+    let flag = Memory.flags[creep.room.name];
+
     let creepMemory = creep.memory;
     if (!creep.memory.labs) {
         creep.memory.labs = [];
@@ -10,6 +13,10 @@ module.exports = {
     }
     if (!creep.memory.currentReaction) {
         creep.memory.currentReaction = [];
+    }
+
+    if (!flag.reactionsNeeded) {
+        flag.reactionsNeeded = [];
     }
 
     if (creep.ticksToLive < 50 && _.sum(creep.carry) === 0) {
@@ -24,21 +31,9 @@ module.exports = {
     let resource2;
     let resource3;
 
-    let flag = Memory.flags[room];
 
-    let needed = 10000;
-
-    let base = 5000;
-    let flagNeededBase = 10000;
-
-    let tier1 = 5000;
-    let flagNeededTier1 = 10000;
-
-    let tier2 = 5000;
-    let flagNeededTier2 = 10000;
-
-    let tier3 = 10000;
-    let flagNeededTier3 = 25000;
+    // let needed = 10000;
+    let needed = 2500;
 
     let x;
 
@@ -76,7 +71,7 @@ module.exports = {
 
 
     // MEMORY //
-    if (_.size(flag.reactions.length) == 0) {
+    if (_.size(flag.reactions) == 0) {
       const ingredientsForCompound = {};
       for (let ingredient1 in REACTIONS) {
         const map2 = REACTIONS[ingredient1];
@@ -90,7 +85,7 @@ module.exports = {
     }
 
 
-    if (Game.time % 2500 == 0) {
+    if (Game.time % 1000 == 0 || (flag.reactionsNeeded.length == 0 && Game.time % 100 == 0)) {
       flag.reactionsNeeded = [];
       for (let i = 0;i < possbileReactions.length; i++) {
         if (resourceInStorage(possbileReactions[i]) < needed) {
@@ -115,9 +110,9 @@ module.exports = {
 
     let inputLabs = [];
     let outputLabs = [];
-    if (creepMemory.labsFinal.length < 10)
+    if (creepMemory.labsFinal.length < 10 && labs.length == 10)
     {
-      for (lab of labs)
+      for (let lab of labs)
       {
         if (lab.pos.findInRange(creep.room.labs, 2).length == 10 && inputLabs.length < 2)
         {
@@ -134,12 +129,10 @@ module.exports = {
       }
     }
 
-// console.log(creepMemory.labsFinal.length)
     if (creepMemory.labsFinal.length < 10) {
       let finalArray = inputLabs.concat(outputLabs)
       creepMemory.labsFinal = finalArray;
     }
-
 
 
     if (flag.reactionsNeeded.length > 0 && creepMemory.labsFinal.length == 10) {
@@ -173,14 +166,16 @@ module.exports = {
         let lab9 = Game.getObjectById(creepMemory.labsFinal[8]);
         let lab10 = Game.getObjectById(creepMemory.labsFinal[9]);
 
-        lab3.runReaction(lab1, lab2);
-        lab4.runReaction(lab1, lab2);
-        lab5.runReaction(lab1, lab2);
-        lab6.runReaction(lab1, lab2);
-        lab7.runReaction(lab1, lab2);
-        lab8.runReaction(lab1, lab2);
-        lab9.runReaction(lab1, lab2);
-        lab10.runReaction(lab1, lab2);
+        if (Game.time % 5 == 0) {
+          lab3.runReaction(lab1, lab2);
+          lab4.runReaction(lab1, lab2);
+          lab5.runReaction(lab1, lab2);
+          lab6.runReaction(lab1, lab2);
+          lab7.runReaction(lab1, lab2);
+          lab8.runReaction(lab1, lab2);
+          lab9.runReaction(lab1, lab2);
+          lab10.runReaction(lab1, lab2);
+        }
 
 
         // WRONG CREEP
@@ -278,8 +273,8 @@ module.exports = {
         }
 
         else if (lab2.mineralType !== resource2 && lab2.mineralType !== undefined) {
-          if (creep.withdraw(lab2, labs.mineralType) === ERR_NOT_IN_RANGE) {
-            creep.travelTo(labs)
+          if (creep.withdraw(lab2, lab2.mineralType) === ERR_NOT_IN_RANGE) {
+            creep.travelTo(lab2)
           }
         }
 
@@ -406,7 +401,15 @@ module.exports = {
             creep.travelTo(lab2)
           }
         }
+        else {
+          if (creep.pos.inRangeTo(creep.room.controller,2) == false) {
+            creep.travelTo(creep.room.controller)
+          }
+        }
       }
     }
+
+    flag.scientistCpu += Game.cpu.getUsed() - start
+
   }
 };
