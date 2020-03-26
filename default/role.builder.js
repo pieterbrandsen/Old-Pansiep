@@ -66,12 +66,23 @@ module.exports = {
           }
         });
 
+        let link = creep.pos.findClosestByRange(creep.room.links, {
+          filter: (structure) => {
+            return (!structure.pos.inRangeTo(creep.room.controller,5));
+          }
+        });
+
+
         if (creep.room.terminal !== undefined) {
           creep.memory.builderMode = "terminal";
         }
-        else if (creep.room.storage !== undefined) {
-            creep.memory.builderMode = "storage";
+        else if (link !== null) {
+          creep.memory.targetId2 = link.id;
+          creep.memory.builderMode = "object";
         }
+        // else if (creep.room.storage !== undefined) {
+        //     creep.memory.builderMode = "storage";
+        // }
         else if (container !== null) {
           creep.memory.targetId2 = container.id;
           creep.memory.builderMode = "object";

@@ -339,7 +339,7 @@ module.exports = {
             if (targetLink.energy < 200) {
               creep.transfer(targetLink, RESOURCE_ENERGY)
             }
-            else if (creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 95000 && creep.room.storage.store.getFreeCapacity() > 50000  && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 500000) {
+            else if (creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 25000 && creep.room.storage.store.getFreeCapacity() > 50000  && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 500000) {
               creep.transfer(creep.room.storage, RESOURCE_ENERGY)
             }
             else if ((creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 100000 && creep.room.terminal.store.getFreeCapacity() > 5000) || creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) == null) {
@@ -358,7 +358,7 @@ module.exports = {
           }
         }
         else if (creep.memory.working == false) {
-          if (creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 95000 && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 1000 && targetLink.energy < 500) {
+          if (creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 25000 && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 1000 && targetLink.energy < 500) {
             creep.withdraw(creep.room.storage, RESOURCE_ENERGY)
           }
           else if (targetLink.energy > 500) {

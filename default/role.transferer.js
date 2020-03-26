@@ -148,6 +148,12 @@ module.exports = {
           }
         });
 
+        let link = creep.pos.findClosestByRange(creep.room.links, {
+          filter: (structure) => {
+            return (!structure.pos.inRangeTo(creep.room.controller,5));
+          }
+        });
+
         if (creep.room.terminal !== undefined) {
           creep.memory.transfererMode = "terminal";
         }
@@ -156,6 +162,10 @@ module.exports = {
         }
         else if (container !== null) {
           creep.memory.targetId2 = container.id;
+          creep.memory.transfererMode = "object";
+        }
+        else if (link !== null) {
+          creep.memory.targetId2 = link.id;
           creep.memory.transfererMode = "object";
         }
       }
@@ -190,7 +200,7 @@ module.exports = {
                 creep.travelTo(target)
               }
             }
-            else if (target.store.getUsedCapacity(RESOURCE_ENERGY) < creepCarryCapacity && Game.time % 10 == 0) {
+            else if (target.store.getUsedCapacity(RESOURCE_ENERGY) < creepCarryCapacity) {
               if (target.structureType == STRUCTURE_CONTAINER) {
                 let container = creep.pos.findClosestByRange(creep.room.containers, {
                   filter: (structure) => {
@@ -198,12 +208,39 @@ module.exports = {
                   }
                 });
 
-                if (container !== null) {
-                  creep.memory.targetId2 = container.id
+                if (Game.time % 10 == 0) {
+                  if (container !== null) {
+                    creep.memory.targetId2 = container.id;
+                  }
                 }
-                else if (creep.room.storage !== undefined) {
-                  if (creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 1000) {
-                    mode = "storage";
+                else if (creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 10000) {
+                  mode = "storage";
+                }
+                else if (flag.linkHead !== undefined) {
+                  let link = Game.getObjectById(flag.linkHead);
+
+                  if (link.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
+                    if (creep.withdraw(link, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                      creep.travelTo(link)
+                    }
+                  }
+                }
+                else if (flag.link1 !== undefined) {
+                  let link = Game.getObjectById(flag.link1);
+
+                  if (link.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
+                    if (creep.withdraw(link, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                      creep.travelTo(link)
+                    }
+                  }
+                }
+                else if (flag.link2 !== undefined) {
+                  let link = Game.getObjectById(flag.link2);
+
+                  if (link.store.getUsedCapacity(RESOURCE_ENERGY) > creepCarryCapacity) {
+                    if (creep.withdraw(link, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                      creep.travelTo(link)
+                    }
                   }
                 }
               }

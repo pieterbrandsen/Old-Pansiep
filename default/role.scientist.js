@@ -33,7 +33,7 @@ module.exports = {
 
 
     // let needed = 10000;
-    let needed = 2500;
+    let needed = 1600;
 
     let x;
 
@@ -166,7 +166,7 @@ module.exports = {
         let lab9 = Game.getObjectById(creepMemory.labsFinal[8]);
         let lab10 = Game.getObjectById(creepMemory.labsFinal[9]);
 
-        if (Game.time % 5 == 0) {
+        if (Game.time % 5 == 0 && Game.cpu.bucket > 2000) {
           lab3.runReaction(lab1, lab2);
           lab4.runReaction(lab1, lab2);
           lab5.runReaction(lab1, lab2);
@@ -236,7 +236,7 @@ module.exports = {
 
         //FILLING
 
-        else if (lab1.mineralType === resource && resourcesInLabs(lab1.id) < 500) {
+        else if (lab1.mineralType === resource && resourcesInLabs(lab1.id) < 500 && (_.sum(creep.carry) === 0 || creep.carry[resource] > 0)) {
           if (creep.carry[resource] === 0 && _.sum(creep.carry) === 0) {
             if (creep.withdraw(creep.room.storage, resource) === ERR_NOT_IN_RANGE) {
               creep.travelTo(creep.room.storage)
@@ -250,7 +250,7 @@ module.exports = {
           }
         }
 
-        else if (lab2.mineralType === resource2 && resourcesInLabs(lab2.id) < 500) {
+        else if (lab2.mineralType === resource2 && resourcesInLabs(lab2.id) < 500 && (_.sum(creep.carry) === 0 || creep.carry[resource2] > 0)) {
           if (creep.carry[resource2] === 0 && _.sum(creep.carry) === 0) {
             if (creep.withdraw(creep.room.storage, resource2) === ERR_NOT_IN_RANGE) {
               creep.travelTo(creep.room.storage)
@@ -261,6 +261,32 @@ module.exports = {
             if (creep.transfer(lab2, resource2) === ERR_NOT_IN_RANGE) {
               creep.travelTo(lab2)
             }
+          }
+        }
+
+        //EMPTY
+
+        else if (creep.carry[resource] === 0 && _.sum(creep.carry) === 0 && lab1.mineralType === undefined && resourcesInLabs(lab1.id) < 250) {
+          if (creep.withdraw(creep.room.storage, resource) === ERR_NOT_IN_RANGE) {
+            creep.travelTo(creep.room.storage)
+          }
+        }
+
+        else if (creep.carry[resource] === creep.carryCapacity && lab1.mineralType === undefined) {
+          if (creep.transfer(lab1, resource) === ERR_NOT_IN_RANGE) {
+            creep.travelTo(lab1)
+          }
+        }
+
+        else if (creep.carry[resource2] === 0 && _.sum(creep.carry) === 0 && lab2.mineralType === undefined && resourcesInLabs(lab2.id) < 250) {
+          if (creep.withdraw(creep.room.storage, resource2) === ERR_NOT_IN_RANGE) {
+            creep.travelTo(creep.room.storage)
+          }
+        }
+
+        else if (creep.carry[resource2] === creep.carryCapacity && lab2.mineralType === undefined) {
+          if (creep.transfer(lab2, resource2) === ERR_NOT_IN_RANGE) {
+            creep.travelTo(lab2)
           }
         }
 
@@ -328,85 +354,65 @@ module.exports = {
 
         // REACTION LABS
 
-        else if (lab3.mineralType === resource3 && resourcesInLabs(lab3.id) > creep.carryCapacity) {
+        else if (lab3.mineralType === resource3 && resourcesInLabs(lab3.id) > 200) {
           if (creep.withdraw(lab3, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab3)
           }
         }
 
-        else if (lab4.mineralType === resource3 && resourcesInLabs(lab4.id) > creep.carryCapacity) {
+        else if (lab4.mineralType === resource3 && resourcesInLabs(lab4.id) > 200) {
           if (creep.withdraw(lab4, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab4)
           }
         }
 
-        else if (lab5.mineralType === resource3 && resourcesInLabs(lab5.id) > creep.carryCapacity) {
+        else if (lab5.mineralType === resource3 && resourcesInLabs(lab5.id) > 200) {
           if (creep.withdraw(lab5, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab5)
           }
         }
 
-        else if (lab6.mineralType === resource3 && resourcesInLabs(lab6.id) > creep.carryCapacity) {
+        else if (lab6.mineralType === resource3 && resourcesInLabs(lab6.id) > 200) {
           if (creep.withdraw(lab6, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab6)
           }
         }
 
-        else if (lab7.mineralType === resource3 && resourcesInLabs(lab7.id) > creep.carryCapacity) {
+        else if (lab7.mineralType === resource3 && resourcesInLabs(lab7.id) > 200) {
           if (creep.withdraw(lab7, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab7)
           }
         }
 
-        else if (lab8.mineralType === resource3 && resourcesInLabs(lab8.id) > creep.carryCapacity) {
+        else if (lab8.mineralType === resource3 && resourcesInLabs(lab8.id) > 200) {
           if (creep.withdraw(lab8, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab8)
           }
         }
 
-        else if (lab9.mineralType === resource3 && resourcesInLabs(lab9.id) > creep.carryCapacity) {
+        else if (lab9.mineralType === resource3 && resourcesInLabs(lab9.id) > 200) {
           if (creep.withdraw(lab9, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab9)
           }
         }
 
-        else if (lab10.mineralType === resource3 && resourcesInLabs(lab10.id) > creep.carryCapacity) {
+        else if (lab10.mineralType === resource3 && resourcesInLabs(lab10.id) > 200) {
           if (creep.withdraw(lab10, resource3) === ERR_NOT_IN_RANGE) {
             creep.travelTo(lab10)
           }
         }
 
-        //EMPTY
-
-        else if (creep.carry[resource] === 0 && _.sum(creep.carry) === 0 && lab1.mineralType === undefined && resourcesInLabs(lab1.id) < 250) {
-          if (creep.withdraw(creep.room.storage, resource) === ERR_NOT_IN_RANGE) {
-            creep.travelTo(creep.room.storage)
-          }
-        }
-
-        else if (creep.carry[resource] === creep.carryCapacity) {
-          if (creep.transfer(lab1, resource) === ERR_NOT_IN_RANGE) {
-            creep.travelTo(lab1)
-          }
-        }
-
-        else if (creep.carry[resource2] === 0 && _.sum(creep.carry) === 0 && lab2.mineralType === undefined && resourcesInLabs(lab2.id) < 250) {
-          if (creep.withdraw(creep.room.storage, resource2) === ERR_NOT_IN_RANGE) {
-            creep.travelTo(creep.room.storage)
-          }
-        }
-
-        else if (creep.carry[resource2] === creep.carryCapacity && lab2.mineralType === undefined) {
-          if (creep.transfer(lab2, resource2) === ERR_NOT_IN_RANGE) {
-            creep.travelTo(lab2)
-          }
-        }
         else {
           if (creep.pos.inRangeTo(creep.room.controller,2) == false) {
             creep.travelTo(creep.room.controller)
           }
         }
       }
+    }
+    else {
+      Game.notify("SCIENTIST SUICIDE IN ROOM " + creep.room.name)
+      console.log("SCIENTIST SUICIDE IN ROOM " + creep.room.name)
+      creep.suicide()
     }
 
     flag.scientistCpu += Game.cpu.getUsed() - start

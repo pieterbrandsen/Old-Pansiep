@@ -264,7 +264,7 @@ module.exports.loop = function() {
 
 
           if (Game.flags[roomName] == undefined) {
-            room.createFlag(25,25, roomName)
+            room.createFlag(room.controller, roomName)
           }
           if (!Memory.flags[roomName]) {
               Memory.flags[roomName] = {}
@@ -600,14 +600,17 @@ module.exports.loop = function() {
             }
 
             function getTransfererSpawn() {
-              if (room.terminal !== undefined) {
-                let freeSpawns = room.terminal.pos.findInRange(FIND_MY_SPAWNS,3);
+              let spawn;
 
-                if (freeSpawns.length > 0) {
-                  return freeSpawns[0];
+              for (let i = 0;i < 10;i++) {
+                if (room.terminal !== undefined) {
+                  let freeSpawns = room.terminal.pos.findInRange(FIND_MY_SPAWNS,i);
+
+                  if (freeSpawns.length > 0) {
+                    return freeSpawns[0];
+                  }
                 }
               }
-              return null;
             }
 
 
@@ -688,31 +691,19 @@ module.exports.loop = function() {
 
               let container = room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
-                  return (structure.structureType == STRUCTURE_CONTAINER && !structure.pos.inRangeTo(room.controller,5));
+                  return (structure.structureType == STRUCTURE_CONTAINER && !structure.pos.inRangeTo(room.controller,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 1000);
                 }
               });
 
               let storage = room.storage;
               let terminal = room.terminal;
 
-              if (container.length > 0) {
-                let container2 = room.find(room.containers, {
-                  filter: (structure) => {
-                    return (!structure.pos.inRangeTo(room.controller,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 600);
-                  }
-                });
-                if (container2 !== null) {
-                  if (numberOfCreepsHarvesterSo > 2 && numberOfCreepsTransferer < 2) {
-                    return true;
-                  }
-                  else if (numberOfCreepsHarvester > 0) {
-                    return true;
-                  }
-                }
+              if (container !== null) {
+                return true;
               }
               else if (storage !== undefined) {
                 let storage2 = storage.store.getUsedCapacity(RESOURCE_ENERGY);
-                if (storage2 > 5000) {
+                if (storage2 > 10000) {
                   return true;
                 }
               }
@@ -958,6 +949,15 @@ module.exports.loop = function() {
               if (linkTo1 !== null && linkTo2 !== null && room.storage == undefined) {
                 if (linkTo2.store.getFreeCapacity(RESOURCE_ENERGY) > 200) {
                   linkTo1.transferEnergy(linkTo2)
+                }
+              }
+            }
+
+
+            if (Game.time % 5000 == 0) {
+              if (room.labs.length == 10) {
+                if (needsCreeps("scientist", roomName, 1) && room.storage && room.labs.length > 3) {
+                  normalCreepsSpawnCreep(spawn,scientist,"scientist",roomName);
                 }
               }
             }
@@ -1637,7 +1637,7 @@ module.exports.loop = function() {
                 if (needsCreeps("transfererLiTe1", roomName, 1) && room.storage !== undefined && room.terminal !== undefined) {
                   transfererLiTeSpawnCreep(spawn2,transfererLiTe,"transfererLiTe1",roomName);
                 }
-                else if (needsCreeps("transfererSo1", roomName, 3) && canCreepSpawn(spawn,transferer) == ERR_NOT_ENOUGH_ENERGY && needsCreeps("transferer1",roomName,1) && canTransfererSpawn() == true) {
+                if (needsCreeps("transfererSo1", roomName, 3) && canCreepSpawn(spawn,transferer) == ERR_NOT_ENOUGH_ENERGY && needsCreeps("transferer1",roomName,1) && canTransfererSpawn() == true) {
                   normalCreepsSpawnCreep(spawn,transfererSo,"transfererSo1",roomName);
                 }
                 else if (needsCreeps("harvesterSo1", roomName, flag.harvestersNeeded1) && canCreepSpawn(spawn,harvester) == ERR_NOT_ENOUGH_ENERGY && needsCreeps("harvester1",roomName,1)) {
@@ -1749,7 +1749,7 @@ module.exports.loop = function() {
                 else if (needsCreeps("builder1", roomName, 1) && _.size(construction) > 0) {
                   normalCreepsSpawnCreep(spawn,builder,"builder1",roomName);
                 }
-                // else if (needsCreeps("scientist", roomName, 1) && room.storage && room.labs.length > 3) {
+                // else if (needsCreeps("scientist", roomName, 1) && room.storage && room.labs.length > 3 && flag.reactionsNeeded.length > 0) {
                 //   normalCreepsSpawnCreep(spawn,scientist,"scientist",roomName);
                 // }
                 else if (needsCreeps("extractor", roomName, 1) && room.terminal && room.storage && mineralAmount > 0) {

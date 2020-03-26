@@ -1,7 +1,7 @@
 module.exports = {
   run: function(creep) {
     let start = Game.cpu.getUsed();
-    
+
     // Set Working State
     let creepCarryCapacity = creep.store.getCapacity();
     let creepCarryUsedCapacity = creep.store.getUsedCapacity();
@@ -48,7 +48,7 @@ module.exports = {
       creep.memory.upgraderTargetId = ""
     }
 
-    if (creep.pos.inRangeTo(creep.room.controller,8) || (creep.memory.upgraderTargetId.length > 0 || creep.memory.source.length > 0)) {
+    if (creep.pos.inRangeTo(creep.room.controller,3) || (creep.memory.upgraderTargetId.length > 0 || creep.memory.source.length > 0)) {
       if (creep.memory.working === true) {
         // Go upgrade controller
         if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
