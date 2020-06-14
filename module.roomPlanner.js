@@ -173,24 +173,39 @@ module.exports = {
           room.createConstructionSite(x-3, y+5, STRUCTURE_ROAD);
 
           room.createConstructionSite(x-2, y+6, STRUCTURE_ROAD);
-          room.createConstructionSite(x-1, y+7, STRUCTURE_ROAD);
-          room.createConstructionSite(x, y+7, STRUCTURE_ROAD);
-          room.createConstructionSite(x+1, y+7, STRUCTURE_ROAD);
-          room.createConstructionSite(x+2, y+7, STRUCTURE_ROAD);
+          room.createConstructionSite(x-1, y+6, STRUCTURE_ROAD);
+          room.createConstructionSite(x, y+6, STRUCTURE_ROAD);
+          room.createConstructionSite(x+1, y+6, STRUCTURE_ROAD);
+          //room.createConstructionSite(x+2, y+7, STRUCTURE_ROAD);
 
           room.createConstructionSite(x+3, y+6, STRUCTURE_ROAD);
-          room.createConstructionSite(x+4, y+5, STRUCTURE_ROAD);
-          room.createConstructionSite(x+5, y+4, STRUCTURE_ROAD);
-          room.createConstructionSite(x+6, y+3, STRUCTURE_ROAD);
-          room.createConstructionSite(x+7, y+2, STRUCTURE_ROAD);
+          room.createConstructionSite(x+4, y+4, STRUCTURE_ROAD);
+          room.createConstructionSite(x+5, y+3, STRUCTURE_ROAD);
+          room.createConstructionSite(x+6, y+2, STRUCTURE_ROAD);
+          room.createConstructionSite(x+6, y+1, STRUCTURE_ROAD);
 
-          room.createConstructionSite(x+7, y+1, STRUCTURE_ROAD);
+          //room.createConstructionSite(x+7, y+1, STRUCTURE_ROAD);
           room.createConstructionSite(x+6, y, STRUCTURE_ROAD);
           room.createConstructionSite(x+6, y-1, STRUCTURE_ROAD);
           room.createConstructionSite(x+6, y-2, STRUCTURE_ROAD);
-          //room.createConstructionSite(x+7, y+2, STRUCTURE_ROAD);
+          room.createConstructionSite(x-1, y-4, STRUCTURE_ROAD);
 
+          room.createConstructionSite(x-2, y-5, STRUCTURE_ROAD);
+          room.createConstructionSite(x-3, y, STRUCTURE_ROAD);
+          room.createConstructionSite(x-2, y-1, STRUCTURE_ROAD);
+          room.createConstructionSite(x-4, y+1, STRUCTURE_ROAD);
+          room.createConstructionSite(x-5, y+2, STRUCTURE_ROAD);
 
+          room.createConstructionSite(x+2, y+1, STRUCTURE_ROAD);
+          room.createConstructionSite(x+1, y+2, STRUCTURE_ROAD);
+          room.createConstructionSite(x, y+3, STRUCTURE_ROAD);
+          room.createConstructionSite(x-1, y+2, STRUCTURE_ROAD);
+          room.createConstructionSite(x-2, y+1, STRUCTURE_ROAD);
+
+          room.createConstructionSite(x+1, y+4, STRUCTURE_ROAD);
+          room.createConstructionSite(x+2, y+5, STRUCTURE_ROAD);
+          room.createConstructionSite(x+3, y+5, STRUCTURE_ROAD);
+          room.createConstructionSite(x+2, y+6, STRUCTURE_ROAD);
 
 
           room.createConstructionSite(x+3, y+2, STRUCTURE_EXTENSION);

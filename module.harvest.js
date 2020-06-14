@@ -4,20 +4,22 @@ module.exports = {
 
     if (target == null) {
       let sources = creep.room.find(FIND_SOURCES);
-      if (creep.name.includes("0-")) {
-        creep.memory.sourceId = sources[0].id;
-      }
-      else if (creep.name.includes("1-")) {
-        creep.memory.sourceId = sources[1].id;
-      }
-      else if (creep.name.includes("2-")) {
-        creep.memory.sourceId = sources[2].id;
-      }
-      else if (creep.name.includes("2-")) {
-        creep.memory.sourceId = sources[3].id;
-      }
-      else {
-        creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
+      if (sources.length > 0) {
+        if (creep.name.includes("0-")) {
+          creep.memory.sourceId = sources[0].id;
+        }
+        else if (creep.name.includes("1-")) {
+          creep.memory.sourceId = sources[1].id;
+        }
+        else if (creep.name.includes("2-")) {
+          creep.memory.sourceId = sources[2].id;
+        }
+        else if (creep.name.includes("2-")) {
+          creep.memory.sourceId = sources[3].id;
+        }
+        else {
+          creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
+        }
       }
     }
     else {

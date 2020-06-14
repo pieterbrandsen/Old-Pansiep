@@ -1,6 +1,6 @@
 const harvestModule = require('module.harvest');
 
-function createSurroundingConstructionSite(id,range,controllerLevel,room) {
+function createSurroundingConstructionSite(id,range,controllerLevel) {
   let object = Game.getObjectById(id);
   let structureType;
   let x = object.pos.x;
@@ -15,7 +15,7 @@ function createSurroundingConstructionSite(id,range,controllerLevel,room) {
     }
   }
 
-  if (room.controller.lever >= controllerLevel) {
+  if (object.room.controller.level >= controllerLevel) {
     structureType = STRUCTURE_LINK;
   }
   else {
@@ -28,10 +28,16 @@ function createSurroundingConstructionSite(id,range,controllerLevel,room) {
   let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
     return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
   });
+  let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
+    return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
+  });
 
 
+  if (((!containerInRange && structureType == STRUCTURE_CONTAINER) || (!linkInRange && structureType == STRUCTURE_LINK)) && constructionSitesInRange == null) {
+    if (structureType == STRUCTURE_LINK && containerInRange !== null) {
+      containerInRange.destroy();
+    }
 
-  if (!containerInRange && !linkInRange) {
     if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
       room.createConstructionSite(x+range,y+range,structureType)
       constructionSiteCanBeBuild = true
@@ -75,9 +81,10 @@ module.exports = {
 
       if (!target) {
         let range = 3;
-        let containerInRange = creep.room.controller.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-          return (structure.pos.inRangeTo(creep.room.controller,range))}
-        });
+        let containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range,
+          {filter: {structureType: STRUCTURE_CONTAINER}})[0];
+        let linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range,
+          {filter: {structureType: STRUCTURE_LINK}})[0];
         let constructionSiteInRange = creep.room.controller.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
           return (structure.pos.inRangeTo(creep.room.controller,range))}
         });
@@ -85,7 +92,10 @@ module.exports = {
         if (containerInRange) {
             creep.memory.targetId = containerInRange.id;
         }
-        else if (!constructionSiteInRange) {
+        else if (linkInRange) {
+            creep.memory.targetId = linkInRange.id;
+        }
+        else if (constructionSiteInRange == null) {
           createSurroundingConstructionSite(creep.room.controller.id,range,6,creep.room)
         }
         else {
@@ -93,7 +103,6 @@ module.exports = {
         }
       }
       else {
-        creep.say(creep.withdraw(target,RESOURCE_ENERGY))
         if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.travelTo(target);
         }
@@ -104,28 +113,7 @@ module.exports = {
       let linkAmount = creep.room.links.length;
       let energyStored = 0;
 
-      if (containerAmount > 0) {
-        creep.room.containers.forEach((item, i) => {
-          energyStored += creep.room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
-        });
-
-
-        if (energyStored > 1000) {
-          const findClosestContainer = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-            return (structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity())}
-          });
-
-          if (findClosestContainer) {
-            if(creep.withdraw(findClosestContainer,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.travelTo(findClosestContainer);
-            }
-          }
-        }
-        else if (creep.getActiveBodyparts(WORK) > 0) {
-          harvestModule.run(creep);
-        }
-      }
-      else if (creep.room.storage || creep.room.terminal) {
+      if (creep.room.storage || creep.room.terminal) {
         if (creep.room.storage && creep.room.terminal) {
           if (creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 250) {
             if(creep.withdraw(creep.room.storage,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -148,22 +136,36 @@ module.exports = {
               creep.travelTo(creep.room.terminal);
           }
         }
-        if (creep.room.terminal !== undefined) {
-          energyStored += creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY);
-        }
-        if (energyStored > 5000) {
-          return true;
+      }
+      if (containerAmount > 0) {
+        creep.room.containers.forEach((item, i) => {
+          if (creep.room.containers[i] !== null) {
+            energyStored += creep.room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
+          }
+        });
+
+
+        if (energyStored > 500) {
+          const findClosestContainer = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
+            return (structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && !structure.pos.inRangeTo(creep.room.controller,5))}
+          });
+
+          if (findClosestContainer) {
+            if(creep.withdraw(findClosestContainer,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+              creep.moveTo(findClosestContainer);
+            }
+          }
         }
         else if (creep.getActiveBodyparts(WORK) > 0) {
           harvestModule.run(creep);
         }
       }
-      else if (linkAmount > 0) {
+      if (linkAmount > 0) {
         creep.room.links.forEach((item, i) => {
           energyStored += creep.room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
         });
 
-        if (energyStored > 500) {
+        if (energyStored > 1000) {
           const findClosestLink = creep.pos.findClosestByRange(creep.room.links, {filter: (structure) => {
             return (structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity())}
           });
