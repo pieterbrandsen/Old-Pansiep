@@ -1,6 +1,6 @@
 const harvestModule = require('module.harvest');
 
-function createSurroundingConstructionSite(id,range,controllerLevel) {
+function createSurroundingConstructionSite(id,range,controllerLevel,room) {
   let object = Game.getObjectById(id);
   let structureType;
   let x = object.pos.x;

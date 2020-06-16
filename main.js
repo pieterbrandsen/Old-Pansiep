@@ -114,7 +114,7 @@ module.exports.loop = function() {
     runCreeps();
 
     // Set the average CPU Usage in the memory //
-    Memory.stats['cpuTracker.runCreeps.avg50'] = 0.98 * Memory.stats['cpuTracker.removeDeadCreepsMemory.avg50'] + 0.02 * (Game.cpu.getUsed() - start);
+    Memory.stats['cpuTracker.runCreeps.avg50'] = 0.98 * Memory.stats['cpuTracker.runCreeps.avg50'] + 0.02 * (Game.cpu.getUsed() - start);
   }
   else {
     // Run the part without tracking //
@@ -149,6 +149,7 @@ module.exports.loop = function() {
 
 
     if (controller && controller.my) {
+      let towers = room.towers;
       let spawn;
       if (mainSystem()) {
         // Get the CPU Usage //
@@ -380,7 +381,6 @@ module.exports.loop = function() {
       }
 
       function defendRoom() {
-        let towers = room.towers;
         if (flagMemory.enemyCount > 0) {
           for (let tower of towers) {
             tower.defend();
@@ -562,6 +562,7 @@ module.exports.loop = function() {
       }
 
       function spawnManager() {
+        getCreepAmount();
         const roleArray = ["transferer","harvester-0","harvester-1","builder","upgrader","repairer"]
 
         for (let i = 0; i < roleArray.length; i++) {
@@ -605,7 +606,7 @@ module.exports.loop = function() {
             }
           }
           else if (roleArray[i] == "upgrader") {
-            if (upgraderWorkCount < 15 && upgraderCount < 4) {
+            if (upgraderWorkCount < 15 && upgraderCount < 4 && flagMemory.constructionSitesAmount == 0) {
               spawnCreep(spawn,"upgrader");
               i = 10;
             }
@@ -623,9 +624,9 @@ module.exports.loop = function() {
 
       function getDamagedStructures() {
         if (flagMemory.enemyCount == 0) {
+          let repairAmount = 1 * 1000 * 1000 // 1 Million
           if (flagMemory.repairTarget.length == 0 && Game.time % 10000 == 0) {
             let repairTarget = flagMemory.repairTarget;
-            let repairAmount = 1 * 1000 * 1000 // 1 Million
             let targetRepair = room.find(FIND_STRUCTURES, {
               filter: (s) => s.hits < s.hitsMax && s.hits < repairAmount
             });
@@ -635,23 +636,22 @@ module.exports.loop = function() {
                 flagMemory.repairTarget[i] = targetRepair[i].id
               }
             }
+          }
 
 
-            if (flagMemory.repairTarget.length > 0) {
-              for (let tower of towers) {
-                let target = Game.getObjectById(flagMemory.repairTarget[0]);
-
-                if (target !== null) {
-                  if (target.hits < target.hitsMax && target.hits < repairAmount) {
-                    tower.repair(target);
-                  }
-                  else {
-                    flagMemory.repairTarget.shift();
-                  }
+          if (flagMemory.repairTarget.length > 0) {
+            for (let tower of towers) {
+              let target = Game.getObjectById(flagMemory.repairTarget[0]);
+              if (target !== null) {
+                if (target.hits < target.hitsMax && target.hits < repairAmount) {
+                  tower.repair(target);
                 }
                 else {
                   flagMemory.repairTarget.shift();
                 }
+              }
+              else {
+                flagMemory.repairTarget.shift();
               }
             }
           }
@@ -790,22 +790,6 @@ module.exports.loop = function() {
         let start = Game.cpu.getUsed();
 
         // Run the part //
-        getCreepAmount();
-
-        // Set the average CPU Usage in the memory //
-        totalCPUGetCreepAmount += Game.cpu.getUsed() - start;
-      }
-      else {
-        // Run the part without tracking //
-        getCreepAmount();
-      }
-
-
-      if (mainSystem()) {
-        // Get the CPU Usage //
-        let start = Game.cpu.getUsed();
-
-        // Run the part //
         getDamagedStructures();
 
         // Set the average CPU Usage in the memory //
@@ -815,6 +799,7 @@ module.exports.loop = function() {
         // Run the part without tracking //
         getDamagedStructures();
       }
+
 
       if (mainSystem()) {
         // Get the CPU Usage //
@@ -830,6 +815,7 @@ module.exports.loop = function() {
         // Run the part without tracking //
         runGameTimeTimers();
       }
+
 
       if (mainSystem()) {
         // Get the CPU Usage //
@@ -869,7 +855,6 @@ module.exports.loop = function() {
     if (mainSystem()) {
       Memory.stats['cpuTracker.getFirstOpenSpawn.avg50'] = 0.98 * Memory.stats['cpuTracker.getFirstOpenSpawn.avg50'] + 0.02 * totalCPUGetFirstOpenSpawn;
       Memory.stats['cpuTracker.defendRoom.avg50'] = 0.98 * Memory.stats['cpuTracker.defendRoom.avg50'] + 0.02 * totalCPUDefendRoom;
-      Memory.stats['cpuTracker.getCreepAmount.avg50'] = 0.98 * Memory.stats['cpuTracker.getCreepAmount.avg50'] + 0.02 * totalCPUGetCreepAmount;
       Memory.stats['cpuTracker.getDamagedStructures.avg50'] = 0.98 * Memory.stats['cpuTracker.getDamagedStructures.avg50'] + 0.02 * totalCPUGetDamagedStructures;
       Memory.stats['cpuTracker.runGameTimeTimers.avg50'] = 0.98 * Memory.stats['cpuTracker.runGameTimeTimers.avg50'] + 0.02 * totalCPURunGameTimeTimers;
       Memory.stats['cpuTracker.checkMissingMemory.avg50'] = 0.98 * Memory.stats['cpuTracker.checkMissingMemory.avg50'] + 0.02 * totalCPUCheckMissingMemory;
@@ -889,8 +874,6 @@ module.exports.loop = function() {
     runRoomCPUTracker();
 
     // Set the average CPU Usage in the memory //
-    console.log(start)
-
     Memory.stats['cpuTracker.runRoomCPUTracker.avg50'] = 0.98 * Memory.stats['cpuTracker.runRoomCPUTracker.avg50'] + 0.02 * (Game.cpu.getUsed() - start);
   }
   else {
