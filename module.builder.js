@@ -1,39 +1,93 @@
 module.exports = {
   run: function(creep) {
-    if (!creep.memory.targetId) {
+    // If creep has no targetId assign a empty string //
+    if (!creep.memory.targetId)
       creep.memory.targetId = "";
-    }
 
-    const target = creep.build(Game.getObjectById(creep.memory.targetId));
-    switch(target) {
-      case ERR_INVALID_TARGET:
-        const findNewTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 
-        if (!findNewTarget) {
-          Memory.flags[creep.room.name].constructionSitesAmount = 0;
-          creep.suicide()
+    function mainSystem() {
+      // If Memory.mainSystem is defined //
+      if (Memory.mainSystem) {
+        // If Memory.mainSystem is allowed to track cpu return True //
+        if (Memory.mainSystem.cpuTracker == true) {
+          return true;
         }
         else {
-          if (Game.getObjectById(creep.memory.targetId) == null) {
-            creep.memory.targetId = findNewTarget.id;
+          return false;
+        }
+      }
+      else {
+        return false;
+      }
+    }
+
+    function findNewTarget() {
+      // Find new target to build //
+      const findNewTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+
+      if (!findNewTarget) {
+        // If no target is found, reset constructionSiteAmount and suicide //
+        Memory.flags[creep.room.name].constructionSitesAmount = 0;
+        creep.suicide()
+      }
+      else {
+        // If current target is null assign the new found target //
+        if (Game.getObjectById(creep.memory.targetId) == null) {
+          creep.memory.targetId = findNewTarget.id;
+        }
+        else {
+          // If creep is standing on the structure move to controller else assign the new target to the memory //
+          if (creep.pos.inRangeTo(Game.getObjectById(creep.memory.targetId),0)) {
+            creep.travelTo(creep.room.controller)
           }
           else {
-            if (creep.pos.inRangeTo(Game.getObjectById(creep.memory.targetId),0)) {
-              creep.travelTo(creep.room.controller)
-            }
-            else {
-              creep.memory.targetId = findNewTarget.id;
-            }
+            creep.memory.targetId = findNewTarget.id;
           }
         }
-        break;
-      case ERR_NOT_IN_RANGE:
-        creep.travelTo(Game.getObjectById(creep.memory.targetId));
-        break;
-      case OK:
-        creep.say("Building")
-      default:
-        break;
+      }
+    }
+
+    function buildTarget() {
+      const runBuilder = creep.build(Game.getObjectById(creep.memory.targetId));
+
+      switch(runBuilder) {
+        case OK:
+          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%")
+          break;
+        case ERR_NOT_OWNER:
+          break;
+        case ERR_BUSY:
+          break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+          break;
+        case ERR_INVALID_TARGET:
+          findNewTarget();
+          break;
+        case ERR_NOT_IN_RANGE:
+          creep.say("Moving");
+          creep.moveTo(Game.getObjectById(creep.memory.targetId));
+          break;
+        case ERR_NO_BODYPART:
+        default:
+          break;
+      }
+    }
+
+
+    if (mainSystem()) {
+      // Get the CPU Usage //
+      let start = Game.cpu.getUsed();
+
+      // Run the part //
+      buildTarget();
+
+      // Set the average CPU Usage in the memory //
+
+      Memory.cpuTracker["builderCPU.total"] += Game.cpu.getUsed() - start;
+    }
+    else {
+      // Run the part without tracking //
+      buildTarget();
     }
   }
 };

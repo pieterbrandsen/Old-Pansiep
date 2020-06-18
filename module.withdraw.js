@@ -1,99 +1,118 @@
 const harvestModule = require('module.harvest');
 
-function createSurroundingConstructionSite(id,range,controllerLevel,room) {
-  let object = Game.getObjectById(id);
-  let structureType;
-  let x = object.pos.x;
-  let y = object.pos.y;
-  let constructionSiteCanBeBuild = false;
-  function createConstruction(structureType,x,y) {
-    if (room.createConstructionSite(x,y,structureType) == 0) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  if (object.room.controller.level >= controllerLevel) {
-    structureType = STRUCTURE_LINK;
-  }
-  else {
-    structureType = STRUCTURE_CONTAINER;
-  }
-
-  let containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-    return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
-  });
-  let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-    return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
-  });
-  let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
-    return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
-  });
-
-
-  if (((!containerInRange && structureType == STRUCTURE_CONTAINER) || (!linkInRange && structureType == STRUCTURE_LINK)) && constructionSitesInRange == null) {
-    if (structureType == STRUCTURE_LINK && containerInRange !== null) {
-      containerInRange.destroy();
-    }
-
-    if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-    else if (createConstruction(structureType,x,y+range) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-    else if (createConstruction(structureType,x-range,y+range) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-    else if (createConstruction(structureType,x-range,y) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-    else if (createConstruction(structureType,x-range,y-range) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-    else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-    else if (createConstruction(structureType,x+range,y-range) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-    else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-      room.createConstructionSite(x+range,y+range,structureType)
-      constructionSiteCanBeBuild = true
-    }
-  }
-};
 
 module.exports = {
   run: function(creep) {
+    function mainSystem() {
+      // If Memory.mainSystem is defined //
+      if (Memory.mainSystem) {
+        // If Memory.mainSystem is allowed to track cpu return True //
+        if (Memory.mainSystem.cpuTracker == true) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+      else {
+        return false;
+      }
+    }
 
-    if (creep.memory.role.includes("upgrader")) {
+    function createSurroundingConstructionSite(id,range,controllerLevel) {
+      const room = creep.room
+      let object = Game.getObjectById(id);
+      let structureType;
+      let x = object.pos.x;
+      let y = object.pos.y;
+      let constructionSiteCanBeBuild = false;
+      function createConstruction(structureType,x,y) {
+        if (room.createConstructionSite(x,y,structureType) == 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+
+      if (object.room.controller.level >= controllerLevel) {
+        structureType = STRUCTURE_LINK;
+      }
+      else {
+        structureType = STRUCTURE_CONTAINER;
+      }
+
+      let containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
+      });
+      let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
+      });
+      let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
+        return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
+      });
+
+
+      if (((!containerInRange && structureType == STRUCTURE_CONTAINER) || (!linkInRange && structureType == STRUCTURE_LINK)) && constructionSitesInRange == null) {
+        if (structureType == STRUCTURE_LINK && containerInRange !== null) {
+          containerInRange.destroy();
+        }
+
+        if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x,y+range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x-range,y+range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x-range,y) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x-range,y-range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x+range,y-range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+      }
+    };
+
+
+    function withdrawUpgraderSection() {
       const target = Game.getObjectById(creep.memory.targetId);
-
       if (!target) {
         let range = 3;
         let containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range,
-          {filter: {structureType: STRUCTURE_CONTAINER}})[0];
+          {filter: {structureType: STRUCTURE_CONTAINER}
+        })[0];
         let linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range,
-          {filter: {structureType: STRUCTURE_LINK}})[0];
+          {filter: {structureType: STRUCTURE_LINK}
+        })[0];
         let constructionSiteInRange = creep.room.controller.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
-          return (structure.pos.inRangeTo(creep.room.controller,range))}
-        });
+          return (structure.pos.inRangeTo(creep.room.controller,range))
+        }});
 
         if (containerInRange) {
-            creep.memory.targetId = containerInRange.id;
+          creep.memory.targetId = containerInRange.id;
         }
         else if (linkInRange) {
-            creep.memory.targetId = linkInRange.id;
+          creep.memory.targetId = linkInRange.id;
         }
         else if (constructionSiteInRange == null) {
           createSurroundingConstructionSite(creep.room.controller.id,range,6,creep.room)
@@ -104,84 +123,129 @@ module.exports = {
       }
       else {
         if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.travelTo(target);
+          creep.travelTo(target);
         }
       }
     }
-    else {
-      let containerAmount = creep.room.containers.length;
-      let linkAmount = creep.room.links.length;
-      let energyStored = 0;
 
-      if (creep.room.storage || creep.room.terminal) {
-        if (creep.room.storage && creep.room.terminal) {
-          if (creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 250) {
-            if(creep.withdraw(creep.room.storage,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.travelTo(creep.room.storage);
-            }
-          }
-          else {
-            if(creep.withdraw(creep.room.terminal,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.travelTo(creep.room.terminal);
-            }
-          }
-        }
-        else if (creep.room.storage) {
-          if(creep.withdraw(creep.room.storage,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-              creep.travelTo(creep.room.storage);
-          }
-        }
-        else if (creep.room.terminal) {
-          if(creep.withdraw(creep.room.terminal,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-              creep.travelTo(creep.room.terminal);
-          }
+    function runWithdraw(target) {
+      const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
+
+      switch(runWithdraw) {
+        case OK:
+        creep.say("Withdraw")
+        break;
+        case ERR_NOT_OWNER:
+        break;
+        case ERR_BUSY:
+        break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+        break;
+        case ERR_INVALID_TARGET:
+        if (!creep.pos.inRangeTo(creep.room.controller,4))
+        creep.travelTo(creep.room.controller);
+        break;
+        case ERR_FULL:
+        break;
+        case ERR_NOT_IN_RANGE:
+        creep.say("Moving");
+        creep.moveTo(target);
+        break;
+        case ERR_INVALID_ARGS:
+        break;
+        default:
+        break;
+      }
+    }
+
+    function findWithdrawStructure() {
+      const room = creep.room;
+      let withdrawStructure;
+      if (room.terminal) {
+        switch(room.storage) {
+          case undefined:
+          withdrawStructure = STRUCTURE_TERMINAL;
+          break;
+          case !undefined:
+          if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > room.terminal.store.getUsedCapacity(RESOURCE_ENERGY))
+          withdrawStructure = STRUCTURE_STORAGE;
+          else
+          withdrawStructure = STRUCTURE_TERMINAL;
+          break;
+          default:
+          break;
         }
       }
-      if (containerAmount > 0) {
-        creep.room.containers.forEach((item, i) => {
-          if (creep.room.containers[i] !== null) {
-            energyStored += creep.room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
-          }
+      else if (room.storage && !room.terminal) {
+        if (room.containers.length > 0 && room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 5000) {
+          withdrawStructure = STRUCTURE_CONTAINER;
+        }
+        else {
+          withdrawStructure = STRUCTURE_STORAGE;
+        }
+      }
+      else if (room.containers.length > 0)
+      withdrawStructure = STRUCTURE_CONTAINER;
+      else
+      withdrawStructure = SOURCE;
+
+      return withdrawStructure;
+    }
+
+    function withdrawStructure() {
+      const withdrawStructure = findWithdrawStructure();
+      switch(withdrawStructure) {
+        case STRUCTURE_TERMINAL:
+        runWithdraw(creep.room.terminal);
+        break;
+        case STRUCTURE_STORAGE:
+        runWithdraw(creep.room.storage);
+        break;
+        case STRUCTURE_CONTAINER:
+        target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
+          return (!structure.pos.inRangeTo(creep.room.controller,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
         });
-
-
-        if (energyStored > 500) {
-          const findClosestContainer = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-            return (structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && !structure.pos.inRangeTo(creep.room.controller,5))}
-          });
-
-          if (findClosestContainer) {
-            if(creep.withdraw(findClosestContainer,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-              creep.moveTo(findClosestContainer);
-            }
-          }
-        }
-        else if (creep.getActiveBodyparts(WORK) > 0) {
-          harvestModule.run(creep);
-        }
-      }
-      if (linkAmount > 0) {
-        creep.room.links.forEach((item, i) => {
-          energyStored += creep.room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
-        });
-
-        if (energyStored > 1000) {
-          const findClosestLink = creep.pos.findClosestByRange(creep.room.links, {filter: (structure) => {
-            return (structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity())}
-          });
-
-          if (findClosestLink) {
-            if(creep.withdraw(findClosestLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.travelTo(findClosestLink);
-            }
-          }
-        }
-        else if (creep.getActiveBodyparts(WORK) > 0) {
-          harvestModule.run(creep);
-        }
-      }
-      else if (creep.getActiveBodyparts(WORK) > 0) {
+        runWithdraw(target);
+        break;
+        case SOURCE:
         harvestModule.run(creep);
+        default:
+        break;
+      }
+    }
+
+    if (creep.memory.role.includes("upgrader")) {
+      if (mainSystem()) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
+
+        // Run the part //
+        withdrawUpgraderSection();
+
+        // Set the average CPU Usage in the memory //
+
+        Memory.cpuTracker["withdrawCPU.upgrader"] += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        withdrawUpgraderSection();
+      }
+    }
+    else {
+      if (mainSystem()) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
+
+        // Run the part //
+        withdrawStructure();
+
+        // Set the average CPU Usage in the memory //
+
+        Memory.cpuTracker["withdrawCPU.normal"] += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        withdrawStructure();
       }
     }
   }

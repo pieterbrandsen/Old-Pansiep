@@ -6,7 +6,9 @@ const roleHarvester = require('role.harvester');
 const roleTransferer = require('role.transferer');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
+const roleBuilderLD = require('role.builderLD');
 const roleRepairer = require('role.repairer');
+const roleClaimer = require('role.claimer');
 
 
 const roomPlanner = require('module.roomPlanner')
@@ -22,8 +24,18 @@ module.exports.loop = function() {
   Memory.stats = {};
   if (!Memory.mainSystem)
   Memory.mainSystem = {};
+  if (!Memory.cpuTracker)
+  Memory.cpuTracker = {};
   if (!mainSystem.cpuTracker)
   Memory.mainSystem.cpuTracker = true;
+  if (!mainSystem.cpuAvgTick)
+  Memory.mainSystem.cpuAvgTicks = 50;
+
+  if (!Memory.performanceTracker)
+  Memory.performanceTracker = {};
+  if (!Memory.outpostMemory)
+  Memory.outpostMemory = {};
+
 
   function mainSystem() {
     if (Memory.mainSystem) {
@@ -37,6 +49,34 @@ module.exports.loop = function() {
     else {
       return false;
     }
+  }
+
+
+  function setCPUInMemory(name,startCPU,endCPU) {
+    const mainDivider = 1 / 50;
+    const secondairDivider = 1 - mainDivider;
+    if (endCPU == undefined)
+      Memory.stats['cpuTracker.' + name] = secondairDivider * Memory.stats['cpuTracker.' + name] + mainDivider * startCPU;
+    else
+      Memory.stats['cpuTracker.' + name] = secondairDivider * Memory.stats['cpuTracker.' + name] + mainDivider * (endCPU - startCPU);
+  }
+
+  function setCPUInMemoryModules(name,startCPU,endCPU) {
+    const mainDivider = 1 / 50;
+    const secondairDivider = 1 - mainDivider;
+    if (endCPU == undefined)
+      Memory.stats['cpuTrackerModules.' + name] = secondairDivider * Memory.stats['cpuTrackerModules.' + name] + mainDivider * startCPU;
+    else
+      Memory.stats['cpuTrackerModules.' + name] = secondairDivider * Memory.stats['cpuTrackerModules.' + name] + mainDivider * (endCPU - startCPU);
+  }
+
+  function setCPUInMemoryRooms(name,startCPU,endCPU,room) {
+    const mainDivider = 1 / 50;
+    const secondairDivider = 1 - mainDivider;
+    if (endCPU == undefined)
+      Memory.stats["rooms." + room + '.cpuTracker.' + name] = secondairDivider * Memory.stats["rooms." + room + '.cpuTracker' + name] + mainDivider * startCPU;
+    else
+      Memory.stats["rooms." + room + '.cpuTracker.' + name] = secondairDivider * Memory.stats["rooms." + room + '.cpuTracker' + name] + mainDivider * (endCPU - startCPU);
   }
 
   function removeDeadCreepsMemory() {
@@ -70,6 +110,12 @@ module.exports.loop = function() {
         if (creep.memory.role.includes("repairer")) {
           roleRepairer.run(creep);
         }
+        if (creep.memory.role.includes("claimer")) {
+          roleClaimer.run(creep);
+        }
+        if (creep.memory.role.includes("builderLD")) {
+          roleBuilderLD.run(creep);
+        }
       }
     }
   }
@@ -82,7 +128,7 @@ module.exports.loop = function() {
     Memory;
 
     // Set the average CPU Usage in the memory //
-    Memory.stats['cpuTracker.loadMemory.avg50'] = 0.98 * Memory.stats['cpuTracker.loadMemory.avg50'] + 0.02 * (Game.cpu.getUsed() - start);
+    setCPUInMemory("loadMemory",start,Game.cpu.getUsed());
   }
   else {
     // Run the part without tracking //
@@ -98,7 +144,7 @@ module.exports.loop = function() {
     removeDeadCreepsMemory();
 
     // Set the average CPU Usage in the memory //
-    Memory.stats['cpuTracker.removeDeadCreepsMemory.avg50'] = 0.98 * Memory.stats['cpuTracker.removeDeadCreepsMemory.avg50'] + 0.02 * (Game.cpu.getUsed() - start);
+    setCPUInMemory("removeDeadCreepsMemory",start,Game.cpu.getUsed());
   }
   else {
     // Run the part without tracking //
@@ -114,7 +160,7 @@ module.exports.loop = function() {
     runCreeps();
 
     // Set the average CPU Usage in the memory //
-    Memory.stats['cpuTracker.runCreeps.avg50'] = 0.98 * Memory.stats['cpuTracker.runCreeps.avg50'] + 0.02 * (Game.cpu.getUsed() - start);
+    setCPUInMemory("runCreeps",start,Game.cpu.getUsed());
   }
   else {
     // Run the part without tracking //
@@ -133,7 +179,7 @@ module.exports.loop = function() {
   let totalCPURunGameTimeTimers = 0;
   let totalCPUCheckMissingMemory = 0;
   let totalCPURunRoomPlanner = 0;
-
+  let totalCPUClaimerCode = 0;
 
   _.forEach(Object.keys(Game.rooms), function (roomName) {
     const room = Game.rooms[roomName];
@@ -177,6 +223,7 @@ module.exports.loop = function() {
       let upgraderCount = 0;
       let upgraderWorkCount = 0;
       let repairerCount = 0;
+      let claimerCount = 0;
 
       function createSurroundingConstructionSite(id,range,controllerLevel) {
         let object = Game.getObjectById(id);
@@ -328,6 +375,13 @@ module.exports.loop = function() {
         else if (controller.level == 8) {
           flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 200);
         }
+      }
+
+      function claimerCode() {
+          if (Game.flags["claim"] !== undefined) {
+            if (!Memory.flags["claim"])
+            Memory.flags["claim"] = {};
+          }
       }
 
       function getOpenSpotsNearSource(source) {
@@ -502,7 +556,7 @@ module.exports.loop = function() {
               parts.push(MOVE);
           }
         }
-        else if (role.includes("builder")) {
+        else if (role == "builder") {
           const energyCost = 300;
           let partAmount = Math.floor(energyAvailable/energyCost);
           for (let i = 0; i < partAmount && i < 10; i++) {
@@ -513,7 +567,24 @@ module.exports.loop = function() {
               parts.push(MOVE);
           }
         }
-        else if (role.includes("repairer")) {
+        else if (role = "repairer") {
+          const energyCost = 300;
+          let partAmount = Math.floor(energyAvailable/energyCost);
+          for (let i = 0; i < partAmount && i < 10; i++) {
+              parts.push(WORK);
+              parts.push(CARRY);
+              parts.push(CARRY);
+              parts.push(MOVE);
+              parts.push(MOVE);
+          }
+        }
+        else if (role == "claimer") {
+          const energyCost = 650;
+          let partAmount = Math.floor(energyAvailable/energyCost);
+          parts.push(CLAIM);
+          parts.push(MOVE);
+        }
+        else if (role == "builderLD") {
           const energyCost = 300;
           let partAmount = Math.floor(energyAvailable/energyCost);
           for (let i = 0; i < partAmount && i < 10; i++) {
@@ -535,27 +606,33 @@ module.exports.loop = function() {
 
 
           if (role !== undefined && creep.memory.spawnRoom == room.name) {
-            if (creep.memory.role.includes("harvester-0")) {
+            if (creep.memory.role == "harvester-0") {
               harvester0Count++;
               harvester0WorkCount += creep.getActiveBodyparts(WORK);
             }
-            if (creep.memory.role.includes("harvester-1")) {
+            if (creep.memory.role == "harvester-1") {
               harvester1Count++;
               harvester1WorkCount += creep.getActiveBodyparts(WORK);
             }
-            if (creep.memory.role.includes("transferer")) {
+            if (creep.memory.role == "transferer") {
               transfererCount++;
               transfererCarryCount += creep.getActiveBodyparts(CARRY);
             }
-            if (creep.memory.role.includes("builder")) {
+            if (creep.memory.role == "builder") {
               builderCount++;
             }
-            if (creep.memory.role.includes("upgrader")) {
+            if (creep.memory.role == "upgrader") {
               upgraderCount++;
               upgraderWorkCount += creep.getActiveBodyparts(WORK);
             }
-            if (creep.memory.role.includes("repairer")) {
+            if (creep.memory.role == "repairer") {
               repairerCount++;
+            }
+            if (creep.memory.role == "claimer") {
+              claimerCount++;
+            }
+            if (creep.memory.role == "builderLD") {
+              builderLDCount++;
             }
           }
         }
@@ -563,14 +640,14 @@ module.exports.loop = function() {
 
       function spawnManager() {
         getCreepAmount();
-        const roleArray = ["transferer","harvester-0","harvester-1","builder","upgrader","repairer"]
+        const roleArray = ["transferer","harvester-0","harvester-1","builder","upgrader","repairer","claimer"]
 
         for (let i = 0; i < roleArray.length; i++) {
           if (roleArray[i] == "transferer") {
             if (roomNeedsTransferer()) {
               if (room.links.length < 4) {
-                const neededTransfererCount = 5;
-                if (transfererCount < neededTransfererCount) {
+                let neededTransfererCount = transfererCarryCount;
+                if (transfererCarryCount < 40) {
                   spawnCreep(spawn,"transferer");
                   i = 10;
                 }
@@ -619,11 +696,25 @@ module.exports.loop = function() {
               }
             }
           }
+          else if (roleArray[i] == "claimer") {
+            if (claimerCount < 1 && Game.flags["claim"]) {
+              if (roomName == Memory.flags["claim"].spawnRoom) {
+                spawnCreep(spawn,getCreepSize("claimer"),"claimer",roomName);
+                i = 10;
+              }
+            }
+          }
+          else if (roleArray[i] == "builderLD") {
+            if (builderLDCount <3 && Game.flags["builderLD" + roomName]) {
+              spawnCreep(spawn,"builderLD");
+              i = 10;
+            }
+          }
         }
       }
 
       function getDamagedStructures() {
-        if (flagMemory.enemyCount == 0) {
+        if (flagMemory.enemyCount == 0 && flagMemory.repairTarget) {
           let repairAmount = 1 * 1000 * 1000 // 1 Million
           if (flagMemory.repairTarget.length == 0 && Game.time % 10000 == 0) {
             let repairTarget = flagMemory.repairTarget;
@@ -758,6 +849,9 @@ module.exports.loop = function() {
           flagMemory.enemyCount = 0;
         if (!flagMemory.repairTarget)
           flagMemory.repairTarget = [];
+
+        if (!flagMemory.harvesterCPU)
+          flagMemory.harvesterCPU = {};
       }
 
       function runRoomPlanner() {
@@ -765,6 +859,34 @@ module.exports.loop = function() {
           roomPlanner.run()
           flagMemory.controllerLevel = room.controller.level;
         }
+      }
+
+      function runCPUTracker() {
+        totalCPUHarvestingModule += Memory.cpuTracker["harvesterCPU.total"];
+      }
+
+      function deleteMemory() {
+        delete Memory.stats['cpuTracker.loadMemory'];
+        delete Memory.stats['cpuTracker.removeDeadCreepsMemory'];
+        delete Memory.stats['cpuTracker.runCreeps'];
+        delete Memory.stats['cpuTracker.getFirstOpenSpawn'];
+        delete Memory.stats['cpuTracker.defendRoom'];
+        delete Memory.stats['cpuTracker.getDamagedStructures'];
+        delete Memory.stats['cpuTracker.runGameTimeTimers'];
+        delete Memory.stats['cpuTracker.checkMissingMemory'];
+        delete Memory.stats['cpuTracker.runRoomPlanner'];
+        delete Memory.stats['cpuTracker.runRoomCPUTracker'];
+        delete Memory.stats['cpuTracker.claimerCode'];
+
+        delete Memory.cpuTracker["harvesterCPU.total"];
+        delete Memory.cpuTracker["upgraderCPU.total"];
+        delete Memory.cpuTracker["transferCPU.total"];
+        delete Memory.cpuTracker["withdrawCPU.upgrader"];
+        delete Memory.cpuTracker["withdrawCPU.normal"];
+
+        delete Memory.stats['cpu.avg50'];
+        delete Memory.stats['cpu.avg1000'];
+        delete Memory.stats['cpu.bucket'];
       }
 
 
@@ -847,21 +969,49 @@ module.exports.loop = function() {
         // Run the part without tracking //
         runRoomPlanner();
       }
+
+
+      if (mainSystem()) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
+
+        // Run the part //
+        claimerCode();
+
+        // Set the average CPU Usage in the memory //
+        totalCPUClaimerCode += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        claimerCode();
+      }
     }
   });
 
 
   function runRoomCPUTracker() {
     if (mainSystem()) {
-      Memory.stats['cpuTracker.getFirstOpenSpawn.avg50'] = 0.98 * Memory.stats['cpuTracker.getFirstOpenSpawn.avg50'] + 0.02 * totalCPUGetFirstOpenSpawn;
-      Memory.stats['cpuTracker.defendRoom.avg50'] = 0.98 * Memory.stats['cpuTracker.defendRoom.avg50'] + 0.02 * totalCPUDefendRoom;
-      Memory.stats['cpuTracker.getDamagedStructures.avg50'] = 0.98 * Memory.stats['cpuTracker.getDamagedStructures.avg50'] + 0.02 * totalCPUGetDamagedStructures;
-      Memory.stats['cpuTracker.runGameTimeTimers.avg50'] = 0.98 * Memory.stats['cpuTracker.runGameTimeTimers.avg50'] + 0.02 * totalCPURunGameTimeTimers;
-      Memory.stats['cpuTracker.checkMissingMemory.avg50'] = 0.98 * Memory.stats['cpuTracker.checkMissingMemory.avg50'] + 0.02 * totalCPUCheckMissingMemory;
-      Memory.stats['cpuTracker.runRoomPlanner.avg50'] = 0.98 * Memory.stats['cpuTracker.runRoomPlanner.avg50'] + 0.02 * totalCPURunRoomPlanner;
+      setCPUInMemory("getFirstOpenSpawn",totalCPUGetFirstOpenSpawn);
+      setCPUInMemory("defendRoom",totalCPUDefendRoom);
+      setCPUInMemory("getDamagedStructures",totalCPUGetDamagedStructures);
+      setCPUInMemory("runGameTimeTimers",totalCPURunGameTimeTimers);
+      setCPUInMemory("checkMissingMemory",totalCPUCheckMissingMemory);
+      setCPUInMemory("runRoomPlanner",totalCPURunRoomPlanner);
+      setCPUInMemory("claimerCode",totalCPUClaimerCode);
+
+      setCPUInMemoryModules("harvestingModule",Memory.cpuTracker["harvesterCPU.total"]);
+      setCPUInMemoryModules("upgraderModule",Memory.cpuTracker["upgraderCPU.total"]);
+      setCPUInMemoryModules("transferModule",Memory.cpuTracker["transferCPU.total"]);
+      setCPUInMemoryModules("withdrawModuleUpgrader",Memory.cpuTracker["withdrawCPU.upgrader"]);
+      setCPUInMemoryModules("withdrawModuleNormal",Memory.cpuTracker["withdrawCPU.normal"]);
+      Memory.cpuTracker["harvesterCPU.total"] = 0;
+      Memory.cpuTracker["upgraderCPU.total"] = 0;
+      Memory.cpuTracker["transferCPU.total"] = 0;
+      Memory.cpuTracker["withdrawCPU.upgrader"] = 0;
+      Memory.cpuTracker["withdrawCPU.normal"] = 0;
     }
     else {
-      delete Memory.stats['cpuTracker.getFirstOpenSpawn.avg50'];
+      deleteMemory();
     }
   }
 
