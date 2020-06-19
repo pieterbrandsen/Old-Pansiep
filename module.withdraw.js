@@ -187,7 +187,7 @@ module.exports = {
       else if (room.containers.length > 0)
       withdrawStructure = STRUCTURE_CONTAINER;
       else
-      withdrawStructure = SOURCE;
+      withdrawStructure = null;
 
       return withdrawStructure;
     }
@@ -207,7 +207,7 @@ module.exports = {
         });
         runWithdraw(target);
         break;
-        case SOURCE:
+        case null:
         harvestModule.run(creep);
         default:
         break;

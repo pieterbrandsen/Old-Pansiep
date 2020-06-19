@@ -23,7 +23,7 @@ module.exports = {
         }
       }
       else {
-        creep.travelTo(flag.room.name)
+        creep.travelTo(flag)
       }
     }
   }

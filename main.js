@@ -18,6 +18,12 @@ module.exports.loop = function() {
   let shardArray = ["shard0","shard1","shard2","shard3"];
   let mainSystemMemory = Memory.mainSystem;
 
+  if (Game.cpu.bucket == 10000) {
+    Game.notify("Getting a pixel!");
+    console.log("Getting a pixel!");
+    Game.cpu.generatePixel();
+  }
+
   if (!Memory.flags)
   Memory.flags = {};
   if (!Memory.stats)
@@ -101,7 +107,7 @@ module.exports.loop = function() {
         if (creep.memory.role.includes("transferer")) {
           roleTransferer.run(creep);
         }
-        if (creep.memory.role.includes("builder")) {
+        if (creep.memory.role == "builder") {
           roleBuilder.run(creep);
         }
         if (creep.memory.role.includes("upgrader")) {
@@ -224,6 +230,7 @@ module.exports.loop = function() {
       let upgraderWorkCount = 0;
       let repairerCount = 0;
       let claimerCount = 0;
+      let builderLDCount = 0;
 
       function createSurroundingConstructionSite(id,range,controllerLevel) {
         let object = Game.getObjectById(id);
@@ -510,7 +517,7 @@ module.exports.loop = function() {
         let energyCapacity = flagMemory.totalEnergyCapacity;
         let parts = [];
 
-        if (role.includes("harvester")) {
+        if (role == "harvester") {
           const energyCost = 300;
           let partAmount = Math.floor(energyAvailable/energyCost);
           if (energyAvailable <= 300) {
@@ -528,7 +535,7 @@ module.exports.loop = function() {
             }
           }
         }
-        else if (role.includes("transferer")) {
+        else if (role == "transferer") {
           const energyCost = 100;
           let partAmount = Math.floor(energyAvailable/energyCost);
           if (energyAvailable <= 300) {
@@ -546,7 +553,7 @@ module.exports.loop = function() {
             }
           }
         }
-        else if (role.includes("upgrader")) {
+        else if (role == "upgrader") {
           const energyCost = 300;
           let partAmount = Math.floor(energyAvailable/energyCost);
           for (let i = 0; i < partAmount && i < 5; i++) {
@@ -567,7 +574,7 @@ module.exports.loop = function() {
               parts.push(MOVE);
           }
         }
-        else if (role = "repairer") {
+        else if (role == "repairer") {
           const energyCost = 300;
           let partAmount = Math.floor(energyAvailable/energyCost);
           for (let i = 0; i < partAmount && i < 10; i++) {
@@ -640,75 +647,73 @@ module.exports.loop = function() {
 
       function spawnManager() {
         getCreepAmount();
-        const roleArray = ["transferer","harvester-0","harvester-1","builder","upgrader","repairer","claimer"]
+        const roleArray = ["transferer","harvester-0","harvester-1","builder","upgrader","repairer","claimer","builderLD"]
 
-        for (let i = 0; i < roleArray.length; i++) {
-          if (roleArray[i] == "transferer") {
-            if (roomNeedsTransferer()) {
-              if (room.links.length < 4) {
-                let neededTransfererCount = transfererCarryCount;
-                if (transfererCarryCount < 40) {
-                  spawnCreep(spawn,"transferer");
-                  i = 10;
-                }
-              }
-            }
-          }
-          else if (roleArray[i] == "harvester-0") {
-            if (flagMemory.sources[0] !== undefined) {
-              if (harvester0WorkCount <= 6) {
-                if (flagMemory.sources[0].openSpots > harvester0Count) {
-                  spawnCreep(spawn,"harvester-0");
-                  i = 10;
-                }
-              }
-            }
-          }
-          else if (roleArray[i] == "harvester-1") {
-            if (flagMemory.sources[1] !== undefined) {
-              if (harvester1WorkCount <= 6) {
-                if (flagMemory.sources[1].openSpots > harvester1Count) {
-                  spawnCreep(spawn,"harvester-1");
-                  i = 10;
-                }
-              }
-            }
-          }
-          else if (roleArray[i] == "builder") {
-            if (builderCount < 3) {
-              if (flagMemory.constructionSitesAmount > 0) {
-                spawnCreep(spawn,"builder");
+        if (roleArray[0] == "transferer") {
+          if (roomNeedsTransferer()) {
+            if (room.links.length < 4) {
+              let neededTransfererCount = transfererCarryCount;
+              if (transfererCarryCount < 40) {
+                spawnCreep(spawn,"transferer");
                 i = 10;
               }
             }
           }
-          else if (roleArray[i] == "upgrader") {
-            if (upgraderWorkCount < 15 && upgraderCount < 4 && flagMemory.constructionSitesAmount == 0) {
-              spawnCreep(spawn,"upgrader");
+        }
+        if (roleArray[1] == "harvester-0") {
+          if (flagMemory.sources[0] !== undefined) {
+            if (harvester0WorkCount <= 6) {
+              if (flagMemory.sources[0].openSpots > harvester0Count) {
+                spawnCreep(spawn,"harvester-0");
+                i = 10;
+              }
+            }
+          }
+        }
+        if (roleArray[2] == "harvester-1") {
+          if (flagMemory.sources[1] !== undefined) {
+            if (harvester1WorkCount <= 6) {
+              if (flagMemory.sources[1].openSpots > harvester1Count) {
+                spawnCreep(spawn,"harvester-1");
+                i = 10;
+              }
+            }
+          }
+        }
+        if (roleArray[3] == "builder") {
+          if (builderCount < 3) {
+            if (flagMemory.constructionSitesAmount > 0) {
+              spawnCreep(spawn,"builder");
               i = 10;
             }
           }
-          else if (roleArray[i] == "repairer") {
-            if (repairerCount < 2) {
-              if (room.towers.length == 0) {
-                spawnCreep(spawn,getCreepSize("repairer"),"repairer",roomName);
-                i = 10;
-              }
-            }
+        }
+        if (roleArray[4] == "upgrader") {
+          if (upgraderWorkCount < 10 && upgraderCount < 4 && flagMemory.constructionSitesAmount == 0) {
+            spawnCreep(spawn,"upgrader");
+            i = 10;
           }
-          else if (roleArray[i] == "claimer") {
-            if (claimerCount < 1 && Game.flags["claim"]) {
-              if (roomName == Memory.flags["claim"].spawnRoom) {
-                spawnCreep(spawn,getCreepSize("claimer"),"claimer",roomName);
-                i = 10;
-              }
-            }
-          }
-          else if (roleArray[i] == "builderLD") {
-            if (builderLDCount <3 && Game.flags["builderLD" + roomName]) {
-              spawnCreep(spawn,"builderLD");
+        }
+        if (roleArray[5] == "repairer") {
+          if (repairerCount < 2) {
+            if (room.towers.length == 0) {
+              spawnCreep(spawn,"repairer",roomName);
               i = 10;
             }
+          }
+        }
+        if (roleArray[6] == "claimer") {
+          if (claimerCount < 1 && Game.flags["claim"]) {
+            if (roomName == Memory.flags["claim"].spawnRoom) {
+              spawnCreep(spawn,"claimer",roomName);
+              i = 10;
+            }
+          }
+        }
+        if (roleArray[7] == "builderLD") {
+          if (builderLDCount < 3 && Game.flags["builderLD" + roomName]) {
+            spawnCreep(spawn,"builderLD");
+            i = 10;
           }
         }
       }
@@ -750,7 +755,7 @@ module.exports.loop = function() {
       }
 
       function runGameTimeTimers() {
-        if (Game.time % 10 == 0) {
+        if (Game.time % 2 == 0) {
           flagMemory.enemyCount = room.find(FIND_HOSTILE_CREEPS).length;
           getSpawningEnergy();
 
@@ -758,23 +763,24 @@ module.exports.loop = function() {
             spawnManager();
           }
 
+          if (flagMemory.lins) {
+            if (flagMemory.links.linkTo1 && flagMemory.links.linkTo2) {
+              let linkTo1 = Game.getObjectById(flagMemory.links.linkTo1);
+              let linkTo2 = Game.getObjectById(flagMemory.links.linkTo2);
+              linkTo1.transferEnergy(linkTo2)
+            }
 
-          if (flagMemory.links.linkTo1 && flagMemory.links.linkTo2) {
-            let linkTo1 = Game.getObjectById(flagMemory.links.linkTo1);
-            let linkTo2 = Game.getObjectById(flagMemory.links.linkTo2);
-            linkTo1.transferEnergy(linkTo2)
-          }
+            if (flagMemory.links.linkFrom1 && flagMemory.links.linkTo1) {
+              let linkFrom1 = Game.getObjectById(flagMemory.links.linkFrom1);
+              let linkTo1 = Game.getObjectById(flagMemory.links.linkTo1);
+              linkFrom1.transferEnergy(linkTo1)
+            }
 
-          if (flagMemory.links.linkFrom1 && flagMemory.links.linkTo1) {
-            let linkFrom1 = Game.getObjectById(flagMemory.links.linkFrom1);
-            let linkTo1 = Game.getObjectById(flagMemory.links.linkTo1);
-            linkFrom1.transferEnergy(linkTo1)
-          }
-
-          if (flagMemory.links.linkFrom2 && flagMemory.links.linkTo1) {
-            let linkFrom2 = Game.getObjectById(flagMemory.links.linkFrom2);
-            let linkTo1 = Game.getObjectById(flagMemory.links.linkTo1);
-            linkFrom2.transferEnergy(linkTo1)
+            if (flagMemory.links.linkFrom2 && flagMemory.links.linkTo1) {
+              let linkFrom2 = Game.getObjectById(flagMemory.links.linkFrom2);
+              let linkTo1 = Game.getObjectById(flagMemory.links.linkTo1);
+              linkFrom2.transferEnergy(linkTo1)
+            }
           }
         }
 
@@ -821,18 +827,19 @@ module.exports.loop = function() {
         }
 
 
+        if (flagMemory.sources) {
+          if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
+            const sources = room.find(FIND_SOURCES);
+            sources.forEach((item, i) => {
+              flagMemory.sources[i] = {}
+              flagMemory.sources[i].id = sources[i].id;
+              createSurroundingConstructionSite(flagMemory.sources[i].id,2,7);
+              flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
+            });
 
-        if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
-          const sources = room.find(FIND_SOURCES);
-          sources.forEach((item, i) => {
-            flagMemory.sources[i] = {}
-            flagMemory.sources[i].id = sources[i].id;
-            createSurroundingConstructionSite(flagMemory.sources[i].id,2,7);
-            flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
-          });
-
-          flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
-          createSurroundingConstructionSite(room.controller.id,3,6);
+            flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
+            createSurroundingConstructionSite(room.controller.id,3,6);
+          }
         }
       }
 
@@ -1032,8 +1039,8 @@ module.exports.loop = function() {
   }
 
 
-
     Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
     Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
     Memory.stats['cpu.bucket'] = Game.cpu.bucket;
+    Memory.stats['resources.pixel.total'] = Game.resources.pixel;
 };

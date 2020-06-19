@@ -21,9 +21,11 @@ module.exports = {
       const runClaimController = creep.claimController(target);
       switch(runClaimController) {
         case OK:
-          creep.say("Claimed");
-          creep.room.createFlag("builderLD"+creep.memory.spawnRoom);
-          creep.suicide();
+        creep.say("Claimed");
+        creep.room.createFlag(25,25,"builderLD"+creep.memory.spawnRoom);
+        creep.room.createConstructionSite(Game.flags["claim"].pos,STRUCTURE_SPAWN,creep.room.name+"-1");
+        Game.flags["claim"].remove();
+        creep.suicide();
           break;
         case ERR_NOT_OWNER:
           break;
