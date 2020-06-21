@@ -2,7 +2,7 @@ const builderModule = require('module.builder');
 
 module.exports = {
   run: function(creep) {
-    const flagMemory = Memory.flags[creep.room.name]
+    const flagMemory = Memory.flags[creep.room.name];
 
 
     function mainSystem() {
@@ -22,10 +22,11 @@ module.exports = {
     }
 
     function transferTarget() {
+      const energy = creep.store.getUsedCapacity(RESOURCE_ENERGY);
       const target = creep.transfer(Game.getObjectById(creep.memory.targetId),RESOURCE_ENERGY);
       switch(target) {
         case OK:
-        creep.say("Transfer")
+        creep.say("Transfer");
         creep.memory.targetId = "";
         case ERR_NOT_OWNER:
         break;
@@ -75,17 +76,18 @@ module.exports = {
             || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
           ) && s.energy < s.energyCapacity
         });
-        const controllerStorage = creep.room.controller.pos.findClosestByRange((creep.room.containers || creep.room.links), {filter: (structure) => {
-          return (structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity() < structure.store.getCapacity())
-        }});
+        const controllerStorage = Game.getObjectById(flagMemory.controllerStorage);
 
         if (target !== null)
         creep.memory.targetId = target.id;
         else
           if (controllerStorage)
-          creep.memory.targetId = controllerStorage.id;
-          else
-          creep.travelTo(creep.room.controller);
+            if (controllerStorage.store.getUsedCapacity() < 1500)
+            creep.memory.targetId = controllerStorage.id;
+            else if (creep.room.storage)
+            creep.memory.targetId = creep.room.storage.id
+          else if (creep.room.storage)
+          creep.memory.targetId = creep.room.storage.id
       }
     }
 

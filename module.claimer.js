@@ -19,11 +19,11 @@ module.exports = {
     function claimRoom() {
       const target = creep.room.controller;
       const runClaimController = creep.claimController(target);
+
       switch(runClaimController) {
         case OK:
         creep.say("Claimed");
         creep.room.createFlag(25,25,"builderLD"+creep.memory.spawnRoom);
-        creep.room.createConstructionSite(Game.flags["claim"].pos,STRUCTURE_SPAWN,creep.room.name+"-1");
         Game.flags["claim"].remove();
         creep.suicide();
           break;
@@ -32,12 +32,14 @@ module.exports = {
         case ERR_BUSY:
           break;
         case ERR_INVALID_TARGET:
+          creep.attackController(creep.room.controller);
+          creep.travelTo(target);
           break;
         case ERR_FULL:
           break;
         case ERR_NOT_IN_RANGE:
           creep.say("Moving");
-          creep.moveTo(target);
+          creep.travelTo(target);
           break;
         case ERR_NO_BODYPART:
           break;

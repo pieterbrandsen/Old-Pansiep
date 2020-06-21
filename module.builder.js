@@ -2,7 +2,11 @@ module.exports = {
   run: function(creep) {
     // If creep has no targetId assign a empty string //
     if (!creep.memory.targetId)
-      creep.memory.targetId = "";
+    creep.memory.targetId = "";
+
+    if (!creep.memory.builderWorkCount) {
+      creep.memory.builderWorkCount = creep.getActiveBodyparts(WORK);
+    }
 
 
     function mainSystem() {
@@ -28,6 +32,9 @@ module.exports = {
       if (!findNewTarget) {
         // If no target is found, reset constructionSiteAmount and suicide //
         Memory.flags[creep.room.name].constructionSitesAmount = 0;
+        console.log(true)
+        if (Game.flags["builderLD"+creep.memory.spawnRoom])
+        Game.flags["builderLD"+creep.memory.spawnRoom].remove();
         creep.suicide()
       }
       else {
@@ -49,10 +56,12 @@ module.exports = {
 
     function buildTarget() {
       const runBuilder = creep.build(Game.getObjectById(creep.memory.targetId));
-
       switch(runBuilder) {
         case OK:
-          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%")
+          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
+          if (creep.memory.builderWorkCount) {
+            Memory.performanceTracker[creep.room.name + ".builderEnergy"] += creep.memory.builderWorkCount * 2;
+          }
           break;
         case ERR_NOT_OWNER:
           break;

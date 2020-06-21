@@ -26,5 +26,8 @@ module.exports = {
         creep.travelTo(flag)
       }
     }
+    else {
+      creep.suicide();
+    }
   }
 };

@@ -4,9 +4,6 @@ module.exports = {
     const flagMemory = Memory.flags[creep.room.name];
     const target = Game.getObjectById(creep.memory.sourceId);
 
-    if (!creep.memory.harvesterWorkCount) {
-      creep.memory.harvesterWorkCount = creep.getActiveBodyparts(WORK);
-    }
 
     function mainSystem() {
       // If Memory.mainSystem is defined //
@@ -30,27 +27,7 @@ module.exports = {
 
       // If there are sources found get the source that matches the name else get the nearest source //
       if (sources.length > 0) {
-        if (creep.name.includes("0-")) {
-          creep.memory.sourceId = sources[0].id;
-        }
-        else if (creep.name.includes("1-")) {
-          creep.memory.sourceId = sources[1].id;
-        }
-        else if (creep.name.includes("2-")) {
-          creep.memory.sourceId = sources[2].id;
-        }
-        else if (creep.name.includes("3-")) {
-          creep.memory.sourceId = sources[3].id;
-        }
-        else {
-          if (creep.memory.role.includes("extractor")) {
-            if (flagMemory.mineralId)
-            creep.memory.sourceId = flagMemory.mineralId;
-          }
-          else {
-            creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
-          }
-        }
+        creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
       }
     }
 
@@ -59,12 +36,9 @@ module.exports = {
 
       switch(runHarvest) {
         case OK:
-          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%")
+          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
           if (creep.memory.harvesterWorkCount && creep.memory.role.includes("harvester")) {
             Memory.performanceTracker[creep.room.name + ".energyHarvested"] += creep.memory.harvesterWorkCount * 2;
-          }
-          else if (creep.memory.harvesterWorkCount && creep.memory.role.includes("extractor")) {
-            Memory.performanceTracker[creep.room.name + ".mineralHarvested"] += creep.memory.harvesterWorkCount;
           }
           break;
         case ERR_NOT_OWNER:
@@ -75,19 +49,13 @@ module.exports = {
           creep.room.createConstructionSite(target.pos,STRUCTURE_EXTRACTOR);
           break;
         case ERR_NOT_ENOUGH_RESOURCES:
-          if (target.mineralAmount) {
-            if (target.mineralAmount == 0) {
-              console.log(`The mineral is empty in room ${creep.room.name}.`);
-              flagMemory.mineralAmount = 0;
-              creep.suicide();
-            }
-          }
+          findNewTarget();
           break;
         case ERR_INVALID_TARGET:
           break;
         case ERR_NOT_IN_RANGE:
           creep.say("Moving");
-          creep.moveTo(target);
+          creep.travelTo(target);
           break;
         case ERR_TIRED:
           break;

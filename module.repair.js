@@ -5,6 +5,9 @@ module.exports = {
       filter: (s) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL && s.structureType !== STRUCTURE_RAMPART
     });
 
+    if (!creep.memory.repairerWorkCount) {
+      creep.memory.repairerWorkCount = creep.getActiveBodyparts(WORK);
+    }
 
     function mainSystem() {
       // If Memory.mainSystem is defined //
@@ -21,12 +24,15 @@ module.exports = {
         return false;
       }
     }
-    
+
     function repairTarget() {
       const runRepair = creep.repair(target);
       switch(runRepair) {
         case OK:
-          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%")
+          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
+          if (creep.memory.repairerWorkCount) {
+            Memory.performanceTracker[creep.room.name + ".repairerEnergy"] += creep.memory.repairerWorkCount;
+          }
           break;
         case ERR_NOT_OWNER:
           break;

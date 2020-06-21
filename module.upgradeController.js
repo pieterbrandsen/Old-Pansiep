@@ -2,6 +2,13 @@ const builderModule = require('module.builder');
 
 module.exports = {
   run: function(creep) {
+    const flagMemory = Memory.flags[creep.room.name];
+
+    if (!creep.memory.upgraderWorkCount) {
+      creep.memory.upgraderWorkCount = creep.getActiveBodyparts(WORK);
+    }
+
+
     function mainSystem() {
       // If Memory.mainSystem is defined //
       if (Memory.mainSystem) {
@@ -25,7 +32,10 @@ module.exports = {
 
         switch(runUpgrade) {
           case OK:
-            creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%")
+            creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
+            if (creep.memory.upgraderWorkCount) {
+              Memory.performanceTracker[creep.room.name + ".upgraderEnergy"] += creep.memory.upgraderWorkCount;
+            }
             break;
           case ERR_NOT_OWNER:
             break;
@@ -37,7 +47,7 @@ module.exports = {
             break;
           case ERR_NOT_IN_RANGE:
             creep.say("Moving");
-            creep.moveTo(creep.room.controller);
+            creep.travelTo(creep.room.controller);
             break;
           case ERR_NO_BODYPART:
             break;
@@ -49,7 +59,7 @@ module.exports = {
 
     function runModule() {
       // If creep has no target, go build //
-      if (!creep.memory.targetId) {
+      if (!flagMemory.controllerStorage) {
         builderModule.run(creep);
       }
       else {
