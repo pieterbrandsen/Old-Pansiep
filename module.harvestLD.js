@@ -22,12 +22,31 @@ module.exports = {
     }
 
     function findNewSourceInRoom() {
-      // Get the energy sources in the room //
-      const sources = creep.room.find(FIND_SOURCES);
+      if (creep.memory.role.includes("harvesterLD")) {
+        const sources = creep.room.find(FIND_SOURCES);
+        if (creep.name.includes("0-")) {
+          creep.memory.sourceId = sources[0].id;
+        }
+        else if (creep.name.includes("1-")) {
+          creep.memory.sourceId = sources[1].id;
+        }
+        else if (creep.name.includes("2-")) {
+          creep.memory.sourceId = sources[2].id;
+        }
+        else if (creep.name.includes("3-")) {
+          creep.memory.sourceId = sources[3].id;
+        }
+      }
+      else {
+        if (Game.time % 10 == 0) {
+          // Get the energy sources in the room //
+          const sources = creep.room.find(FIND_SOURCES_ACTIVE);
 
-      // If there are sources found get the source that matches the name else get the nearest source //
-      if (sources.length > 0) {
-        creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
+          // If there are sources found get the source that matches the name else get the nearest source //
+          if (sources.length > 0) {
+            creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
+          }
+        }
       }
     }
 
@@ -49,7 +68,7 @@ module.exports = {
           creep.room.createConstructionSite(target.pos,STRUCTURE_EXTRACTOR);
           break;
         case ERR_NOT_ENOUGH_RESOURCES:
-          findNewTarget();
+          findNewSourceInRoom();
           break;
         case ERR_INVALID_TARGET:
           break;
@@ -87,7 +106,7 @@ module.exports = {
 
       // Set the average CPU Usage in the memory //
 
-      Memory.cpuTracker["harvesterCPU.total"] += Game.cpu.getUsed() - start;
+      Memory.cpuTracker["harvesterLDCPU.total"] += Game.cpu.getUsed() - start;
     }
     else {
       // Run the part without tracking //

@@ -71,6 +71,11 @@ module.exports = {
         room.createConstructionSite(x+5, y+2, STRUCTURE_EXTENSION);
       }
       if (controllerLevel >= 6) {
+        const mineral = room.find(FIND_MINERALS)[0];
+        if (mineral)
+        room.createConstructionSite(mineral,STRUCTURE_EXTRACTOR)
+
+
         room.createConstructionSite(x+1, y, STRUCTURE_TERMINAL);
 
 

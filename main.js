@@ -8,10 +8,16 @@ const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
 const roleBuilderLD = require('role.builderLD');
 const roleRepairer = require('role.repairer');
+const roleExtractor = require('role.extractor');
 const roleClaimer = require('role.claimer');
+
 const rolePixelFarmer = require('role.pixelFarmer');
 const roleRuinWithdrawer = require('role.ruinWithdrawer');
+const roleShardUp = require('role.shardUp');
 
+const roleReserverLD = require('role.reserver');
+const roleHarvesterLD = require('role.harvesterLD');
+const roleTransfererLD = require('role.transfererLD');
 
 const roomPlanner = require('module.roomPlanner')
 
@@ -105,7 +111,7 @@ module.exports.loop = function() {
   }
 
   function removeDeadCreepsMemory() {
-    if (Game.time % 50 == 0) {
+    if (Game.time % 10 == 0) {
       for (let name in Memory.creeps) {
         if (Game.creeps[name] === undefined) {
           delete Memory.creeps[name];
@@ -120,36 +126,69 @@ module.exports.loop = function() {
       let role = creep.memory.role
 
       if (role) {
-        if (creep.memory.role.includes("harvester")) {
+        if (creep.memory.role == "harvester-0" || creep.memory.role == "harvester-1") {
           roleHarvester.run(creep);
         }
-        if (creep.memory.role.includes("transferer")) {
+        else if (creep.memory.role == "transferer") {
           roleTransferer.run(creep);
         }
-        if (creep.memory.role == "builder") {
+        else if (creep.memory.role == "builder") {
           roleBuilder.run(creep);
         }
-        if (creep.memory.role.includes("upgrader")) {
+        else if (creep.memory.role == "upgrader") {
           roleUpgrader.run(creep);
         }
-        if (creep.memory.role.includes("repairer")) {
+        else if (creep.memory.role == "repairer") {
           roleRepairer.run(creep);
         }
-        if (creep.memory.role.includes("claimer")) {
+        else if (creep.memory.role == "extractor") {
+          roleExtractor.run(creep);
+        }
+        else if (creep.memory.role == "claimer") {
           roleClaimer.run(creep);
         }
-        if (creep.memory.role.includes("builderLD")) {
+        else if (creep.memory.role == "builderLD") {
           roleBuilderLD.run(creep);
         }
-        if (creep.memory.role.includes("pixelFarmer")) {
+        else if (creep.memory.role == "pixelFarmer") {
           rolePixelFarmer.run(creep);
         }
-        if (creep.memory.role.includes("ruinWithdrawer")) {
+        else if (creep.memory.role == "ruinWithdrawer") {
           roleRuinWithdrawer.run(creep);
+        }
+        else if (creep.memory.role == "reserverLD") {
+          roleReserverLD.run(creep);
+        }
+        else if (creep.memory.role.includes("harvesterLD")) {
+          roleHarvesterLD.run(creep);
+        }
+        else if (creep.memory.role == "transfererLD") {
+          roleTransfererLD.run(creep);
+        }
+        else if (creep.memory.role == "shardUp") {
+          roleShardUp.run(creep);
         }
       }
       else {
-        creep.memory.role = "pixelFarmer";
+        if (shardName == "shard0") {
+          if (creep.getActiveBodyparts(CLAIM) > 0) {
+            creep.memory.role = "claimer";
+          }
+          else if (creep.getActiveBodyparts(WORK) > 0) {
+            creep.memory.working = false;
+            creep.memory.spawnRoom = "E42N2";
+            creep.memory.role = "builderLD";
+          }
+          else {
+            creep.memory.role  = "pixelFarmer";
+          }
+        }
+        else {
+          if (creep.getActiveBodyparts(WORK) > 0 || creep.getActiveBodyparts(CLAIM) > 0)
+          creep.memory.role = "shardUp";
+          else
+          creep.memory.role  = "pixelFarmer";
+        }
       }
     }
   }
@@ -217,6 +256,8 @@ module.exports.loop = function() {
   let totalCPUTracking = 0;
   let totalCPUPerformanceTracking = 0;
 
+  let longDistanceCreepsHasBeenCounted = false;
+
   _.forEach(Object.keys(Game.rooms), function (roomName) {
     const room = Game.rooms[roomName];
     const controller = Game.rooms[roomName].controller;
@@ -248,21 +289,6 @@ module.exports.loop = function() {
         spawn = getFirstOpenSpawn();
       }
 
-
-      let harvester0Count  = 0;
-      let harvester0WorkCount = 0;
-      let harvester1Count  = 0;
-      let harvester1WorkCount = 0;
-      let transfererCount = 0;
-      let transfererCarryCount = 0;
-      let builderCount = 0;
-      let upgraderCount = 0;
-      let upgraderWorkCount = 0;
-      let repairerCount = 0;
-      let claimerCount = 0;
-      let builderLDCount = 0;
-      let pixelFarmerCount = 0;
-      let ruinWithdrawerCount = 0;
 
       function createSurroundingConstructionSite(id,range,controllerLevel) {
         let object = Game.getObjectById(id);
@@ -500,7 +526,9 @@ module.exports.loop = function() {
 
         if (containerAmount > 0) {
           room.containers.forEach((item, i) => {
-            energyStored += room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
+            if (room.containers[i].id !== flagMemory.controllerStorage  ) {
+              energyStored += room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
+            }
           });
         }
         if (room.terminal !== undefined) {
@@ -511,7 +539,13 @@ module.exports.loop = function() {
         }
         if (linkAmount > 0) {
           room.links.forEach((item, i) => {
-            energyStored += room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
+            if (flagMemory.links) {
+              if (flagMemory.links.linkTo1) {
+                if (room.links[i].id == flagMemory.links.linkTo1 && room.terminal) {
+                  energyStored += room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
+                }
+              }
+            }
           });
         }
 
@@ -521,8 +555,14 @@ module.exports.loop = function() {
         else return false;
       }
 
-      function spawnCreep(spawn,role) {
-        let name = role + "-" + Math.round(Math.random() * 100)
+      function spawnCreep(spawn,role,targetRoom,flagName) {
+        let name = role + "-" + Math.round(Math.random() * 100);
+        if (!targetRoom)
+        targetRoom = roomName;
+        if (!flagName)
+        flagName = roomName;
+
+
         return spawn.spawnCreep(
           getCreepSize(role),
           name,
@@ -531,6 +571,8 @@ module.exports.loop = function() {
               working: false,
               role: role,
               spawnRoom: roomName,
+              targetRoom: targetRoom,
+              flagName: flagName
             }
           }
         )
@@ -612,9 +654,9 @@ module.exports.loop = function() {
         else if (role == "claimer") {
           const energyCost = 650;
           let partAmount = Math.floor(energyAvailable/energyCost);
-          // parts.push(CLAIM);
-          // parts.push(MOVE);
-          parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
+          parts.push(CLAIM);
+          parts.push(MOVE);
+          //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
         }
         else if (role == "builderLD") {
           const energyCost = 300;
@@ -641,58 +683,155 @@ module.exports.loop = function() {
             parts.push(MOVE);
           }
         }
+        else if (role == "reserverLD") {
+          const energyCost = 750;
+          let partAmount = Math.floor(energyAvailable/energyCost);
+          for (let i = 0; i < 2 && partAmount > 1&& i < partAmount; i++) {
+            parts.push(CLAIM);
+            parts.push(MOVE);
+            parts.push(MOVE);
+            parts.push(MOVE);
+          }
+        }
+        else if (role.includes("harvesterLD")) {
+          const energyCost = 350;
+          let partAmount = Math.floor(energyAvailable/energyCost);
+          for (let i = 0; i < 4; i++) {
+            parts.push(CARRY);
+            parts.push(WORK);
+            parts.push(WORK);
+            parts.push(MOVE);
+            parts.push(MOVE);
+          }
+        }
+        else if (role == "transfererLD") {
+          const energyCost = 100;
+          let partAmount = Math.floor(energyAvailable/energyCost);
+          for (let i = 0; i < partAmount && partAmount >= 18 && i < 24; i++) {
+            parts.push(CARRY);
+            parts.push(MOVE);
+          }
+        }
+
+        // else if (role == "shardUp") { // claimer
+        //   const energyCost = 650;
+        //   let partAmount = Math.floor(energyAvailable/energyCost);
+        //   parts.push(CLAIM);
+        //   parts.push(MOVE);
+        //   //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
+        // }
+        else if (role == "shardUp") { // builder
+          const energyCost = 300;
+          let partAmount = Math.floor(energyAvailable/energyCost);
+          for (let i = 0; i < partAmount && i < 10; i++) {
+            parts.push(WORK);
+            parts.push(CARRY);
+            parts.push(CARRY);
+            parts.push(MOVE);
+            parts.push(MOVE);
+          }
+        }
+
 
         return parts;
       }
 
-      function getCreepAmount(role) {
-        for (let name in Game.creeps) {
-          let creep = Game.creeps[name];
-          let role = creep.memory.role
+      function getCreepAmount() {
+        if (longDistanceCreepsHasBeenCounted == false) {
+          for (let name in Game.creeps) {
+            let creep = Game.creeps[name];
+            let role = creep.memory.role;
+            const flagMemory = Memory.flags[creep.room.name];
 
+            if (!flagMemory.creepAmount) {
+              console.log(roomName)
+              flagMemory.creepAmount = {};
+            }
+            if (role !== undefined && creep.memory.targetRoom == creep.memory.spawnRoom && flagMemory.creepAmount) {
+              if (creep.memory.role == "harvester-0") {
+                flagMemory.creepAmount.harvester0Count++;
+                flagMemory.creepAmount.harvester0WorkCount += creep.getActiveBodyparts(WORK);
+              }
+              if (creep.memory.role == "harvester-1") {
+                flagMemory.creepAmount.harvester1Count++;
+                flagMemory.creepAmount.harvester1WorkCount += creep.getActiveBodyparts(WORK);
+              }
+              if (creep.memory.role == "transferer") {
+                flagMemory.creepAmount.transfererCount++;
+                flagMemory.creepAmount.transfererCarryCount += creep.getActiveBodyparts(CARRY);
+              }
+              if (creep.memory.role == "builder") {
+                flagMemory.creepAmount.builderCount++;
+                flagMemory.creepAmount.builderWorkCount += creep.getActiveBodyparts(WORK);
+              }
+              if (creep.memory.role == "upgrader") {
+                flagMemory.creepAmount.upgraderCount++;
+                flagMemory.creepAmount.upgraderWorkCount += creep.getActiveBodyparts(WORK);
+              }
+              if (creep.memory.role == "extractor") {
+                flagMemory.creepAmount.extractorCount++;
+              }
+              if (creep.memory.role == "repairer") {
+                flagMemory.creepAmount.repairerCount++;
+              }
+              if (creep.memory.role == "claimer") {
+                flagMemory.creepAmount.claimerCount++;
+              }
+              if (creep.memory.role == "builderLD") {
+                flagMemory.creepAmount.builderLDCount++;
+              }
+              if (creep.memory.role == "pixelFarmer") {
+                flagMemory.creepAmount.pixelFarmerCount++;
+              }
+              if (creep.memory.role == "ruinWithdrawer") {
+                flagMemory.creepAmount.ruinWithdrawerCount++;
+              }
+            }
+          }
 
-          if (role !== undefined && creep.memory.spawnRoom == room.name) {
-            if (creep.memory.role == "harvester-0") {
-              harvester0Count++;
-              harvester0WorkCount += creep.getActiveBodyparts(WORK);
-            }
-            if (creep.memory.role == "harvester-1") {
-              harvester1Count++;
-              harvester1WorkCount += creep.getActiveBodyparts(WORK);
-            }
-            if (creep.memory.role == "transferer") {
-              transfererCount++;
-              transfererCarryCount += creep.getActiveBodyparts(CARRY);
-            }
-            if (creep.memory.role == "builder") {
-              builderCount++;
-            }
-            if (creep.memory.role == "upgrader") {
-              upgraderCount++;
-              upgraderWorkCount += creep.getActiveBodyparts(WORK);
-            }
-            if (creep.memory.role == "repairer") {
-              repairerCount++;
-            }
-            if (creep.memory.role == "claimer") {
-              claimerCount++;
-            }
-            if (creep.memory.role == "builderLD") {
-              builderLDCount++;
-            }
-            if (creep.memory.role == "pixelFarmer") {
-              pixelFarmerCount++;
-            }
-            if (creep.memory.role == "ruinWithdrawer") {
-              ruinWithdrawerCount++;
+          for (let name in Game.creeps) {
+            let creep = Game.creeps[name];
+            let role = creep.memory.role;
+
+            if (creep.memory.flagName && creep.memory.targetRoom !== creep.memory.spawnRoom) {
+              const flag = Game.flags[creep.memory.flagName];
+              const flagMemory = Memory.flags[flag.name];
+              if (flagMemory.targetRoom) {
+                if (role !== undefined && creep.memory.targetRoom == flagMemory.targetRoom) {
+                  if (!flagMemory.creepAmount) {
+                    flagMemory.creepAmount = {};
+                  }
+                  else {
+                    if (creep.memory.role == "reserverLD") {
+                      flagMemory.creepAmount.reserverLD++;
+                    }
+                    else if (creep.memory.role == "harvesterLD-0") {
+                      flagMemory.creepAmount.harvesterLD0++;
+                    }
+                    else if (creep.memory.role == "harvesterLD-1") {
+                      flagMemory.creepAmount.harvesterLD1++;
+                    }
+                    else if (creep.memory.role == "harvesterLD-2") {
+                      flagMemory.creepAmount.harvesterLD2++;
+                    }
+                    else if (creep.memory.role == "harvesterLD-3") {
+                      flagMemory.creepAmount.harvesterLD3++;
+                    }
+                    else if (creep.memory.role == "transfererLD") {
+                      flagMemory.creepAmount.transfererLD++;
+                    }
+                  }
+                }
+              }
             }
           }
         }
+
+        longDistanceCreepsHasBeenCounted = true;
       }
 
       function spawnManager() {
         getCreepAmount();
-
 
         if (canCreepSpawn("transferer")) {
           spawnCreep(spawn,"transferer");
@@ -712,99 +851,126 @@ module.exports.loop = function() {
         else if (canCreepSpawn("repairer")) {
           spawnCreep(spawn,"repairer",roomName);
         }
+        else if (canCreepSpawn("extractor")) {
+          spawnCreep(spawn,"extractor",roomName);
+        }
         else if (canCreepSpawn("claimer")) {
           if (roomName == Memory.flags["claim"].spawnRoom) {
             spawnCreep(spawn,"claimer",roomName);
           }
         }
         else if (canCreepSpawn("builderLD")) {
-          spawnCreep(spawn,"builderLD");
+          spawnCreep(spawn,"builderLD",roomName);
         }
         else if (canCreepSpawn("pixelFarmer")) {
-          spawnCreep(spawn,"pixelFarmer");
+          spawnCreep(spawn,"pixelFarmer",roomName);
         }
         else if (canCreepSpawn("ruinWithdrawer")) {
-          spawnCreep(spawn,"ruinWithdrawer");
+          spawnCreep(spawn,"ruinWithdrawer",roomName);
+        }
+        else if (canCreepSpawn("shardUp")) {
+          spawnCreep(spawn,"shardUp",roomName);
         }
         else {
-          getRemotes();
+          if (flagMemory.controllerLevel >= 7) {
+            getRemotes();
+          }
         }
       }
 
       function canCreepSpawn(role) {
         let result = false;
-
-        switch(role) {
-          case "transferer":
-          if (transfererCarryCount < 30 && roomNeedsTransferer()) {
-            if (transfererCount < 6) {
-              result = true;
-            }
-          }
-          break;
-          case "harvester-0":
-          if (harvester0WorkCount < 6) {
-            if (flagMemory.sources[0] !== undefined) {
-              if (flagMemory.sources[0].openSpots > harvester0Count) {
+        if (flagMemory.creepAmount) {
+          switch(role) {
+            case "transferer":
+            if (flagMemory.creepAmount.transfererCarryCount < 30 && roomNeedsTransferer()) {
+              if (flagMemory.creepAmount.transfererCount < 6) {
                 result = true;
               }
             }
-          }
-          break;
-          case "harvester-1":
-          if (harvester1WorkCount < 6) {
-            if (flagMemory.sources[1] !== undefined) {
-              if (flagMemory.sources[1].openSpots > harvester1Count) {
+            break;
+            case "harvester-0":
+            if (flagMemory.creepAmount.harvester0WorkCount < 6) {
+              if (flagMemory.sources[0] !== undefined) {
+                if (flagMemory.sources[0].openSpots > flagMemory.creepAmount.harvester0Count) {
+                  result = true;
+                }
+              }
+            }
+            break;
+            case "harvester-1":
+            if (flagMemory.creepAmount.harvester1WorkCount < 6) {
+              if (flagMemory.sources[1] !== undefined) {
+                if (flagMemory.sources[1].openSpots > flagMemory.creepAmount.harvester1Count) {
+                  result = true;
+                }
+              }
+            }
+            break;
+            case "builder":
+            if (flagMemory.builderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2) {
+              if (flagMemory.creepAmount.builderCount < 5 && flagMemory.constructionSitesAmount > 0) {
                 result = true;
               }
             }
-          }
-          break;
-          case "builder":
-          if (builderCount < 5 && flagMemory.constructionSitesAmount > 0) {
-            result = true;
-          }
-          break;
-          case "upgrader":
-          if (upgraderWorkCount < 10 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
-            if (upgraderCount < 4) {
+            break;
+            case "upgrader":
+            if (flagMemory.creepAmount.upgraderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
+              if (flagMemory.creepAmount.upgraderCount < 4) {
+                result = true;
+              }
+            }
+            break;
+            case "repairer":
+            if (flagMemory.creepAmount.repairerCount < 2 && room.towers.length == 0) {
               result = true;
             }
+            break;
+            case "extractor":
+            if (flagMemory.creepAmount.extractorCount < 1 && flagMemory.mineralAmount > 0 && flagMemory.controllerLevel >= 6) {
+              result = true;
+            }
+            break;
+            case "claimer":
+            if (flagMemory.creepAmount.claimerCount < 1 && Game.flags["claim"]) {
+              result = true;
+            }
+            break;
+            case "builderLD":
+            if (flagMemory.creepAmount.builderLDCount < 4 && Game.flags["builderLD" + roomName]) {
+              result = true;
+            }
+            break;
+            case "pixelFarmer":
+            if (Game.time % 200 == 0 && roomName == "E42N2") {
+              result = true;
+            }
+            break;
+            case "ruinWithdrawer":
+            // if (flagMemory.creepAmount.ruinWithdrawerCount < 1 && room.storage) {
+            //   result = true;
+            // }
+            break;
+            case "shardUp":
+            let onOff = "on";
+            if (roomName == "E42N2" && Game.flags["testtest"] !== undefined) {
+              result = true;
+            }
+            break;
           }
-          break;
-          case "repairer":
-          if (repairerCount < 2 && room.towers.length == 0) {
-            result = true;
-          }
-          break;
-          case "claimer":
-          if (claimerCount < 1 && Game.flags["claim"]) {
-            result = true;
-          }
-          break;
-          case "builderLD":
-          if (builderLDCount < 8 && Game.flags["builderLD" + roomName]) {
-            result = true;
-          }
-          break;
-          case "pixelFarmer":
-          if (pixelFarmerCount < 1 && roomName == "E42N2") {
-            result = true;
-          }
-          break;
-          case "ruinWithdrawer":
-          if (ruinWithdrawerCount < 2 && room.storage) {
-            result = true;
-          }
-          break;
         }
+
 
         return result
       }
 
       function getDamagedStructures() {
         if (flagMemory.enemyCount == 0 && flagMemory.repairTarget) {
-          let repairAmount = 1 * 1000 * 1000 // 1 Million
+          let repairAmount = 100 * 1000;
+          if (room.terminal) {
+            let repairAmount = 1 * 1000 * 1000 // 1 Million
+          }
+
           if (flagMemory.repairTarget.length == 0 && Game.time % 10000 == 0) {
             let repairTarget = flagMemory.repairTarget;
             let targetRepair = room.find(FIND_STRUCTURES, {
@@ -861,25 +1027,73 @@ module.exports.loop = function() {
 
       function canRemoteCreepSpawn(flagMemory,role) {
         let result = false;
-
-        switch(role) {
-          case "reserverLD":
-          break;
-          case "harvesterLD-0":
-          break;
-          case "harvesterLD-1":
-          break;
-          case "harvesterLD-2":
-          break;
-          case "harvesterLD-3":
-          break;
-          case "transfererLD":
-          break;
-          default:
-          break;
+        if (flagMemory.creepAmount) {
+          switch(role) {
+            case "transferer":
+            if (flagMemory.creepAmount.transfererCarryCount < 40 && roomNeedsTransferer()) {
+              if (flagMemory.creepAmount.transfererCount < 6) {
+                result = true;
+              }
+            }
+            break;
+            case "reserverLD":
+            if (flagMemory.creepAmount.reserverLD < 1) {
+              if (!flagMemory.reserveTicksLeft || flagMemory.reserveTicksLeft < 2000) {
+                result = true;
+              }
+            }
+            break;
+            case "harvesterLD-0":
+            if (flagMemory.sourceAmount > 0) {
+              if (flagMemory.creepAmount.harvesterLD0 < 1) {
+                result = true;
+              }
+            }
+            break;
+            case "harvesterLD-1":
+            if (flagMemory.sourceAmount > 1) {
+              if (flagMemory.creepAmount.harvesterLD1 < 1) {
+                result = true;
+              }
+            }
+            break;
+            case "harvesterLD-2":
+            if (flagMemory.sourceAmount > 2) {
+              if (flagMemory.creepAmount.harvesterLD2 < 1) {
+                result = true;
+              }
+            }
+            break;
+            case "harvesterLD-3":
+            if (flagMemory.sourceAmount > 3) {
+              if (flagMemory.creepAmount.harvesterLD3 < 1) {
+                result = true;
+              }
+            }
+            break;
+            case "transfererLD":
+            if (flagMemory.sourceAmount > 0) {
+              if (flagMemory.creepAmount.transfererLD < flagMemory.sourceAmount) {
+                result = true;
+              }
+            }
+            break;
+            default:
+            break;
+          }
+          return result;
         }
+        else {
+          if (!flagMemory.creepAmount)
+          flagMemory.creepAmount = {};
 
-        return result;
+          flagMemory.creepAmount.reserverLD = 0;
+          flagMemory.creepAmount.harvesterLD0 = 0;
+          flagMemory.creepAmount.harvesterLD1 = 0;
+          flagMemory.creepAmount.harvesterLD2 = 0;
+          flagMemory.creepAmount.harvesterLD3 = 0;
+          flagMemory.creepAmount.transfererLD = 0;
+        }
       }
 
       function getRemotes() {
@@ -888,24 +1102,44 @@ module.exports.loop = function() {
           if (flag) {
             if (checkIfRemoteMemoryIsSetup(flag)) {
               const flagMemory = Memory.flags[flag.name];
-              if (canRemoteCreepSpawn(flagMemory,"reserverLD")) {
-                spawnCreep(spawn,"reserverLD");
+
+
+              if (Game.time % 10 == 0) {
+                if (Game.rooms[flagMemory.targetRoom].controller.reservation) {
+                  flagMemory.reserveTicksLeft = Game.rooms[flagMemory.targetRoom].controller.reservation.ticksToEnd;
+                }
               }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-0")) {
-                spawnCreep(spawn,"harvesterLD-0");
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-1")) {
-                spawnCreep(spawn,"harvesterLD-1");
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-2")) {
-                spawnCreep(spawn,"harvesterLD-2");
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-3")) {
-                spawnCreep(spawn,"harvesterLD-3");
+
+              if (canRemoteCreepSpawn(flagMemory,"transferer")) {
+                spawnCreep(spawn,"transferer");
               }
               else if (canRemoteCreepSpawn(flagMemory,"transfererLD")) {
-                spawnCreep(spawn,"transfererLD");
+                spawnCreep(spawn,"transfererLD",flagMemory.targetRoom,flag.name);
               }
+              else if (canRemoteCreepSpawn(flagMemory,"reserverLD")) {
+                spawnCreep(spawn,"reserverLD",flagMemory.targetRoom,flag.name);
+              }
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-0")) {
+                spawnCreep(spawn,"harvesterLD-0",flagMemory.targetRoom,flag.name);
+              }
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-1")) {
+                spawnCreep(spawn,"harvesterLD-1",flagMemory.targetRoom,flag.name);
+              }
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-2")) {
+                spawnCreep(spawn,"harvesterLD-2",flagMemory.targetRoom,flag.name);
+              }
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-3")) {
+                spawnCreep(spawn,"harvesterLD-3",flagMemory.targetRoom,flag.name);
+              }
+              else if (canRemoteCreepSpawn(flagMemory,"transfererLD")) {
+                spawnCreep(spawn,"transfererLD",flagMemory.targetRoom,flag.name);
+              }
+              flagMemory.creepAmount.reserverLD = 0;
+              flagMemory.creepAmount.harvesterLD0 = 0;
+              flagMemory.creepAmount.harvesterLD1 = 0;
+              flagMemory.creepAmount.harvesterLD2 = 0;
+              flagMemory.creepAmount.harvesterLD3 = 0;
+              flagMemory.creepAmount.transfererLD = 0;
             }
           }
         }
@@ -920,7 +1154,26 @@ module.exports.loop = function() {
             spawnManager();
           }
 
-          if (flagMemory.lins) {
+          if (flagMemory.creepAmount) {
+            flagMemory.creepAmount.harvester0Count = 0;
+            flagMemory.creepAmount.harvester0WorkCount = 0;
+            flagMemory.creepAmount.harvester1Count = 0;
+            flagMemory.creepAmount.harvester1WorkCount = 0;
+            flagMemory.creepAmount.transfererCount = 0;
+            flagMemory.creepAmount.transfererCarryCount = 0;
+            flagMemory.creepAmount.builderCount = 0;
+            flagMemory.creepAmount.upgraderCount = 0;
+            flagMemory.creepAmount.upgraderWorkCount = 0;
+            flagMemory.creepAmount.repairerCount = 0;
+            flagMemory.creepAmount.extractorCount = 0;
+            flagMemory.creepAmount.claimerCount = 0;
+            flagMemory.creepAmount.builderLDCount = 0;
+            flagMemory.creepAmount.pixelFarmerCount = 0;
+            flagMemory.creepAmount.ruinWithdrawerCount = 0;
+          }
+
+
+          if (flagMemory.links) {
             if (flagMemory.links.linkTo1 && flagMemory.links.linkTo2) {
               let linkTo1 = Game.getObjectById(flagMemory.links.linkTo1);
               let linkTo2 = Game.getObjectById(flagMemory.links.linkTo2);
@@ -986,15 +1239,29 @@ module.exports.loop = function() {
 
           if (flagMemory.sources) {
             if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
-              flagMemory.mineralAmount = room.find(FIND_MINERALS)[0].mineralAmount;
-              flagMemory.mineralId = room.find(FIND_MINERALS)[0].id;
+              const mineral = room.find(FIND_MINERALS)[0];
+              if (mineral) {
+                flagMemory.mineralAmount = mineral.mineralAmount;
+                flagMemory.mineralId = mineral.id;
+              }
+              else {
+                flagMemory.mineralAmount = 0;
+                flagMemory.mineralId = "";
+              }
 
               const sources = room.find(FIND_SOURCES);
               sources.forEach((item, i) => {
                 flagMemory.sources[i] = {}
                 flagMemory.sources[i].id = sources[i].id;
-                createSurroundingConstructionSite(flagMemory.sources[i].id,2,7);
-                flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
+
+                if (room.controller.level == 0) {
+                  const sources = room.find(FIND_SOURCES);
+                  createSurroundingConstructionSite(sources[i].id,1,7);
+                }
+                else {
+                  flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
+                  createSurroundingConstructionSite(flagMemory.sources[i].id,2,7);
+                }
               });
 
               flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
@@ -1016,9 +1283,8 @@ module.exports.loop = function() {
           flagMemory.enemyCount = 0;
           if (!flagMemory.repairTarget)
           flagMemory.repairTarget = [];
-
-          if (!flagMemory.harvesterCPU)
-          flagMemory.harvesterCPU = {};
+          if (!flagMemory.creepAmount)
+          flagMemory.creepAmount = {};
         }
 
         function runRoomPlanner() {

@@ -187,7 +187,7 @@ module.exports = {
         if (creep.room.containers.length > 0) {
           let energyStored = 0;
           room.containers.forEach((item, i) => {
-            if (!creep.room.containers[i].pos.inRangeTo(creep.room.controller,3)) {
+            if (creep.room.containers[i].id !== flagMemory.controllerStorage  ) {
               energyStored += creep.room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
             }
           });
@@ -195,7 +195,12 @@ module.exports = {
           if (energyStored > 1500)
           withdrawStructure = STRUCTURE_CONTAINER;
           else
-          withdrawStructure = STRUCTURE_STORAGE;
+          if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 250) {
+            withdrawStructure = STRUCTURE_CONTAINER;
+          }
+          else {
+            withdrawStructure = STRUCTURE_STORAGE;
+          }
         }
         else {
           withdrawStructure = STRUCTURE_STORAGE;
@@ -235,7 +240,7 @@ module.exports = {
         break;
         case STRUCTURE_CONTAINER:
         target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-          return (!structure.pos.inRangeTo(creep.room.controller,5) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
+          return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
         });
         runWithdraw(target);
         break;

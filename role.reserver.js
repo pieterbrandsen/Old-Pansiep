@@ -1,13 +1,10 @@
-const claimerModule = require('module.claimer');
+const reserverModule = require('module.reserver');
 
 module.exports = {
   run: function(creep) {
-    const flag = Game.flags["claim"];
-    const flagMemory = Memory.flags["claim"];
-    if (!Memory.flags["claim"]) {
-      Memory.flags["claim"] = {};
-    }
-    const shardTarget = "shard0"
+    const flag = Game.flags[creep.memory.flagName];
+    const flagMemory = Memory.flags[flag.name];
+    const shardTarget = "shard3"
 
     if (!creep.memory.canHeal) {
       if (creep.getActiveBodyparts(HEAL) > 0) {
@@ -23,13 +20,14 @@ module.exports = {
         creep.heal(creep);
       }
     }
+
     if (Game.shard.name == shardTarget) {
       if (flag) {
-        if (creep.room.name !== flagMemory.claimRoom) {
+        if (creep.room.name !== flagMemory.targetRoom) {
           creep.travelTo(flag);
         }
         else {
-          claimerModule.run(creep);
+          reserverModule.run(creep);
         }
       }
     }

@@ -9,6 +9,81 @@ module.exports = {
     }
 
 
+    function createSurroundingConstructionSite(id,range,controllerLevel) {
+      let object = Game.getObjectById(id);
+      let structureType;
+      let x = object.pos.x;
+      let y = object.pos.y;
+      let constructionSiteCanBeBuild = false;
+      function createConstruction(structureType,x,y) {
+        if (creep.room.createConstructionSite(x,y,structureType) == 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+
+      if (creep.room.controller.level >= controllerLevel) {
+        structureType = STRUCTURE_LINK;
+      }
+      else {
+        structureType = STRUCTURE_CONTAINER;
+      }
+
+      let containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
+      });
+      let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
+      });
+      let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
+        return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
+      });
+
+
+      if (((!containerInRange && structureType == STRUCTURE_CONTAINER) || (!linkInRange && structureType == STRUCTURE_LINK)) && constructionSitesInRange == null) {
+        if (structureType == STRUCTURE_LINK && containerInRange !== null) {
+          containerInRange.destroy();
+        }
+
+        if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
+          creep.room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x,y+range) == true && constructionSiteCanBeBuild == false) {
+          creep.room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x-range,y+range) == true && constructionSiteCanBeBuild == false) {
+          creep.room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x-range,y) == true && constructionSiteCanBeBuild == false) {
+          creep.room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x-range,y-range) == true && constructionSiteCanBeBuild == false) {
+          creep.room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x+range,y-range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
+          room.createConstructionSite(x+range,y+range,structureType)
+          constructionSiteCanBeBuild = true
+        }
+      }
+    };
+
+
+
     function mainSystem() {
       // If Memory.mainSystem is defined //
       if (Memory.mainSystem) {
@@ -32,10 +107,15 @@ module.exports = {
       if (!findNewTarget) {
         // If no target is found, reset constructionSiteAmount and suicide //
         Memory.flags[creep.room.name].constructionSitesAmount = 0;
-        console.log(true)
         if (Game.flags["builderLD"+creep.memory.spawnRoom])
         Game.flags["builderLD"+creep.memory.spawnRoom].remove();
+        if (creep.memory.role.includes("builder"))
         creep.suicide()
+        else {
+          if (creep.memory.sourceId && creep.memory.role.includes(("harvesterLD"))) {
+            createSurroundingConstructionSite(creep.memory.sourceId,1,1);
+          }
+        }
       }
       else {
         // If current target is null assign the new found target //
