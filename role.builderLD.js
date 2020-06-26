@@ -14,12 +14,18 @@ module.exports = {
 
     let flag = Game.flags["builderLD" + creep.memory.spawnRoom];
     if (flag) {
-      if (creep.room.name == flag.room.name) {
-        if (creep.memory.working === false) {
-          withdrawModule.run(creep);
+      if (flag.room) {
+        if (creep.room.name == flag.room.name) {
+          creep.say(flag.room)
+          if (creep.memory.working === false) {
+            withdrawModule.run(creep);
+          }
+          else if (creep.memory.working === true) {
+            builderModule.run(creep);
+          }
         }
-        else if (creep.memory.working === true) {
-          builderModule.run(creep);
+        else {
+          creep.travelTo(flag)
         }
       }
       else {
