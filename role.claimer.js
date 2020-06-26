@@ -8,6 +8,7 @@ module.exports = {
       Memory.flags["claim"] = {};
     }
     const shardTarget = "shard0"
+    console.log(Game.shard.name + " - " + creep.room.name)
 
     if (!creep.memory.canHeal) {
       if (creep.getActiveBodyparts(HEAL) > 0) {
