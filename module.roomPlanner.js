@@ -12,215 +12,220 @@ module.exports = {
       const flag = Game.flags[flagName];
       const flagMemory = Memory.flags[flagName];
       const room = flag.room;
-      const controllerLevel = room.controller.level;
+      let controllerLevel;
+      if (flag) {
+        if (room) {
+          controllerLevel = room.controller.level;
 
-      const x = flag.pos.x;
-      const y = flag.pos.y;
+          const x = flag.pos.x;
+          const y = flag.pos.y;
 
 
-      if (controllerLevel >= 1) {
-        room.createConstructionSite(x-1, y+1, STRUCTURE_SPAWN,room.name + "-1");
+          if (controllerLevel >= 1) {
+            room.createConstructionSite(x-1, y+1, STRUCTURE_SPAWN,room.name + "-1");
+          }
+          if (controllerLevel >= 2) {
+            room.createConstructionSite(x+3, y-1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+3, y-2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+2, y-2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+2, y-3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+1, y-3, STRUCTURE_EXTENSION);
+          }
+          if (controllerLevel >= 3) {
+            room.createConstructionSite(x, y+1, STRUCTURE_TOWER);
+
+
+            room.createConstructionSite(x+4, y-2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+3, y-3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+4, y-3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+1, y-4, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x, y-4, STRUCTURE_EXTENSION);
+          }
+          if (controllerLevel >= 4) {
+            room.createConstructionSite(x-1, y, STRUCTURE_STORAGE);
+
+
+            room.createConstructionSite(x, y-5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-1, y-5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+1, y-5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+2, y-5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+2, y-4, STRUCTURE_EXTENSION);
+
+            room.createConstructionSite(x+1, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+2, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+2, y+2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+3, y-4, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+3, y+1, STRUCTURE_EXTENSION);
+          }
+          if (controllerLevel >= 5) {
+            room.createConstructionSite(x, y-1, STRUCTURE_TOWER);
+
+
+            room.createConstructionSite(x+2, y+4, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+3, y+4, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+3, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+4, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+4, y+2, STRUCTURE_EXTENSION);
+
+            room.createConstructionSite(x+4, y+1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+4, y, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+5, y-1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+5, y+1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+5, y+2, STRUCTURE_EXTENSION);
+          }
+          if (controllerLevel >= 6) {
+            const mineral = room.find(FIND_MINERALS)[0];
+            if (mineral)
+            room.createConstructionSite(mineral,STRUCTURE_EXTRACTOR)
+
+
+            room.createConstructionSite(x+1, y, STRUCTURE_TERMINAL);
+
+
+            room.createConstructionSite(x+1, y+1, STRUCTURE_LINK);
+
+
+            room.createConstructionSite(x, y-3, STRUCTURE_ROAD);
+            room.createConstructionSite(x+1, y-2, STRUCTURE_ROAD);
+            room.createConstructionSite(x+2, y-1, STRUCTURE_ROAD);
+            room.createConstructionSite(x+3, y, STRUCTURE_ROAD);
+            room.createConstructionSite(x+4, y-1, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x+5, y-2, STRUCTURE_ROAD);
+            room.createConstructionSite(x+5, y-3, STRUCTURE_ROAD);
+            room.createConstructionSite(x+4, y-4, STRUCTURE_ROAD);
+            room.createConstructionSite(x+3, y-5, STRUCTURE_ROAD);
+            room.createConstructionSite(x+2, y-6, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x+1, y-6, STRUCTURE_ROAD);
+            room.createConstructionSite(x, y-6, STRUCTURE_ROAD);
+            room.createConstructionSite(x-1, y-6, STRUCTURE_ROAD);
+            room.createConstructionSite(x-2, y-6, STRUCTURE_ROAD);
+            room.createConstructionSite(x-3, y-5, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x-4, y-4, STRUCTURE_ROAD);
+            room.createConstructionSite(x-5, y-3, STRUCTURE_ROAD);
+            room.createConstructionSite(x-6, y-2, STRUCTURE_ROAD);
+            room.createConstructionSite(x-6, y-1, STRUCTURE_ROAD);
+            room.createConstructionSite(x-6, y, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x-6, y+1, STRUCTURE_ROAD);
+            room.createConstructionSite(x-6, y+2, STRUCTURE_ROAD);
+            room.createConstructionSite(x-5, y+3, STRUCTURE_ROAD);
+            room.createConstructionSite(x-4, y+4, STRUCTURE_ROAD);
+            room.createConstructionSite(x-3, y+5, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x-2, y+6, STRUCTURE_ROAD);
+            room.createConstructionSite(x-1, y+6, STRUCTURE_ROAD);
+            room.createConstructionSite(x, y+6, STRUCTURE_ROAD);
+            room.createConstructionSite(x+1, y+6, STRUCTURE_ROAD);
+            //room.createConstructionSite(x+2, y+7, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x+3, y+6, STRUCTURE_ROAD);
+            room.createConstructionSite(x+4, y+4, STRUCTURE_ROAD);
+            room.createConstructionSite(x+5, y+3, STRUCTURE_ROAD);
+            room.createConstructionSite(x+6, y+2, STRUCTURE_ROAD);
+            room.createConstructionSite(x+6, y+1, STRUCTURE_ROAD);
+
+            //room.createConstructionSite(x+7, y+1, STRUCTURE_ROAD);
+            room.createConstructionSite(x+6, y, STRUCTURE_ROAD);
+            room.createConstructionSite(x+6, y-1, STRUCTURE_ROAD);
+            room.createConstructionSite(x+6, y-2, STRUCTURE_ROAD);
+            room.createConstructionSite(x-1, y-4, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x-2, y-5, STRUCTURE_ROAD);
+            room.createConstructionSite(x-3, y, STRUCTURE_ROAD);
+            room.createConstructionSite(x-2, y-1, STRUCTURE_ROAD);
+            room.createConstructionSite(x-4, y+1, STRUCTURE_ROAD);
+            room.createConstructionSite(x-5, y+2, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x+2, y+1, STRUCTURE_ROAD);
+            room.createConstructionSite(x+1, y+2, STRUCTURE_ROAD);
+            room.createConstructionSite(x, y+3, STRUCTURE_ROAD);
+            room.createConstructionSite(x-1, y+2, STRUCTURE_ROAD);
+            room.createConstructionSite(x-2, y+1, STRUCTURE_ROAD);
+
+            room.createConstructionSite(x+1, y+4, STRUCTURE_ROAD);
+            room.createConstructionSite(x+2, y+5, STRUCTURE_ROAD);
+            room.createConstructionSite(x+3, y+5, STRUCTURE_ROAD);
+            room.createConstructionSite(x+2, y+6, STRUCTURE_ROAD);
+
+
+            room.createConstructionSite(x+3, y+2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+1, y+5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x, y+5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x, y+4, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-1, y+4, STRUCTURE_EXTENSION);
+
+            room.createConstructionSite(x-1, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-2, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-2, y+2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-3, y+2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-3, y+1, STRUCTURE_EXTENSION);
+          }
+          if (controllerLevel >= 7) {
+            room.createConstructionSite(x-1, y-1, STRUCTURE_FACTORY);
+
+
+            room.createConstructionSite(x+5, y, STRUCTURE_SPAWN,room.name + "-2");
+
+
+            room.createConstructionSite(x, y-2, STRUCTURE_TOWER);
+
+
+            room.createConstructionSite(x-4, y+2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-4, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-3, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-3, y+4, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-2, y+4, STRUCTURE_EXTENSION);
+
+            room.createConstructionSite(x-2, y+5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-1, y+5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-4, y, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-5, y-1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-4, y-1, STRUCTURE_EXTENSION);
+          }
+          if (controllerLevel >= 8) {
+            room.createConstructionSite(x+1, y-1, STRUCTURE_POWER_SPAWN,room.name + "-1");
+
+
+            room.createConstructionSite(x-5, y, STRUCTURE_SPAWN,room.name + "-3");
+
+
+            room.createConstructionSite(x, y+2, STRUCTURE_TOWER);
+            room.createConstructionSite(x-2, y, STRUCTURE_TOWER);
+            room.createConstructionSite(x+2, y, STRUCTURE_TOWER);
+
+
+            room.createConstructionSite(x-3, y-1, STRUCTURE_LAB);
+            room.createConstructionSite(x-3, y-2, STRUCTURE_LAB);
+            room.createConstructionSite(x-3, y-3, STRUCTURE_LAB);
+            room.createConstructionSite(x-3, y-4, STRUCTURE_LAB);
+            room.createConstructionSite(x-4, y-2, STRUCTURE_LAB);
+
+            room.createConstructionSite(x-4, y-3, STRUCTURE_LAB);
+            room.createConstructionSite(x-2, y-2, STRUCTURE_LAB);
+            room.createConstructionSite(x-2, y-3, STRUCTURE_LAB);
+            room.createConstructionSite(x-2, y-4, STRUCTURE_LAB);
+            room.createConstructionSite(x-1, y-3, STRUCTURE_LAB);
+
+
+            room.createConstructionSite(x-5, y-2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+7, y+1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+7, y+2, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+6, y+3, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+5, y+4, STRUCTURE_EXTENSION);
+
+            room.createConstructionSite(x+4, y+5, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+3, y+6, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+2, y+7, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x+1, y+7, STRUCTURE_EXTENSION);
+            room.createConstructionSite(x-5, y+1, STRUCTURE_EXTENSION);
+          }
+
+          Memory.flags[room.name].controllerLevel = room.controller.level;
+        }
       }
-      if (controllerLevel >= 2) {
-        room.createConstructionSite(x+3, y-1, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+3, y-2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+2, y-2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+2, y-3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+1, y-3, STRUCTURE_EXTENSION);
-      }
-      if (controllerLevel >= 3) {
-        room.createConstructionSite(x, y+1, STRUCTURE_TOWER);
-
-
-        room.createConstructionSite(x+4, y-2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+3, y-3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+4, y-3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+1, y-4, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x, y-4, STRUCTURE_EXTENSION);
-      }
-      if (controllerLevel >= 4) {
-        room.createConstructionSite(x-1, y, STRUCTURE_STORAGE);
-
-
-        room.createConstructionSite(x, y-5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-1, y-5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+1, y-5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+2, y-5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+2, y-4, STRUCTURE_EXTENSION);
-
-        room.createConstructionSite(x+1, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+2, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+2, y+2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+3, y-4, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+3, y+1, STRUCTURE_EXTENSION);
-      }
-      if (controllerLevel >= 5) {
-        room.createConstructionSite(x, y-1, STRUCTURE_TOWER);
-
-
-        room.createConstructionSite(x+2, y+4, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+3, y+4, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+3, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+4, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+4, y+2, STRUCTURE_EXTENSION);
-
-        room.createConstructionSite(x+4, y+1, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+4, y, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+5, y-1, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+5, y+1, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+5, y+2, STRUCTURE_EXTENSION);
-      }
-      if (controllerLevel >= 6) {
-        const mineral = room.find(FIND_MINERALS)[0];
-        if (mineral)
-        room.createConstructionSite(mineral,STRUCTURE_EXTRACTOR)
-
-
-        room.createConstructionSite(x+1, y, STRUCTURE_TERMINAL);
-
-
-        room.createConstructionSite(x+1, y+1, STRUCTURE_LINK);
-
-
-        room.createConstructionSite(x, y-3, STRUCTURE_ROAD);
-        room.createConstructionSite(x+1, y-2, STRUCTURE_ROAD);
-        room.createConstructionSite(x+2, y-1, STRUCTURE_ROAD);
-        room.createConstructionSite(x+3, y, STRUCTURE_ROAD);
-        room.createConstructionSite(x+4, y-1, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x+5, y-2, STRUCTURE_ROAD);
-        room.createConstructionSite(x+5, y-3, STRUCTURE_ROAD);
-        room.createConstructionSite(x+4, y-4, STRUCTURE_ROAD);
-        room.createConstructionSite(x+3, y-5, STRUCTURE_ROAD);
-        room.createConstructionSite(x+2, y-6, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x+1, y-6, STRUCTURE_ROAD);
-        room.createConstructionSite(x, y-6, STRUCTURE_ROAD);
-        room.createConstructionSite(x-1, y-6, STRUCTURE_ROAD);
-        room.createConstructionSite(x-2, y-6, STRUCTURE_ROAD);
-        room.createConstructionSite(x-3, y-5, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x-4, y-4, STRUCTURE_ROAD);
-        room.createConstructionSite(x-5, y-3, STRUCTURE_ROAD);
-        room.createConstructionSite(x-6, y-2, STRUCTURE_ROAD);
-        room.createConstructionSite(x-6, y-1, STRUCTURE_ROAD);
-        room.createConstructionSite(x-6, y, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x-6, y+1, STRUCTURE_ROAD);
-        room.createConstructionSite(x-6, y+2, STRUCTURE_ROAD);
-        room.createConstructionSite(x-5, y+3, STRUCTURE_ROAD);
-        room.createConstructionSite(x-4, y+4, STRUCTURE_ROAD);
-        room.createConstructionSite(x-3, y+5, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x-2, y+6, STRUCTURE_ROAD);
-        room.createConstructionSite(x-1, y+6, STRUCTURE_ROAD);
-        room.createConstructionSite(x, y+6, STRUCTURE_ROAD);
-        room.createConstructionSite(x+1, y+6, STRUCTURE_ROAD);
-        //room.createConstructionSite(x+2, y+7, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x+3, y+6, STRUCTURE_ROAD);
-        room.createConstructionSite(x+4, y+4, STRUCTURE_ROAD);
-        room.createConstructionSite(x+5, y+3, STRUCTURE_ROAD);
-        room.createConstructionSite(x+6, y+2, STRUCTURE_ROAD);
-        room.createConstructionSite(x+6, y+1, STRUCTURE_ROAD);
-
-        //room.createConstructionSite(x+7, y+1, STRUCTURE_ROAD);
-        room.createConstructionSite(x+6, y, STRUCTURE_ROAD);
-        room.createConstructionSite(x+6, y-1, STRUCTURE_ROAD);
-        room.createConstructionSite(x+6, y-2, STRUCTURE_ROAD);
-        room.createConstructionSite(x-1, y-4, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x-2, y-5, STRUCTURE_ROAD);
-        room.createConstructionSite(x-3, y, STRUCTURE_ROAD);
-        room.createConstructionSite(x-2, y-1, STRUCTURE_ROAD);
-        room.createConstructionSite(x-4, y+1, STRUCTURE_ROAD);
-        room.createConstructionSite(x-5, y+2, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x+2, y+1, STRUCTURE_ROAD);
-        room.createConstructionSite(x+1, y+2, STRUCTURE_ROAD);
-        room.createConstructionSite(x, y+3, STRUCTURE_ROAD);
-        room.createConstructionSite(x-1, y+2, STRUCTURE_ROAD);
-        room.createConstructionSite(x-2, y+1, STRUCTURE_ROAD);
-
-        room.createConstructionSite(x+1, y+4, STRUCTURE_ROAD);
-        room.createConstructionSite(x+2, y+5, STRUCTURE_ROAD);
-        room.createConstructionSite(x+3, y+5, STRUCTURE_ROAD);
-        room.createConstructionSite(x+2, y+6, STRUCTURE_ROAD);
-
-
-        room.createConstructionSite(x+3, y+2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+1, y+5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x, y+5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x, y+4, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-1, y+4, STRUCTURE_EXTENSION);
-
-        room.createConstructionSite(x-1, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-2, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-2, y+2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-3, y+2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-3, y+1, STRUCTURE_EXTENSION);
-      }
-      if (controllerLevel >= 7) {
-        room.createConstructionSite(x-1, y-1, STRUCTURE_FACTORY);
-
-
-        room.createConstructionSite(x+5, y, STRUCTURE_SPAWN,room.name + "-2");
-
-
-        room.createConstructionSite(x, y-2, STRUCTURE_TOWER);
-
-
-        room.createConstructionSite(x-4, y+2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-4, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-3, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-3, y+4, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-2, y+4, STRUCTURE_EXTENSION);
-
-        room.createConstructionSite(x-2, y+5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-1, y+5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-4, y, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-5, y-1, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-4, y-1, STRUCTURE_EXTENSION);
-      }
-      if (controllerLevel >= 8) {
-        room.createConstructionSite(x+1, y-1, STRUCTURE_POWER_SPAWN,room.name + "-1");
-
-
-        room.createConstructionSite(x-5, y, STRUCTURE_SPAWN,room.name + "-3");
-
-
-        room.createConstructionSite(x, y+2, STRUCTURE_TOWER);
-        room.createConstructionSite(x-2, y, STRUCTURE_TOWER);
-        room.createConstructionSite(x+2, y, STRUCTURE_TOWER);
-
-
-        room.createConstructionSite(x-3, y-1, STRUCTURE_LAB);
-        room.createConstructionSite(x-3, y-2, STRUCTURE_LAB);
-        room.createConstructionSite(x-3, y-3, STRUCTURE_LAB);
-        room.createConstructionSite(x-3, y-4, STRUCTURE_LAB);
-        room.createConstructionSite(x-4, y-2, STRUCTURE_LAB);
-
-        room.createConstructionSite(x-4, y-3, STRUCTURE_LAB);
-        room.createConstructionSite(x-2, y-2, STRUCTURE_LAB);
-        room.createConstructionSite(x-2, y-3, STRUCTURE_LAB);
-        room.createConstructionSite(x-2, y-4, STRUCTURE_LAB);
-        room.createConstructionSite(x-1, y-3, STRUCTURE_LAB);
-
-
-        room.createConstructionSite(x-5, y-2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+7, y+1, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+7, y+2, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+6, y+3, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+5, y+4, STRUCTURE_EXTENSION);
-
-        room.createConstructionSite(x+4, y+5, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+3, y+6, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+2, y+7, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x+1, y+7, STRUCTURE_EXTENSION);
-        room.createConstructionSite(x-5, y+1, STRUCTURE_EXTENSION);
-      }
-
-      Memory.flags[room.name].controllerLevel = room.controller.level;
     }
 
     if (Game.flags["roomPlannerCheck1"] !== undefined || Memory.flags["roomPlannerCheck1"]) {

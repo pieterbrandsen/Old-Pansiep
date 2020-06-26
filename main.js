@@ -176,7 +176,7 @@ module.exports.loop = function() {
           }
           else if (creep.getActiveBodyparts(WORK) > 0) {
             creep.memory.working = false;
-            creep.memory.spawnRoom = "E42N2";
+            creep.memory.spawnRoom = "E43N3";
             creep.memory.role = "builderLD";
           }
           else {
@@ -741,16 +741,16 @@ module.exports.loop = function() {
           for (let name in Game.creeps) {
             let creep = Game.creeps[name];
             let role = creep.memory.role;
-            const flagMemory = Memory.flags[creep.room.name];
+            const flagMemory = Memory.flags[creep.memory.spawnRoom];
 
             if (!flagMemory.creepAmount) {
-              console.log(roomName)
               flagMemory.creepAmount = {};
             }
             if (role !== undefined && creep.memory.targetRoom == creep.memory.spawnRoom && flagMemory.creepAmount) {
               if (creep.memory.role == "harvester-0") {
                 flagMemory.creepAmount.harvester0Count++;
                 flagMemory.creepAmount.harvester0WorkCount += creep.getActiveBodyparts(WORK);
+
               }
               if (creep.memory.role == "harvester-1") {
                 flagMemory.creepAmount.harvester1Count++;
@@ -876,14 +876,36 @@ module.exports.loop = function() {
             getRemotes();
           }
         }
+
+        if (flagMemory.creepAmount !== undefined) {
+          //console.log(flagMemory.creepAmount.harvester0Count + roomName)
+          flagMemory.creepAmount.harvester0Count = 0;
+          flagMemory.creepAmount.harvester0WorkCount = 0;
+          flagMemory.creepAmount.harvester1Count = 0;
+          flagMemory.creepAmount.harvester1WorkCount = 0;
+          flagMemory.creepAmount.transfererCount = 0;
+          flagMemory.creepAmount.transfererCarryCount = 0;
+          flagMemory.creepAmount.builderCount = 0;
+          flagMemory.creepAmount.builderWorkCount = 0;
+          flagMemory.creepAmount.upgraderCount = 0;
+          flagMemory.creepAmount.upgraderWorkCount = 0;
+          flagMemory.creepAmount.repairerCount = 0;
+          flagMemory.creepAmount.extractorCount = 0;
+          flagMemory.creepAmount.claimerCount = 0;
+          flagMemory.creepAmount.builderLDCount = 0;
+          flagMemory.creepAmount.builderWorkCount = 0;
+          flagMemory.creepAmount.pixelFarmerCount = 0;
+          flagMemory.creepAmount.ruinWithdrawerCount = 0;
+        }
       }
 
       function canCreepSpawn(role) {
         let result = false;
+
         if (flagMemory.creepAmount) {
           switch(role) {
             case "transferer":
-            if (flagMemory.creepAmount.transfererCarryCount < 30 && roomNeedsTransferer()) {
+            if (flagMemory.creepAmount.transfererCarryCount < (flagMemory.sources.length * 15 + 10) && roomNeedsTransferer()) {
               if (flagMemory.creepAmount.transfererCount < 6) {
                 result = true;
               }
@@ -908,14 +930,14 @@ module.exports.loop = function() {
             }
             break;
             case "builder":
-            if (flagMemory.builderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2) {
-              if (flagMemory.creepAmount.builderCount < 5 && flagMemory.constructionSitesAmount > 0) {
+            if (flagMemory.creepAmount.builderCount < 5 && flagMemory.constructionSitesAmount > 0) {
+              if (flagMemory.creepAmount.builderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2) {
                 result = true;
               }
             }
             break;
             case "upgrader":
-            if (flagMemory.creepAmount.upgraderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
+            if (roomName !== "E42N2"&& flagMemory.creepAmount.upgraderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
               if (flagMemory.creepAmount.upgraderCount < 4) {
                 result = true;
               }
@@ -1152,24 +1174,6 @@ module.exports.loop = function() {
 
           if (spawn) {
             spawnManager();
-          }
-
-          if (flagMemory.creepAmount) {
-            flagMemory.creepAmount.harvester0Count = 0;
-            flagMemory.creepAmount.harvester0WorkCount = 0;
-            flagMemory.creepAmount.harvester1Count = 0;
-            flagMemory.creepAmount.harvester1WorkCount = 0;
-            flagMemory.creepAmount.transfererCount = 0;
-            flagMemory.creepAmount.transfererCarryCount = 0;
-            flagMemory.creepAmount.builderCount = 0;
-            flagMemory.creepAmount.upgraderCount = 0;
-            flagMemory.creepAmount.upgraderWorkCount = 0;
-            flagMemory.creepAmount.repairerCount = 0;
-            flagMemory.creepAmount.extractorCount = 0;
-            flagMemory.creepAmount.claimerCount = 0;
-            flagMemory.creepAmount.builderLDCount = 0;
-            flagMemory.creepAmount.pixelFarmerCount = 0;
-            flagMemory.creepAmount.ruinWithdrawerCount = 0;
           }
 
 

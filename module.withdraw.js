@@ -219,41 +219,87 @@ module.exports = {
       else
       withdrawStructure = null;
 
+      if (withdrawStructure == undefined) {
+        withdrawStructure = null;
+      }
       return withdrawStructure;
     }
 
     function withdrawStructure() {
       const withdrawStructure = findWithdrawStructure();
-      switch(withdrawStructure) {
-        case STRUCTURE_TERMINAL:
-        runWithdraw(creep.room.terminal);
-        break;
-        case STRUCTURE_STORAGE:
-        let transferTarget = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-          filter: (s) => (s.structureType === STRUCTURE_SPAWN
-            || s.structureType === STRUCTURE_EXTENSION
-            || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
-          ) && s.energy < s.energyCapacity
-        });
-        if (transferTarget !== null)
-        runWithdraw(creep.room.storage);
-        break;
-        case STRUCTURE_CONTAINER:
-        target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-          return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
-        });
-        runWithdraw(target);
-        break;
-        case null:
-        if (creep.memory.role.includes("LD"))
-        harvestLDModule.run(creep);
-        else
+      // switch(withdrawStructure) {
+      //   case STRUCTURE_TERMINAL:
+      //   runWithdraw(creep.room.terminal);
+      //   break;
+      //   case STRUCTURE_STORAGE:
+      //   let transferTarget = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+      //     filter: (s) => (s.structureType === STRUCTURE_SPAWN
+      //       || s.structureType === STRUCTURE_EXTENSION
+      //       || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
+      //     ) && s.energy < s.energyCapacity
+      //   });
+      //   if (transferTarget !== null)
+      //   runWithdraw(creep.room.storage);
+      //   break;
+      //   case STRUCTURE_CONTAINER:
+      //   target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
+      //     return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
+      //   });
+      //   runWithdraw(target);
+      //   break;
+      //   case null:
+      //   if (creep.memory.role.includes("LD")) {
+      //     console.log(true + Game.shard.name)
+      //     harvestLDModule.run(creep);
+      //   }
+      //   else
+      //   harvestModule.run(creep);
+      //
+      //
+      //   default:
+      //   break;
+      // }
+
+      if (creep.memory.role.includes("LD")) {
         harvestModule.run(creep);
-
-
-        default:
-        break;
       }
+      else {
+        switch(withdrawStructure) {
+          case STRUCTURE_TERMINAL:
+          runWithdraw(creep.room.terminal);
+          break;
+          case STRUCTURE_STORAGE:
+          let transferTarget = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            filter: (s) => (s.structureType === STRUCTURE_SPAWN
+              || s.structureType === STRUCTURE_EXTENSION
+              || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
+            ) && s.energy < s.energyCapacity
+          });
+          if (transferTarget !== null)
+          runWithdraw(creep.room.storage);
+          break;
+          case STRUCTURE_CONTAINER:
+          target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
+            return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
+          });
+          runWithdraw(target);
+          break;
+          case null:
+          if (creep.memory.role.includes("LD")) {
+            console.log(true + Game.shard.name)
+            harvestLDModule.run(creep);
+          }
+          else
+          harvestModule.run(creep);
+
+
+          default:
+          break;
+        }
+      }
+
+
+      
     }
 
     if (creep.memory.role.includes("upgrader")) {
@@ -277,7 +323,6 @@ module.exports = {
       if (mainSystem()) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
-
         // Run the part //
         withdrawStructure();
 
