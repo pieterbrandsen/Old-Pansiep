@@ -2,10 +2,10 @@ module.exports = {
   run: function(creep) {
     // Get the variables needed for module //
     const flagMemory = Memory.flags[creep.room.name];
-    const target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.structureType == STRUCTURE_RAMPART);
-    }});
-    //const target = Game.getObjectById(creep.memory.sourceId);
+    // const target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+    //   return (structure.structureType == STRUCTURE_RAMPART);
+    // }});
+    const target = Game.getObjectById(creep.memory.sourceId);
 
 
     function mainSystem() {

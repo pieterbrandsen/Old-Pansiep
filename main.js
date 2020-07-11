@@ -4,6 +4,7 @@ require('prototype.Room.structures');
 
 const roleHarvester = require('role.harvester');
 const roleTransferer = require('role.transferer');
+const roleTransfererLiTe = require('role.transfererLiTe');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
 const roleBuilderLD = require('role.builderLD');
@@ -27,7 +28,7 @@ module.exports.loop = function() {
   let mainSystemMemory = Memory.mainSystem;
 
   if (Game.cpu.bucket == 10000) {
-    Game.notify("Getting a pixel!");
+    //Game.notify("Getting a pixel!");
     console.log(shardName + " is Getting a pixel!");
     Game.cpu.generatePixel();
   }
@@ -134,6 +135,9 @@ module.exports.loop = function() {
         }
         else if (creep.memory.role == "builder") {
           roleBuilder.run(creep);
+        }
+        else if (creep.memory.role == "transfererLiTe") {
+          roleTransfererLiTe.run(creep);
         }
         else if (creep.memory.role == "upgrader") {
           roleUpgrader.run(creep);
@@ -305,10 +309,12 @@ module.exports.loop = function() {
           }
         }
 
+
         if (room.controller.level >= controllerLevel) {
           structureType = STRUCTURE_LINK;
         }
         else {
+          range = 1;
           structureType = STRUCTURE_CONTAINER;
         }
 
@@ -323,7 +329,7 @@ module.exports.loop = function() {
         });
 
 
-        if (((!containerInRange && structureType == STRUCTURE_CONTAINER) || (!linkInRange && structureType == STRUCTURE_LINK)) && constructionSitesInRange == null) {
+        if (constructionSitesInRange == null) {
           if (structureType == STRUCTURE_LINK && containerInRange !== null) {
             containerInRange.destroy();
           }
@@ -526,8 +532,8 @@ module.exports.loop = function() {
 
         if (containerAmount > 0) {
           room.containers.forEach((item, i) => {
-            if (room.containers[i].id !== flagMemory.controllerStorage  ) {
-              energyStored += room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
+            if (item.id !== flagMemory.controllerStorage  ) {
+              energyStored += item.store.getUsedCapacity(RESOURCE_ENERGY);
             }
           });
         }
@@ -562,6 +568,11 @@ module.exports.loop = function() {
         if (!flagName)
         flagName = roomName;
 
+        let directionsList = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+
+        if (room.controller.level >= 6 && spawn.pos.inRangeTo(room.terminal,2))
+          directionsList = [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+
 
         return spawn.spawnCreep(
           getCreepSize(role),
@@ -573,7 +584,8 @@ module.exports.loop = function() {
               spawnRoom: roomName,
               targetRoom: targetRoom,
               flagName: flagName
-            }
+            }, directions: directionsList
+
           }
         )
       }
@@ -617,6 +629,14 @@ module.exports.loop = function() {
               parts.push(CARRY);
               parts.push(MOVE);
             }
+          }
+        }
+        else if (role == "transfererLiTe") {
+          const energyCost = 100;
+          let partAmount = Math.floor(energyAvailable/energyCost);
+          for (let i = 0; i < partAmount && i < 10; i++) {
+            parts.push(CARRY);
+            parts.push(MOVE);
           }
         }
         else if (role == "upgrader") {
@@ -713,24 +733,24 @@ module.exports.loop = function() {
           }
         }
 
-        // else if (role == "shardUp") { // claimer
-        //   const energyCost = 650;
-        //   let partAmount = Math.floor(energyAvailable/energyCost);
-        //   parts.push(CLAIM);
-        //   parts.push(MOVE);
-        //   //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
-        // }
-        else if (role == "shardUp") { // builder
-          const energyCost = 300;
+        else if (role == "shardUp") { // claimer
+          const energyCost = 650;
           let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount && i < 10; i++) {
-            parts.push(WORK);
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(MOVE);
-            parts.push(MOVE);
-          }
+          parts.push(CLAIM);
+          parts.push(MOVE);
+          //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
         }
+        // else if (role == "shardUp") { // builder
+        //   const energyCost = 300;
+        //   let partAmount = Math.floor(energyAvailable/energyCost);
+        //   for (let i = 0; i < partAmount && i < 10; i++) {
+        //     parts.push(WORK);
+        //     parts.push(CARRY);
+        //     parts.push(CARRY);
+        //     parts.push(MOVE);
+        //     parts.push(MOVE);
+        //   }
+        // }
 
 
         return parts;
@@ -743,48 +763,53 @@ module.exports.loop = function() {
             let role = creep.memory.role;
             const flagMemory = Memory.flags[creep.memory.spawnRoom];
 
-            if (!flagMemory.creepAmount) {
-              flagMemory.creepAmount = {};
-            }
-            if (role !== undefined && creep.memory.targetRoom == creep.memory.spawnRoom && flagMemory.creepAmount) {
-              if (creep.memory.role == "harvester-0") {
-                flagMemory.creepAmount.harvester0Count++;
-                flagMemory.creepAmount.harvester0WorkCount += creep.getActiveBodyparts(WORK);
+            if (flagMemory) {
+              if (!flagMemory.creepAmount) {
+                flagMemory.creepAmount = {};
+              }
+              if (role !== undefined && creep.memory.targetRoom == creep.memory.spawnRoom && flagMemory.creepAmount) {
+                if (creep.memory.role == "harvester-0") {
+                  flagMemory.creepAmount.harvester0Count++;
+                  flagMemory.creepAmount.harvester0WorkCount += creep.getActiveBodyparts(WORK);
 
-              }
-              if (creep.memory.role == "harvester-1") {
-                flagMemory.creepAmount.harvester1Count++;
-                flagMemory.creepAmount.harvester1WorkCount += creep.getActiveBodyparts(WORK);
-              }
-              if (creep.memory.role == "transferer") {
-                flagMemory.creepAmount.transfererCount++;
-                flagMemory.creepAmount.transfererCarryCount += creep.getActiveBodyparts(CARRY);
-              }
-              if (creep.memory.role == "builder") {
-                flagMemory.creepAmount.builderCount++;
-                flagMemory.creepAmount.builderWorkCount += creep.getActiveBodyparts(WORK);
-              }
-              if (creep.memory.role == "upgrader") {
-                flagMemory.creepAmount.upgraderCount++;
-                flagMemory.creepAmount.upgraderWorkCount += creep.getActiveBodyparts(WORK);
-              }
-              if (creep.memory.role == "extractor") {
-                flagMemory.creepAmount.extractorCount++;
-              }
-              if (creep.memory.role == "repairer") {
-                flagMemory.creepAmount.repairerCount++;
-              }
-              if (creep.memory.role == "claimer") {
-                flagMemory.creepAmount.claimerCount++;
-              }
-              if (creep.memory.role == "builderLD") {
-                flagMemory.creepAmount.builderLDCount++;
-              }
-              if (creep.memory.role == "pixelFarmer") {
-                flagMemory.creepAmount.pixelFarmerCount++;
-              }
-              if (creep.memory.role == "ruinWithdrawer") {
-                flagMemory.creepAmount.ruinWithdrawerCount++;
+                }
+                if (creep.memory.role == "harvester-1") {
+                  flagMemory.creepAmount.harvester1Count++;
+                  flagMemory.creepAmount.harvester1WorkCount += creep.getActiveBodyparts(WORK);
+                }
+                if (creep.memory.role == "transferer") {
+                  flagMemory.creepAmount.transfererCount++;
+                  flagMemory.creepAmount.transfererCarryCount += creep.getActiveBodyparts(CARRY);
+                }
+                if (creep.memory.role == "transfererLiTe") {
+                  flagMemory.creepAmount.transfererLiTeCount++;
+                }
+                if (creep.memory.role == "builder") {
+                  flagMemory.creepAmount.builderCount++;
+                  flagMemory.creepAmount.builderWorkCount += creep.getActiveBodyparts(WORK);
+                }
+                if (creep.memory.role == "upgrader") {
+                  flagMemory.creepAmount.upgraderCount++;
+                  flagMemory.creepAmount.upgraderWorkCount += creep.getActiveBodyparts(WORK);
+                }
+                if (creep.memory.role == "extractor") {
+                  flagMemory.creepAmount.extractorCount++;
+                }
+                if (creep.memory.role == "repairer") {
+                  flagMemory.creepAmount.repairerCount++;
+                }
+                if (creep.memory.role == "claimer") {
+                  flagMemory.creepAmount.claimerCount++;
+                }
+                if (creep.memory.role == "builderLD") {
+                  flagMemory.creepAmount.builderLDCount++;
+                }
+                if (creep.memory.role == "pixelFarmer") {
+                  flagMemory.creepAmount.pixelFarmerCount++;
+                }
+                if (creep.memory.role == "ruinWithdrawer") {
+                  flagMemory.creepAmount.ruinWithdrawerCount++;
+                }
               }
             }
           }
@@ -845,6 +870,9 @@ module.exports.loop = function() {
         else if (canCreepSpawn("builder")) {
           spawnCreep(spawn,"builder");
         }
+        else if (canCreepSpawn("transfererLiTe")) {
+          spawnCreep(Game.getObjectById(flagMemory.headSpawn),"transfererLiTe");
+        }
         else if (canCreepSpawn("upgrader")) {
           spawnCreep(spawn,"upgrader");
         }
@@ -872,7 +900,7 @@ module.exports.loop = function() {
           spawnCreep(spawn,"shardUp",roomName);
         }
         else {
-          if (flagMemory.controllerLevel >= 7) {
+          if (room.controller.level >= 7) {
             getRemotes();
           }
         }
@@ -885,6 +913,7 @@ module.exports.loop = function() {
           flagMemory.creepAmount.harvester1WorkCount = 0;
           flagMemory.creepAmount.transfererCount = 0;
           flagMemory.creepAmount.transfererCarryCount = 0;
+          flagMemory.creepAmount.transfererLiTeCount = 0;
           flagMemory.creepAmount.builderCount = 0;
           flagMemory.creepAmount.builderWorkCount = 0;
           flagMemory.creepAmount.upgraderCount = 0;
@@ -902,11 +931,19 @@ module.exports.loop = function() {
       function canCreepSpawn(role) {
         let result = false;
 
-        if (flagMemory.creepAmount) {
+        if (flagMemory.creepAmount + roomName) {
           switch(role) {
             case "transferer":
             if (flagMemory.creepAmount.transfererCarryCount < (flagMemory.sources.length * 15 + 10) && roomNeedsTransferer()) {
               if (flagMemory.creepAmount.transfererCount < 6) {
+                result = true;
+              }
+            }
+            break;
+            case "transfererLiTe":
+            if (flagMemory.creepAmount.transfererLiTeCount < 1 && flagMemory.links.linkTo1 && room.storage && room.terminal) {
+              console.log(roomName)
+              if (flagMemory.links.linkTo2.length > 0) {
                 result = true;
               }
             }
@@ -949,7 +986,7 @@ module.exports.loop = function() {
             }
             break;
             case "extractor":
-            if (flagMemory.creepAmount.extractorCount < 1 && flagMemory.mineralAmount > 0 && flagMemory.controllerLevel >= 6) {
+            if (flagMemory.creepAmount.extractorCount < 1 && flagMemory.mineralAmount > 0 && room.controller.level >= 6) {
               result = true;
             }
             break;
@@ -993,7 +1030,7 @@ module.exports.loop = function() {
             let repairAmount = 1 * 1000 * 1000 // 1 Million
           }
 
-          if (flagMemory.repairTarget.length == 0 && Game.time % 10000 == 0) {
+          if (flagMemory.repairTarget.length == 0 && Game.time % 1000 == 0) {
             let repairTarget = flagMemory.repairTarget;
             let targetRepair = room.find(FIND_STRUCTURES, {
               filter: (s) => s.hits < s.hitsMax && s.hits < repairAmount
@@ -1208,9 +1245,11 @@ module.exports.loop = function() {
                   {filter: {structureType: STRUCTURE_LINK}})[0];
                 }
               }
+
+
               if (room.controller.level >= 6 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkTo2)) {
-                if (findLinkInRange(Game.spawns[roomName+"-1"],3) !== null && !flagMemory.links.linkTo1) {
-                  flagMemory.links.linkTo1 = findLinkInRange(Game.spawns[roomName+ "-1"],3).id
+                if (findLinkInRange(Game.getObjectById(flagMemory.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
+                  flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.headSpawn),3).id
                 }
                 if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkTo2) {
                   flagMemory.links.linkTo2 = findLinkInRange(room.controller,3).id
@@ -1219,8 +1258,8 @@ module.exports.loop = function() {
 
               if (flagMemory.sources[0] && room.controller.level >= 7 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkFrom1)) {
                 let source0 = Game.getObjectById(flagMemory.sources[0].id);
-                if (findLinkInRange(Game.spawns[roomName+"-1"],3) !== null && !flagMemory.links.linkTo1) {
-                  flagMemory.links.linkTo1 = findLinkInRange(Game.spawns[roomName+ "-1"],3).id
+                if (findLinkInRange(Game.getObjectById(flagMemory.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
+                  flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.headSpawn),3).id
                 }
                 if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkFrom1 && source0 !== undefined) {
                   flagMemory.links.linkFrom1 = findLinkInRange(source0,3).id
@@ -1229,8 +1268,8 @@ module.exports.loop = function() {
 
               if (flagMemory.sources[1] && room.controller.level >= 7 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkFrom2)) {
                 let source1 = Game.getObjectById(flagMemory.sources[1].id);
-                if (findLinkInRange(Game.spawns[roomName+"-1"],3) !== null && !flagMemory.links.linkTo1) {
-                  flagMemory.links.linkTo1 = findLinkInRange(Game.spawns[roomName+ "-1"],3).id
+                if (findLinkInRange(Game.getObjectById(flagMemory.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
+                  flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.headSpawn),3).id
                 }
 
                 if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkFrom2 && source1 !== null) {
@@ -1243,6 +1282,7 @@ module.exports.loop = function() {
 
           if (flagMemory.sources) {
             if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
+              flagMemory.controllerLevel = room.controller.level;
               const mineral = room.find(FIND_MINERALS)[0];
               if (mineral) {
                 flagMemory.mineralAmount = mineral.mineralAmount;
@@ -1253,28 +1293,35 @@ module.exports.loop = function() {
                 flagMemory.mineralId = "";
               }
 
+
               const sources = room.find(FIND_SOURCES);
+
               sources.forEach((item, i) => {
                 flagMemory.sources[i] = {}
-                flagMemory.sources[i].id = sources[i].id;
-
-                if (room.controller.level == 0) {
-                  const sources = room.find(FIND_SOURCES);
-                  createSurroundingConstructionSite(sources[i].id,1,7);
-                }
-                else {
-                  flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
-                  createSurroundingConstructionSite(flagMemory.sources[i].id,2,7);
-                }
+                flagMemory.sources[i].id = item.id;
+                flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
               });
 
               flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
               createSurroundingConstructionSite(room.controller.id,3,6);
+
+              roomPlanner.run()
             }
           }
         }
 
         function checkMissingMemory() {
+          if (!flagMemory.headSpawn) {
+            if (Game.time % 500 == 0) {
+              if (room.terminal && room.controller.level >= 6) {
+                const spawn = room.terminal.pos.findInRange(room.spawns, 2,
+                  {filter: {structureType: STRUCTURE_SPAWN}})[0];
+
+                if (spawn)
+                  flagMemory.headSpawn = spawn.id;
+              }
+            }
+          }
           if (!flagMemory.sources)
           flagMemory.sources = [];
           if (!flagMemory.links)
@@ -1432,20 +1479,20 @@ module.exports.loop = function() {
         }
 
 
-        if (mainSystem()) {
-          // Get the CPU Usage //
-          let start = Game.cpu.getUsed();
-
-          // Run the part //
-          runRoomPlanner();
-
-          // Set the average CPU Usage in the memory //
-          totalCPURunRoomPlanner += Game.cpu.getUsed() - start;
-        }
-        else {
-          // Run the part without tracking //
-          runRoomPlanner();
-        }
+        // if (mainSystem()) {
+        //   // Get the CPU Usage //
+        //   let start = Game.cpu.getUsed();
+        //
+        //   // Run the part //
+        //   runRoomPlanner();
+        //
+        //   // Set the average CPU Usage in the memory //
+        //   totalCPURunRoomPlanner += Game.cpu.getUsed() - start;
+        // }
+        // else {
+        //   // Run the part without tracking //
+        //   runRoomPlanner();
+        // }
 
 
         if (mainSystem()) {

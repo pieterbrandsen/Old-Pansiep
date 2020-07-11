@@ -1,5 +1,6 @@
 module.exports = {
   run: function(creep) {
+    const flagMemory = Memory.flags[creep.room.name];
     // If creep has no targetId assign a empty string //
     if (!creep.memory.targetId)
     creep.memory.targetId = "";
@@ -9,14 +10,16 @@ module.exports = {
     }
 
 
-    function createSurroundingConstructionSite(id,range,controllerLevel) {
+    function createSurroundingConstructionSite(id,getRange,controllerLevel) {
+      let range = getRange;
+      const room = creep.room;
       let object = Game.getObjectById(id);
       let structureType;
       let x = object.pos.x;
       let y = object.pos.y;
       let constructionSiteCanBeBuild = false;
       function createConstruction(structureType,x,y) {
-        if (creep.room.createConstructionSite(x,y,structureType) == 0) {
+        if (room.createConstructionSite(x,y,structureType) == 0) {
           return true;
         }
         else {
@@ -24,10 +27,13 @@ module.exports = {
         }
       }
 
-      if (creep.room.controller.level >= controllerLevel) {
+
+      if (room.controller.level >= controllerLevel) {
         structureType = STRUCTURE_LINK;
       }
       else {
+        if (object.structureType == STRUCTURE_CONTROLLER)
+          range = 1;
         structureType = STRUCTURE_CONTAINER;
       }
 
@@ -42,29 +48,29 @@ module.exports = {
       });
 
 
-      if (((!containerInRange && structureType == STRUCTURE_CONTAINER) || (!linkInRange && structureType == STRUCTURE_LINK)) && constructionSitesInRange == null) {
+      if (constructionSitesInRange == null) {
         if (structureType == STRUCTURE_LINK && containerInRange !== null) {
           containerInRange.destroy();
         }
 
         if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
-          creep.room.createConstructionSite(x+range,y+range,structureType)
+          room.createConstructionSite(x+range,y+range,structureType)
           constructionSiteCanBeBuild = true
         }
         else if (createConstruction(structureType,x,y+range) == true && constructionSiteCanBeBuild == false) {
-          creep.room.createConstructionSite(x+range,y+range,structureType)
+          room.createConstructionSite(x+range,y+range,structureType)
           constructionSiteCanBeBuild = true
         }
         else if (createConstruction(structureType,x-range,y+range) == true && constructionSiteCanBeBuild == false) {
-          creep.room.createConstructionSite(x+range,y+range,structureType)
+          room.createConstructionSite(x+range,y+range,structureType)
           constructionSiteCanBeBuild = true
         }
         else if (createConstruction(structureType,x-range,y) == true && constructionSiteCanBeBuild == false) {
-          creep.room.createConstructionSite(x+range,y+range,structureType)
+          room.createConstructionSite(x+range,y+range,structureType)
           constructionSiteCanBeBuild = true
         }
         else if (createConstruction(structureType,x-range,y-range) == true && constructionSiteCanBeBuild == false) {
-          creep.room.createConstructionSite(x+range,y+range,structureType)
+          room.createConstructionSite(x+range,y+range,structureType)
           constructionSiteCanBeBuild = true
         }
         else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
@@ -112,8 +118,10 @@ module.exports = {
         if (creep.memory.role.includes("builder"))
         creep.suicide()
         else {
-          if (creep.memory.sourceId && creep.memory.role.includes(("harvesterLD"))) {
-            createSurroundingConstructionSite(creep.memory.sourceId,1,1);
+          if (Game.time % 10 == 0) {
+            if (creep.memory.sourceId) {
+              createSurroundingConstructionSite(creep.memory.sourceId,2,7);
+            }
           }
         }
       }
@@ -154,7 +162,7 @@ module.exports = {
           break;
         case ERR_NOT_IN_RANGE:
           creep.say("Moving");
-          creep.moveTo(Game.getObjectById(creep.memory.targetId));
+          creep.travelTo(Game.getObjectById(creep.memory.targetId));
           break;
         case ERR_NO_BODYPART:
         default:
