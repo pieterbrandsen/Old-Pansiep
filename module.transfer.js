@@ -4,6 +4,9 @@ module.exports = {
   run: function(creep) {
     const flagMemory = Memory.flags[creep.room.name];
 
+    if (!creep.memory.waitTransferer || Game.time % 20 == 0) {
+      creep.memory.waitTransferer = false;
+    }
 
     function mainSystem() {
       // If Memory.mainSystem is defined //
@@ -22,7 +25,6 @@ module.exports = {
     }
 
     function transferTarget() {
-      const energy = creep.store.getUsedCapacity(RESOURCE_ENERGY);
       const target = creep.transfer(Game.getObjectById(creep.memory.targetId),RESOURCE_ENERGY);
       switch(target) {
         case OK:
@@ -55,7 +57,7 @@ module.exports = {
       if (creep.memory.role.includes("harvest")) {
         let sourceObject = Game.getObjectById(creep.memory.sourceId);
         let containerInRange = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-          return (structure.pos.inRangeTo(sourceObject,2) && structure);
+          return (structure.pos.inRangeTo(sourceObject,2));
         }});
         let linkInRange = creep.pos.findClosestByRange(creep.room.links, {filter: (structure) => {
           return (structure.pos.inRangeTo(sourceObject,2));
@@ -70,16 +72,22 @@ module.exports = {
           builderModule.run(creep);
       }
       else {
-        let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-          filter: (s) => (s.structureType === STRUCTURE_SPAWN
-            || s.structureType === STRUCTURE_EXTENSION
-            || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
-          ) && s.energy < s.energyCapacity
-        });
+
         const controllerStorage = Game.getObjectById(flagMemory.controllerStorage);
 
-        if (target !== null)
-        creep.memory.targetId = target.id;
+        if (creep.memory.waitTransferer == false) {
+          let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            filter: (s) => (s.structureType === STRUCTURE_SPAWN
+              || s.structureType === STRUCTURE_EXTENSION
+              || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
+            ) && s.energy < s.energyCapacity
+          });
+
+          if (target !== null)
+          creep.memory.targetId = target.id;
+          else
+          creep.memory.waitTransferer = true;
+        }
         else
           if (controllerStorage)
             if (controllerStorage.store.getUsedCapacity() < 1500)

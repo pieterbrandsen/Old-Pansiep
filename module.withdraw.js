@@ -23,6 +23,10 @@ module.exports = {
       }
     }
 
+    if (!creep.memory.withdrawId)
+      creep.memory.withdrawId = ""
+
+
     function createSurroundingConstructionSite(id,range,controllerLevel) {
       const room = creep.room
       let object = Game.getObjectById(id);
@@ -140,7 +144,8 @@ module.exports = {
 
       switch(runWithdraw) {
         case OK:
-        creep.say("Withdraw")
+        creep.say("Withdraw");
+        creep.memory.withdrawId = "";
         break;
         case ERR_NOT_OWNER:
         break;
@@ -156,7 +161,7 @@ module.exports = {
         break;
         case ERR_NOT_IN_RANGE:
         creep.say("Moving");
-        creep.moveTo(target);
+        creep.travelTo(target);
         break;
         case ERR_INVALID_ARGS:
         break;
@@ -167,139 +172,96 @@ module.exports = {
 
     function findWithdrawStructure() {
       const room = creep.room;
-      let withdrawStructure;
-      if (room.terminal) {
-        switch(room.storage) {
-          case undefined:
-          withdrawStructure = STRUCTURE_TERMINAL;
-          break;
-          case !undefined:
-          if (creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY))
-          withdrawStructure = STRUCTURE_STORAGE;
-          else
-          withdrawStructure = STRUCTURE_TERMINAL;
-          break;
-          default:
-          break;
-        }
+      let withdrawStructure = null;
+
+      function checkStorage() {
+        if (room.storage)
+          if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
+            withdrawStructure = STRUCTURE_STORAGE;
+            creep.memory.withdrawId = room.storage.id;
+            return true;
+          }
       }
-      else if (room.storage && !room.terminal) {
-        if (creep.room.containers.length > 0) {
+      function checkTerminal() {
+        if (room.terminal)
+          if (room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
+            withdrawStructure = STRUCTURE_TERMINAL
+            creep.memory.withdrawId = room.terminal.id;
+            return true;
+          }
+      }
+      function checkContainers() {
+        if (room.containers.length > 0) {
           let energyStored = 0;
           room.containers.forEach((item, i) => {
-            if (creep.room.containers[i].id !== flagMemory.controllerStorage  ) {
-              energyStored += creep.room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
+            energyStored += room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
+          });
+          if (energyStored > 500) {
+            target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
+              return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0)}
+            });
+            if (target !== null) {
+              withdrawStructure = STRUCTURE_CONTAINER;
+              creep.memory.withdrawId = target.id;
+              return true;
             }
+          }
+        }
+      }
+      function checkLinks() {
+        if (room.links.length > 0) {
+          let energyStored = 0;
+          room.links.forEach((item, i) => {
+            if (!item.pos.inRangeTo(creep.room.controller,3))
+              energyStored += room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
           });
 
-          if (energyStored > 1500)
-          withdrawStructure = STRUCTURE_CONTAINER;
-          else
-          if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 250) {
-            withdrawStructure = STRUCTURE_CONTAINER;
-          }
-          else {
-            withdrawStructure = STRUCTURE_STORAGE;
+          if (energyStored > 500) {
+            target = creep.pos.findClosestByRange(creep.room.links, {filter: (structure) => {
+              return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0)}
+            });
+            if (target !== null) {
+              withdrawStructure = STRUCTURE_LINK;
+              creep.memory.withdrawId = target.id;
+              return true;
+            }
           }
         }
-        else {
-          withdrawStructure = STRUCTURE_STORAGE;
-        }
       }
-      else if (room.containers.length > 0) {
-        let energyStored = 0;
-        room.containers.forEach((item, i) => {
-          energyStored += room.containers[i].store.getUsedCapacity(RESOURCE_ENERGY);
-        });
-        if (energyStored > 500)
-        withdrawStructure = STRUCTURE_CONTAINER;
-        else
-        withdrawStructure = null;
-      }
-      else
-      withdrawStructure = null;
 
-      if (withdrawStructure == undefined) {
-        withdrawStructure = null;
-      }
+
+      if (!checkStorage())
+        if (!checkTerminal())
+          if (!checkContainers())
+            if (!checkLinks()) {
+              if (creep.memory.role !== "transferer") {
+                creep.memory.withdrawId = "source"
+              }
+            }
+
+
+      creep.say(withdrawStructure)
+
       return withdrawStructure;
     }
 
     function withdrawStructure() {
-      const withdrawStructure = findWithdrawStructure();
-      // switch(withdrawStructure) {
-      //   case STRUCTURE_TERMINAL:
-      //   runWithdraw(creep.room.terminal);
-      //   break;
-      //   case STRUCTURE_STORAGE:
-      //   let transferTarget = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-      //     filter: (s) => (s.structureType === STRUCTURE_SPAWN
-      //       || s.structureType === STRUCTURE_EXTENSION
-      //       || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
-      //     ) && s.energy < s.energyCapacity
-      //   });
-      //   if (transferTarget !== null)
-      //   runWithdraw(creep.room.storage);
-      //   break;
-      //   case STRUCTURE_CONTAINER:
-      //   target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-      //     return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
-      //   });
-      //   runWithdraw(target);
-      //   break;
-      //   case null:
-      //   if (creep.memory.role.includes("LD")) {
-      //     console.log(true + Game.shard.name)
-      //     harvestLDModule.run(creep);
-      //   }
-      //   else
-      //   harvestModule.run(creep);
-      //
-      //
-      //   default:
-      //   break;
-      // }
-
       if (creep.memory.role.includes("LD")) {
         harvestModule.run(creep);
       }
       else {
-        switch(withdrawStructure) {
-          case STRUCTURE_TERMINAL:
-          runWithdraw(creep.room.terminal);
-          break;
-          case STRUCTURE_STORAGE:
-          let transferTarget = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-            filter: (s) => (s.structureType === STRUCTURE_SPAWN
-              || s.structureType === STRUCTURE_EXTENSION
-              || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
-            ) && s.energy < s.energyCapacity
-          });
-          if (transferTarget !== null)
-          runWithdraw(creep.room.storage);
-          break;
-          case STRUCTURE_CONTAINER:
-          target = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-            return (!structure.pos.inRangeTo(creep.room.controller,3) && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity() && structure.structureType == withdrawStructure)}
-          });
-          runWithdraw(target);
-          break;
-          case null:
-          if (creep.memory.role.includes("LD")) {
-            console.log(true + Game.shard.name)
-            harvestLDModule.run(creep);
-          }
+        if (creep.memory.withdrawId.length > 0) {
+          if (creep.memory.withdrawId == "source")
+            harvestModule.run(creep);
           else
-          harvestModule.run(creep);
-
-
-          default:
-          break;
+            runWithdraw(Game.getObjectById(creep.memory.withdrawId));
+        }
+        else {
+          if (Game.time % 2 == 0) {
+            findWithdrawStructure();
+          }
         }
       }
-
-
-      
     }
 
     if (creep.memory.role.includes("upgrader")) {
