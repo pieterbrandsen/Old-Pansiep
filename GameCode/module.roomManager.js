@@ -83,8 +83,7 @@ module.exports = {
       return constructionSiteCanBeBuild;
     };
 
-    const sources = room.find(FIND_SOURCES);
-    sources.forEach((item, i) => {
+    room.find(FIND_SOURCES).sources.forEach((item, i) => {
       if (flagMemory.roomManager.sources[i].HasStructure == false) {
         if (createSurroundingConstructionSite(flagMemory.sources[i].id,2,7)) {
           flagMemory.roomManager.sources[i].HasStructure = true

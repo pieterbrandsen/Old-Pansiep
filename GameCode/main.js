@@ -30,8 +30,8 @@ module.exports.loop = function() {
   let mainSystemMemory = Memory.mainSystem;
 
   if (Game.cpu.bucket == 10000) {
-    //Game.notify("Getting a pixel!");
-    console.log(shardName + " is Getting a pixel!");
+    //Game.notify("getting a pixel!");
+    console.log(shardName + " is getting a pixel!");
     Game.cpu.generatePixel();
   }
 
