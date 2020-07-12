@@ -575,8 +575,15 @@ module.exports.loop = function() {
 
           let directionsList = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
 
-          if (room.controller.level >= 6 && spawn.pos.inRangeTo(room.terminal,2))
-          directionsList = [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+          if (room.terminal)
+            if (room.controller.level >= 6 && spawn.pos.inRangeTo(room.terminal,2)) {
+              if (role.includes("LiTe")) {
+                  directionsList = [TOP_RIGHT];
+              }
+              else {
+                directionsList = [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+              }
+            }
 
 
           return spawn.spawnCreep(
@@ -947,8 +954,10 @@ module.exports.loop = function() {
               break;
               case "transfererLiTe":
               if (flagMemory.creepAmount.transfererLiTeCount < 1 && flagMemory.links.linkTo1 && room.storage && room.terminal) {
-                if (flagMemory.links.linkTo2.length > 0) {
-                  result = true;
+                if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
+                  if (flagMemory.links.linkTo2.length > 0) {
+                    result = true;
+                  }
                 }
               }
               break;
