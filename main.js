@@ -278,9 +278,7 @@ module.exports.loop = function() {
 
     if (controller && controller.my && flagMemory) {
       if (!flagMemory.IsMemorySetup) {
-        if (checkMissingMemory.run(roomName) == 0) {
-          flagMemory.IsMemorySetup = true;
-        }
+        checkMissingMemory.run(roomName);
       }
       else {
         let towers = room.towers;
@@ -1411,7 +1409,6 @@ module.exports.loop = function() {
             Memory.performanceTracker[roomName + ".builderEnergy"] = 0;
             Memory.performanceTracker[roomName + ".repairerEnergy"] = 0;
           }
-
 
 
           if (mainSystem()) {

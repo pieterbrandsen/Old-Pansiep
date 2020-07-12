@@ -52,7 +52,7 @@ module.exports = {
       }
 
       if (checkIfMemoryIsSetup() == 0) {
-        return true;
+        flagMemory.IsMemorySetup = true;
       }
     }
   }
