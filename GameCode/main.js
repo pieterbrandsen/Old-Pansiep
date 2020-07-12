@@ -1285,6 +1285,7 @@ module.exports.loop = function() {
             // if (flagMemory.controllerLevel < room.controller.level) {
             //   roomPlanner.run()
             // }
+            console.log(roomName)
             if (roomName == "E43N3") {
               roomManager.run(roomName)
             }
