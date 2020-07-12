@@ -48,6 +48,5 @@ module.exports = {
     count--;
 
     return count;
-    export count;
   }
 }
