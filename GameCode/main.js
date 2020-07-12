@@ -1295,7 +1295,6 @@ module.exports.loop = function() {
 
             if (flagMemory.sources) {
               if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
-                console.log(true)
                 if (!flagMemory.roomManager.headSpawn) {
                   if (room.spawns.length > 1) {
                     if (room.terminal && room.controller.level >= 6) {
@@ -1328,8 +1327,9 @@ module.exports.loop = function() {
 
 
                 const sources = room.find(FIND_SOURCES);
-
                 sources.forEach((item, i) => {
+                  console.log(item.id)
+
                   flagMemory.sources[i] = {}
                   flagMemory.sources[i].id = item.id;
                   flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
