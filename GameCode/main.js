@@ -1295,6 +1295,7 @@ module.exports.loop = function() {
 
             if (flagMemory.sources) {
               if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
+                console.log(true)
                 if (!flagMemory.roomManager.headSpawn) {
                   if (room.spawns.length > 1) {
                     if (room.terminal && room.controller.level >= 6) {
