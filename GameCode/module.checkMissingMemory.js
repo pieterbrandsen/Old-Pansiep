@@ -77,7 +77,7 @@ module.exports = {
         if (!flagMemory.sources)
         flagMemory.sources = [];
 
-        room.find(FIND_SOURCES).forEach((item, i) => {
+        (room.find(FIND_SOURCES)).forEach((item, i) => {
           if (!flagMemory.sources[i]) {
             flagMemory.sources[i] = {}
             flagMemory.sources[i].id = item.id;
