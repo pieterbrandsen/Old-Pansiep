@@ -104,6 +104,10 @@ module.exports = {
         if (!flagMemory.creepAmount)
         flagMemory.creepAmount = {};
 
+
+        console.log(missingMemoryString);
+        console.log(filledMemoryString);
+        console.log()
         return roomIsMissingMemory
       };
     }
