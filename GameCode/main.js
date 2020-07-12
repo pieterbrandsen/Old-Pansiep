@@ -20,9 +20,9 @@ const roleReserverLD = require('role.reserver');
 const roleHarvesterLD = require('role.harvesterLD');
 const roleTransfererLD = require('role.transfererLD');
 
-const roomPlanner = require('module.roomPlanner')
-const roomManager = require('module.roomManager')
-const checkMissingMemory = require('module.checkMissingMemory')
+const roomPlanner = require('./modules/module.roomPlanner')
+const roomManager = require('./modules/module.roomManager')
+const checkMissingMemory = require('./modules/module.checkMissingMemory')
 
 module.exports.loop = function() {
   let shardName = Game.shard.name;
