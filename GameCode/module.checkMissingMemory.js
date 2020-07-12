@@ -2,6 +2,20 @@ module.exports = {
   run: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
+    let missingMemoryString = `${roomName} is missing the following memory: `;
+    let filledMemoryString = `${roomName} filled the following memory: `;
+
+    function enterValueInMemory(memoryPath, inputValue) {
+      flagMemory.memoryPath = inputValue;
+      if (flagMemory.memoryPath) {
+        console.log(true)
+      }
+      else {
+        console.log(false)
+      }
+    }
+    enterValueInMemory('test', true)
+
 
     function getOpenSpotsNearSource(source) {
       const terrain = new Room.Terrain(roomName);
@@ -59,36 +73,40 @@ module.exports = {
     }
     else {
       function checkIfMemoryIsSetup() {
-        let mememoryAmountMissing = 0;
+        let memoryAmountMissing = 0;
 
         if (!flagMemory.roomManager.sources) {
           flagMemory.roomManager.sources = [];
-          mememoryAmountMissing++;
+          missingMemoryString.concat(".sources, ")
+          memoryAmountMissing++;
         }
         else {
+          if (!flagMemory.sources) {
+            flagMemory.sources = [];
+            missingMemoryString.concat(`flagMemory.sources[${i}], `)
+          }
+          else {
           const sources = room.find(FIND_SOURCES)
           sources.forEach((item, i) => {
-            if (!flagMemory.sources) {
-              flagMemory.sources = [];
-              mememoryAmountMissing++;
+              memoryAmountMissing++;
             }
             else {
               if (!flagMemory.sources[i]) {
                 flagMemory.sources[i] = {}
                 flagMemory.sources[i].id = item.id;
                 flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
-                mememoryAmountMissing++;
+                memoryAmountMissing++;
               }
             }
 
 
             if (!flagMemory.roomManager.sources[i]) {
               flagMemory.roomManager.sources[i] = {};
-              mememoryAmountMissing++;
+              memoryAmountMissing++;
             }
             else {
               if (!flagMemory.roomManager.sources[i].HasStructure) {
-                mememoryAmountMissing++;
+                memoryAmountMissing++;
                 flagMemory.roomManager.sources[i].HasStructure = false
               }
             }
@@ -97,11 +115,11 @@ module.exports = {
 
         if (!flagMemory.roomManager.controllerStorage) {
           flagMemory.roomManager.controllerStorage = {}
-          mememoryAmountMissing++;
+          memoryAmountMissing++;
         }
         else {
           if (!flagMemory.roomManager.controllerStorage.HasStructure) {
-            mememoryAmountMissing++;
+            memoryAmountMissing++;
             flagMemory.roomManager.controllerStorage.HasStructure = false
           }
         }
@@ -120,8 +138,8 @@ module.exports = {
         if (!flagMemory.creepAmount)
         flagMemory.creepAmount = {};
 
-        console.log(mememoryAmountMissing)
-        return mememoryAmountMissing
+        console.log(memoryAmountMissing)
+        return memoryAmountMissing
       }
 
       if (checkIfMemoryIsSetup() == 0) {
