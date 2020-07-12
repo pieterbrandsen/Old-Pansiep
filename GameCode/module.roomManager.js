@@ -82,10 +82,12 @@ module.exports = {
 
       return constructionSiteCanBeBuild;
     };
+    console.log('1')
 
-    room.find(FIND_SOURCES).sources.forEach((item, i) => {
+    room.find(FIND_SOURCES).sources.forEach((source, i) => {
+      console.log('2')
       if (flagMemory.roomManager.sources[i].HasStructure == false) {
-        if (createSurroundingConstructionSite(flagMemory.sources[i].id,2,7)) {
+        if (createSurroundingConstructionSite(source.id,2,7)) {
           flagMemory.roomManager.sources[i].HasStructure = true
           console.log("Building a storage for a source in room: " + room.name)
         }
