@@ -7,6 +7,7 @@ module.exports = {
 
     function enterValueInMemory(memoryPath, inputValue) {
       memoryPath = inputValue;
+      console.log(typeof memoryPath)
       if (memoryPath) {
         console.log(true)
       }
