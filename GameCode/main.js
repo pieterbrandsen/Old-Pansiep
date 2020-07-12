@@ -1286,9 +1286,7 @@ module.exports.loop = function() {
             //   roomPlanner.run()
             // }
             if (roomName == "E43N3") {
-              if (Game.time % 10 == 0) {
-                roomManager.run(roomName)
-              }
+              roomManager.run(roomName)
             }
           }
 
