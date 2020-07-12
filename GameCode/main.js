@@ -947,7 +947,6 @@ module.exports.loop = function() {
               break;
               case "transfererLiTe":
               if (flagMemory.creepAmount.transfererLiTeCount < 1 && flagMemory.links.linkTo1 && room.storage && room.terminal) {
-                console.log(roomName)
                 if (flagMemory.links.linkTo2.length > 0) {
                   result = true;
                 }

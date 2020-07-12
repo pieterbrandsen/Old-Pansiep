@@ -5,7 +5,6 @@ module.exports = {
 
     function createSurroundingConstructionSite(id,getRange,controllerLevel) {
       let range = getRange;
-      const room = creep.room;
       let object = Game.getObjectById(id);
       let structureType;
       let x = object.pos.x;
