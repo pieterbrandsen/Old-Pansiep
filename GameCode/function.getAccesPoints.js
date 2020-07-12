@@ -1,5 +1,5 @@
 module.exports = {
-  run: function(inputId) {
+  run: function(inputId, roomName) {
     const object = Game.getObjectById(inputId);
     const terrain = new Room.Terrain(roomName);
     const objectPos = object.pos;
