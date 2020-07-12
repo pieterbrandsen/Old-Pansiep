@@ -86,65 +86,61 @@ module.exports = {
             missingMemoryString.concat(`flagMemory.sources[${i}], `)
           }
           else {
-          const sources = room.find(FIND_SOURCES)
-          sources.forEach((item, i) => {
-              memoryAmountMissing++;
-            }
-            else {
+            const sources = room.find(FIND_SOURCES)
+            sources.forEach((item, i) => {
               if (!flagMemory.sources[i]) {
                 flagMemory.sources[i] = {}
                 flagMemory.sources[i].id = item.id;
                 flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
                 memoryAmountMissing++;
               }
-            }
+              
 
-
-            if (!flagMemory.roomManager.sources[i]) {
-              flagMemory.roomManager.sources[i] = {};
-              memoryAmountMissing++;
-            }
-            else {
-              if (!flagMemory.roomManager.sources[i].HasStructure) {
+              if (!flagMemory.roomManager.sources[i]) {
+                flagMemory.roomManager.sources[i] = {};
                 memoryAmountMissing++;
-                flagMemory.roomManager.sources[i].HasStructure = false
               }
-            }
-          });
-        }
-
-        if (!flagMemory.roomManager.controllerStorage) {
-          flagMemory.roomManager.controllerStorage = {}
-          memoryAmountMissing++;
-        }
-        else {
-          if (!flagMemory.roomManager.controllerStorage.HasStructure) {
-            memoryAmountMissing++;
-            flagMemory.roomManager.controllerStorage.HasStructure = false
+              else {
+                if (!flagMemory.roomManager.sources[i].HasStructure) {
+                  memoryAmountMissing++;
+                  flagMemory.roomManager.sources[i].HasStructure = false
+                }
+              }
+            });
           }
+
+          if (!flagMemory.roomManager.controllerStorage) {
+            flagMemory.roomManager.controllerStorage = {}
+            memoryAmountMissing++;
+          }
+          else {
+            if (!flagMemory.roomManager.controllerStorage.HasStructure) {
+              memoryAmountMissing++;
+              flagMemory.roomManager.controllerStorage.HasStructure = false
+            }
+          }
+
+
+          if (!flagMemory.links)
+          flagMemory.links = {};
+          if (!flagMemory.controllerLevel)
+          flagMemory.controllerLevel = 0;
+          if (!flagMemory.constructionSitesAmount)
+          flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
+          if (!flagMemory.enemyCount)
+          flagMemory.enemyCount = 0;
+          if (!flagMemory.repairTarget)
+          flagMemory.repairTarget = [];
+          if (!flagMemory.creepAmount)
+          flagMemory.creepAmount = {};
+
+          console.log(memoryAmountMissing)
+          return memoryAmountMissing
         }
 
-
-        if (!flagMemory.links)
-        flagMemory.links = {};
-        if (!flagMemory.controllerLevel)
-        flagMemory.controllerLevel = 0;
-        if (!flagMemory.constructionSitesAmount)
-        flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
-        if (!flagMemory.enemyCount)
-        flagMemory.enemyCount = 0;
-        if (!flagMemory.repairTarget)
-        flagMemory.repairTarget = [];
-        if (!flagMemory.creepAmount)
-        flagMemory.creepAmount = {};
-
-        console.log(memoryAmountMissing)
-        return memoryAmountMissing
-      }
-
-      if (checkIfMemoryIsSetup() == 0) {
-        flagMemory.IsMemorySetup = true;
+        if (checkIfMemoryIsSetup() == 0) {
+          flagMemory.IsMemorySetup = true;
+        }
       }
     }
   }
-}
