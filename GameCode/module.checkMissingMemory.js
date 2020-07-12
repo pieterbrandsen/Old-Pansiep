@@ -7,7 +7,7 @@ module.exports = {
 
     function enterValueInMemory(memoryPath, inputValue) {
       memoryPath = inputValue;
-      if (flagMemory.memoryPath) {
+      if (memoryPath) {
         console.log(true)
       }
       else {
