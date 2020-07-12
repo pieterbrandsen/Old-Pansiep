@@ -16,12 +16,24 @@ module.exports = {
         else {
           const sources = room.find(FIND_SOURCES)
           sources.forEach((item, i) => {
+            if (!flagMemory.sources) {
+              flagMemory.sources = [];
+              mememoryAmountMissing++;
+            }
+            else {
+              flagMemory.sources[i] = {}
+              flagMemory.sources[i].id = item.id;
+              flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
+              mememoryAmountMissing++;
+            }
+
+
             if (!flagMemory.roomManager.sources[i]) {
               flagMemory.roomManager.sources[i] = {};
               mememoryAmountMissing++;
             }
             else {
-              flagMemory.roomManager.sources[0].HasStructure = false
+              flagMemory.roomManager.sources[i].HasStructure = false
               mememoryAmountMissing++;
             }
           });
@@ -51,6 +63,7 @@ module.exports = {
         flagMemory.repairTarget = [];
         if (!flagMemory.creepAmount)
         flagMemory.creepAmount = {};
+
 
 
         return mememoryAmountMissing

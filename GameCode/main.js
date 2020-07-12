@@ -1307,7 +1307,6 @@ module.exports.loop = function() {
                   }
                   else {
                     if (room.spawns.length == 1) {
-                      console.log(room.spawns[0].id)
                       flagMemory.roomManager.headSpawn = room.spawns[0].id;
                     }
                   }
@@ -1324,20 +1323,7 @@ module.exports.loop = function() {
                   flagMemory.mineralAmount = 0;
                   flagMemory.mineralId = "";
                 }
-
-
-                const sources = room.find(FIND_SOURCES);
-                sources.forEach((item, i) => {
-                  console.log(item.id)
-
-                  flagMemory.sources[i] = {}
-                  flagMemory.sources[i].id = item.id;
-                  flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
-                });
-
                 flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
-                createSurroundingConstructionSite(room.controller.id,3,6);
-
                 roomPlanner.run()
               }
             }
