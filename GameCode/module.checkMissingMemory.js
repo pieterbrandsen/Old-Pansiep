@@ -6,16 +6,15 @@ module.exports = {
     let filledMemoryString = `${roomName} filled the following memory: `;
 
     function enterValueInMemory(memoryPath, inputValue) {
-      memoryPath = inputValue;
-      console.log(typeof memoryPath)
-      if (memoryPath) {
+      flagMemory.roomManager[memoryPath] = inputValue;
+      if (flagMemory.roomManager[memoryPath]) {
         console.log(true)
       }
       else {
         console.log(false)
       }
     }
-    enterValueInMemory(flagMemory.roomManager.sources[1].false, true)
+    enterValueInMemory(`sources ${0}.false`, true)
 
 
     function getOpenSpotsNearSource(source) {
