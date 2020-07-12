@@ -2,7 +2,6 @@ const getAccesPoints = require('function.getAccesPoints')
 
 module.exports = {
   run: function(roomName) {
-    console.log(getAccesPoints.run("5bbcaf859099fc012e63ab57", roomName));
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
     let missingMemoryString = `${roomName} is missing the following memory: `;
@@ -85,7 +84,7 @@ module.exports = {
           if (!flagMemory.sources[i]) {
             flagMemory.sources[i] = {}
             flagMemory.sources[i].id = item.id;
-            flagMemory.sources[i].openSpots = getAccesPoints(item.id);
+            flagMemory.sources[i].openSpots = getAccesPoints.run(item.id, roomName));
           }
 
           enterValueInMemory(`source-${i}.HasStructure`, false)
