@@ -6,7 +6,8 @@ module.exports = {
     let filledMemoryString = `${roomName} filled the following memory: `;
 
     function enterValueInMemory(memoryPath, inputValue) {
-      `${flagMemory}.${memoryPath}` = inputValue;
+      const finalMemoryPath = `${flagMemory}.${memoryPath}`;
+      finalMemoryPath = inputValue;
       if (flagMemory.memoryPath) {
         console.log(true)
       }
