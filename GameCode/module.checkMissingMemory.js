@@ -9,11 +9,11 @@ module.exports = {
     function enterValueInMemory(memoryPath, inputValue) {
       flagMemory.roomManager[memoryPath] = inputValue;
       if (flagMemory.roomManager[memoryPath]) {
-        missingMemoryString.concat(`${memoryPath}, `)
+        missingMemoryString = missingMemoryString.concat(`${memoryPath}, `)
         roomIsMissingMemory = true;
       }
       else {
-        filledMemoryString.concat(`${memoryPath}, `)
+        filledMemoryString = filledMemoryString.concat(`${memoryPath}, `)
       }
     }
 
