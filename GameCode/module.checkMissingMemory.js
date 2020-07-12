@@ -1,4 +1,4 @@
-import getAccesPoints from 'function.getAccesPoints.js';
+import { getAccesPoints } from 'function.getAccesPoints.js';
 
 module.exports = {
   run: function(roomName) {
