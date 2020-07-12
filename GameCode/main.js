@@ -1306,8 +1306,10 @@ module.exports.loop = function() {
                     }
                   }
                   else {
-                    if (room.spawns.length == 1)
+                    if (room.spawns.length == 1) {
+                      console.log(room.spawns[0].id)
                       flagMemory.roomManager.headSpawn = room.spawns[0].id;
+                    }
                   }
                 }
 
