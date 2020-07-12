@@ -114,8 +114,7 @@ module.exports = {
         if (!flagMemory.creepAmount)
         flagMemory.creepAmount = {};
 
-
-
+        console.log(mememoryAmountMissing)
         return mememoryAmountMissing
       }
 
