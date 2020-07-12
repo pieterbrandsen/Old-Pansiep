@@ -18,7 +18,8 @@ module.exports = {
     }
 
 
-    function getOpenSpotsNearSource(source) {
+    function getOpenSpotsNearSource(sourceId) {
+      const source = Game.getObjectById(sourceId);
       const terrain = new Room.Terrain(roomName);
       const sourcePos = source.pos;
       let sourcePosX;
@@ -81,7 +82,7 @@ module.exports = {
           if (!flagMemory.sources[i]) {
             flagMemory.sources[i] = {}
             flagMemory.sources[i].id = item.id;
-            flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
+            flagMemory.sources[i].openSpots = getOpenSpotsNearSource(item.id);
           }
 
           enterValueInMemory(`source-${i}.HasStructure`, false)
