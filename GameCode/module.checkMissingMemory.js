@@ -21,7 +21,7 @@ module.exports = {
               mememoryAmountMissing++;
             }
             else {
-              flagMemory.roomManager.sources[0].HasStructure == false
+              flagMemory.roomManager.sources[0].HasStructure = false
             }
           });
         }
@@ -31,7 +31,7 @@ module.exports = {
           mememoryAmountMissing++;
         }
         else {
-          flagMemory.roomManager.controllerStorage.HasStructure == false
+          flagMemory.roomManager.controllerStorage.HasStructure = false
         }
 
 
