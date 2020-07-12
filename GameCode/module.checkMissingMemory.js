@@ -110,10 +110,10 @@ module.exports = {
         console.log()
         return roomIsMissingMemory
       };
-    }
 
-    if (!checkIfMemoryIsSetup()) {
-      flagMemory.IsMemorySetup = true;
+      if (!checkIfMemoryIsSetup()) {
+        flagMemory.IsMemorySetup = true;
+      }
     }
   }
 };
