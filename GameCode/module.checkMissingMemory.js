@@ -73,10 +73,12 @@ module.exports = {
               mememoryAmountMissing++;
             }
             else {
-              flagMemory.sources[i] = {}
-              flagMemory.sources[i].id = item.id;
-              flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
-              mememoryAmountMissing++;
+              if (!flagMemory.sources[i]) {
+                flagMemory.sources[i] = {}
+                flagMemory.sources[i].id = item.id;
+                flagMemory.sources[i].openSpots = getOpenSpotsNearSource(Game.getObjectById(sources[i].id));
+                mememoryAmountMissing++;
+              }
             }
 
 
@@ -85,8 +87,10 @@ module.exports = {
               mememoryAmountMissing++;
             }
             else {
-              flagMemory.roomManager.sources[i].HasStructure = false
-              mememoryAmountMissing++;
+              if (!flagMemory.roomManager.sources[i].HasStructure) {
+                mememoryAmountMissing++;
+                flagMemory.roomManager.sources[i].HasStructure = false
+              }
             }
           });
         }
@@ -96,8 +100,10 @@ module.exports = {
           mememoryAmountMissing++;
         }
         else {
-          flagMemory.roomManager.controllerStorage.HasStructure = false
-          mememoryAmountMissing++;
+          if (!flagMemory.roomManager.controllerStorage.HasStructure) {
+            mememoryAmountMissing++;
+            flagMemory.roomManager.controllerStorage.HasStructure = false
+          }
         }
 
 
