@@ -101,8 +101,6 @@ module.exports = {
         }
 
 
-        if (!flagMemory.sources)
-        flagMemory.sources = [];
         if (!flagMemory.links)
         flagMemory.links = {};
         if (!flagMemory.controllerLevel)

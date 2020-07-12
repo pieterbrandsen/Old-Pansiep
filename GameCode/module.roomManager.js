@@ -13,6 +13,7 @@ module.exports = {
       function createConstruction(structureType,x,y) {
         if (room.createConstructionSite(x,y,structureType) == 0) {
           return true;
+
         }
         else {
           return false;
@@ -78,16 +79,21 @@ module.exports = {
           constructionSiteCanBeBuild = true
         }
       }
+
+      return constructionSiteCanBeBuild;
     };
 
     const sources = room.find(FIND_SOURCES);
     sources.forEach((item, i) => {
-      if (flagMemory.roomManager.sources[i].HasStructure == false)
-        createSurroundingConstructionSite(flagMemory.sources[i].id,2,7);
+      if (flagMemory.roomManager.sources[i].HasStructure == false) {
+        if (createSurroundingConstructionSite(flagMemory.sources[i].id,2,7))
+          flagMemory.roomManager.sources[i].HasStructure = true
+      }
     });
 
     if (flagMemory.roomManager.controllerStorage.HasStructure == false)
-      createSurroundingConstructionSite(room.controller.id,3,6);
+      if (createSurroundingConstructionSite(room.controller.id,3,6))
+        flagMemory.roomManager.controllerStorage.HasStructure = true;
 
 
 
