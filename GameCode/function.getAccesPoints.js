@@ -1,5 +1,4 @@
-module.exports = {
-  function getAccesPoints(inputId) {
+  export function getAccesPoints(inputId) {
     const object = Game.getObjectById(inputId);
     const terrain = new Room.Terrain(roomName);
     const objectPos = object.pos;
@@ -49,4 +48,3 @@ module.exports = {
 
     return count;
   }
-}
