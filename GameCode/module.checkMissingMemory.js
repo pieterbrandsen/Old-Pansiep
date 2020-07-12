@@ -2,7 +2,7 @@ const getAccesPoints = require('function.getAccesPoints')
 
 module.exports = {
   run: function(roomName) {
-    console.log(getAccesPoints.getAccesPoints("5bbcaf859099fc012e63ab57"));
+    console.log(getAccesPoints.run("5bbcaf859099fc012e63ab57"));
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
     let missingMemoryString = `${roomName} is missing the following memory: `;
