@@ -84,7 +84,7 @@ module.exports = {
           if (!flagMemory.sources[i]) {
             flagMemory.sources[i] = {}
             flagMemory.sources[i].id = item.id;
-            flagMemory.sources[i].openSpots = getAccesPoints.run(item.id, roomName));
+            flagMemory.sources[i].openSpots = getAccesPoints.run(item.id, roomName);
           }
 
           enterValueInMemory(`source-${i}.HasStructure`, false)
