@@ -22,7 +22,6 @@ module.exports = {
       structureType = STRUCTURE_LINK;
     }
     else {
-      if (object.structureType == STRUCTURE_CONTROLLER)
       range = 1;
       structureType = STRUCTURE_CONTAINER;
     }

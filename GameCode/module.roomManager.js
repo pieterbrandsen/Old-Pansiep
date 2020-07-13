@@ -15,7 +15,7 @@ module.exports = {
 
     room.find(FIND_SOURCES).forEach((source, i) => {
       if (flagMemory.roomManager[`source-${i}.HasStructure`] == false) {
-        if (createConstructionSite(`source-${i}.HasStructure`, source.id,2, 7)) {
+        if (createConstructionSite(`source-${i}.HasStructure`, source.id, 2, 7)) {
           console.log("Building a storage for a source in room: " + room.name)
         }
       }
