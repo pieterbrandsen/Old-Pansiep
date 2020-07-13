@@ -20,58 +20,6 @@ module.exports = {
     }
 
 
-    // function getOpenSpotsNearSource(sourceId) {
-    //   const source = Game.getObjectById(sourceId);
-    //   const terrain = new Room.Terrain(roomName);
-    //   const sourcePos = source.pos;
-    //   let sourcePosX;
-    //   let sourcePosY;
-    //   let count = 8;
-    //
-    //   sourcePosX = source.pos.x-1;
-    //   sourcePosY = source.pos.y-1;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   sourcePosX = source.pos.x;
-    //   sourcePosY = source.pos.y-1;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   sourcePosX = source.pos.x+1;
-    //   sourcePosY = source.pos.y-1;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   sourcePosX = source.pos.x-1;
-    //   sourcePosY = source.pos.y;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   sourcePosX = source.pos.x+1;
-    //   sourcePosY = source.pos.y;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   sourcePosX = source.pos.x-1;
-    //   sourcePosY = source.pos.y+1;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   sourcePosX = source.pos.x;
-    //   sourcePosY = source.pos.y+1;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   sourcePosX = source.pos.x+1;
-    //   sourcePosY = source.pos.y+1;
-    //   if (terrain.get(sourcePosX,sourcePosY) == 1)
-    //   count--;
-    //
-    //   return count;
-    // }
-
-
     if (!flagMemory.roomManager) {
       flagMemory.roomManager = {};
     }
