@@ -562,6 +562,8 @@ module.exports.loop = function() {
             function runRoomPlanner() {
               if (flagMemory.controllerLevel < room.controller.level) {
                 roomPlanner.run()
+                roomManager.run(roomName)
+                
               }
               if (Game.time % 500 == 0) {
                 roomManager.run(roomName)
