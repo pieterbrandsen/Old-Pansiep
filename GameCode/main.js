@@ -484,9 +484,11 @@ module.exports.loop = function() {
             if (room.controller.level >= 6 && Object.keys(flagMemory.links).length < 4 && room.links.length > 0) {
               function findLinkInRange(object,range) {
                 if (object !== null) {
-                  return object.pos.findInRange(room.links, range,
+                  const link = object.pos.findInRange(room.links, range,
                     {filter: {structureType: STRUCTURE_LINK}})[0];
                   }
+                  if (link !== undefined)
+                    return link.id;
                 }
 
 
@@ -563,7 +565,7 @@ module.exports.loop = function() {
               if (flagMemory.controllerLevel < room.controller.level) {
                 roomPlanner.run()
                 roomManager.run(roomName)
-                
+
               }
               if (Game.time % 500 == 0) {
                 roomManager.run(roomName)
