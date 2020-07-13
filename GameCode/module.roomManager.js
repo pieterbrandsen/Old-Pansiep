@@ -18,18 +18,12 @@ module.exports = {
         if (createConstructionSite(`source-${i}.HasStructure`, source.id,2, 7)) {
           console.log("Building a storage for a source in room: " + room.name)
         }
-        else {
-          console.log("Failed to build a storage for a source in room: " + room.name)
-        }
       }
     });
 
     if (flagMemory.roomManager[`controller.HasStructure`] == false) {
       if (createConstructionSite(`controller.HasStructure`, room.controller.id, 3, 6)) {
         console.log("Building a storage for the controller in room: " + room.name)
-      }
-      else {
-        console.log("Failed to build a storage for the controller in room: " + room.name)
       }
     }
   }
