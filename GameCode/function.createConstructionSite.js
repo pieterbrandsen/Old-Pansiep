@@ -76,6 +76,9 @@ module.exports = {
         constructionSiteCanBeBuild = true
       }
     }
+    // else if (containerInRange !== null || linkInRange !== null) {
+    //   constructionSiteCanBeBuild = false;
+    // }
 
     return constructionSiteCanBeBuild;
   }

@@ -277,7 +277,6 @@ module.exports.loop = function() {
 
 
     if (controller && controller.my && flagMemory) {
-      flagMemory.IsMemorySetup = {};
       if (!flagMemory.IsMemorySetup) {
         checkMissingMemory.run(roomName);
       }
@@ -1286,9 +1285,10 @@ module.exports.loop = function() {
             // if (flagMemory.controllerLevel < room.controller.level) {
             //   roomPlanner.run()
             // }
-            if (roomName == "E43N3") {
+            if (Game.time % 500 == 0) {
               roomManager.run(roomName)
             }
+
           }
 
           function runCPUTracker() {

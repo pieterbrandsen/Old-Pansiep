@@ -6,7 +6,7 @@ module.exports = {
     const flagMemory = Memory.flags[roomName];
 
     function createConstructionSite(memoryPath, objectId, range, controllerLevel) {
-      if (createConstructionSiteForObject.run(objectId,range,controllerLevel,roomName)) {
+      if (!createConstructionSiteForObject.run(objectId,range,controllerLevel,roomName)) {
         flagMemory.roomManager[memoryPath] = true;
       }
       else
