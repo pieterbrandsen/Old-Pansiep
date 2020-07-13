@@ -1,8 +1,10 @@
+const getAccesPoints = require('function.getAccesPoints');
+
 module.exports = {
   run: function(id,getRange,controllerLevel,roomName) {
     const room = Game.rooms[roomName];
     let range = getRange;
-    let object = Game.getObjectById(id);
+    const object = Game.getObjectById(id);
     let structureType;
     let x = object.pos.x;
     let y = object.pos.y;
@@ -26,18 +28,21 @@ module.exports = {
       structureType = STRUCTURE_CONTAINER;
     }
 
-    let containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+    const containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
       return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
     });
-    let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+    const linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+      return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
+    });
+    const storageInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
       return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_LINK || structure.structureType == STRUCTURE_CONTAINER))}
     });
-    let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
+    const constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
       return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
     });
 
 
-    if (constructionSitesInRange == null && (containerInRange !== null || linkInRange !== null)) {
+    if (constructionSitesInRange == null && ((containerInRange !== null || linkInRange !== null) || storageInRange == null)) {
       if (structureType == STRUCTURE_LINK && containerInRange !== null) {
         containerInRange.destroy();
       }
@@ -75,9 +80,7 @@ module.exports = {
         constructionSiteCanBeBuild = true
       }
     }
-    // else if (containerInRange !== null || linkInRange !== null) {
-    //   constructionSiteCanBeBuild = false;
-    // }
+
 
     return constructionSiteCanBeBuild;
   }
