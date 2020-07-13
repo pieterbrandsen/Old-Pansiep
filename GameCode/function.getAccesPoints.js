@@ -7,6 +7,13 @@ module.exports = {
     let objectPosY;
     let count = 8;
 
+    const possiblePositions = [{1,2},[1,3]]
+    console.log(possiblePositions)
+
+    for (let i = 0; i < possiblePositions.length; i++) {
+    }
+
+
     objectPosX = object.pos.x-1;
     objectPosY = object.pos.y-1;
     if (terrain.get(objectPosX,objectPosY) == 1)

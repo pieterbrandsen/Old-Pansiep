@@ -485,333 +485,334 @@ module.exports.loop = function() {
               function findLinkInRange(object,range) {
                 if (object !== null) {
                   const link = object.pos.findInRange(room.links, range,
-                    {filter: {structureType: STRUCTURE_LINK}})[0];
-                  }
-                  if (link !== undefined)
-                    return link.id;
+                    {filter: {structureType: STRUCTURE_LINK}
+                  })[0];
                 }
-
-
-                if (room.controller.level >= 6 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkTo2)) {
-                  if (findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
-                    flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3).id
-                  }
-                  if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkTo2) {
-                    flagMemory.links.linkTo2 = findLinkInRange(room.controller,3).id
-                  }
-                }
-
-                if (flagMemory.sources[0] && room.controller.level >= 7 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkFrom1)) {
-                  let source0 = Game.getObjectById(flagMemory.sources[0].id);
-                  if (findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
-                    flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3).id
-                  }
-                  if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkFrom1 && source0 !== undefined) {
-                    flagMemory.links.linkFrom1 = findLinkInRange(source0,3).id
-                  }
-                }
-
-                if (flagMemory.sources[1] && room.controller.level >= 7 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkFrom2)) {
-                  let source1 = Game.getObjectById(flagMemory.sources[1].id);
-                  if (findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
-                    flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3).id
-                  }
-
-                  if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkFrom2 && source1 !== null) {
-                    flagMemory.links.linkFrom2 = findLinkInRange(source1,3).id
-                  }
-                }
-              }
-            }
-
-
-            if (flagMemory.sources) {
-              if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
-                if (!flagMemory.roomManager.headSpawn) {
-                  if (room.spawns.length > 1) {
-                    if (room.terminal && room.controller.level >= 6) {
-                      const spawn = room.terminal.pos.findInRange(room.spawns, 2,
-                        {filter: {structureType: STRUCTURE_SPAWN}})[0];
-
-                        if (spawn)
-                        flagMemory.roomManager.headSpawn = spawn.id;
-                      }
-                    }
-                    else {
-                      if (room.spawns.length == 1) {
-                        flagMemory.roomManager.headSpawn = room.spawns[0].id;
-                      }
-                    }
-                  }
-
-
-                  flagMemory.controllerLevel = room.controller.level;
-                  const mineral = room.find(FIND_MINERALS)[0];
-                  if (mineral) {
-                    flagMemory.mineralAmount = mineral.mineralAmount;
-                    flagMemory.mineralId = mineral.id;
-                  }
-                  else {
-                    flagMemory.mineralAmount = 0;
-                    flagMemory.mineralId = "";
-                  }
-                  flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
-                  roomPlanner.run()
-                }
-              }
-            }
-
-            function runRoomPlanner() {
-              if (flagMemory.controllerLevel < room.controller.level) {
-                roomPlanner.run()
-                roomManager.run(roomName)
-
-              }
-              if (Game.time % 500 == 0) {
-                roomManager.run(roomName)
+                if (link !== undefined)
+                return link.id;
               }
 
-            }
 
-            function runCPUTracker() {
-              totalCPUHarvestingModule += Memory.cpuTracker["harvesterCPU.total"];
-            }
+              if (room.controller.level >= 6 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkTo2)) {
+                if (findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
+                  flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3).id
+                }
+                if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkTo2) {
+                  flagMemory.links.linkTo2 = findLinkInRange(room.controller,3).id
+                }
+              }
 
-            function deleteMemory() {
-              delete Memory.stats['cpuTracker.loadMemory'];
-              delete Memory.stats['cpuTracker.removeDeadCreepsMemory'];
-              delete Memory.stats['cpuTracker.runCreeps'];
-              delete Memory.stats['cpuTracker.getFirstOpenSpawn'];
-              delete Memory.stats['cpuTracker.defendRoom'];
-              delete Memory.stats['cpuTracker.getDamagedStructures'];
-              delete Memory.stats['cpuTracker.runGameTimeTimers'];
-              delete Memory.stats['cpuTracker.checkMissingMemory'];
-              delete Memory.stats['cpuTracker.runRoomPlanner'];
-              delete Memory.stats['cpuTracker.runRoomCPUTracker'];
-              delete Memory.stats['cpuTracker.claimerCode'];
+              if (flagMemory.sources[0] && room.controller.level >= 7 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkFrom1)) {
+                let source0 = Game.getObjectById(flagMemory.sources[0].id);
+                if (findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
+                  flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3).id
+                }
+                if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkFrom1 && source0 !== undefined) {
+                  flagMemory.links.linkFrom1 = findLinkInRange(source0,3).id
+                }
+              }
 
-              delete Memory.cpuTracker["harvesterCPU.total"];
-              delete Memory.cpuTracker["upgraderCPU.total"];
-              delete Memory.cpuTracker["transferCPU.total"];
-              delete Memory.cpuTracker["withdrawCPU.upgrader"];
-              delete Memory.cpuTracker["withdrawCPU.normal"];
-              delete Memory.cpuTracker["claimerCPU.total"];
-              delete Memory.cpuTracker["builderCPU.total"];
-              delete Memory.cpuTracker["repairerCPU.total"];
+              if (flagMemory.sources[1] && room.controller.level >= 7 && (!flagMemory.links.linkTo1 || !flagMemory.links.linkFrom2)) {
+                let source1 = Game.getObjectById(flagMemory.sources[1].id);
+                if (findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3) !== null && !flagMemory.links.linkTo1) {
+                  flagMemory.links.linkTo1 = findLinkInRange(Game.getObjectById(flagMemory.roomManager.headSpawn),3).id
+                }
 
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.energyHarvested'];
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.mineralHarvested'];
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.upgraderEnergy'];
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.harvestedEnergyTransfer'];
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.harvestedMineralTransfer'];
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.spawnEnergyTransfer'];
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.builderEnergy'];
-              delete Memory.stats["rooms." + roomName + '.performanceTracker.repairerEnergy'];
-
-              delete Memory.performanceTracker[roomName + ".energyHarvested"];
-              delete Memory.performanceTracker[roomName + ".mineralHarvested"];
-              delete Memory.performanceTracker[roomName + ".upgraderEnergy"];
-              delete Memory.performanceTracker[roomName + ".harvestedEnergyTransfer"];
-              delete Memory.performanceTracker[roomName + ".harvestedMineralTransfer"];
-              delete Memory.performanceTracker[roomName + ".spawnEnergyTransfer"];
-              delete Memory.performanceTracker[roomName + ".builderEnergy"];
-              delete Memory.performanceTracker[roomName + ".repairerEnergy"];
-
-
-              delete Memory.stats['cpu.avg50'];
-              delete Memory.stats['cpu.avg1000'];
-              delete Memory.stats['cpu.bucket'];
-            }
-
-            function runRoomPerformanceTracking() {
-              setPerformanceInMemoryRooms("energyHarvested",Memory.performanceTracker[roomName + ".energyHarvested"],roomName);
-              setPerformanceInMemoryRooms("mineralHarvested",Memory.performanceTracker[roomName + ".mineralHarvested"],roomName);
-              setPerformanceInMemoryRooms("upgraderEnergy",Memory.performanceTracker[roomName + ".upgraderEnergy"],roomName);
-              setPerformanceInMemoryRooms("harvestedEnergyTransfer",Memory.performanceTracker[roomName + ".harvestedEnergyTransfer"],roomName);
-              setPerformanceInMemoryRooms("harvestedMineralTransfer",Memory.performanceTracker[roomName + ".harvestedMineralTransfer"],roomName);
-              setPerformanceInMemoryRooms("spawnEnergyTransfer",Memory.performanceTracker[roomName + ".spawnEnergyTransfer"],roomName);
-              setPerformanceInMemoryRooms("builderEnergy",Memory.performanceTracker[roomName + ".builderEnergy"],roomName);
-              setPerformanceInMemoryRooms("repairerEnergy",Memory.performanceTracker[roomName + ".repairerEnergy"],roomName);
-              Memory.performanceTracker[roomName + ".energyHarvested"] = 0;
-              Memory.performanceTracker[roomName + ".mineralHarvested"] = 0;
-              Memory.performanceTracker[roomName + ".upgraderEnergy"] = 0;
-              Memory.performanceTracker[roomName + ".harvestedEnergyTransfer"] = 0;
-              Memory.performanceTracker[roomName + ".harvestedMineralTransfer"] = 0;
-              Memory.performanceTracker[roomName + ".spawnEnergyTransfer"] = 0;
-              Memory.performanceTracker[roomName + ".builderEnergy"] = 0;
-              Memory.performanceTracker[roomName + ".repairerEnergy"] = 0;
-            }
-
-
-            if (mainSystem()) {
-              // Get the CPU Usage //
-              let start = Game.cpu.getUsed();
-
-              // Run the part //
-              defendRoom();
-
-              // Set the average CPU Usage in the memory //
-              totalCPUDefendRoom += Game.cpu.getUsed() - start;
-            }
-            else {
-              // Run the part without tracking //
-              defendRoom();
-            }
-
-
-            if (mainSystem()) {
-              // Get the CPU Usage //
-              let start = Game.cpu.getUsed();
-
-              // Run the part //
-              getDamagedStructures();
-
-              // Set the average CPU Usage in the memory //
-              totalCPUGetDamagedStructures += Game.cpu.getUsed() - start;
-            }
-            else {
-              // Run the part without tracking //
-              getDamagedStructures();
-            }
-
-
-            if (mainSystem()) {
-              // Get the CPU Usage //
-              let start = Game.cpu.getUsed();
-
-              // Run the part //
-              runGameTimeTimers();
-
-              // Set the average CPU Usage in the memory //
-              totalCPURunGameTimeTimers += Game.cpu.getUsed() - start;
-            }
-            else {
-              // Run the part without tracking //
-              runGameTimeTimers();
-            }
-
-
-            // if (mainSystem()) {
-            //   // Get the CPU Usage //
-            //   let start = Game.cpu.getUsed();
-            //
-            //   // Run the part //
-            //   checkMissingMemory();
-            //
-            //   // Set the average CPU Usage in the memory //
-            //   totalCPUCheckMissingMemory += Game.cpu.getUsed() - start;
-            // }
-            // else {
-            //   // Run the part without tracking //
-            //   checkMissingMemory();
-            // }
-
-
-            if (mainSystem()) {
-              // Get the CPU Usage //
-              let start = Game.cpu.getUsed();
-
-              // Run the part //
-              runRoomPlanner();
-
-              // Set the average CPU Usage in the memory //
-              totalCPURunRoomPlanner += Game.cpu.getUsed() - start;
-            }
-            else {
-              // Run the part without tracking //
-              runRoomPlanner();
-            }
-
-
-            if (mainSystem()) {
-              // Get the CPU Usage //
-              let start = Game.cpu.getUsed();
-
-              // Run the part //
-              claimerCode();
-
-              // Set the average CPU Usage in the memory //
-              totalCPUClaimerCode += Game.cpu.getUsed() - start;
-            }
-            else {
-              // Run the part without tracking //
-              claimerCode();
-            }
-
-
-            if (mainSystem()) {
-              // Get the CPU Usage //
-              let start = Game.cpu.getUsed();
-
-              // Run the part //
-              runRoomPerformanceTracking();
-
-              // Set the average CPU Usage in the memory //
-              totalCPUPerformanceTracking += Game.cpu.getUsed() - start;
-            }
-            else {
-              // Run the part without tracking //
-              runRoomPerformanceTracking();
+                if (findLinkInRange(room.controller,3) !== null && !flagMemory.links.linkFrom2 && source1 !== null) {
+                  flagMemory.links.linkFrom2 = findLinkInRange(source1,3).id
+                }
+              }
             }
           }
-        }
-      });
 
 
-      function runRoomCPUTracker() {
-        if (mainSystem()) {
-          setCPUInMemory("getFirstOpenSpawn",totalCPUGetFirstOpenSpawn);
-          setCPUInMemory("defendRoom",totalCPUDefendRoom);
-          setCPUInMemory("getDamagedStructures",totalCPUGetDamagedStructures);
-          setCPUInMemory("runGameTimeTimers",totalCPURunGameTimeTimers);
-          setCPUInMemory("checkMissingMemory",totalCPUCheckMissingMemory);
-          setCPUInMemory("runRoomPlanner",totalCPURunRoomPlanner);
-          setCPUInMemory("claimerCode",totalCPUClaimerCode);
-          setCPUInMemory("performanceTracking",totalCPUPerformanceTracking);
+          if (flagMemory.sources) {
+            if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
+              if (!flagMemory.roomManager.headSpawn) {
+                if (room.spawns.length > 1) {
+                  if (room.terminal && room.controller.level >= 6) {
+                    const spawn = room.terminal.pos.findInRange(room.spawns, 2,
+                      {filter: {structureType: STRUCTURE_SPAWN}})[0];
 
-          setCPUInMemoryModules("harvestingModule",Memory.cpuTracker["harvesterCPU.total"]);
-          setCPUInMemoryModules("upgraderModule",Memory.cpuTracker["upgraderCPU.total"]);
-          setCPUInMemoryModules("transferModule",Memory.cpuTracker["transferCPU.total"]);
-          setCPUInMemoryModules("withdrawModuleUpgrader",Memory.cpuTracker["withdrawCPU.upgrader"]);
-          setCPUInMemoryModules("withdrawModuleNormal",Memory.cpuTracker["withdrawCPU.normal"]);
-          setCPUInMemoryModules("claimerModule",Memory.cpuTracker["claimerCPU.total"]);
-          setCPUInMemoryModules("builderModule",Memory.cpuTracker["builderCPU.total"]);
-          setCPUInMemoryModules("repairerModule",Memory.cpuTracker["repairerCPU.total"]);
-          Memory.cpuTracker["harvesterCPU.total"] = 0;
-          Memory.cpuTracker["upgraderCPU.total"] = 0;
-          Memory.cpuTracker["transferCPU.total"] = 0;
-          Memory.cpuTracker["withdrawCPU.upgrader"] = 0;
-          Memory.cpuTracker["withdrawCPU.normal"] = 0;
-          Memory.cpuTracker["claimerCPU.total"] = 0;
-          Memory.cpuTracker["builderCPU.total"] = 0;
-          Memory.cpuTracker["repairerCPU.total"] = 0;
-        }
-        else {
-          deleteMemory();
+                      if (spawn)
+                      flagMemory.roomManager.headSpawn = spawn.id;
+                    }
+                  }
+                  else {
+                    if (room.spawns.length == 1) {
+                      flagMemory.roomManager.headSpawn = room.spawns[0].id;
+                    }
+                  }
+                }
+
+
+                flagMemory.controllerLevel = room.controller.level;
+                const mineral = room.find(FIND_MINERALS)[0];
+                if (mineral) {
+                  flagMemory.mineralAmount = mineral.mineralAmount;
+                  flagMemory.mineralId = mineral.id;
+                }
+                else {
+                  flagMemory.mineralAmount = 0;
+                  flagMemory.mineralId = "";
+                }
+                flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
+                roomPlanner.run()
+              }
+            }
+          }
+
+          function runRoomPlanner() {
+            if (flagMemory.controllerLevel < room.controller.level) {
+              roomPlanner.run()
+              roomManager.run(roomName)
+
+            }
+            if (Game.time % 500 == 0) {
+              roomManager.run(roomName)
+            }
+
+          }
+
+          function runCPUTracker() {
+            totalCPUHarvestingModule += Memory.cpuTracker["harvesterCPU.total"];
+          }
+
+          function deleteMemory() {
+            delete Memory.stats['cpuTracker.loadMemory'];
+            delete Memory.stats['cpuTracker.removeDeadCreepsMemory'];
+            delete Memory.stats['cpuTracker.runCreeps'];
+            delete Memory.stats['cpuTracker.getFirstOpenSpawn'];
+            delete Memory.stats['cpuTracker.defendRoom'];
+            delete Memory.stats['cpuTracker.getDamagedStructures'];
+            delete Memory.stats['cpuTracker.runGameTimeTimers'];
+            delete Memory.stats['cpuTracker.checkMissingMemory'];
+            delete Memory.stats['cpuTracker.runRoomPlanner'];
+            delete Memory.stats['cpuTracker.runRoomCPUTracker'];
+            delete Memory.stats['cpuTracker.claimerCode'];
+
+            delete Memory.cpuTracker["harvesterCPU.total"];
+            delete Memory.cpuTracker["upgraderCPU.total"];
+            delete Memory.cpuTracker["transferCPU.total"];
+            delete Memory.cpuTracker["withdrawCPU.upgrader"];
+            delete Memory.cpuTracker["withdrawCPU.normal"];
+            delete Memory.cpuTracker["claimerCPU.total"];
+            delete Memory.cpuTracker["builderCPU.total"];
+            delete Memory.cpuTracker["repairerCPU.total"];
+
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.energyHarvested'];
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.mineralHarvested'];
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.upgraderEnergy'];
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.harvestedEnergyTransfer'];
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.harvestedMineralTransfer'];
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.spawnEnergyTransfer'];
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.builderEnergy'];
+            delete Memory.stats["rooms." + roomName + '.performanceTracker.repairerEnergy'];
+
+            delete Memory.performanceTracker[roomName + ".energyHarvested"];
+            delete Memory.performanceTracker[roomName + ".mineralHarvested"];
+            delete Memory.performanceTracker[roomName + ".upgraderEnergy"];
+            delete Memory.performanceTracker[roomName + ".harvestedEnergyTransfer"];
+            delete Memory.performanceTracker[roomName + ".harvestedMineralTransfer"];
+            delete Memory.performanceTracker[roomName + ".spawnEnergyTransfer"];
+            delete Memory.performanceTracker[roomName + ".builderEnergy"];
+            delete Memory.performanceTracker[roomName + ".repairerEnergy"];
+
+
+            delete Memory.stats['cpu.avg50'];
+            delete Memory.stats['cpu.avg1000'];
+            delete Memory.stats['cpu.bucket'];
+          }
+
+          function runRoomPerformanceTracking() {
+            setPerformanceInMemoryRooms("energyHarvested",Memory.performanceTracker[roomName + ".energyHarvested"],roomName);
+            setPerformanceInMemoryRooms("mineralHarvested",Memory.performanceTracker[roomName + ".mineralHarvested"],roomName);
+            setPerformanceInMemoryRooms("upgraderEnergy",Memory.performanceTracker[roomName + ".upgraderEnergy"],roomName);
+            setPerformanceInMemoryRooms("harvestedEnergyTransfer",Memory.performanceTracker[roomName + ".harvestedEnergyTransfer"],roomName);
+            setPerformanceInMemoryRooms("harvestedMineralTransfer",Memory.performanceTracker[roomName + ".harvestedMineralTransfer"],roomName);
+            setPerformanceInMemoryRooms("spawnEnergyTransfer",Memory.performanceTracker[roomName + ".spawnEnergyTransfer"],roomName);
+            setPerformanceInMemoryRooms("builderEnergy",Memory.performanceTracker[roomName + ".builderEnergy"],roomName);
+            setPerformanceInMemoryRooms("repairerEnergy",Memory.performanceTracker[roomName + ".repairerEnergy"],roomName);
+            Memory.performanceTracker[roomName + ".energyHarvested"] = 0;
+            Memory.performanceTracker[roomName + ".mineralHarvested"] = 0;
+            Memory.performanceTracker[roomName + ".upgraderEnergy"] = 0;
+            Memory.performanceTracker[roomName + ".harvestedEnergyTransfer"] = 0;
+            Memory.performanceTracker[roomName + ".harvestedMineralTransfer"] = 0;
+            Memory.performanceTracker[roomName + ".spawnEnergyTransfer"] = 0;
+            Memory.performanceTracker[roomName + ".builderEnergy"] = 0;
+            Memory.performanceTracker[roomName + ".repairerEnergy"] = 0;
+          }
+
+
+          if (mainSystem()) {
+            // Get the CPU Usage //
+            let start = Game.cpu.getUsed();
+
+            // Run the part //
+            defendRoom();
+
+            // Set the average CPU Usage in the memory //
+            totalCPUDefendRoom += Game.cpu.getUsed() - start;
+          }
+          else {
+            // Run the part without tracking //
+            defendRoom();
+          }
+
+
+          if (mainSystem()) {
+            // Get the CPU Usage //
+            let start = Game.cpu.getUsed();
+
+            // Run the part //
+            getDamagedStructures();
+
+            // Set the average CPU Usage in the memory //
+            totalCPUGetDamagedStructures += Game.cpu.getUsed() - start;
+          }
+          else {
+            // Run the part without tracking //
+            getDamagedStructures();
+          }
+
+
+          if (mainSystem()) {
+            // Get the CPU Usage //
+            let start = Game.cpu.getUsed();
+
+            // Run the part //
+            runGameTimeTimers();
+
+            // Set the average CPU Usage in the memory //
+            totalCPURunGameTimeTimers += Game.cpu.getUsed() - start;
+          }
+          else {
+            // Run the part without tracking //
+            runGameTimeTimers();
+          }
+
+
+          // if (mainSystem()) {
+          //   // Get the CPU Usage //
+          //   let start = Game.cpu.getUsed();
+          //
+          //   // Run the part //
+          //   checkMissingMemory();
+          //
+          //   // Set the average CPU Usage in the memory //
+          //   totalCPUCheckMissingMemory += Game.cpu.getUsed() - start;
+          // }
+          // else {
+          //   // Run the part without tracking //
+          //   checkMissingMemory();
+          // }
+
+
+          if (mainSystem()) {
+            // Get the CPU Usage //
+            let start = Game.cpu.getUsed();
+
+            // Run the part //
+            runRoomPlanner();
+
+            // Set the average CPU Usage in the memory //
+            totalCPURunRoomPlanner += Game.cpu.getUsed() - start;
+          }
+          else {
+            // Run the part without tracking //
+            runRoomPlanner();
+          }
+
+
+          if (mainSystem()) {
+            // Get the CPU Usage //
+            let start = Game.cpu.getUsed();
+
+            // Run the part //
+            claimerCode();
+
+            // Set the average CPU Usage in the memory //
+            totalCPUClaimerCode += Game.cpu.getUsed() - start;
+          }
+          else {
+            // Run the part without tracking //
+            claimerCode();
+          }
+
+
+          if (mainSystem()) {
+            // Get the CPU Usage //
+            let start = Game.cpu.getUsed();
+
+            // Run the part //
+            runRoomPerformanceTracking();
+
+            // Set the average CPU Usage in the memory //
+            totalCPUPerformanceTracking += Game.cpu.getUsed() - start;
+          }
+          else {
+            // Run the part without tracking //
+            runRoomPerformanceTracking();
+          }
         }
       }
+    });
 
 
-
-
+    function runRoomCPUTracker() {
       if (mainSystem()) {
-        // Get the CPU Usage //
-        let start = Game.cpu.getUsed();
+        setCPUInMemory("getFirstOpenSpawn",totalCPUGetFirstOpenSpawn);
+        setCPUInMemory("defendRoom",totalCPUDefendRoom);
+        setCPUInMemory("getDamagedStructures",totalCPUGetDamagedStructures);
+        setCPUInMemory("runGameTimeTimers",totalCPURunGameTimeTimers);
+        setCPUInMemory("checkMissingMemory",totalCPUCheckMissingMemory);
+        setCPUInMemory("runRoomPlanner",totalCPURunRoomPlanner);
+        setCPUInMemory("claimerCode",totalCPUClaimerCode);
+        setCPUInMemory("performanceTracking",totalCPUPerformanceTracking);
 
-        // Run the part //
-        runRoomCPUTracker();
-
-        // Set the average CPU Usage in the memory //
-        setCPUInMemory("runRoomCPUTracker",totalCPUTracking);
+        setCPUInMemoryModules("harvestingModule",Memory.cpuTracker["harvesterCPU.total"]);
+        setCPUInMemoryModules("upgraderModule",Memory.cpuTracker["upgraderCPU.total"]);
+        setCPUInMemoryModules("transferModule",Memory.cpuTracker["transferCPU.total"]);
+        setCPUInMemoryModules("withdrawModuleUpgrader",Memory.cpuTracker["withdrawCPU.upgrader"]);
+        setCPUInMemoryModules("withdrawModuleNormal",Memory.cpuTracker["withdrawCPU.normal"]);
+        setCPUInMemoryModules("claimerModule",Memory.cpuTracker["claimerCPU.total"]);
+        setCPUInMemoryModules("builderModule",Memory.cpuTracker["builderCPU.total"]);
+        setCPUInMemoryModules("repairerModule",Memory.cpuTracker["repairerCPU.total"]);
+        Memory.cpuTracker["harvesterCPU.total"] = 0;
+        Memory.cpuTracker["upgraderCPU.total"] = 0;
+        Memory.cpuTracker["transferCPU.total"] = 0;
+        Memory.cpuTracker["withdrawCPU.upgrader"] = 0;
+        Memory.cpuTracker["withdrawCPU.normal"] = 0;
+        Memory.cpuTracker["claimerCPU.total"] = 0;
+        Memory.cpuTracker["builderCPU.total"] = 0;
+        Memory.cpuTracker["repairerCPU.total"] = 0;
       }
       else {
-        // Run the part without tracking //
-        runRoomCPUTracker();
+        deleteMemory();
       }
+    }
 
 
-      Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
-      Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
-      Memory.stats['cpu.bucket'] = Game.cpu.bucket;
-      Memory.stats['resources.pixel.total'] = Game.resources.pixel;
-    };
+
+
+    if (mainSystem()) {
+      // Get the CPU Usage //
+      let start = Game.cpu.getUsed();
+
+      // Run the part //
+      runRoomCPUTracker();
+
+      // Set the average CPU Usage in the memory //
+      setCPUInMemory("runRoomCPUTracker",totalCPUTracking);
+    }
+    else {
+      // Run the part without tracking //
+      runRoomCPUTracker();
+    }
+
+
+    Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
+    Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
+    Memory.stats['cpu.bucket'] = Game.cpu.bucket;
+    Memory.stats['resources.pixel.total'] = Game.resources.pixel;
+  };
