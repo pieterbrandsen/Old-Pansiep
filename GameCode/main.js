@@ -277,6 +277,7 @@ module.exports.loop = function() {
 
 
     if (controller && controller.my && flagMemory) {
+      flagMemory.IsMemorySetup = {};
       if (!flagMemory.IsMemorySetup) {
         checkMissingMemory.run(roomName);
       }
