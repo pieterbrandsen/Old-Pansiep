@@ -14,9 +14,8 @@ module.exports = {
     }
 
     room.find(FIND_SOURCES).forEach((source, i) => {
-      if (flagMemory.roomManager.sources[i].HasStructure == false) {
+      if (flagMemory.roomManager[`source-${i}.HasStructure`] == false) {
         if (createConstructionSite(`source-${i}.HasStructure`, item.id,2, 7)) {
-          flagMemory.roomManager.sources[i].HasStructure = true
           console.log("Building a storage for a source in room: " + room.name)
         }
         else {
@@ -25,9 +24,8 @@ module.exports = {
       }
     });
 
-    if (flagMemory.roomManager.controllerStorage.HasStructure == false) {
+    if (flagMemory.roomManager[`source-${i}.HasStructure`] == false) {
       if (createConstructionSite(`source-${i}.HasStructure`, room.controller.id, 3, 6)) {
-        flagMemory.roomManager.controllerStorage.HasStructure = true;
         console.log("Building a storage for the controller in room: " + room.name)
       }
       else {
