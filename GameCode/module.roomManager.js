@@ -24,8 +24,8 @@ module.exports = {
       }
     });
 
-    if (flagMemory.roomManager[`source-${i}.HasStructure`] == false) {
-      if (createConstructionSite(`source-${i}.HasStructure`, room.controller.id, 3, 6)) {
+    if (flagMemory.roomManager[`controller.HasStructure`] == false) {
+      if (createConstructionSite(`controller.HasStructure`, room.controller.id, 3, 6)) {
         console.log("Building a storage for the controller in room: " + room.name)
       }
       else {
