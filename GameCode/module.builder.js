@@ -10,85 +10,6 @@ module.exports = {
     }
 
 
-    function createSurroundingConstructionSite(id,getRange,controllerLevel) {
-      let range = getRange;
-      const room = creep.room;
-      let object = Game.getObjectById(id);
-      let structureType;
-      let x = object.pos.x;
-      let y = object.pos.y;
-      let constructionSiteCanBeBuild = false;
-      function createConstruction(structureType,x,y) {
-        if (room.createConstructionSite(x,y,structureType) == 0) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-
-
-      if (room.controller.level >= controllerLevel) {
-        structureType = STRUCTURE_LINK;
-      }
-      else {
-        if (object.structureType == STRUCTURE_CONTROLLER)
-          range = 1;
-        structureType = STRUCTURE_CONTAINER;
-      }
-
-      let containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
-      });
-      let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
-      });
-      let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
-        return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
-      });
-
-
-      if (constructionSitesInRange == null) {
-        if (structureType == STRUCTURE_LINK && containerInRange !== null) {
-          containerInRange.destroy();
-        }
-
-        if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x,y+range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x-range,y+range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x-range,y) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x-range,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x+range,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-      }
-    };
-
-
 
     function mainSystem() {
       // If Memory.mainSystem is defined //
@@ -120,7 +41,10 @@ module.exports = {
         else {
           if (Game.time % 10 == 0) {
             if (creep.memory.sourceId) {
-              createSurroundingConstructionSite(creep.memory.sourceId,2,7);
+              for (var i = 0; i < 5; i++) {
+                if (creep.memory.role.includes(`${i}`))
+                flagMemory.roomManager[`source-${i}.HasStructure`] = false;
+              }
             }
           }
         }
@@ -146,27 +70,27 @@ module.exports = {
       const runBuilder = creep.build(Game.getObjectById(creep.memory.targetId));
       switch(runBuilder) {
         case OK:
-          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
-          if (creep.memory.builderWorkCount) {
-            Memory.performanceTracker[creep.room.name + ".builderEnergy"] += creep.memory.builderWorkCount * 2;
-          }
-          break;
+        creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
+        if (creep.memory.builderWorkCount) {
+          Memory.performanceTracker[creep.room.name + ".builderEnergy"] += creep.memory.builderWorkCount * 2;
+        }
+        break;
         case ERR_NOT_OWNER:
-          break;
+        break;
         case ERR_BUSY:
-          break;
+        break;
         case ERR_NOT_ENOUGH_RESOURCES:
-          break;
+        break;
         case ERR_INVALID_TARGET:
-          findNewTarget();
-          break;
+        findNewTarget();
+        break;
         case ERR_NOT_IN_RANGE:
-          creep.say("Moving");
-          creep.travelTo(Game.getObjectById(creep.memory.targetId));
-          break;
+        creep.say("Moving");
+        creep.travelTo(Game.getObjectById(creep.memory.targetId));
+        break;
         case ERR_NO_BODYPART:
         default:
-          break;
+        break;
       }
     }
 

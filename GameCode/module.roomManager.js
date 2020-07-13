@@ -1,4 +1,4 @@
-const createConstructionSiteForObject = require('function.createConstructionSite')
+const createConstructionSiteForObject = require('function.createConstructionSite');
 
 module.exports = {
   run: function(roomName) {
