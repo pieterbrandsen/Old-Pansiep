@@ -285,7 +285,7 @@ module.exports.loop = function() {
       else {
         let towers = room.towers;
         let spawn;
-        
+
         function getSpawningEnergy() {
           flagMemory.totalEnergyAvailable = room.energyAvailable;
           let spawns = room.spawns.length;
@@ -483,7 +483,7 @@ module.exports.loop = function() {
           if (Game.time % 1000 == 0) {
             if (room.controller.level >= 6 && Object.keys(flagMemory.links).length < 4 && room.links.length > 0) {
               function findLinkInRange(object,range) {
-                if (object !== undefined) {
+                if (object !== null) {
                   return object.pos.findInRange(room.links, range,
                     {filter: {structureType: STRUCTURE_LINK}})[0];
                   }
