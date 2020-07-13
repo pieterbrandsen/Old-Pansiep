@@ -2,6 +2,9 @@ module.exports = {
   run: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
+
+    let spawn = getFirstOpenSpawn();
+
     function getFirstOpenSpawn() {
       let freeSpawns = room.find(FIND_MY_SPAWNS, {
         filter: (structure) => {

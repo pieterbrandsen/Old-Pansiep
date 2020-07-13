@@ -285,23 +285,7 @@ module.exports.loop = function() {
       else {
         let towers = room.towers;
         let spawn;
-        if (mainSystem()) {
-          // Get the CPU Usage //
-          let start = Game.cpu.getUsed();
-
-          // Run the part //
-          spawn = getFirstOpenSpawn();
-
-          // Set the average CPU Usage in the memory //
-          totalCPUGetFirstOpenSpawn += Game.cpu.getUsed() - start;
-        }
-        else {
-          // Run the part without tracking //
-          spawn = getFirstOpenSpawn();
-        }
-
-
-
+        
         function getSpawningEnergy() {
           flagMemory.totalEnergyAvailable = room.energyAvailable;
           let spawns = room.spawns.length;
