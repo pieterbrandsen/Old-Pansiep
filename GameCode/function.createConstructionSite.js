@@ -31,14 +31,14 @@ module.exports = {
       return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
     });
     let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
+      return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_LINK || structure.structureType == STRUCTURE_CONTAINER))}
     });
     let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
       return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
     });
 
 
-    if (constructionSitesInRange == null) {
+    if (constructionSitesInRange == null && (containerInRange !== null || linkInRange !== null)) {
       if (structureType == STRUCTURE_LINK && containerInRange !== null) {
         containerInRange.destroy();
       }
