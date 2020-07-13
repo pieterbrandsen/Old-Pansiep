@@ -1,4 +1,4 @@
-const createConstructionSite = require('function.createConstructionSite')
+const createConstructionSiteForObject = require('function.createConstructionSite')
 
 module.exports = {
   run: function(roomName) {
@@ -6,7 +6,7 @@ module.exports = {
     const flagMemory = Memory.flags[roomName];
 
     function createConstructionSite(memoryPath, objectId, range, controllerLevel) {
-      if (createConstructionSite.run(objectId,range,controllerLevel,roomName)) {
+      if (createConstructionSiteForObject.run(objectId,range,controllerLevel,roomName)) {
         flagMemory.roomManager[memoryPath] = true;
       }
       else
