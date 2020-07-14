@@ -2,12 +2,37 @@ const getAccesPoints = require('function.getAccesPoints');
 
 module.exports = {
   run: function(id,getRange,controllerLevel,roomName) {
-    const room = Game.rooms[roomName];
-    let range = getRange;
     const object = Game.getObjectById(id);
+    const x = object.pos.x;
+    const y = object.pos.y;
+
+
+
+    const possiblePositions = [
+
+    ]
+    for (let i = 1; i < getRange; i++) {
+      for (let j = 0; j < ; j++) {
+        possiblePositions.push([x-j,y-i])
+        possiblePositions.push([x+j,y-i])
+        possiblePositions.push([x-j,y+i])
+        possiblePositions.push([x+j,y+i])
+      }
+      for (let j = 0; j < ; j++) {
+
+      }
+      //possiblePositions.push([x,y])
+    }
+
+    console.log(true)
+
+
+
+
+
+    const room = Game.rooms[roomName];
     let structureType;
-    let x = object.pos.x;
-    let y = object.pos.y;
+
     let constructionSiteCanBeBuild = false;
     function createConstruction(structureType,x,y) {
       if (room.createConstructionSite(x,y,structureType) == 0) {
@@ -18,6 +43,8 @@ module.exports = {
         return false;
       }
     }
+
+
 
 
     if (room.controller.level >= controllerLevel) {
