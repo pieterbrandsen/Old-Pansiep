@@ -487,8 +487,10 @@ module.exports.loop = function() {
                   const link = object.pos.findInRange(room.links, range,
                     {filter: {structureType: STRUCTURE_LINK}
                   })[0];
-                  if (link !== undefined)
-                  return link.id;
+
+                  if (link !== undefined) {
+                    return link.id;
+                  }
                 }
               }
 
