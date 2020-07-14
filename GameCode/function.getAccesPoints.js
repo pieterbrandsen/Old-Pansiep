@@ -35,12 +35,16 @@ module.exports = {
     ]
 
     function checkIfSpotIsFree(position) {
-      // Containers en Roads moeten niet meegeteld worden, missen er 2 nog!
+      // Get Possible Structure At InputPosition //
       const positionObject = room.lookForAt(LOOK_STRUCTURES,position[0],position[1])
+      // If Structure Is Found At Position //
       if (positionObject[0] !== undefined) {
+        // If structure is walkable (Not Solid) Return True //
         if (positionObject[0].structureType == STRUCTURE_CONTAINER || positionObject[0].structureType == STRUCTURE_ROAD)
           return true;
+        else return false;
       }
+      // Else If There Is No Structure But The Terrain Is Empty (Walkable) //
       else if (terrain.get(position[0],position[1]) == 0)
         return true;
       else return false;
