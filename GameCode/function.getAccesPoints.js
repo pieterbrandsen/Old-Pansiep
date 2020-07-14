@@ -1,7 +1,5 @@
 module.exports = {
-  run: function(inputId, roomName) {
-    // Get The Object Of The InputId
-    const object = Game.getObjectById(inputId);
+  run: function(x,y, roomName) {
     // Get The Terrain Of The InputRoom //
     const room = Game.rooms[roomName];
     const terrain = new Room.Terrain(roomName);
@@ -12,28 +10,28 @@ module.exports = {
 
     const possiblePositions = [
       // Top Position
-      [object.pos.x,object.pos.y-1],
+      [x,y-1],
 
       // Top Right Position
-      [object.pos.x+1,object.pos.y-1],
+      [x+1,y-1],
 
       // Right Position
-      [object.pos.x+1,object.pos.y],
+      [x+1,y],
 
       // Bottom Right Position
-      [object.pos.x+1,object.pos.y+1],
+      [x+1,y+1],
 
       // Bottom Position
-      [object.pos.x,object.pos.y+1],
+      [x,y+1],
 
       // Bottom Left Position
-      [object.pos.x-1,object.pos.y+1],
+      [x-1,y+1],
 
       // Left Position
-      [object.pos.x-1,object.pos.y],
+      [x-1,y],
 
       // Top Left Position
-      [object.pos.x-1,object.pos.y-1],
+      [x-1,y-1],
     ]
 
     function checkIfSpotIsFree(position) {
