@@ -484,13 +484,10 @@ module.exports.loop = function() {
             if (room.controller.level >= 6 && Object.keys(flagMemory.links).length < 4 && room.links.length > 0) {
               function findLinkInRange(object,range) {
                 if (object !== null) {
-                  const link = object.pos.findInRange(room.links, range,
-                    {filter: {structureType: STRUCTURE_LINK}
-                  })[0];
-
-                  if (link !== undefined) {
-                    return link.id;
-                  }
+                  const link = object.pos.findClosestByRange(room.links, range)
+                  
+                  if (link !== null)
+                  return link;
                 }
               }
 
@@ -529,7 +526,7 @@ module.exports.loop = function() {
 
 
           if (flagMemory.sources) {
-            if (Game.time % 5000 == 0 || flagMemory.sources.length == 0) {
+            if (Game.time % 5000 == 0 || (!flagMemory.roomManager.headSpawn)) {
               if (!flagMemory.roomManager.headSpawn) {
                 if (room.spawns.length > 1) {
                   if (room.terminal && room.controller.level >= 6) {
@@ -547,33 +544,35 @@ module.exports.loop = function() {
                   }
                 }
 
-
-                flagMemory.controllerLevel = room.controller.level;
-                const mineral = room.find(FIND_MINERALS)[0];
-                if (mineral) {
-                  flagMemory.mineralAmount = mineral.mineralAmount;
-                  flagMemory.mineralId = mineral.id;
+                if (Game.time % 5000 == 0 == 0) {
+                  const mineral = room.find(FIND_MINERALS)[0];
+                  if (mineral) {
+                    flagMemory.mineralAmount = mineral.mineralAmount;
+                    flagMemory.mineralId = mineral.id;
+                  }
+                  else {
+                    flagMemory.mineralAmount = 0;
+                    flagMemory.mineralId = "";
+                  }
+                  flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
+                  roomPlanner.run()
                 }
-                else {
-                  flagMemory.mineralAmount = 0;
-                  flagMemory.mineralId = "";
-                }
-                flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
-                roomPlanner.run()
               }
             }
           }
 
           function runRoomPlanner() {
             if (flagMemory.controllerLevel < room.controller.level) {
-              roomPlanner.run()
-              roomManager.run(roomName)
-
+              if (flagMemory.roomManager.headSpawn) {
+                roomPlanner.run()
+                roomManager.run(roomName)
+                flagMemory.controllerLevel = room.controller.level;
+              }
             }
             if (Game.time % 500 == 0) {
               roomManager.run(roomName)
+              flagMemory.controllerLevel = room.controller.level;
             }
-
           }
 
           function runCPUTracker() {

@@ -222,8 +222,6 @@ module.exports = {
             room.createConstructionSite(x+1, y+7, STRUCTURE_EXTENSION);
             room.createConstructionSite(x-5, y+1, STRUCTURE_EXTENSION);
           }
-
-          Memory.flags[room.name].controllerLevel = room.controller.level;
         }
       }
     }

@@ -2,38 +2,27 @@ const getAccesPoints = require('function.getAccesPoints');
 
 module.exports = {
   run: function(id,getRange,controllerLevel,roomName) {
+    const room = Game.rooms[roomName];
+    const flagMemory = Memory.flags[roomName];
     const object = Game.getObjectById(id);
     const x = object.pos.x;
     const y = object.pos.y;
 
+    let structureType;
+    let constructionSiteCanBeBuild = false;
+    let isThereStruture = false;
 
-
-    const possiblePositions = [
-
-    ]
-    for (let i = 1; i < getRange; i++) {
-      for (let j = 0; j < ; j++) {
-        possiblePositions.push([x-j,y-i])
-        possiblePositions.push([x+j,y-i])
-        possiblePositions.push([x-j,y+i])
-        possiblePositions.push([x+j,y+i])
-      }
-      for (let j = 0; j < ; j++) {
-
-      }
-      //possiblePositions.push([x,y])
+    if (room.controller.level >= controllerLevel) {
+      structureType = STRUCTURE_LINK;
+    }
+    else {
+      range = 1;
+      structureType = STRUCTURE_CONTAINER;
     }
 
-    console.log(true)
 
 
 
-
-
-    const room = Game.rooms[roomName];
-    let structureType;
-
-    let constructionSiteCanBeBuild = false;
     function createConstruction(structureType,x,y) {
       if (room.createConstructionSite(x,y,structureType) == 0) {
         return true;
@@ -47,13 +36,6 @@ module.exports = {
 
 
 
-    if (room.controller.level >= controllerLevel) {
-      structureType = STRUCTURE_LINK;
-    }
-    else {
-      range = 1;
-      structureType = STRUCTURE_CONTAINER;
-    }
 
     const containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
       return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
@@ -69,46 +51,51 @@ module.exports = {
     });
 
 
-    if (constructionSitesInRange == null && ((containerInRange !== null || linkInRange !== null) || storageInRange == null)) {
+    if (constructionSitesInRange == null && ((containerInRange !== null && linkInRange == null) || storageInRange == null)) {
       if (structureType == STRUCTURE_LINK && containerInRange !== null) {
         containerInRange.destroy();
       }
 
-      if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
+      const possiblePositions = [];
+      let optimalPositions = [0,[0,0], 50];
+
+      for (let i = 1; i < range+1; i++) {
+        for (let j = 0; j < range+1; j++) {
+          possiblePositions.push([x-j,y-i])
+          possiblePositions.push([x+j,y-i])
+          possiblePositions.push([x-j,y+i])
+          possiblePositions.push([x+j,y+i])
+        }
       }
-      else if (createConstruction(structureType,x,y+range) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
+
+      for (var i = 0; i < possiblePositions.length; i++) {
+        const posX = possiblePositions[i][0];
+        const posY = possiblePositions[i][1];
+        const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX,posY, roomName)[0];
+        if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
+          optimalPositions[0] = possiblePositionsOfPlacementPossible
+          optimalPositions[1][0] = posX;
+          optimalPositions[1][1] = posY;
+        }
+        else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
+          const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
+          if (possiblePositionsOfPlacementPossible == optimalPositions[0] && getRangeToHeadSpawn < optimalPositions[2]) {
+            optimalPositions[0] = possiblePositionsOfPlacementPossible
+            optimalPositions[1][0] = posX;
+            optimalPositions[1][1] = posY;
+            optimalPositions[2] = getRangeToHeadSpawn;
+          }
+        }
       }
-      else if (createConstruction(structureType,x-range,y+range) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
-      }
-      else if (createConstruction(structureType,x-range,y) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
-      }
-      else if (createConstruction(structureType,x-range,y-range) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
-      }
-      else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
-      }
-      else if (createConstruction(structureType,x+range,y-range) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
-      }
-      else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-        room.createConstructionSite(x+range,y+range,structureType)
-        constructionSiteCanBeBuild = true
-      }
+
+
+      constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1])
+    }
+    else {
+      isThereStruture = true;
     }
 
 
-    return constructionSiteCanBeBuild;
+    return [constructionSiteCanBeBuild, isThereStruture];
   }
 };
