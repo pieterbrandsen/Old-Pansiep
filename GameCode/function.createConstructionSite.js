@@ -7,16 +7,19 @@ module.exports = {
     const object = Game.getObjectById(id);
     const x = object.pos.x;
     const y = object.pos.y;
+    let range = getRange;
 
     let structureType;
     let constructionSiteCanBeBuild = false;
     let isThereStruture = false;
+    let errorMessage = "";
 
     if (room.controller.level >= controllerLevel) {
       structureType = STRUCTURE_LINK;
     }
     else {
-      range = 1;
+      if (id !== room.controller.id)
+        range = 1;
       structureType = STRUCTURE_CONTAINER;
     }
 
@@ -24,11 +27,13 @@ module.exports = {
 
 
     function createConstruction(structureType,x,y) {
-      if (room.createConstructionSite(x,y,structureType) == 0) {
+      // TODO: Create output if fault message
+      const buildStructure = room.createConstructionSite(x,y,structureType);
+      if (buildStructure == 0) {
         return true;
-
       }
       else {
+        errorMessage = buildStructure;
         return false;
       }
     }
@@ -96,6 +101,6 @@ module.exports = {
     }
 
 
-    return [constructionSiteCanBeBuild, isThereStruture];
+    return [constructionSiteCanBeBuild, isThereStruture, errorMessage];
   }
 };
