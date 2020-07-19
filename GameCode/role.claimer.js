@@ -25,8 +25,9 @@ module.exports = {
       }
     }
     if (Game.shard.name == shardTarget) {
-      if (flag) {
-        if (creep.room.name !== flagMemory.claimRoom) {
+      if (flag && flagMemory) {
+        //if (creep.room.name !== flagMemory.claimRoom) {
+        if (creep.room.name !== "E47N5") {
           creep.travelTo(flag);
         }
         else {
