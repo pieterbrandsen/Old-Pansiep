@@ -24,31 +24,38 @@ module.exports = {
       }
     }
 
-    function transferTarget() {
-      const target = creep.transfer(Game.getObjectById(creep.memory.targetId),RESOURCE_ENERGY);
-      switch(target) {
-        case OK:
-        creep.say("Transfer");
-        creep.memory.targetId = "";
-        case ERR_NOT_OWNER:
-        break;
-        case ERR_BUSY:
-        break;
-        case ERR_NOT_ENOUGH_RESOURCES:
-        break;
-        case ERR_INVALID_TARGET:
-        findNewTarget();
-        break;
-        case ERR_FULL:
-        findNewTarget();
-        break;
-        case ERR_NOT_IN_RANGE:
-        creep.travelTo(Game.getObjectById(creep.memory.targetId));
-        break;
-        case ERR_INVALID_ARGS:
-        break;
-        default:
-        break;
+    function transferTarget(target) {
+      if (target == null)
+      findNewTarget();
+      else if (target.structureType == creep.memory.withdrawStructure)
+      findNewTarget();
+      else {
+        const runTransfer = creep.transfer(target,RESOURCE_ENERGY);
+        switch(runTransfer) {
+          case OK:
+          creep.say("Transfer");
+          creep.memory.transferStructure = target.structureType;
+          creep.memory.targetId = "";
+          case ERR_NOT_OWNER:
+          break;
+          case ERR_BUSY:
+          break;
+          case ERR_NOT_ENOUGH_RESOURCES:
+          break;
+          case ERR_INVALID_TARGET:
+          findNewTarget();
+          break;
+          case ERR_FULL:
+          findNewTarget();
+          break;
+          case ERR_NOT_IN_RANGE:
+          creep.travelTo(Game.getObjectById(creep.memory.targetId));
+          break;
+          case ERR_INVALID_ARGS:
+          break;
+          default:
+          break;
+        }
       }
     }
 
@@ -65,11 +72,11 @@ module.exports = {
 
 
         if (containerInRange !== null)
-          creep.memory.targetId = containerInRange.id;
+        creep.memory.targetId = containerInRange.id;
         else if (linkInRange !== null)
-          creep.memory.targetId = linkInRange.id;
+        creep.memory.targetId = linkInRange.id;
         else
-          builderModule.run(creep);
+        builderModule.run(creep);
       }
       else {
 
@@ -89,13 +96,13 @@ module.exports = {
           creep.memory.waitTransferer = true;
         }
         else
-          if (controllerStorage)
-            if (controllerStorage.store.getUsedCapacity() < 1500)
-            creep.memory.targetId = controllerStorage.id;
-            else if (creep.room.storage)
-            creep.memory.targetId = creep.room.storage.id
-          else if (creep.room.storage)
-          creep.memory.targetId = creep.room.storage.id
+        if (controllerStorage)
+        if (controllerStorage.store.getUsedCapacity() < 1500 && controllerStorage.structureType == STRUCTURE_CONTAINER)
+        creep.memory.targetId = controllerStorage.id;
+        else if (creep.room.storage)
+        creep.memory.targetId = creep.room.storage.id
+        else if (creep.room.storage)
+        creep.memory.targetId = creep.room.storage.id
       }
     }
 
@@ -104,7 +111,7 @@ module.exports = {
       let start = Game.cpu.getUsed();
 
       // Run the part //
-      transferTarget();
+      transferTarget(Game.getObjectById(creep.memory.targetId));
 
       // Set the average CPU Usage in the memory //
 
@@ -112,7 +119,7 @@ module.exports = {
     }
     else {
       // Run the part without tracking //
-      transferTarget();
+      transferTarget(Game.getObjectById(creep.memory.targetId));
     }
   }
 };

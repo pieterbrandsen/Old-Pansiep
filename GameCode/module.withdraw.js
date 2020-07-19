@@ -24,83 +24,12 @@ module.exports = {
     }
 
     if (!creep.memory.withdrawId)
-      creep.memory.withdrawId = ""
+    creep.memory.withdrawId = ""
 
 
-    function createSurroundingConstructionSite(id,range,controllerLevel) {
-      const room = creep.room
-      let object = Game.getObjectById(id);
-      let structureType;
-      let x = object.pos.x;
-      let y = object.pos.y;
-      let constructionSiteCanBeBuild = false;
-      function createConstruction(structureType,x,y) {
-        if (room.createConstructionSite(x,y,structureType) == 0) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-
-      if (object.room.controller.level >= controllerLevel) {
-        structureType = STRUCTURE_LINK;
-      }
-      else {
-        structureType = STRUCTURE_CONTAINER;
-      }
-
-      let containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
-      });
-      let linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-        return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
-      });
-      let constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
-        return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
-      });
-
-
-      if (((!containerInRange && structureType == STRUCTURE_CONTAINER) || (!linkInRange && structureType == STRUCTURE_LINK)) && constructionSitesInRange == null) {
-        if (structureType == STRUCTURE_LINK && containerInRange !== null) {
-          containerInRange.destroy();
-        }
-
-        if (createConstruction(structureType,x+range,y+range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x,y+range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x-range,y+range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x-range,y) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x-range,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x+range,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-        else if (createConstruction(structureType,x,y-range) == true && constructionSiteCanBeBuild == false) {
-          room.createConstructionSite(x+range,y+range,structureType)
-          constructionSiteCanBeBuild = true
-        }
-      }
+    function enterValueInMemory(memoryPath, inputValue) {
+      flagMemory.roomManager[memoryPath] = inputValue;
     };
-
 
     function withdrawUpgraderSection() {
       const target = Game.getObjectById(flagMemory.controllerStorage);
@@ -125,7 +54,7 @@ module.exports = {
             flagMemory.controllerStorage = linkInRange.id;
           }
           else if (constructionSiteInRange == null) {
-            createSurroundingConstructionSite(creep.room.controller.id,range,6,creep.room)
+            enterValueInMemory(`controller.HasStructure`, false);
           }
           else {
             harvestModule.run(creep);
@@ -140,33 +69,38 @@ module.exports = {
     }
 
     function runWithdraw(target) {
-      const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
+      if (target.structureType == creep.memory.transferStructure)
+      return false;
+      else {
+        const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
 
-      switch(runWithdraw) {
-        case OK:
-        creep.say("Withdraw");
-        creep.memory.withdrawId = "";
-        break;
-        case ERR_NOT_OWNER:
-        break;
-        case ERR_BUSY:
-        break;
-        case ERR_NOT_ENOUGH_RESOURCES:
-        break;
-        case ERR_INVALID_TARGET:
-        if (!creep.pos.inRangeTo(creep.room.controller,4))
-        creep.travelTo(creep.room.controller);
-        break;
-        case ERR_FULL:
-        break;
-        case ERR_NOT_IN_RANGE:
-        creep.say("Moving");
-        creep.travelTo(target);
-        break;
-        case ERR_INVALID_ARGS:
-        break;
-        default:
-        break;
+        switch(runWithdraw) {
+          case OK:
+          creep.say("Withdraw");
+          creep.memory.withdrawStructure = target.structureType;
+          creep.memory.withdrawId = "";
+          break;
+          case ERR_NOT_OWNER:
+          break;
+          case ERR_BUSY:
+          break;
+          case ERR_NOT_ENOUGH_RESOURCES:
+          break;
+          case ERR_INVALID_TARGET:
+          if (!creep.pos.inRangeTo(creep.room.controller,4))
+          creep.travelTo(creep.room.controller);
+          break;
+          case ERR_FULL:
+          break;
+          case ERR_NOT_IN_RANGE:
+          creep.say("Moving");
+          creep.travelTo(target);
+          break;
+          case ERR_INVALID_ARGS:
+          break;
+          default:
+          break;
+        }
       }
     }
 
@@ -176,19 +110,20 @@ module.exports = {
 
       function checkStorage() {
         if (room.storage)
-          if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
-            withdrawStructure = STRUCTURE_STORAGE;
-            creep.memory.withdrawId = room.storage.id;
-            return true;
-          }
+        if (creep.memory.transferStructure == "STRUCTURE_STORAGE")
+        if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
+          withdrawStructure = STRUCTURE_STORAGE;
+          creep.memory.withdrawId = room.storage.id;
+          return true;
+        }
       }
       function checkTerminal() {
         if (room.terminal)
-          if (room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
-            withdrawStructure = STRUCTURE_TERMINAL
-            creep.memory.withdrawId = room.terminal.id;
-            return true;
-          }
+        if (room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
+          withdrawStructure = STRUCTURE_TERMINAL
+          creep.memory.withdrawId = room.terminal.id;
+          return true;
+        }
       }
       function checkContainers() {
         if (room.containers.length > 0) {
@@ -213,7 +148,7 @@ module.exports = {
           let energyStored = 0;
           room.links.forEach((item, i) => {
             if (!item.pos.inRangeTo(creep.room.controller,3))
-              energyStored += room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
+            energyStored += room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
           });
 
           if (energyStored > 500) {
@@ -231,13 +166,13 @@ module.exports = {
 
 
       if (!checkStorage())
-        if (!checkTerminal())
-          if (!checkContainers())
-            if (!checkLinks()) {
-              if (creep.memory.role !== "transferer") {
-                creep.memory.withdrawId = "source"
-              }
-            }
+      if (!checkTerminal())
+      if (!checkContainers())
+      if (!checkLinks()) {
+        if (creep.memory.role !== "transferer") {
+          creep.memory.withdrawId = "source"
+        }
+      }
 
 
       creep.say(withdrawStructure)
@@ -252,9 +187,9 @@ module.exports = {
       else {
         if (creep.memory.withdrawId.length > 0) {
           if (creep.memory.withdrawId == "source")
-            harvestModule.run(creep);
+          harvestModule.run(creep);
           else
-            runWithdraw(Game.getObjectById(creep.memory.withdrawId));
+          runWithdraw(Game.getObjectById(creep.memory.withdrawId));
         }
         else {
           if (Game.time % 2 == 0) {

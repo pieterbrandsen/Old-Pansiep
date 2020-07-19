@@ -12,6 +12,7 @@ module.exports = {
         errorMessage = buildStructure[2];
       if (buildStructure[0]) {
         flagMemory.roomManager[memoryPath] = true;
+        flagMemory.constructionSitesAmount++;
       }
       else if (buildStructure[1]) {
         flagMemory.roomManager[memoryPath] = true;

@@ -23,7 +23,7 @@ const roleTransfererLD = require('role.transfererLD');
 const roomPlanner = require('module.roomPlanner')
 const roomManager = require('module.roomManager')
 const checkMissingMemory = require('module.checkMissingMemory')
-const spawnCreep = require('module.spawnCreep');
+const spawnCreep = require('mainModule.spawnCreep');
 
 
 module.exports.loop = function() {
@@ -284,7 +284,6 @@ module.exports.loop = function() {
       }
       else {
         let towers = room.towers;
-        let spawn;
 
         function getSpawningEnergy() {
           flagMemory.totalEnergyAvailable = room.energyAvailable;
@@ -452,9 +451,7 @@ module.exports.loop = function() {
             flagMemory.enemyCount = room.find(FIND_HOSTILE_CREEPS).length;
             getSpawningEnergy();
 
-            if (spawn) {
-              spawnCreep.run(roomName);
-            }
+            spawnCreep.run(roomName);
 
 
             if (flagMemory.links) {
@@ -485,7 +482,7 @@ module.exports.loop = function() {
               function findLinkInRange(object,range) {
                 if (object !== null) {
                   const link = object.pos.findClosestByRange(room.links, range)
-                  
+
                   if (link !== null)
                   return link;
                 }
@@ -527,6 +524,7 @@ module.exports.loop = function() {
 
           if (flagMemory.sources) {
             if (Game.time % 5000 == 0 || (!flagMemory.roomManager.headSpawn)) {
+              console.log(`Memory in ${roomName} is being updated!`)
               if (!flagMemory.roomManager.headSpawn) {
                 if (room.spawns.length > 1) {
                   if (room.terminal && room.controller.level >= 6) {
@@ -544,7 +542,7 @@ module.exports.loop = function() {
                   }
                 }
 
-                if (Game.time % 5000 == 0 == 0) {
+                if (Game.time % 5000 == 0) {
                   const mineral = room.find(FIND_MINERALS)[0];
                   if (mineral) {
                     flagMemory.mineralAmount = mineral.mineralAmount;
