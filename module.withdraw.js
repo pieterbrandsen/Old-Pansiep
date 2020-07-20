@@ -69,8 +69,9 @@ module.exports = {
     }
 
     function runWithdraw(target) {
-      if (target.structureType == creep.memory.transferStructure)
-      return false;
+      if ((target.structureType == "storage" || target.structureType == "terminal") && flagMemory.totalEnergyCapacity == flagMemory.totalEnergyAvailable) {
+        return false;
+      }
       else {
         const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
 
@@ -110,7 +111,6 @@ module.exports = {
 
       function checkStorage() {
         if (room.storage)
-        if (creep.memory.transferStructure == "STRUCTURE_STORAGE")
         if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
           withdrawStructure = STRUCTURE_STORAGE;
           creep.memory.withdrawId = room.storage.id;
@@ -165,9 +165,9 @@ module.exports = {
       }
 
 
-      if (!checkStorage())
-      if (!checkTerminal())
       if (!checkContainers())
+      if (!checkTerminal())
+      if (!checkStorage())
       if (!checkLinks()) {
         if (creep.memory.role !== "transferer") {
           creep.memory.withdrawId = "source"
@@ -192,7 +192,7 @@ module.exports = {
           runWithdraw(Game.getObjectById(creep.memory.withdrawId));
         }
         else {
-          if (Game.time % 2 == 0) {
+          if (Game.time % 5 == 0) {
             findWithdrawStructure();
           }
         }

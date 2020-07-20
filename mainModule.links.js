@@ -36,37 +36,39 @@ module.exports = {
     }
 
 
-    if (!flagMemory.links.linkTo1) {
-      if (room.controller.level >= 6) {
-        const headSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn);
-        if (headSpawn) {
-          const link = findLinkInRange(headSpawn,3).id;
-          if (link)
-          flagMemory.links.linkTo1 = link;
+    if (flagMemory.links) {
+      if (!flagMemory.links.linkTo1) {
+        if (room.controller.level >= 6) {
+          const headSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn);
+          if (headSpawn) {
+            const link = findLinkInRange(headSpawn,3).id;
+            if (link)
+            flagMemory.links.linkTo1 = link;
+          }
         }
       }
-    }
-    if (!flagMemory.links.linkTo2) {
-      if (room.controller.level >= 6) {
-        const link = findLinkInRange(room.controller,3).id;
-        if (link)
-        flagMemory.links.linkTo2 = link;
+      if (!flagMemory.links.linkTo2) {
+        if (room.controller.level >= 6) {
+          const link = findLinkInRange(room.controller,3).id;
+          if (link)
+          flagMemory.links.linkTo2 = link;
+        }
       }
-    }
-    if (!flagMemory.links.linkFrom1) {
-      if (room.controller.level >= 7) {
-        let source = Game.getObjectById(flagMemory.sources[0].id);
-        const link = findLinkInRange(source,3).id;
-        if (link)
-        flagMemory.links.linkFrom1 = link;
+      if (!flagMemory.links.linkFrom1) {
+        if (room.controller.level >= 7) {
+          let source = Game.getObjectById(flagMemory.sources[0].id);
+          const link = findLinkInRange(source,3).id;
+          if (link)
+          flagMemory.links.linkFrom1 = link;
+        }
       }
-    }
-    if (!flagMemory.links.linkFrom2) {
-      if (room.controller.level >= 7) {
-        let source = Game.getObjectById(flagMemory.sources[1].id);
-        const link = findLinkInRange(source,3).id;
-        if (link)
-        flagMemory.links.linkFrom2 = link;
+      if (!flagMemory.links.linkFrom2) {
+        if (room.controller.level >= 7) {
+          let source = Game.getObjectById(flagMemory.sources[1].id);
+          const link = findLinkInRange(source,3).id;
+          if (link)
+          flagMemory.links.linkFrom2 = link;
+        }
       }
     }
   }

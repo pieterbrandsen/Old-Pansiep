@@ -26,7 +26,6 @@ module.exports = {
       }
       else if (creep.memory.working === true) {
         if (creep.room.name == creep.memory.spawnRoom) {
-          console.log(true)
           transferModuleLD.run(creep);
         }
         else {

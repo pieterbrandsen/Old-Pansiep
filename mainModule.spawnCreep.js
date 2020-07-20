@@ -57,39 +57,40 @@ module.exports = {
     }
 
     function spawnCreep(spawn,role,targetRoom,flagName) {
-      let name = role + "-" + Math.round(Math.random() * 100);
-      if (!targetRoom)
-      targetRoom = roomName;
-      if (!flagName)
-      flagName = roomName;
+      if (spawn !== null) {
+        let name = role + "-" + Math.round(Math.random() * 100);
+        if (!targetRoom)
+        targetRoom = roomName;
+        if (!flagName)
+        flagName = roomName;
 
-      let directionsList = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        let directionsList = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
 
-      if (room.terminal)
-      if (room.controller.level >= 6 && spawn.pos.inRangeTo(room.terminal,2)) {
-        if (role.includes("LiTe")) {
-          directionsList = [TOP_RIGHT];
+        if (room.terminal)
+        if (room.controller.level >= 6 && spawn.pos.inRangeTo(room.terminal,2)) {
+          if (role.includes("LiTe")) {
+            directionsList = [TOP_RIGHT];
+          }
+          else {
+            directionsList = [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+          }
         }
-        else {
-          directionsList = [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
-        }
+
+
+        return spawn.spawnCreep(
+          getCreepSize(role),
+          name,
+          {
+            memory: {
+              working: false,
+              role: role,
+              spawnRoom: roomName,
+              targetRoom: targetRoom,
+              flagName: flagName
+            }, directions: directionsList
+          }
+        )
       }
-
-
-      return spawn.spawnCreep(
-        getCreepSize(role),
-        name,
-        {
-          memory: {
-            working: false,
-            role: role,
-            spawnRoom: roomName,
-            targetRoom: targetRoom,
-            flagName: flagName
-          }, directions: directionsList
-
-        }
-      )
     }
 
     function getCreepSize(role) {
@@ -151,6 +152,16 @@ module.exports = {
           parts.push(MOVE);
         }
       }
+      // else if (role == "extractor") {
+      //   const energyCost = 300;
+      //   let partAmount = Math.floor(energyAvailable/energyCost);
+      //   if (energyAvailable <= 300) {
+      //     parts.push(WORK);
+      //     parts.push(WORK);
+      //     parts.push(CARRY);
+      //     parts.push(MOVE);
+      //   }
+      // }
       else if (role == "builder") {
         const energyCost = 300;
         let partAmount = Math.floor(energyAvailable/energyCost);
@@ -242,6 +253,16 @@ module.exports = {
           parts.push(MOVE);
         }
       }
+      else if (role == "attacker") {
+        //parts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
+        parts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK];
+        // const energyCost = 200;
+        // let partAmount = Math.floor(energyAvailable/energyCost);
+        // for (let i = 0; i < partAmount; i++) {
+        //   parts.push(RANGED_ATTACK);
+        //   parts.push(MOVE);
+        // }
+      }
       else if (role == "shardUp") { // claimer
         const energyCost = 650;
         let partAmount = Math.floor(energyAvailable/energyCost);
@@ -309,6 +330,9 @@ module.exports = {
             if (creep.memory.role == "claimer") {
               flagMemory.creepAmount.claimerCount++;
             }
+            if (creep.memory.role == "attacker") {
+              flagMemory.creepAmount.attackerCount++;
+            }
             if (creep.memory.role == "builderLD") {
               flagMemory.creepAmount.builderLDCount++;
             }
@@ -357,6 +381,9 @@ module.exports = {
     function spawnManager() {
       getCreepAmount();
 
+      // if (canCreepSpawn("attacker")) {
+      //   spawnCreep(spawn,"attacker");
+      // }
       if (canCreepSpawn("transferer")) {
         spawnCreep(spawn,"transferer");
       }
@@ -378,33 +405,32 @@ module.exports = {
       else if (canCreepSpawn("repairer")) {
         spawnCreep(spawn,"repairer",roomName);
       }
-      else if (canCreepSpawn("extractor")) {
-        spawnCreep(spawn,"extractor",roomName);
-      }
+      // else if (canCreepSpawn("extractor")) {
+      //   spawnCreep(spawn,"extractor");
+      // }
       else if (canCreepSpawn("claimer")) {
-        if (roomName == Memory.flags["claim"].spawnRoom) {
-          spawnCreep(spawn,"claimer",roomName);
-        }
+        spawnCreep(spawn,"claimer",roomName);
       }
       else if (canCreepSpawn("builderLD")) {
         spawnCreep(spawn,"builderLD",roomName);
       }
-      else if (canCreepSpawn("pixelFarmer")) {
-        spawnCreep(spawn,"pixelFarmer",roomName);
-      }
-      else if (canCreepSpawn("ruinWithdrawer")) {
-        spawnCreep(spawn,"ruinWithdrawer",roomName);
-      }
-      else if (canCreepSpawn("claimer")) {
-        spawnCreep(spawn,"shardUp",roomName);
-      }
-      else if (canCreepSpawn("shardUp")) {
-        spawnCreep(spawn,"shardUp",roomName);
-      }
+      // else if (canCreepSpawn("pixelFarmer")) {
+      //   spawnCreep(spawn,"pixelFarmer",roomName);
+      // }
+      // else if (canCreepSpawn("ruinWithdrawer")) {
+      //   spawnCreep(spawn,"ruinWithdrawer",roomName);
+      // }
+      // else if (canCreepSpawn("claimer")) {
+      //   spawnCreep(spawn,"shardUp",roomName);
+      // }
+      // else if (canCreepSpawn("shardUp")) {
+      //   spawnCreep(spawn,"shardUp",roomName);
+      // }
       else {
-        if (room.controller.level >= 7) {
-          getRemotes();
-        }
+        getAttackRooms();
+        // if (room.controller.level >= 7) {
+        //   getRemotes();
+        // }
       }
 
       if (flagMemory.creepAmount !== undefined) {
@@ -432,8 +458,8 @@ module.exports = {
 
     function canCreepSpawn(role) {
       let result = false;
-
-      if (flagMemory.creepAmount + roomName) {
+      //console.log(`${roomName} - ${role}`)
+      if (flagMemory.creepAmount) {
         switch(role) {
           case "transferer":
           if (flagMemory.creepAmount.transfererCarryCount < (flagMemory.sources.length * 15 + 10) && roomNeedsTransferer()) {
@@ -443,7 +469,7 @@ module.exports = {
           }
           break;
           case "transfererLiTe":
-          if (flagMemory.creepAmount.transfererLiTeCount < 1 && flagMemory.links.linkTo1 && room.storage && room.terminal) {
+          if (flagMemory.creepAmount.transfererLiTeCount < 1 && flagMemory.links.linkTo1 !== undefined && room.storage && room.terminal) {
             if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
               if (flagMemory.links.linkTo2.length > 0) {
                 result = true;
@@ -477,9 +503,9 @@ module.exports = {
           }
           break;
           case "upgrader":
-          if (roomName !== "E42N2"&& flagMemory.creepAmount.upgraderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
+          if (flagMemory.creepAmount.upgraderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
             if (flagMemory.creepAmount.upgraderCount < 4) {
-              result = true;
+              //result = true;
             }
           }
           break;
@@ -494,8 +520,10 @@ module.exports = {
           }
           break;
           case "claimer":
-          if (flagMemory.creepAmount.claimerCount < 1 && Game.flags["claim"]) {
-            result = true;
+          if (flagMemory.creepAmount.claimerCount < 3 && Game.flags["claim"]) {
+            if (roomName == Memory.flags["claim"].spawnRoom) {
+              result = true;
+            }
           }
           break;
           case "builderLD":
@@ -508,6 +536,13 @@ module.exports = {
             result = true;
           }
           break;
+          // case "attacker":
+          // const onOff = true;
+          // if (roomName == "E42N2")
+          // if (onOff)
+          // result = true;
+          //
+          // break;
           case "ruinWithdrawer":
           // if (flagMemory.creepAmount.ruinWithdrawerCount < 1 && room.storage) {
           //   result = true;
@@ -519,7 +554,6 @@ module.exports = {
           result = true;
           break;
           case "shardUp":
-          let onOff = "on";
           if (roomName == "E42N2" && Game.flags["testtest"] !== undefined) {
             result = true;
           }
@@ -536,10 +570,15 @@ module.exports = {
       if (flagMemory.creepAmount) {
         switch(role) {
           case "transferer":
-          if (flagMemory.creepAmount.transfererCarryCount < 40 && roomNeedsTransferer()) {
+          if (((flagMemory.creepAmount.transfererCarryCount < 40 && room.containers.length == 0) || flagMemory.creepAmount.transfererCarryCount < 60) && roomNeedsTransferer()) {
             if (flagMemory.creepAmount.transfererCount < 6) {
               result = true;
             }
+          }
+          break;
+          case "attacker":
+          if (Memory.flags[roomName].totalEnergyAvailable > 1600) {
+            result = true;
           }
           break;
           case "reserverLD":
@@ -602,6 +641,26 @@ module.exports = {
       }
     }
 
+    function checkIfRemoteMemoryIsSetup(flag) {
+      if (!Memory.flags[flag.name]) {
+        Memory.flags[flag.name] = {};
+      }
+      else {
+        const flagMemory = Memory.flags[flag.name];
+        if (flagMemory.targetRoom) {
+          if (flagMemory.sourceAmount) {
+            return true;
+          }
+          else {
+            console.log(`The flag in ${flagMemory.targetRoom} is missing the sourceAmount`)
+          }
+        }
+        else {
+          console.log(`The flag ${flag.name} is missing the targetRoom`)
+        }
+      }
+    }
+
     function getRemotes() {
       for (let i = 0;i < 10;i++) {
         const flag = Game.flags["remote-"+ i+"-"+roomName];
@@ -646,6 +705,39 @@ module.exports = {
             flagMemory.creepAmount.harvesterLD2 = 0;
             flagMemory.creepAmount.harvesterLD3 = 0;
             flagMemory.creepAmount.transfererLD = 0;
+          }
+        }
+      }
+    }
+
+    function checkIfAttackMemoryIsSetup(flag) {
+      if (!Memory.flags[flag.name]) {
+        Memory.flags[flag.name] = {};
+      }
+      else {
+        const flagMemory = Memory.flags[flag.name];
+        if (flagMemory.targetRoom) {
+          return true;
+        }
+        else {
+          console.log(`The flag ${flag.name} is missing the targetRoom`)
+        }
+      }
+    }
+
+    function getAttackRooms() {
+      for (let i = 0;i < 10;i++) {
+        const flag = Game.flags[`attack-${i}-${roomName}`];
+        if (flag) {
+          if (checkIfAttackMemoryIsSetup(flag)) {
+            const flagMemory = Memory.flags[flag.name];
+
+
+            if (canRemoteCreepSpawn(flagMemory,"attacker")) {
+              spawnCreep(spawn,"attacker",flagMemory.targetRoom);
+            }
+
+            flagMemory.creepAmount.attacker = 0;
           }
         }
       }

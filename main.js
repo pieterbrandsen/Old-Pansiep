@@ -11,6 +11,7 @@ const roleBuilderLD = require('role.builderLD');
 const roleRepairer = require('role.repairer');
 const roleExtractor = require('role.extractor');
 const roleClaimer = require('role.claimer');
+const roleAttacker = require('role.attacker');
 
 const rolePixelFarmer = require('role.pixelFarmer');
 const roleRuinWithdrawer = require('role.ruinWithdrawer');
@@ -154,6 +155,9 @@ module.exports.loop = function() {
         }
         else if (creep.memory.role == "claimer") {
           roleClaimer.run(creep);
+        }
+        else if (creep.memory.role == "attacker") {
+          roleAttacker.run(creep);
         }
         else if (creep.memory.role == "builderLD") {
           roleBuilderLD.run(creep);
@@ -425,25 +429,7 @@ module.exports.loop = function() {
           }
         }
 
-        function checkIfRemoteMemoryIsSetup(flag) {
-          if (!Memory.flags[flag.name]) {
-            Memory.flags[flag.name] = {};
-          }
-          else {
-            const flagMemory = Memory.flags[flag.name];
-            if (flagMemory.targetRoom) {
-              if (flagMemory.sourceAmount) {
-                return true;
-              }
-              else {
-                console.log(`The flag in ${flagMemory.targetRoom} is missing the sourceAmount`)
-              }
-            }
-            else {
-              console.log(`The flag ${flag.name} is missing the targetRoom`)
-            }
-          }
-        }
+
 
 
 

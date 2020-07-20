@@ -25,37 +25,31 @@ module.exports = {
     }
 
     function transferTarget(target) {
-      if (target == null)
-      findNewTarget();
-      else if (target.structureType == creep.memory.withdrawStructure)
-      findNewTarget();
-      else {
-        const runTransfer = creep.transfer(target,RESOURCE_ENERGY);
-        switch(runTransfer) {
-          case OK:
-          creep.say("Transfer");
-          creep.memory.transferStructure = target.structureType;
-          creep.memory.targetId = "";
-          case ERR_NOT_OWNER:
-          break;
-          case ERR_BUSY:
-          break;
-          case ERR_NOT_ENOUGH_RESOURCES:
-          break;
-          case ERR_INVALID_TARGET:
-          findNewTarget();
-          break;
-          case ERR_FULL:
-          findNewTarget();
-          break;
-          case ERR_NOT_IN_RANGE:
-          creep.travelTo(Game.getObjectById(creep.memory.targetId));
-          break;
-          case ERR_INVALID_ARGS:
-          break;
-          default:
-          break;
-        }
+      const runTransfer = creep.transfer(target,RESOURCE_ENERGY);
+      switch(runTransfer) {
+        case OK:
+        creep.say("Transfer");
+        creep.memory.transferStructure = target.structureType;
+        creep.memory.targetId = "";
+        case ERR_NOT_OWNER:
+        break;
+        case ERR_BUSY:
+        break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+        break;
+        case ERR_INVALID_TARGET:
+        findNewTarget();
+        break;
+        case ERR_FULL:
+        findNewTarget();
+        break;
+        case ERR_NOT_IN_RANGE:
+        creep.travelTo(Game.getObjectById(creep.memory.targetId));
+        break;
+        case ERR_INVALID_ARGS:
+        break;
+        default:
+        break;
       }
     }
 
@@ -99,10 +93,15 @@ module.exports = {
         if (controllerStorage)
         if (controllerStorage.store.getUsedCapacity() < 1500 && controllerStorage.structureType == STRUCTURE_CONTAINER)
         creep.memory.targetId = controllerStorage.id;
-        else if (creep.room.storage)
-        creep.memory.targetId = creep.room.storage.id
-        else if (creep.room.storage)
-        creep.memory.targetId = creep.room.storage.id
+        else if (flagMemory.totalEnergyCapacity !== flagMemory.totalEnergyAvailable) {
+          creep.memory.waitTransferer = false;
+        }
+        else {
+          if (creep.room.storage)
+          creep.memory.targetId = creep.room.storage.id
+          else if (creep.room.storage)
+          creep.memory.targetId = creep.room.storage.id
+        }
       }
     }
 
