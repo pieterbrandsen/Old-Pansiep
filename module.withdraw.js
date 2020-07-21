@@ -165,14 +165,24 @@ module.exports = {
       }
 
 
-      if (!checkContainers())
-      if (!checkTerminal())
-      if (!checkStorage())
-      if (!checkLinks()) {
-        if (creep.memory.role !== "transferer") {
-          creep.memory.withdrawId = "source"
+
+      if (creep.memory.role !== "transferer") {
+        if (!checkContainers())
+        if (!checkTerminal())
+        if (!checkStorage())
+        if (!checkLinks()) {
+          if (creep.memory.role !== "transferer") {
+            creep.memory.withdrawId = "source"
+          }
         }
       }
+      else {
+        if (!checkStorage())
+        if (!checkTerminal())
+        if (!checkContainers())
+        if (!checkLinks())
+      }
+
 
 
       creep.say(withdrawStructure)
