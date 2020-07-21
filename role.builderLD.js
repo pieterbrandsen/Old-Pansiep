@@ -9,6 +9,7 @@ module.exports = {
       creep.memory.working = false;
     }
     else if (creep.memory.working === false && creepCarryUsedCapacity == creepCarryCapacity) {
+      creep.memory.withdrawId = "";
       creep.memory.working = true;
     }
 
