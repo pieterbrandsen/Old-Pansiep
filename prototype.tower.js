@@ -2,17 +2,8 @@ StructureTower.prototype.defend =
 function () {
   // find closes hostile creep
   let target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-  if (target !== undefined) {
-      if (target !== null) {
-    if (target.owner) {
-      if (target.owner.username !== "rivaryn") {
-        this.attack(target);
-      }
-    }
-    else {
-      this.attack(target);
-    }      
-      }
+  if (target !== null) {
+    this.attack(target);
   }
 };
 /*StructureTower.prototype.repair =

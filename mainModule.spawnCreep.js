@@ -145,7 +145,7 @@ module.exports = {
       else if (role == "upgrader") {
         const energyCost = 300;
         let partAmount = Math.floor(energyAvailable/energyCost);
-        for (let i = 0; i < partAmount && i < 5; i++) {
+        for (let i = 0; i < partAmount && i < 2*flagMemory.sources.length;; i++) {
           parts.push(WORK);
           parts.push(WORK);
           parts.push(CARRY);
@@ -183,13 +183,6 @@ module.exports = {
           parts.push(MOVE);
           parts.push(MOVE);
         }
-      }
-      else if (role == "claimer") {
-        const energyCost = 650;
-        let partAmount = Math.floor(energyAvailable/energyCost);
-        parts.push(CLAIM);
-        parts.push(MOVE);
-        //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
       }
       else if (role == "builderLD") {
         const energyCost = 300;
@@ -249,13 +242,15 @@ module.exports = {
         const energyCost = 650;
         let partAmount = Math.floor(energyAvailable/energyCost);
         for (let i = 0; i < partAmount; i++) {
-          parts.push(CARRY);
+          parts.push(CLAIM);
           parts.push(MOVE);
         }
+        //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
       }
       else if (role == "attacker") {
         //parts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
-        parts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK];
+        //parts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK];
+        parts = [TOUGH,ATTACK,MOVE,MOVE];
         // const energyCost = 200;
         // let partAmount = Math.floor(energyAvailable/energyCost);
         // for (let i = 0; i < partAmount; i++) {
@@ -296,7 +291,7 @@ module.exports = {
           if (!flagMemory.creepAmount) {
             flagMemory.creepAmount = {};
           }
-          if (role !== undefined && creep.memory.targetRoom == creep.memory.spawnRoom && flagMemory.creepAmount) {
+          if (role !== undefined && creep.memory.targetRoom == creep.memory.spawnRoom && flagMemory.creepAmount && creep.memory.spawnRoom == roomName ) {
             if (creep.memory.role == "harvester-0") {
               flagMemory.creepAmount.harvester0Count++;
               flagMemory.creepAmount.harvester0WorkCount += creep.getActiveBodyparts(WORK);
@@ -353,22 +348,25 @@ module.exports = {
                 }
                 else {
                   if (creep.memory.role == "reserverLD") {
-                    flagMemory.creepAmount.reserverLD++;
+                    flagMemory.creepAmount.reserverLDCount++;
+                  }
+                  else if (creep.memory.role == "attacker") {
+                    flagMemory.creepAmount.attackerCount++;
                   }
                   else if (creep.memory.role == "harvesterLD-0") {
-                    flagMemory.creepAmount.harvesterLD0++;
+                    flagMemory.creepAmount.harvesterLD0Count++;
                   }
                   else if (creep.memory.role == "harvesterLD-1") {
-                    flagMemory.creepAmount.harvesterLD1++;
+                    flagMemory.creepAmount.harvesterLD1Count++;
                   }
                   else if (creep.memory.role == "harvesterLD-2") {
-                    flagMemory.creepAmount.harvesterLD2++;
+                    flagMemory.creepAmount.harvesterLD2Count++;
                   }
                   else if (creep.memory.role == "harvesterLD-3") {
-                    flagMemory.creepAmount.harvesterLD3++;
+                    flagMemory.creepAmount.harvesterLD3Count++;
                   }
                   else if (creep.memory.role == "transfererLD") {
-                    flagMemory.creepAmount.transfererLD++;
+                    flagMemory.creepAmount.transfererLDCount++;
                   }
                 }
               }
@@ -434,7 +432,6 @@ module.exports = {
       }
 
       if (flagMemory.creepAmount !== undefined) {
-        //console.log(flagMemory.creepAmount.harvester0Count + roomName)
         flagMemory.creepAmount.harvester0Count = 0;
         flagMemory.creepAmount.harvester0WorkCount = 0;
         flagMemory.creepAmount.harvester1Count = 0;
@@ -458,11 +455,12 @@ module.exports = {
 
     function canCreepSpawn(role) {
       let result = false;
+      //if (Game.shard.name == "shard0")
       //console.log(`${roomName} - ${role}`)
       if (flagMemory.creepAmount) {
         switch(role) {
           case "transferer":
-          if (flagMemory.creepAmount.transfererCarryCount < (flagMemory.sources.length * 15 + 10) && roomNeedsTransferer()) {
+          if (flagMemory.creepAmount.transfererCarryCount < (flagMemory.sources.length * 15 + 10 && room.containers.length == 0 || flagMemory.sources.length * 30 && room.containers.length > 0) && roomNeedsTransferer()) {
             if (flagMemory.creepAmount.transfererCount < 6) {
               result = true;
             }
@@ -505,7 +503,7 @@ module.exports = {
           case "upgrader":
           if (flagMemory.creepAmount.upgraderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
             if (flagMemory.creepAmount.upgraderCount < 4) {
-              //result = true;
+              result = true;
             }
           }
           break;
@@ -536,27 +534,20 @@ module.exports = {
             result = true;
           }
           break;
-          // case "attacker":
-          // const onOff = true;
-          // if (roomName == "E42N2")
-          // if (onOff)
-          // result = true;
-          //
-          // break;
           case "ruinWithdrawer":
-          // if (flagMemory.creepAmount.ruinWithdrawerCount < 1 && room.storage) {
-          //   result = true;
-          // }
+          if (flagMemory.creepAmount.ruinWithdrawerCount < 1 && room.storage) {
+            result = true;
+          }
           break;
           case "claimer":
           if (Memory.flags["claim"])
           if (roomName == Memory.flags["claim"].spawnRoom)
           result = true;
           break;
-          case "shardUp":
-          if (roomName == "E42N2" && Game.flags["testtest"] !== undefined) {
-            result = true;
-          }
+          // case "shardUp":
+          // if (roomName == "E42N2" && Game.flags["testtest"] !== undefined) {
+          //   result = true;
+          // }
           break;
         }
       }
@@ -570,19 +561,21 @@ module.exports = {
       if (flagMemory.creepAmount) {
         switch(role) {
           case "transferer":
-          if (((flagMemory.creepAmount.transfererCarryCount < 40 && room.containers.length == 0) || flagMemory.creepAmount.transfererCarryCount < 60) && roomNeedsTransferer()) {
+          if (flagMemory.creepAmount.transfererCarryCount < 40 && roomNeedsTransferer()) {
             if (flagMemory.creepAmount.transfererCount < 6) {
               result = true;
             }
           }
           break;
           case "attacker":
-          if (Memory.flags[roomName].totalEnergyAvailable > 1600) {
-            result = true;
+          if (flagMemory.creepAmount.attackerCount < 1) {
+            if (Memory.flags[roomName].totalEnergyAvailable > 1600) {
+              result = true;
+            }
           }
           break;
           case "reserverLD":
-          if (flagMemory.creepAmount.reserverLD < 1) {
+          if (flagMemory.creepAmount.reserverLDCount < 1) {
             if (!flagMemory.reserveTicksLeft || flagMemory.reserveTicksLeft < 2000) {
               result = true;
             }
@@ -590,35 +583,35 @@ module.exports = {
           break;
           case "harvesterLD-0":
           if (flagMemory.sourceAmount > 0) {
-            if (flagMemory.creepAmount.harvesterLD0 < 1) {
+            if (flagMemory.creepAmount.harvesterLD0Count < 1) {
               result = true;
             }
           }
           break;
           case "harvesterLD-1":
           if (flagMemory.sourceAmount > 1) {
-            if (flagMemory.creepAmount.harvesterLD1 < 1) {
+            if (flagMemory.creepAmount.harvesterLD1Count < 1) {
               result = true;
             }
           }
           break;
           case "harvesterLD-2":
           if (flagMemory.sourceAmount > 2) {
-            if (flagMemory.creepAmount.harvesterLD2 < 1) {
+            if (flagMemory.creepAmount.harvesterLD2Count < 1) {
               result = true;
             }
           }
           break;
           case "harvesterLD-3":
           if (flagMemory.sourceAmount > 3) {
-            if (flagMemory.creepAmount.harvesterLD3 < 1) {
+            if (flagMemory.creepAmount.harvesterLD3Count < 1) {
               result = true;
             }
           }
           break;
           case "transfererLD":
           if (flagMemory.sourceAmount > 0) {
-            if (flagMemory.creepAmount.transfererLD < flagMemory.sourceAmount) {
+            if (flagMemory.creepAmount.transfererLDCount < flagMemory.sourceAmount) {
               result = true;
             }
           }
@@ -632,12 +625,13 @@ module.exports = {
         if (!flagMemory.creepAmount)
         flagMemory.creepAmount = {};
 
-        flagMemory.creepAmount.reserverLD = 0;
-        flagMemory.creepAmount.harvesterLD0 = 0;
-        flagMemory.creepAmount.harvesterLD1 = 0;
-        flagMemory.creepAmount.harvesterLD2 = 0;
-        flagMemory.creepAmount.harvesterLD3 = 0;
-        flagMemory.creepAmount.transfererLD = 0;
+        flagMemory.creepAmount.reserverLDCount = 0;
+        flagMemory.creepAmount.harvesterLD0Count = 0;
+        flagMemory.creepAmount.harvesterLD1Count = 0;
+        flagMemory.creepAmount.harvesterLD2Count = 0;
+        flagMemory.creepAmount.harvesterLD3Count = 0;
+        flagMemory.creepAmount.attackerCount = 0;
+        flagMemory.creepAmount.transfererLDCount = 0;
       }
     }
 
@@ -699,12 +693,12 @@ module.exports = {
             else if (canRemoteCreepSpawn(flagMemory,"transfererLD")) {
               spawnCreep(spawn,"transfererLD",flagMemory.targetRoom,flag.name);
             }
-            flagMemory.creepAmount.reserverLD = 0;
-            flagMemory.creepAmount.harvesterLD0 = 0;
-            flagMemory.creepAmount.harvesterLD1 = 0;
-            flagMemory.creepAmount.harvesterLD2 = 0;
-            flagMemory.creepAmount.harvesterLD3 = 0;
-            flagMemory.creepAmount.transfererLD = 0;
+            flagMemory.creepAmount.reserverLDCount = 0;
+            flagMemory.creepAmount.harvesterLD0Count = 0;
+            flagMemory.creepAmount.harvesterLD1Count = 0;
+            flagMemory.creepAmount.harvesterLD2Count = 0;
+            flagMemory.creepAmount.harvesterLD3Count = 0;
+            flagMemory.creepAmount.transfererLDCount = 0;
           }
         }
       }
@@ -737,7 +731,7 @@ module.exports = {
               spawnCreep(spawn,"attacker",flagMemory.targetRoom);
             }
 
-            flagMemory.creepAmount.attacker = 0;
+            flagMemory.creepAmount.attackerCount = 0;
           }
         }
       }

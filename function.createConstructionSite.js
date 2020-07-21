@@ -43,16 +43,16 @@ module.exports = {
 
 
     const containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_CONTAINER)}
+      return (structure.pos.inRangeTo(object,range+1) && structure.structureType == STRUCTURE_CONTAINER)}
     });
     const linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range) && structure.structureType == STRUCTURE_LINK)}
+      return (structure.pos.inRangeTo(object,range+1) && structure.structureType == STRUCTURE_LINK)}
     });
     const storageInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_LINK || structure.structureType == STRUCTURE_CONTAINER))}
+      return (structure.pos.inRangeTo(object,range+1) && (structure.structureType == STRUCTURE_LINK || structure.structureType == STRUCTURE_CONTAINER))}
     });
     const constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
+      return (structure.pos.inRangeTo(object,range+1) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
     });
 
 

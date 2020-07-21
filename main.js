@@ -436,6 +436,7 @@ module.exports.loop = function() {
         function runGameTimeTimers() {
           if (Game.time % 10 == 0) {
             flagMemory.enemyCount = room.find(FIND_HOSTILE_CREEPS).length;
+
             getSpawningEnergy();
 
             spawnCreep.run(roomName);

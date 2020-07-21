@@ -44,7 +44,7 @@ module.exports = {
         findNewTarget();
         break;
         case ERR_NOT_IN_RANGE:
-        creep.travelTo(Game.getObjectById(creep.memory.targetId));
+        creep.travelTo(target);
         break;
         case ERR_INVALID_ARGS:
         break;
@@ -91,7 +91,7 @@ module.exports = {
         }
         else
         if (controllerStorage)
-        if (controllerStorage.store.getUsedCapacity() < 1500 && controllerStorage.structureType == STRUCTURE_CONTAINER)
+        if (controllerStorage.store.getUsedCapacity() < 1500 && (controllerStorage.structureType == STRUCTURE_CONTAINER || creep.room.controller.level < 6))
         creep.memory.targetId = controllerStorage.id;
         else if (flagMemory.totalEnergyCapacity !== flagMemory.totalEnergyAvailable) {
           creep.memory.waitTransferer = false;
