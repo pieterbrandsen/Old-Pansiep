@@ -58,7 +58,7 @@ module.exports = {
     });
 
 
-    if (constructionSitesInRange == null && ((containerInRange !== null && linkInRange == null) || storageInRange == null)) {
+    if (constructionSitesInRange == null && ((containerInRange !== null && linkInRange == null && structureType == STRUCTURE_LINK) || storageInRange == null)) {
       if (structureType == STRUCTURE_LINK && containerInRange !== null) {
         containerInRange.destroy();
       }
