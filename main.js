@@ -486,14 +486,13 @@ module.exports.loop = function() {
           function runRoomPlanner() {
             if (flagMemory.controllerLevel < room.controller.level) {
               if (flagMemory.roomManager.headSpawn) {
-                roomPlanner.run()
                 roomManager.run(roomName)
-                flagMemory.controllerLevel = room.controller.level;
               }
+              roomPlanner.run()
+              flagMemory.controllerLevel = room.controller.level;
             }
             if (Game.time % 500 == 0) {
               roomManager.run(roomName)
-              flagMemory.controllerLevel = room.controller.level;
             }
           }
 

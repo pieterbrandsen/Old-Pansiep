@@ -7,6 +7,9 @@ module.exports = {
     if (!Memory.flags["claim"]) {
       Memory.flags["claim"] = {};
     }
+    if (!creep.memory.flagTarget) {
+      creep.memory.flagTarget = 1;
+    }
     //const shardTarget = "shard3";
     const shardTarget = Game.shard.name;
     if (Game.time % 50 == 0)
@@ -29,8 +32,18 @@ module.exports = {
     if (Game.shard.name == shardTarget) {
       if (flag && flagMemory) {
         if (creep.room.name !== flagMemory.claimRoom) {
-        //if (creep.room.name !== "E47N5") {
-          creep.travelTo(flag);
+          //creep.travelTo(flag);
+          if (!Game.flags[creep.memory.flagTarget].room)
+          creep.travelTo(Game.flags[creep.memory.flagTarget])
+          else {
+            if (creep.pos.getRangeTo(Game.flags[creep.memory.flagTarget]) == 1) {
+              creep.travelTo(Game.flags[creep.memory.flagTarget])
+              creep.memory.flagTarget++;
+            }
+            else {
+              creep.travelTo(Game.flags[creep.memory.flagTarget])
+            }
+          }
         }
         else {
           claimerModule.run(creep);

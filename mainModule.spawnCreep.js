@@ -145,8 +145,7 @@ module.exports = {
       else if (role == "upgrader") {
         const energyCost = 300;
         let partAmount = Math.floor(energyAvailable/energyCost);
-        for (let i = 0; i < partAmount && i < 2*flagMemory.sources.length;; i++) {
-          parts.push(WORK);
+        for (let i = 0; i < partAmount && i < flagMemory.sources.length*4; i++) {
           parts.push(WORK);
           parts.push(CARRY);
           parts.push(MOVE);
@@ -460,7 +459,7 @@ module.exports = {
       if (flagMemory.creepAmount) {
         switch(role) {
           case "transferer":
-          if (flagMemory.creepAmount.transfererCarryCount < (flagMemory.sources.length * 15 + 10 && room.containers.length == 0 || flagMemory.sources.length * 30 && room.containers.length > 0) && roomNeedsTransferer()) {
+          if (flagMemory.creepAmount.transfererCarryCount < ((flagMemory.sources.length * 15 + 10 && room.containers.length == 0) || (flagMemory.sources.length * 30 && room.containers.length > 0)) && roomNeedsTransferer()) {
             if (flagMemory.creepAmount.transfererCount < 6) {
               result = true;
             }
@@ -501,7 +500,7 @@ module.exports = {
           }
           break;
           case "upgrader":
-          if (flagMemory.creepAmount.upgraderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
+          if (flagMemory.creepAmount.upgraderWorkCount < flagMemory.sources.length*4 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
             if (flagMemory.creepAmount.upgraderCount < 4) {
               result = true;
             }
