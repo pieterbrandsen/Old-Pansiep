@@ -447,7 +447,7 @@ module.exports.loop = function() {
 
 
           if (flagMemory.sources) {
-            if (Game.time % 5000 == 0 || (!flagMemory.roomManager.headSpawn)) {
+            if (Game.time % 5000 == 0 || (!flagMemory.roomManager.headSpawn && room.spawns.length > 0)) {
               console.log(`Memory in ${roomName} is being updated!`)
               if (!flagMemory.roomManager.headSpawn) {
                 if (room.spawns.length > 1) {
