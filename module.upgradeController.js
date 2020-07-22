@@ -60,7 +60,21 @@ module.exports = {
     function runModule() {
       // If creep has no target, go build //
       if (!flagMemory.controllerStorage) {
-        builderModule.run(creep);
+        let containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range,
+          {filter: {structureType: STRUCTURE_CONTAINER}
+        })[0];
+        let linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range,
+          {filter: {structureType: STRUCTURE_LINK}
+        })[0];
+        if (containerInRange) {
+          flagMemory.controllerStorage = containerInRange.id;
+        }
+        else if (linkInRange) {
+          flagMemory.controllerStorage = linkInRange.id;
+        }
+        else {
+          builderModule.run(creep);
+        }
       }
       else {
         // Upgrade controller //
