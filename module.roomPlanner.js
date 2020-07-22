@@ -119,7 +119,7 @@ module.exports = {
             room.createConstructionSite(x-1, y+6, STRUCTURE_ROAD);
             room.createConstructionSite(x, y+6, STRUCTURE_ROAD);
             room.createConstructionSite(x+1, y+6, STRUCTURE_ROAD);
-            //room.createConstructionSite(x+2, y+7, STRUCTURE_ROAD);
+            room.createConstructionSite(x-1, y-2, STRUCTURE_ROAD);
 
             room.createConstructionSite(x+3, y+6, STRUCTURE_ROAD);
             room.createConstructionSite(x+4, y+4, STRUCTURE_ROAD);

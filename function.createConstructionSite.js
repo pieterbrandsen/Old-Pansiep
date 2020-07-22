@@ -3,6 +3,7 @@ const getAccesPoints = require('function.getAccesPoints');
 module.exports = {
   run: function(id,getRange,controllerLevel,roomName) {
     const room = Game.rooms[roomName];
+    const terrain = new Room.Terrain(roomName);
     const flagMemory = Memory.flags[roomName];
     const object = Game.getObjectById(id);
     const x = object.pos.x;
@@ -18,8 +19,9 @@ module.exports = {
       structureType = STRUCTURE_LINK;
     }
     else {
-      if (id !== room.controller.id)
+      if (id !== room.controller.id) {
         range = 1;
+      }
       structureType = STRUCTURE_CONTAINER;
     }
 
@@ -77,10 +79,12 @@ module.exports = {
         const posX = possiblePositions[i][0];
         const posY = possiblePositions[i][1];
         const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX,posY, roomName)[0];
+        if (terrain.get(posX,posY) == 0) {
         if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
           optimalPositions[0] = possiblePositionsOfPlacementPossible
           optimalPositions[1][0] = posX;
           optimalPositions[1][1] = posY;
+        }
         }
         else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
           const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
@@ -92,7 +96,6 @@ module.exports = {
           }
         }
       }
-
 
       constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1])
     }

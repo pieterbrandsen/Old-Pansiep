@@ -459,7 +459,7 @@ module.exports = {
       if (flagMemory.creepAmount) {
         switch(role) {
           case "transferer":
-          if (flagMemory.creepAmount.transfererCarryCount < ((flagMemory.sources.length * 15 + 10 && room.containers.length == 0) || (flagMemory.sources.length * 30 && room.containers.length > 0)) && roomNeedsTransferer()) {
+          if (((flagMemory.creepAmount.transfererCarryCount < flagMemory.sources.length * 15 + 10 && room.containers.length == 0) || (flagMemory.creepAmount.transfererCarryCount < flagMemory.sources.length * 30 && room.containers.length > 0)) && roomNeedsTransferer()) {
             if (flagMemory.creepAmount.transfererCount < 6) {
               result = true;
             }
@@ -500,6 +500,7 @@ module.exports = {
           }
           break;
           case "upgrader":
+          //console.log(`${flagMemory.creepAmount.upgraderWorkCount} - ${flagMemory.sources.length*4} - ${flagMemory.constructionSitesAmount == 0} - ${!Game.flags["builderLD"+roomName]} - ${roomName}`)
           if (flagMemory.creepAmount.upgraderWorkCount < flagMemory.sources.length*4 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
             if (flagMemory.creepAmount.upgraderCount < 4) {
               result = true;
