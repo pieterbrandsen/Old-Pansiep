@@ -29,9 +29,8 @@ const manageLinks = require('mainModule.links');
 
 
 module.exports.loop = function() {
-  let shardName = Game.shard.name;
-  let shardArray = ["shard0","shard1","shard2","shard3"];
-  let mainSystemMemory = Memory.mainSystem;
+  const shardName = Game.shard.name;
+  const mainSystemMemory = Memory.mainSystem;
 
   if (Game.cpu.bucket == 10000) {
     //Game.notify("getting a pixel!");
@@ -50,7 +49,11 @@ module.exports.loop = function() {
   if (!mainSystem.cpuTracker)
   Memory.mainSystem.cpuTracker = true;
   if (!mainSystem.cpuAvgTick)
-  Memory.mainSystem.cpuAvgTicks = 50;
+  Memory.mainSystem.cpuAvgTicks = 100;
+  if (!mainSystem.performanceTracker)
+  Memory.mainSystem.performanceTracker = true;
+  if (!mainSystem.performanceAvgTick)
+  Memory.mainSystem.performanceAvgTick = 10000;
 
   if (!Memory.performanceTracker)
   Memory.performanceTracker = {};
@@ -74,46 +77,46 @@ module.exports.loop = function() {
 
 
   function setCPUInMemory(name,startCPU,endCPU) {
-    const mainDivider = 1 / 50;
+    const mainDivider = 1 / mainSystem.cpuAvgTick;
     const secondairDivider = 1 - mainDivider;
     if (endCPU == undefined)
-    Memory.stats['cpuTracker.' + name] = secondairDivider * Memory.stats['cpuTracker.' + name] + mainDivider * startCPU;
+    Memory.stats[`${shardName}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`${shardName}.cpuTracker.${name}`] + mainDivider * startCPU;
     else
-    Memory.stats['cpuTracker.' + name] = secondairDivider * Memory.stats['cpuTracker.' + name] + mainDivider * (endCPU - startCPU);
-  }
-
-  function setPerformanceInMemory(name,currentTickPerformance) {
-    const mainDivider = 1 / 10000;
-    const secondairDivider = 1 - mainDivider;
-    if (currentTickPerformance == undefined)
-    Memory.stats['performanceTracker.' + name] = secondairDivider * Memory.stats['performanceTracker.' + name] + mainDivider * currentTickPerformance;
-    else
-    Memory.stats['performanceTracker.' + name] = secondairDivider * Memory.stats['performanceTracker.' + name] + mainDivider * currentTickPerformance;
-  }
-
-  function setPerformanceInMemoryRooms(name,currentTickPerformance,room) {
-    const mainDivider = 1 / 10000;
-    const secondairDivider = 1 - mainDivider;
-    if (currentTickPerformance !== undefined)
-    Memory.stats["rooms." + room + '.performanceTracker.' + name] = secondairDivider * Memory.stats["rooms." + room + '.performanceTracker.' + name] + mainDivider * currentTickPerformance;
+    Memory.stats[`${shardName}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`${shardName}.cpuTracker.${name}`] + mainDivider * (endCPU - startCPU);
   }
 
   function setCPUInMemoryModules(name,startCPU,endCPU) {
-    const mainDivider = 1 / 50;
+    const mainDivider = 1 / mainSystem.cpuAvgTick;
     const secondairDivider = 1 - mainDivider;
     if (endCPU == undefined)
-    Memory.stats['cpuTrackerModules.' + name] = secondairDivider * Memory.stats['cpuTrackerModules.' + name] + mainDivider * startCPU;
+    Memory.stats[`${shardName}.cpuTrackerModules.${name}`] = secondairDivider * Memory.stats[`${shardName}.cpuTrackerModules.${name}`] + mainDivider * startCPU;
     else
-    Memory.stats['cpuTrackerModules.' + name] = secondairDivider * Memory.stats['cpuTrackerModules.' + name] + mainDivider * (endCPU - startCPU);
+    Memory.stats[`${shardName}.cpuTrackerModules.${name}`] = secondairDivider * Memory.stats[`${shardName}.cpuTrackerModules.${name}`] + mainDivider * (endCPU - startCPU);
   }
 
   function setCPUInMemoryRooms(name,startCPU,endCPU,room) {
-    const mainDivider = 1 / 50;
+    const mainDivider = 1 / mainSystem.cpuAvgTick;
     const secondairDivider = 1 - mainDivider;
     if (endCPU == undefined)
-    Memory.stats["rooms." + room + '.cpuTracker.' + name] = secondairDivider * Memory.stats["rooms." + room + '.cpuTracker' + name] + mainDivider * startCPU;
+    Memory.stats[`${shardName}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`${shardName}.cpuTracker.${name}`] + mainDivider * startCPU;
     else
-    Memory.stats["rooms." + room + '.cpuTracker.' + name] = secondairDivider * Memory.stats["rooms." + room + '.cpuTracker' + name] + mainDivider * (endCPU - startCPU);
+    Memory.stats[`${shardName}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`${shardName}.cpuTracker.${name}`] + mainDivider * (endCPU - startCPU);
+  }
+
+  function setPerformanceInMemory(name,currentTickPerformance) {
+    const mainDivider = 1 / mainSystem.performanceAvgTick;
+    const secondairDivider = 1 - mainDivider;
+    if (currentTickPerformance == undefined)
+    Memory.stats[`${shardName}.performanceTracker.${name}`] = secondairDivider * Memory.stats[`${shardName}.performanceTracker.${name}`] + mainDivider * currentTickPerformance;
+    else
+    Memory.stats[`${shardName}.performanceTracker.${name}`] = secondairDivider * Memory.stats[`${shardName}.performanceTracker.${name}`] + mainDivider * currentTickPerformance;
+  }
+
+  function setPerformanceInMemoryRooms(name,currentTickPerformance,room) {
+    const mainDivider = 1 / mainSystem.performanceAvgTick;;
+    const secondairDivider = 1 - mainDivider;
+    if (currentTickPerformance !== undefined)
+    Memory.stats[`${shardName}.rooms.${room}.performanceTracker.${name}`] = secondairDivider * Memory.stats[`${shardName}.rooms.${room}.performanceTracker.${name}`] + mainDivider * currentTickPerformance;
   }
 
   function removeDeadCreepsMemory() {
