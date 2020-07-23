@@ -78,26 +78,26 @@ module.exports = {
       for (var i = 0; i < possiblePositions.length; i++) {
         const posX = possiblePositions[i][0];
         const posY = possiblePositions[i][1];
-        const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX,posY, roomName)[0];
+        const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX, posY, roomName)[0];
         if (terrain.get(posX,posY) == 0) {
-        if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
-          optimalPositions[0] = possiblePositionsOfPlacementPossible
-          optimalPositions[1][0] = posX;
-          optimalPositions[1][1] = posY;
-        }
-        }
-        else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
-          const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
-          if (possiblePositionsOfPlacementPossible == optimalPositions[0] && getRangeToHeadSpawn < optimalPositions[2]) {
+          if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
             optimalPositions[0] = possiblePositionsOfPlacementPossible
             optimalPositions[1][0] = posX;
             optimalPositions[1][1] = posY;
-            optimalPositions[2] = getRangeToHeadSpawn;
+          }
+          else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
+            const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
+            if (possiblePositionsOfPlacementPossible == optimalPositions[0] && getRangeToHeadSpawn < optimalPositions[2]) {
+              optimalPositions[0] = possiblePositionsOfPlacementPossible
+              optimalPositions[1][0] = posX;
+              optimalPositions[1][1] = posY;
+              optimalPositions[2] = getRangeToHeadSpawn;
+            }
           }
         }
       }
 
-      constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1])
+      constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1]);
     }
     else {
       isThereStruture = true;

@@ -16,7 +16,6 @@ module.exports = {
     if (flag) {
       if (flag.room) {
         if (creep.room.name == flag.room.name) {
-          creep.say(flag.room)
           if (creep.memory.working === false) {
             withdrawModule.run(creep);
           }

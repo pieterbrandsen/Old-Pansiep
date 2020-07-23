@@ -126,6 +126,7 @@ module.exports.loop = function() {
     }
   }
 
+
   function runCreeps() {
     for (let name in Game.creeps) {
       let creep = Game.creeps[name];

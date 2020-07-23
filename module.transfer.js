@@ -7,6 +7,10 @@ module.exports = {
     if (!creep.memory.waitTransferer || Game.time % 20 == 0) {
       creep.memory.waitTransferer = false;
     }
+    if (creep.memory.targetId)
+    creep.memory.targetId = "";
+
+
 
     function mainSystem() {
       // If Memory.mainSystem is defined //
