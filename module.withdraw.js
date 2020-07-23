@@ -183,6 +183,7 @@ module.exports = {
       }
 
 
+      if (withdrawStructure !== null)
       creep.say(withdrawStructure)
 
       return withdrawStructure;
