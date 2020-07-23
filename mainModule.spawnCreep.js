@@ -50,9 +50,8 @@ module.exports = {
         });
       }
 
-      if (energyStored > flagMemory.sources.length > 750) {
-        return true;
-      }
+      if (energyStored > flagMemory.sources.length * 750)
+      return true;
       else return false;
     }
 
