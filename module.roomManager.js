@@ -10,7 +10,7 @@ module.exports = {
     function createConstructionSite(memoryPath, objectId, range, controllerLevel) {
       const buildStructure = createConstructionSiteForObject.run(objectId,range,controllerLevel,roomName);
       if (!buildStructure[0])
-        errorMessage = buildStructure[2];
+      errorMessage = buildStructure[2];
       if (buildStructure[0]) {
         flagMemory.roomManager[memoryPath] = true;
         flagMemory.constructionSitesAmount++;
@@ -19,7 +19,7 @@ module.exports = {
         flagMemory.roomManager[memoryPath] = true;
       }
       else
-        flagMemory.roomManager[memoryPath] = false;
+      flagMemory.roomManager[memoryPath] = false;
     }
 
     function getSpawningEnergy() {
@@ -101,52 +101,56 @@ module.exports = {
       }
     }
 
-    getSpawningEnergy();
+    if (flagMemory) {
+      if (flagMemory.roomManager) {
+        if (Game.time % 10 == 0)
+        getSpawningEnergy();
 
 
+        if (flagMemory.roomManager.headSpawn && Game.time % 500 == 0) {
+          roomPlanner.run();
 
-    if (flagMemory.roomManager.headSpawn && Game.time % 500 == 0) {
-      roomPlanner.run();
+          room.find(FIND_SOURCES).forEach((source, i) => {
+            if (flagMemory.roomManager[`source-${i}.HasStructure`] == false) {
+              if (createConstructionSite(`source-${i}.HasStructure`, source.id, 2, 7))
+              console.log(`Building a storage for a source in room: ${room.name}`);
+              else {
+                if (errorMessage.length > 0) {
+                  console.log(`Can't build a storage for a source in room: ${room.name} because of ${errorMessage}`)
+                }
+              }
+            }
+          });
 
-      room.find(FIND_SOURCES).forEach((source, i) => {
-        if (flagMemory.roomManager[`source-${i}.HasStructure`] == false) {
-          if (createConstructionSite(`source-${i}.HasStructure`, source.id, 2, 7))
-            console.log(`Building a storage for a source in room: ${room.name}`);
-          else {
-            if (errorMessage.length > 0) {
-              console.log(`Can't build a storage for a source in room: ${room.name} because of ${errorMessage}`)
+          if (flagMemory.roomManager[`controller.HasStructure`] == false) {
+            if (createConstructionSite(`controller.HasStructure`, room.controller.id, 3, 6)) {
+              console.log(`Building a storage for the controller in room: ${room.name}`)
+            }
+            else {
+              if (errorMessage.length > 0) {
+                console.log(`Can't build a storage for the controller in room: ${room.name} because of ${errorMessage}`)
+              }
             }
           }
         }
-      });
-
-      if (flagMemory.roomManager[`controller.HasStructure`] == false) {
-        if (createConstructionSite(`controller.HasStructure`, room.controller.id, 3, 6)) {
-          console.log(`Building a storage for the controller in room: ${room.name}`)
-        }
         else {
-          if (errorMessage.length > 0) {
-            console.log(`Can't build a storage for the controller in room: ${room.name} because of ${errorMessage}`)
-          }
-        }
-      }
-    }
-    else {
-      if (room.spawns.length > 1) {
-        if (room.terminal && room.controller.level >= 6) {
-          const spawn = room.terminal.pos.findInRange(room.spawns, 2,
-            {filter: {structureType: STRUCTURE_SPAWN
-          }})[0];
+          if (room.spawns.length > 1) {
+            if (room.terminal && room.controller.level >= 6) {
+              const spawn = room.terminal.pos.findInRange(room.spawns, 2,
+                {filter: {structureType: STRUCTURE_SPAWN
+                }})[0];
 
-          if (spawn)
-          flagMemory.roomManager.headSpawn = spawn.id;
-        }
-      }
-      else {
-        if (room.spawns.length == 1) {
-          flagMemory.roomManager.headSpawn = room.spawns[0].id;
+                if (spawn)
+                flagMemory.roomManager.headSpawn = spawn.id;
+              }
+            }
+            else {
+              if (room.spawns.length == 1) {
+                flagMemory.roomManager.headSpawn = room.spawns[0].id;
+              }
+            }
+          }
         }
       }
     }
   }
-}
