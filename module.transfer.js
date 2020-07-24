@@ -93,18 +93,17 @@ module.exports = {
           else
           creep.memory.waitTransferer = true;
         }
-        else
-        if (controllerStorage)
-        if (controllerStorage.store.getUsedCapacity() < 1500 && (controllerStorage.structureType == STRUCTURE_CONTAINER || creep.room.controller.level < 6))
-        creep.memory.targetId = controllerStorage.id;
-        else if (flagMemory.totalEnergyCapacity !== flagMemory.totalEnergyAvailable) {
-          creep.memory.waitTransferer = false;
-        }
         else {
-          if (creep.room.storage)
-          creep.memory.targetId = creep.room.storage.id
-          else if (creep.room.storage)
-          creep.memory.targetId = creep.room.storage.id
+          if (controllerStorage) {
+            if (flagMemory.totalEnergyCapacity !== flagMemory.totalEnergyAvailable)
+            creep.memory.waitTransferer = false;
+            else if (controllerStorage.store.getUsedCapacity() < 1000 && (controllerStorage.structureType == STRUCTURE_CONTAINER || creep.room.controller.level < 6))
+            creep.memory.targetId = controllerStorage.id;
+            else {
+              if (creep.room.storage)
+              creep.memory.targetId = creep.room.storage.id
+            }
+          }
         }
       }
     }

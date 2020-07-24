@@ -111,6 +111,7 @@ module.exports = {
 
       function checkStorage() {
         if (room.storage)
+        if (flagMemory.totalEnergyAvailable !== flagMemory.totalEnergyCapacity)
         if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
           withdrawStructure = STRUCTURE_STORAGE;
           creep.memory.withdrawId = room.storage.id;
@@ -178,7 +179,6 @@ module.exports = {
         if (!checkTerminal())
         if (!checkContainers())
         if (!checkLinks()) {
-
         }
       }
 
