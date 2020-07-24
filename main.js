@@ -2,31 +2,12 @@ require('prototype.tower');
 require('traveler');
 require('prototype.Room.structures');
 
-const roleHarvester = require('role.harvester');
-const roleTransferer = require('role.transferer');
-const roleTransfererLiTe = require('role.transfererLiTe');
-const roleUpgrader = require('role.upgrader');
-const roleBuilder = require('role.builder');
-const roleBuilderLD = require('role.builderLD');
-const roleRepairer = require('role.repairer');
-const roleExtractor = require('role.extractor');
-const roleClaimer = require('role.claimer');
-const roleAttacker = require('role.attacker');
-
-const rolePixelFarmer = require('role.pixelFarmer');
-const roleRuinWithdrawer = require('role.ruinWithdrawer');
-const roleShardUp = require('role.shardUp');
-
-const roleReserverLD = require('role.reserver');
-const roleHarvesterLD = require('role.harvesterLD');
-const roleTransfererLD = require('role.transfererLD');
-
-const roomPlanner = require('module.roomPlanner');
 const roomManager = require('module.roomManager');
 const checkMissingMemory = require('module.checkMissingMemory');
-const spawnCreep = require('mainModule.spawnCreep');
-const manageLinks = require('mainModule.links');
 
+const getDamagedStructures = require('mainModule.repairStructures');
+const runGameTimeTimers = require('mainModule.gameTimeTimers');
+const runCreeps = require('mainModule.runCreeps');
 
 const setDataInMemory = require('module.setDataInMemory');
 
@@ -49,14 +30,14 @@ module.exports.loop = function() {
   Memory.mainSystem = {};
   if (!Memory.cpuTracker)
   Memory.cpuTracker = {};
-  if (!mainSystem.cpuTracker)
+  if (!mainSystemMemory.cpuTracker)
   Memory.mainSystem.cpuTracker = true;
-  if (!mainSystem.cpuAvgTick)
+  if (!mainSystemMemory.cpuAvgTick)
   Memory.mainSystem.cpuAvgTicks = 100;
-  if (!mainSystem.performanceTracker)
+  if (!mainSystemMemory.performanceTracker)
   Memory.mainSystem.performanceTracker = true;
-  if (!mainSystem.performanceAvgTick)
-  Memory.mainSystem.performanceAvgTick = 10000;
+  if (!mainSystemMemory.performanceAvgTicks)
+  Memory.mainSystem.performanceAvgTicks = 10000;
 
   if (!Memory.performanceTracker)
   Memory.performanceTracker = {};
@@ -64,7 +45,6 @@ module.exports.loop = function() {
   Memory.outpostMemory = {};
 
 
-  //setDataInMemory.run(test2 = false)
   function mainSystem() {
     if (Memory.mainSystem) {
       if (Memory.mainSystem.cpuTracker == true) {
@@ -81,7 +61,7 @@ module.exports.loop = function() {
 
 
   function setCPUInMemory(name,startCPU,endCPU) {
-    const mainDivider = 1 / mainSystem.cpuAvgTick;
+    const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
     const secondairDivider = 1 - mainDivider;
     if (endCPU == undefined)
     Memory.stats[`cpuTracker.${name}`] = secondairDivider * Memory.stats[`cpuTracker.${name}`] + mainDivider * startCPU;
@@ -90,7 +70,7 @@ module.exports.loop = function() {
   }
 
   function setCPUInMemoryModules(name,startCPU,endCPU) {
-    const mainDivider = 1 / mainSystem.cpuAvgTick;
+    const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
     const secondairDivider = 1 - mainDivider;
     if (endCPU == undefined)
     Memory.stats[`cpuTrackerModules.${name}`] = secondairDivider * Memory.stats[`cpuTrackerModules.${name}`] + mainDivider * startCPU;
@@ -99,16 +79,16 @@ module.exports.loop = function() {
   }
 
   function setCPUInMemoryRooms(name,startCPU,endCPU,room) {
-    const mainDivider = 1 / mainSystem.cpuAvgTick;
+    const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
     const secondairDivider = 1 - mainDivider;
     if (endCPU == undefined)
-    Memory.stats[`cpuTracker.${name}`] = secondairDivider * Memory.stats[`cpuTracker.${name}`] + mainDivider * startCPU;
+    Memory.stats[`rooms.${room}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.cpuTracker.${name}`] + mainDivider * startCPU;
     else
-    Memory.stats[`cpuTracker.${name}`] = secondairDivider * Memory.stats[`cpuTracker.${name}`] + mainDivider * (endCPU - startCPU);
+    Memory.stats[`rooms.${room}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.cpuTracker.${name}`] + mainDivider * (endCPU - startCPU);
   }
 
   function setPerformanceInMemory(name,currentTickPerformance) {
-    const mainDivider = 1 / mainSystem.performanceAvgTick;
+    const mainDivider = 1 / mainSystemMemory.performanceAvgTicks;
     const secondairDivider = 1 - mainDivider;
     if (currentTickPerformance == undefined)
     Memory.stats[`performanceTracker.${name}`] = secondairDivider * Memory.stats[`performanceTracker.${name}`] + mainDivider * currentTickPerformance;
@@ -117,7 +97,7 @@ module.exports.loop = function() {
   }
 
   function setPerformanceInMemoryRooms(name,currentTickPerformance,room) {
-    const mainDivider = 1 / mainSystem.performanceAvgTick;;
+    const mainDivider = 1 / mainSystemMemory.performanceAvgTicks;;
     const secondairDivider = 1 - mainDivider;
     if (currentTickPerformance !== undefined)
     Memory.stats[`rooms.${room}.performanceTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.performanceTracker.${name}`] + mainDivider * currentTickPerformance;
@@ -128,86 +108,6 @@ module.exports.loop = function() {
       for (let name in Memory.creeps) {
         if (Game.creeps[name] === undefined) {
           delete Memory.creeps[name];
-        }
-      }
-    }
-  }
-
-
-  function runCreeps() {
-    for (let name in Game.creeps) {
-      let creep = Game.creeps[name];
-      let role = creep.memory.role
-
-      if (role) {
-        if (creep.memory.role == "harvester-0" || creep.memory.role == "harvester-1") {
-          roleHarvester.run(creep);
-        }
-        else if (creep.memory.role == "transferer") {
-          roleTransferer.run(creep);
-        }
-        else if (creep.memory.role == "builder") {
-          roleBuilder.run(creep);
-        }
-        else if (creep.memory.role == "transfererLiTe") {
-          roleTransfererLiTe.run(creep);
-        }
-        else if (creep.memory.role == "upgrader") {
-          roleUpgrader.run(creep);
-        }
-        else if (creep.memory.role == "repairer") {
-          roleRepairer.run(creep);
-        }
-        else if (creep.memory.role == "extractor") {
-          roleExtractor.run(creep);
-        }
-        else if (creep.memory.role == "claimer") {
-          roleClaimer.run(creep);
-        }
-        else if (creep.memory.role == "attacker") {
-          roleAttacker.run(creep);
-        }
-        else if (creep.memory.role == "builderLD") {
-          roleBuilderLD.run(creep);
-        }
-        else if (creep.memory.role == "pixelFarmer") {
-          rolePixelFarmer.run(creep);
-        }
-        else if (creep.memory.role == "ruinWithdrawer") {
-          roleRuinWithdrawer.run(creep);
-        }
-        else if (creep.memory.role == "reserverLD") {
-          roleReserverLD.run(creep);
-        }
-        else if (creep.memory.role.includes("harvesterLD")) {
-          roleHarvesterLD.run(creep);
-        }
-        else if (creep.memory.role == "transfererLD") {
-          roleTransfererLD.run(creep);
-        }
-        else if (creep.memory.role == "shardUp") {
-          roleShardUp.run(creep);
-        }
-      }
-      else {
-        if (shardName == "shard0") {
-          if (creep.getActiveBodyparts(CLAIM) > 0) {
-            creep.memory.role = "claimer";
-          }
-          else if (creep.getActiveBodyparts(WORK) > 0) {
-            creep.memory.working = false;
-            creep.memory.spawnRoom = "E43N3";
-            creep.memory.role = "builderLD";
-          }
-          else {
-            creep.memory.role  = "pixelFarmer";
-          }
-        }
-        else {
-          if (creep.getActiveBodyparts(WORK) > 0 || creep.getActiveBodyparts(CLAIM) > 0)
-          creep.memory.role = "shardUp";
-          else
-          creep.memory.role  = "pixelFarmer";
         }
       }
     }
@@ -250,14 +150,14 @@ module.exports.loop = function() {
     let start = Game.cpu.getUsed();
 
     // Run the part //
-    runCreeps();
+    runCreeps.run();
 
     // Set the average CPU Usage in the memory //
     setCPUInMemory("runCreeps",start,Game.cpu.getUsed());
   }
   else {
     // Run the part without tracking //
-    runCreeps();
+    runCreeps.run();
   }
 
 
@@ -296,87 +196,6 @@ module.exports.loop = function() {
         checkMissingMemory.run(roomName);
       }
       else {
-        let towers = room.towers;
-
-        function getSpawningEnergy() {
-          flagMemory.totalEnergyAvailable = room.energyAvailable;
-          let spawns = room.spawns.length;
-          let extensions = room.extensions.length;
-
-          if (controller.level == 1) {
-            if (room.spawns.length > 0) {
-              if (spawns > 1)
-              spawns = 1;
-
-              flagMemory.totalEnergyCapacity = (spawns * 300);
-            }
-          }
-          if (controller.level == 2) {
-            if (room.spawns.length > 0) {
-              if (spawns > 1)
-              spawns = 1;
-              if (extensions > 5)
-              extensions = 5;
-
-              flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-            }
-          }
-          else if (controller.level == 3) {
-            if (room.spawns.length > 0) {
-              if (spawns > 1)
-              spawns = 1;
-              if (extensions > 10) {
-                extensions = 10;
-              }
-
-              flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-            }
-          }
-          else if (controller.level == 4) {
-            if (room.spawns.length > 0) {
-              if (spawns > 1)
-              spawns = 1;
-              if (extensions > 20)
-              extensions = 20;
-
-              flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-            }
-          }
-          else if (controller.level == 5) {
-            if (room.spawns.length > 0) {
-              if (spawns > 1)
-              spawns = 1;
-              if (extensions > 30)
-              extensions = 30;
-
-              flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-            }
-          }
-          else if (controller.level == 6) {
-            if (room.spawns.length > 0) {
-              if (spawns > 1)
-              spawns = 1;
-              if (extensions > 40)
-              extensions = 40;
-
-              flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-            }
-          }
-          else if (controller.level == 7) {
-            if (room.spawns.length > 0) {
-              if (spawns > 2)
-              spawns = 2;
-              if (extensions > 50)
-              extensions = 50;
-
-              flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 100);
-            }
-          }
-          else if (controller.level == 8) {
-            flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 200);
-          }
-        }
-
         function claimerCode() {
           if (Game.flags["claim"] !== undefined) {
             if (!Memory.flags["claim"])
@@ -388,120 +207,14 @@ module.exports.loop = function() {
 
         function defendRoom() {
           if (flagMemory.enemyCount > 0) {
-            for (let tower of towers) {
+            for (let tower of room.towers) {
               tower.defend();
             }
           }
         }
 
-
-
-        function getDamagedStructures() {
-          if (flagMemory.enemyCount == 0 && flagMemory.repairTarget) {
-            let repairAmount = 100 * 1000;
-            if (room.terminal) {
-              let repairAmount = 1 * 1000 * 1000 // 1 Million
-            }
-
-            if (flagMemory.repairTarget.length == 0 && Game.time % 1000 == 0) {
-              let repairTarget = flagMemory.repairTarget;
-              let targetRepair = room.find(FIND_STRUCTURES, {
-                filter: (s) => s.hits < s.hitsMax && s.hits < repairAmount
-              });
-
-              if (targetRepair.length > 0) {
-                for (let i = 0; targetRepair.length > i; i++) {
-                  flagMemory.repairTarget[i] = targetRepair[i].id
-                }
-              }
-            }
-
-
-            if (flagMemory.repairTarget.length > 0) {
-              for (let tower of towers) {
-                let target = Game.getObjectById(flagMemory.repairTarget[0]);
-                if (target !== null) {
-                  if (target.hits < target.hitsMax && target.hits < repairAmount) {
-                    Memory.performanceTracker[roomName + ".repairerEnergy"] += 10;
-                    tower.repair(target);
-                  }
-                  else {
-                    flagMemory.repairTarget.shift();
-                  }
-                }
-                else {
-                  flagMemory.repairTarget.shift();
-                }
-              }
-            }
-          }
-        }
-
-
-
-
-
-        function runGameTimeTimers() {
-          if (Game.time % 10 == 0) {
-            flagMemory.enemyCount = room.find(FIND_HOSTILE_CREEPS).length;
-
-            getSpawningEnergy();
-
-            spawnCreep.run(roomName);
-
-            manageLinks.run(roomName);
-          }
-
-
-
-          if (flagMemory.sources) {
-            if (Game.time % 5000 == 0 || (!flagMemory.roomManager.headSpawn && room.spawns.length > 0)) {
-              console.log(`Memory in ${roomName} is being updated!`)
-              if (!flagMemory.roomManager.headSpawn) {
-                if (room.spawns.length > 1) {
-                  if (room.terminal && room.controller.level >= 6) {
-                    const spawn = room.terminal.pos.findInRange(room.spawns, 2,
-                      {filter: {structureType: STRUCTURE_SPAWN}})[0];
-
-                      if (spawn)
-                      flagMemory.roomManager.headSpawn = spawn.id;
-                    }
-                  }
-                  else {
-                    if (room.spawns.length == 1) {
-                      flagMemory.roomManager.headSpawn = room.spawns[0].id;
-                    }
-                  }
-                }
-
-                if (Game.time % 5000 == 0) {
-                  const mineral = room.find(FIND_MINERALS)[0];
-                  if (mineral) {
-                    flagMemory.mineralAmount = mineral.mineralAmount;
-                    flagMemory.mineralId = mineral.id;
-                  }
-                  else {
-                    flagMemory.mineralAmount = 0;
-                    flagMemory.mineralId = "";
-                  }
-                  flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
-                  roomPlanner.run()
-                }
-              }
-            }
-          }
-
           function runRoomPlanner() {
-            if (flagMemory.controllerLevel < room.controller.level) {
-              if (flagMemory.roomManager.headSpawn) {
-                roomManager.run(roomName)
-              }
-              roomPlanner.run()
-              flagMemory.controllerLevel = room.controller.level;
-            }
-            if (Game.time % 500 == 0) {
-              roomManager.run(roomName)
-            }
+            roomManager.run(roomName)
           }
 
           function runCPUTracker() {
@@ -509,6 +222,7 @@ module.exports.loop = function() {
           }
 
           function deleteMemory() {
+            delete Memory.stats;
             delete Memory.stats['cpuTracker.loadMemory'];
             delete Memory.stats['cpuTracker.removeDeadCreepsMemory'];
             delete Memory.stats['cpuTracker.runCreeps'];
@@ -595,14 +309,14 @@ module.exports.loop = function() {
             let start = Game.cpu.getUsed();
 
             // Run the part //
-            getDamagedStructures();
+            getDamagedStructures.run(roomName);
 
             // Set the average CPU Usage in the memory //
             totalCPUGetDamagedStructures += Game.cpu.getUsed() - start;
           }
           else {
             // Run the part without tracking //
-            getDamagedStructures();
+            getDamagedStructures.run(roomName);
           }
 
 
@@ -611,31 +325,15 @@ module.exports.loop = function() {
             let start = Game.cpu.getUsed();
 
             // Run the part //
-            runGameTimeTimers();
+            runGameTimeTimers.run(roomName);
 
             // Set the average CPU Usage in the memory //
             totalCPURunGameTimeTimers += Game.cpu.getUsed() - start;
           }
           else {
             // Run the part without tracking //
-            runGameTimeTimers();
+            runGameTimeTimers.run(roomName);
           }
-
-
-          // if (mainSystem()) {
-          //   // Get the CPU Usage //
-          //   let start = Game.cpu.getUsed();
-          //
-          //   // Run the part //
-          //   checkMissingMemory();
-          //
-          //   // Set the average CPU Usage in the memory //
-          //   totalCPUCheckMissingMemory += Game.cpu.getUsed() - start;
-          // }
-          // else {
-          //   // Run the part without tracking //
-          //   checkMissingMemory();
-          // }
 
 
           if (mainSystem()) {
@@ -651,22 +349,6 @@ module.exports.loop = function() {
           else {
             // Run the part without tracking //
             runRoomPlanner();
-          }
-
-
-          if (mainSystem()) {
-            // Get the CPU Usage //
-            let start = Game.cpu.getUsed();
-
-            // Run the part //
-            claimerCode();
-
-            // Set the average CPU Usage in the memory //
-            totalCPUClaimerCode += Game.cpu.getUsed() - start;
-          }
-          else {
-            // Run the part without tracking //
-            claimerCode();
           }
 
 

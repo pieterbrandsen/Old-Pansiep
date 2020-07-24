@@ -12,6 +12,10 @@ module.exports = {
       creep.memory.working = true;
     }
 
+    if (!creep.memory.flagTarget) {
+      creep.memory.flagTarget = 1;
+    }
+
     let flag = Game.flags["builderLD" + creep.memory.spawnRoom];
     if (flag) {
       if (flag.room) {
@@ -28,7 +32,18 @@ module.exports = {
         }
       }
       else {
-        creep.travelTo(flag)
+        // creep.travelTo(flag)
+        if (!Game.flags[creep.memory.flagTarget].room)
+        creep.travelTo(Game.flags[creep.memory.flagTarget])
+        else {
+          if (creep.pos.getRangeTo(Game.flags[creep.memory.flagTarget]) == 1) {
+            creep.travelTo(Game.flags[creep.memory.flagTarget])
+            creep.memory.flagTarget++;
+          }
+          else {
+            creep.travelTo(Game.flags[creep.memory.flagTarget])
+          }
+        }
       }
     }
     else {
