@@ -5,13 +5,13 @@ require('prototype.Room.structures');
 // Require Modules
 const roomManager = require('module.roomManager');
 const checkMissingMemory = require('module.checkMissingMemory');
-const runCpuTracker = require('module.cpuTracker');
 
 // Require Main Modules
 const getDamagedStructures = require('mainModule.repairStructures');
 const runGameTimeTimers = require('mainModule.gameTimeTimers');
 const runCreeps = require('mainModule.runCreeps');
 const runTowers = require('mainModule.towers');
+const runTracker = require('mainModule.tracker');
 
 
 module.exports.loop = function() {
@@ -201,13 +201,13 @@ module.exports.loop = function() {
     let start = Game.cpu.getUsed();
 
     // Run the part //
-    runCpuTracker.run();
+    runTracker.run();
 
     // Set the average CPU Usage in the memory //
-    cpuTracker.cpuTracker += Game.cpu.getUsed() - start;
+    cpuTracker.tracker += Game.cpu.getUsed() - start;
   }
   else {
     // Run the part without tracking //
-    runCpuTracker.run();
+    runTracker.run();
   }
 };

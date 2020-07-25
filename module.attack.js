@@ -1,9 +1,5 @@
 module.exports = {
   run: function(creep) {
-    // const target = Game.getObjectById("5f13520527dbee983d02ea9b");
-    // if (creep.dismantle(target) == ERR_NOT_IN_RANGE) {
-    //   creep.travelTo(target);
-    // }
     const firstEnemy = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (creep) => {
       return ((creep.getActiveBodyparts(ATTACK) > 0) || (creep.getActiveBodyparts(RANGED_ATTACK) > 0)) }
     });

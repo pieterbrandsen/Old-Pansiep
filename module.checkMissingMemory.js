@@ -84,8 +84,14 @@ module.exports = {
         flagMemory.creepAmount = {};
         if (!flagMemory.trackers) {
           flagMemory.trackers = {};
-          flagMemory.trackers.cpu = {};
 
+
+          flagMemory.trackers.other = {};
+          let otherTracker = flagMemory.trackers.other;
+
+
+
+          flagMemory.trackers.cpu = {};
           let cpuTracker = flagMemory.trackers.cpu;
           cpuTracker.runTowers = 0;
           cpuTracker.getDamagedStructures = 0;
