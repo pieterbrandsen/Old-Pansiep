@@ -19,11 +19,15 @@ const roleTransfererLD = require('role.transfererLD');
 
 module.exports = {
   run: function() {
+    // Loop Through All Alive Creeps //
     for (let name in Game.creeps) {
+      // Get Creep And Role //
       let creep = Game.creeps[name];
       let role = creep.memory.role
 
+      // If Role Is Defined //
       if (role) {
+        // Check For Each Possible Role And Run The Right Code Part For The Creep //
         if (creep.memory.role == "harvester-0" || creep.memory.role == "harvester-1") {
           roleHarvester.run(creep);
         }
@@ -71,27 +75,6 @@ module.exports = {
         }
         else if (creep.memory.role == "shardUp") {
           roleShardUp.run(creep);
-        }
-      }
-      else {
-        if (shardName == "shard0") {
-          if (creep.getActiveBodyparts(CLAIM) > 0) {
-            creep.memory.role = "claimer";
-          }
-          else if (creep.getActiveBodyparts(WORK) > 0) {
-            creep.memory.working = false;
-            creep.memory.spawnRoom = "E43N3";
-            creep.memory.role = "builderLD";
-          }
-          else {
-            creep.memory.role  = "pixelFarmer";
-          }
-        }
-        else {
-          if (creep.getActiveBodyparts(WORK) > 0 || creep.getActiveBodyparts(CLAIM) > 0)
-          creep.memory.role = "shardUp";
-          else
-          creep.memory.role  = "pixelFarmer";
         }
       }
     }
