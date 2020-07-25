@@ -525,6 +525,8 @@ module.exports = {
             }
             else {
               Memory.flags["claim"] = {};
+              Memory.flags["claim"].spawnRoom = "";
+              Memory.flags["claim"].claimRoom = "";
             }
           }
           break;

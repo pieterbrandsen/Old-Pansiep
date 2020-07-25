@@ -2,106 +2,153 @@ const getAccesPoints = require('function.getAccesPoints');
 
 module.exports = {
   run: function(id,getRange,controllerLevel,roomName) {
+    //  Variables //
+    // Important Room Variables //
     const room = Game.rooms[roomName];
     const terrain = new Room.Terrain(roomName);
     const flagMemory = Memory.flags[roomName];
+    // CheckPosition //
     const object = Game.getObjectById(id);
     const x = object.pos.x;
     const y = object.pos.y;
-    let range = getRange;
+    // Make The Range It's Own Variable //
+    let range = getRange++;
 
+    // Define The Return Variables //
     let structureType;
     let constructionSiteCanBeBuild = false;
     let isThereStruture = false;
     let errorMessage = "";
 
-    if (room.controller.level >= controllerLevel) {
-      structureType = STRUCTURE_LINK;
-    }
-    else {
-      if (id !== room.controller.id) {
-        range = 1;
+    function getStructureType() {
+      // If The Room Controller Level Is Higher Then Inputed, StructureType Is Link //
+      if (room.controller.level >= controllerLevel) {
+        structureType = STRUCTURE_LINK;
       }
-      structureType = STRUCTURE_CONTAINER;
+      else {
+        structureType = STRUCTURE_CONTAINER;
+        // If Structure Is Container But Is Not Controller, Place It Next To Source //
+        if (id !== room.controller.id) {
+          range = 1;
+        }
+      }
     }
-
-
-
 
     function createConstruction(structureType,x,y) {
-      // TODO: Create output if fault message
+      // Build Structure, If No Error Return True, Else Return Error With False //
       const buildStructure = room.createConstructionSite(x,y,structureType);
-      if (buildStructure == 0) {
-        return true;
-      }
+      if (buildStructure == 0)
+      return true;
       else {
         errorMessage = buildStructure;
         return false;
       }
     }
 
+    function findContainer() {
+      // Loop Through Each Container And Look For The Container In Range //
+      room.containers.forEach((structure, i) => {
+        if (structure.pos.inRangeTo(object,range))
+        return [true, structure.id];
+      });
+      return false;
+    }
 
-
-
-
-    const containerInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range+1) && structure.structureType == STRUCTURE_CONTAINER)}
-    });
-    const linkInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range+1) && structure.structureType == STRUCTURE_LINK)}
-    });
-    const storageInRange = object.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range+1) && (structure.structureType == STRUCTURE_LINK || structure.structureType == STRUCTURE_CONTAINER))}
-    });
-    const constructionSitesInRange = object.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
-      return (structure.pos.inRangeTo(object,range+1) && (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK))}
-    });
-
-
-    if (constructionSitesInRange == null && ((containerInRange !== null && linkInRange == null && structureType == STRUCTURE_LINK) || storageInRange == null)) {
-      if (structureType == STRUCTURE_LINK && containerInRange !== null) {
-        containerInRange.destroy();
+    function findStructureInRange() {
+      function findLink() {
+        // Loop Through Each Link And Look For The Link In Range //
+        room.links.forEach((structure, i) => {
+          if (structure.pos.inRangeTo(object,range))
+          return [true, structure.id];
+        });
+        return false;
+      }
+      function findConstructionSite() {
+        room.find(FIND_CONSTRUCTION_SITES).forEach((constructionSite, i) => {
+          // Loop Through Each ConstructionSite And Look For The ConstructionSite In Range, Check If Found For Container Or Link //
+          if (constructionSite.pos.inRangeTo(object,range))
+          if (constructionSite.structureType == "container" || constructionSite.structureType == "link")
+          return [true, constructionSite.id];
+        });
+        return false;
       }
 
-      const possiblePositions = [];
-      let optimalPositions = [0,[0,0], 50];
+      // Check If There Is Already A Structure Being Build //
+      if (!findContainer())
+      if (!findLink())
+      if (!findConstructionSite())
+      return false;
 
-      for (let i = 1; i < range+1; i++) {
-        for (let j = 0; j < range+1; j++) {
-          possiblePositions.push([x-j,y-i])
-          possiblePositions.push([x+j,y-i])
-          possiblePositions.push([x-j,y+i])
-          possiblePositions.push([x+j,y+i])
+      return true;
+    }
+
+    function checkIfCanBuildStructure() {
+      // If Function Can't Find An Strucutre In Range, Continue //
+      if (!findStructureInRange()) {
+        // Get StructureType //
+        getStructureType();
+
+        // If Structure Being Checked Is A Link, Check This //
+        if (structureType == STRUCTURE_LINK) {
+          // Get Possible Container In Range //
+          const container = findContainer();
+          // If Container Is Found, Destroy It By Getting Object Of The Found Structure //
+          if (container[0])
+          Game.getObjectById(container[1]).destroy();
         }
-      }
 
-      for (var i = 0; i < possiblePositions.length; i++) {
-        const posX = possiblePositions[i][0];
-        const posY = possiblePositions[i][1];
-        const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX, posY, roomName)[0];
-        if (terrain.get(posX,posY) == 0) {
-          if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
-            optimalPositions[0] = possiblePositionsOfPlacementPossible
-            optimalPositions[1][0] = posX;
-            optimalPositions[1][1] = posY;
+        // Start Variables For Best Positions //
+        const possiblePositions = [];
+        let optimalPositions = [0,[0,0], 50];
+
+        // Get All Possible Possitions And Enter Them In A List //
+        for (let i = 1; i < range; i++) {
+          for (let j = 0; j < range; j++) {
+            possiblePositions.push([x-j,y-i])
+            possiblePositions.push([x+j,y-i])
+            possiblePositions.push([x-j,y+i])
+            possiblePositions.push([x+j,y+i])
           }
-          else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
-            const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
-            if (possiblePositionsOfPlacementPossible == optimalPositions[0] && getRangeToHeadSpawn < optimalPositions[2]) {
+        }
+
+        // Loop Through All Possible Possitons //
+        for (var i = 0; i < possiblePositions.length; i++) {
+          const posX = possiblePositions[i][0];
+          const posY = possiblePositions[i][1];
+          // Get All Open Spots At Position //
+          const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX, posY, roomName)[0];
+          // Check If Terrain At Possition Is No Wall //
+          if (terrain.get(posX,posY) == 0) {
+            // If This Positon Is Better Then Already Found Position //
+            if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
               optimalPositions[0] = possiblePositionsOfPlacementPossible
               optimalPositions[1][0] = posX;
               optimalPositions[1][1] = posY;
-              optimalPositions[2] = getRangeToHeadSpawn;
+            }
+            // If This Positon Is Closer To Head Spawn Then Already Found Position //
+            else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
+              const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
+              if (possiblePositionsOfPlacementPossible == optimalPositions[0] && getRangeToHeadSpawn < optimalPositions[2]) {
+                optimalPositions[0] = possiblePositionsOfPlacementPossible
+                optimalPositions[1][0] = posX;
+                optimalPositions[1][1] = posY;
+                optimalPositions[2] = getRangeToHeadSpawn;
+              }
             }
           }
         }
-      }
 
-      constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1]);
+        // Get If Structure Is Placed //
+        constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1]);
+      }
+      else {
+        // There Is Already A Structure //
+        isThereStruture = true;
+      }
     }
-    else {
-      isThereStruture = true;
-    }
+
+    // Run Head Function //
+    checkIfCanBuildStructure();
 
 
     return [constructionSiteCanBeBuild, isThereStruture, errorMessage];
