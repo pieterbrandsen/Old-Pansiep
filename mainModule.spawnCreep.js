@@ -518,8 +518,13 @@ module.exports = {
           break;
           case "claimer":
           if (flagMemory.creepAmount.claimerCount < 3 && Game.flags["claim"]) {
-            if (roomName == Memory.flags["claim"].spawnRoom) {
-              result = true;
+            if (Memory.flags["claim"]) {
+              if (roomName == Memory.flags["claim"].spawnRoom) {
+                result = true;
+              }
+            }
+            else {
+              Memory.flags["claim"] = {};
             }
           }
           break;

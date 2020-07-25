@@ -1,7 +1,10 @@
 const deleteMemory = require("module.deleteMemory");
+const checkMissingMemory = require('module.checkMissingMemory');
 
 module.exports = {
   run: function() {
+    const mainSystemMemory = Memory.mainSystem;
+
     function setCPUInMemory(name,startCPU,endCPU) {
       const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
       const secondairDivider = 1 - mainDivider;
@@ -47,7 +50,8 @@ module.exports = {
 
     if (mainSystem()) {
       function runRoomCPUTracker(roomName) {
-        const cpuTracker = Memory.flags[roomName].tracker.cpu;
+        const cpuTracker = Memory.flags[roomName].trackers.cpu;
+
         setCPUInMemory("runTowers",cpuTracker.runTowers);
         setCPUInMemory("getDamagedStructures",cpuTracker.getDamagedStructures);
         setCPUInMemory("runGameTimeTimers",cpuTracker.runGameTimeTimers);
@@ -74,8 +78,32 @@ module.exports = {
         // Memory.cpuTracker["reserverCPU.total"] = 0;
       }
 
+      function resetTrackerMemoryInRoom(roomName) {
+        const cpuTracker = Memory.flags[roomName].trackers.cpu;
+
+        cpuTracker.runTowers = 0;
+        cpuTracker.getDamagedStructures = 0;
+        cpuTracker.runGameTimeTimers = 0;
+        cpuTracker.checkMissingMemory = 0;
+        cpuTracker.runRoomManager = 0;
+      }
+      function resetTrackerMemoryGlobal() {
+        const cpuTracker = Memory.cpuTracker;
+
+        cpuTracker.loadMemory = 0;
+        cpuTracker.removeDeadCreepsMemory = 0;
+        cpuTracker.runCreeps = 0;
+        cpuTracker.cpuTracker = 0;
+      }
 
       function runCPUTracker() {
+        const cpuTracker = Memory.cpuTracker;
+
+        setCPUInMemory("loadMemory", cpuTracker.loadMemory);
+        setCPUInMemory("removeDeadCreepsMemory", cpuTracker.removeDeadCreepsMemory);
+        setCPUInMemory("runCreeps", cpuTracker.runCreeps);
+        setCPUInMemory("cpuTracker", cpuTracker.cpuTracker);
+
         Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
         Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
         Memory.stats['cpu.bucket'] = Game.cpu.bucket;
@@ -86,11 +114,20 @@ module.exports = {
       _.forEach(Object.keys(Game.rooms), function (roomName) {
         const controller = Game.rooms[roomName].controller;
         if (controller && controller.my) {
-          runRoomCPUTracker(roomName);
+          const flagMemory = Memory.flags[roomName];
+          if (!flagMemory.IsMemorySetup) {
+            checkMissingMemory.run(roomName);
+          }
+          else {
+            runRoomCPUTracker(roomName);
+            resetTrackerMemoryInRoom(roomName);
+          }
         }
       })
 
       runCPUTracker();
+
+      resetTrackerMemoryGlobal();
     }
     else {
       if (Game.time % 500 == 0)

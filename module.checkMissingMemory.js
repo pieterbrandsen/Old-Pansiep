@@ -58,7 +58,7 @@ module.exports = {
           flagMemory.trackers = {};
           flagMemory.trackers.cpu = {};
 
-          const cpuTracker = flagMemory.trackers.cpu;
+          let cpuTracker = flagMemory.trackers.cpu;
           cpuTracker.runTowers = 0;
           cpuTracker.getDamagedStructures = 0;
           cpuTracker.runGameTimeTimers = 0;

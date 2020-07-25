@@ -69,39 +69,37 @@ module.exports = {
     }
 
     function runWithdraw(target) {
-      if ((target.structureType == "storage" || target.structureType == "terminal") && flagMemory.totalEnergyCapacity == flagMemory.totalEnergyAvailable) {
+      if (target)
+      if ((target.structureType == "storage" || target.structureType == "terminal") && flagMemory.totalEnergyCapacity == flagMemory.totalEnergyAvailable)
         return false;
-      }
-      else {
-        const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
 
-        switch(runWithdraw) {
-          case OK:
-          creep.say("Withdraw");
-          creep.memory.withdrawStructure = target.structureType;
-          creep.memory.withdrawId = "";
-          break;
-          case ERR_NOT_OWNER:
-          break;
-          case ERR_BUSY:
-          break;
-          case ERR_NOT_ENOUGH_RESOURCES:
-          break;
-          case ERR_INVALID_TARGET:
-          if (!creep.pos.inRangeTo(creep.room.controller,4))
-          creep.travelTo(creep.room.controller);
-          break;
-          case ERR_FULL:
-          break;
-          case ERR_NOT_IN_RANGE:
-          creep.say("Moving");
-          creep.travelTo(target);
-          break;
-          case ERR_INVALID_ARGS:
-          break;
-          default:
-          break;
-        }
+      const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
+      switch(runWithdraw) {
+        case OK:
+        creep.say("Withdraw");
+        creep.memory.withdrawStructure = target.structureType;
+        creep.memory.withdrawId = "";
+        break;
+        case ERR_NOT_OWNER:
+        break;
+        case ERR_BUSY:
+        break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+        break;
+        case ERR_INVALID_TARGET:
+        if (!creep.pos.inRangeTo(creep.room.controller,4))
+        creep.travelTo(creep.room.controller);
+        break;
+        case ERR_FULL:
+        break;
+        case ERR_NOT_IN_RANGE:
+        creep.say("Moving");
+        creep.travelTo(target);
+        break;
+        case ERR_INVALID_ARGS:
+        break;
+        default:
+        break;
       }
     }
 
