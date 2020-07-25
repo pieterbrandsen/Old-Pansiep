@@ -107,7 +107,7 @@ module.exports = {
         getSpawningEnergy();
 
 
-        if (flagMemory.roomManager.headSpawn && Game.time % 5 == 0) {
+        if (flagMemory.roomManager.headSpawn && Game.time % 500 == 0) {
           roomPlanner.run();
 
           room.find(FIND_SOURCES).forEach((source, i) => {

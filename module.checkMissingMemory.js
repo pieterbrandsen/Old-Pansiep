@@ -8,6 +8,34 @@ module.exports = {
     let filledMemoryString = `${roomName} got the following memory: `;
     let roomIsMissingMemory = false;
 
+    if (!Memory.flags)
+    Memory.flags = {};
+    if (!Memory.stats)
+    Memory.stats = {};
+    if (!Memory.mainSystem)
+    Memory.mainSystem = {};
+    if (!Memory.cpuTracker) {
+      Memory.cpuTracker = {};
+      const cpuTracker = Memory.cpuTracker;
+      cpuTracker.loadMemory = 0;
+      cpuTracker.removeDeadCreepsMemory = 0;
+      cpuTracker.runCreeps = 0;
+      cpuTracker.cpuTracker = 0;
+    }
+    if (mainSystemMemory.cpuTracker)
+    Memory.mainSystem.cpuTracker = true;
+    if (!mainSystemMemory.cpuAvgTick)
+    Memory.mainSystem.cpuAvgTicks = 100;
+    if (mainSystemMemory.performanceTracker)
+    Memory.mainSystem.performanceTracker = true;
+    if (!mainSystemMemory.performanceAvgTicks)
+    Memory.mainSystem.performanceAvgTicks = 10000;
+
+    if (!Memory.performanceTracker)
+    Memory.performanceTracker = {};
+    if (!Memory.outpostMemory)
+    Memory.outpostMemory = {};
+
     function enterValueInMemory(memoryPath, inputValue) {
       flagMemory.roomManager[memoryPath] = inputValue;
       if (flagMemory.roomManager[memoryPath]) {

@@ -27,7 +27,7 @@ module.exports = {
 
       if (containerAmount > 0) {
         room.containers.forEach((item, i) => {
-          if (item.id !== flagMemory.controllerStorage  ) {
+          if (item.id !== flagMemory.controllerStorage && flagMemory.controllerStorage) {
             energyStored += item.store.getUsedCapacity(RESOURCE_ENERGY);
           }
         });

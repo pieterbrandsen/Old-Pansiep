@@ -2,87 +2,54 @@ require('prototype.tower');
 require('traveler');
 require('prototype.Room.structures');
 
+// Require Modules
 const roomManager = require('module.roomManager');
 const checkMissingMemory = require('module.checkMissingMemory');
+const runCpuTracker = require('module.cpuTracker');
 
+// Require Main Modules
 const getDamagedStructures = require('mainModule.repairStructures');
 const runGameTimeTimers = require('mainModule.gameTimeTimers');
 const runCreeps = require('mainModule.runCreeps');
 const runTowers = require('mainModule.towers');
 
-const runCpuTracker = require('module.cpuTracker');
-
 
 module.exports.loop = function() {
+  // Make A Variable With Shard Name //
   const shardName = Game.shard.name;
+  // Make A Variable With MainSystem Memory //
   const mainSystemMemory = Memory.mainSystem;
 
+  // Every Time The Bucket Reaches It's Limit, Generate A Pixel //
   if (Game.cpu.bucket == 10000) {
     Game.cpu.generatePixel();
   }
 
-  if (!Memory.flags)
-  Memory.flags = {};
-  if (!Memory.stats)
-  Memory.stats = {};
-  if (!Memory.mainSystem)
-  Memory.mainSystem = {};
-  if (!Memory.cpuTracker) {
-    Memory.cpuTracker = {};
-    const cpuTracker = Memory.cpuTracker;
-    cpuTracker.loadMemory = 0;
-    cpuTracker.removeDeadCreepsMemory = 0;
-    cpuTracker.runCreeps = 0;
-    cpuTracker.cpuTracker = 0;
-  }
-  if (mainSystemMemory.cpuTracker)
-  Memory.mainSystem.cpuTracker = true;
-  if (!mainSystemMemory.cpuAvgTick)
-  Memory.mainSystem.cpuAvgTicks = 100;
-  if (mainSystemMemory.performanceTracker)
-  Memory.mainSystem.performanceTracker = true;
-  if (!mainSystemMemory.performanceAvgTicks)
-  Memory.mainSystem.performanceAvgTicks = 10000;
 
-  if (!Memory.performanceTracker)
-  Memory.performanceTracker = {};
-  if (!Memory.outpostMemory)
-  Memory.outpostMemory = {};
-
-  // function setPerformanceInMemory(name,currentTickPerformance) {
-  //     const mainDivider = 1 / mainSystemMemory.performanceAvgTicks;
-  //     const secondairDivider = 1 - mainDivider;
-  //     if (currentTickPerformance == undefined)
-  //     Memory.stats[`performanceTracker.${name}`] = secondairDivider * Memory.stats[`performanceTracker.${name}`] + mainDivider * currentTickPerformance;
-  //     else
-  //     Memory.stats[`performanceTracker.${name}`] = secondairDivider * Memory.stats[`performanceTracker.${name}`] + mainDivider * currentTickPerformance;
-  //   }
-  //
-  //   function setPerformanceInMemoryRooms(name,currentTickPerformance,room) {
-  //     const mainDivider = 1 / mainSystemMemory.performanceAvgTicks;;
-  //     const secondairDivider = 1 - mainDivider;
-  //     if (currentTickPerformance !== undefined)
-  //     Memory.stats[`rooms.${room}.performanceTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.performanceTracker.${name}`] + mainDivider * currentTickPerformance;
-  //   }
-
+  // Loop Through All Rooms With Vision //
   _.forEach(Object.keys(Game.rooms), function (roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
     const controller = Game.rooms[roomName].controller;
 
-
+    // Check if Controller Is Mine
     if (controller && controller.my) {
+      // if Room Is Missing Flag For Data Storage, Create One //
       if (!Game.flags[roomName]) {
         room.createFlag(25,25, roomName)
         Memory.flags[roomName] = {}
       }
+
+      // If Room Is Missing Memory In Room, Give It Memory //
       if (!Memory.flags[roomName])
       Memory.flags[roomName] = {}
       else {
+        // If FlagMemory Is Not Setup, Run The Function //
         if (!flagMemory.IsMemorySetup) {
           checkMissingMemory.run(roomName);
         }
         else {
+          // Create Variable For Shortcut of CpuTracker //
           const cpuTracker = flagMemory.trackers.cpu;
 
           if (mainSystem()) {
@@ -156,22 +123,23 @@ module.exports.loop = function() {
   const cpuTracker = Memory.cpuTracker;
 
   function mainSystem() {
+    // If Memory.mainSystem Is Defined //
     if (Memory.mainSystem) {
-      if (Memory.mainSystem.cpuTracker == true) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    else {
+      // If CpuTracking Is Enabled
+      if (Memory.mainSystem.cpuTracker == true)
+      return true;
+      else
       return false;
     }
+    else
+    return false;
   }
 
 
   function removeDeadCreepsMemory() {
     if (Game.time % 10 == 0) {
+      // Loop Through Every Creep In Memory And Check If there Is Still Vision On Creep //
+      // If This Is Not The Case, Delete Memory For That Creep //
       for (let name in Memory.creeps) {
         if (Game.creeps[name] === undefined) {
           delete Memory.creeps[name];
