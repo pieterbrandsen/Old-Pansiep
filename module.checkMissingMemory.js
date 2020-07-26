@@ -4,6 +4,8 @@ module.exports = {
   run: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
+    const mainSystemMemory = Memory.mainSystem;
+
     let missingMemoryString = `${roomName} is missing the following memory: `;
     let filledMemoryString = `${roomName} got the following memory: `;
     let roomIsMissingMemory = false;

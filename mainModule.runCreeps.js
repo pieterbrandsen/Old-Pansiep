@@ -25,57 +25,57 @@ module.exports = {
       let creep = Game.creeps[name];
       let role = creep.memory.role
 
-      // If Role Is Defined //
-      if (role) {
-        // Check For Each Possible Role And Run The Right Code Part For The Creep //
-        if (creep.memory.role == "harvester-0" || creep.memory.role == "harvester-1") {
+      // Check For Each Possible Role And Run The Right Code Part For The Creep //
+      switch (role) {
+        case "harvester-0":
+        case "harvester-1":
           roleHarvester.run(creep);
-        }
-        else if (creep.memory.role == "transferer") {
+          break;
+        case "transferer":
           roleTransferer.run(creep);
-        }
-        else if (creep.memory.role == "builder") {
-          roleBuilder.run(creep);
-        }
-        else if (creep.memory.role == "transfererLiTe") {
+          break;
+        case "transfererLiTe":
           roleTransfererLiTe.run(creep);
-        }
-        else if (creep.memory.role == "upgrader") {
+          break;
+        case "builder":
+          roleBuilder.run(creep);
+          break;
+        case "upgrader":
           roleUpgrader.run(creep);
-        }
-        else if (creep.memory.role == "repairer") {
+          break;
+        case "repairer":
           roleRepairer.run(creep);
-        }
-        else if (creep.memory.role == "extractor") {
+          break;
+        case "extractor":
           roleExtractor.run(creep);
-        }
-        else if (creep.memory.role == "claimer") {
+          break;
+        case "claimer":
           roleClaimer.run(creep);
-        }
-        else if (creep.memory.role == "attacker") {
+          break;
+        case "attacker":
           roleAttacker.run(creep);
-        }
-        else if (creep.memory.role == "builderLD") {
+          break;
+        case "builderLD":
           roleBuilderLD.run(creep);
-        }
-        else if (creep.memory.role == "pixelFarmer") {
-          rolePixelFarmer.run(creep);
-        }
-        else if (creep.memory.role == "ruinWithdrawer") {
+          break;
+        case "ruinWithdrawer":
           roleRuinWithdrawer.run(creep);
-        }
-        else if (creep.memory.role == "reserverLD") {
+          break;
+        case "reserverLD":
           roleReserverLD.run(creep);
-        }
-        else if (creep.memory.role.includes("harvesterLD")) {
+          break;
+        case "harvesterLD-0":
+        case "harvesterLD-1":
+        case "harvesterLD-2":
+        case "harvesterLD-3":
           roleHarvesterLD.run(creep);
-        }
-        else if (creep.memory.role == "transfererLD") {
+          break;
+        case "transfererLD":
           roleTransfererLD.run(creep);
-        }
-        else if (creep.memory.role == "shardUp") {
-          roleShardUp.run(creep);
-        }
+          break;
+        default:
+          console.log(`Creep in room ${creep.room.name} is missing a role or has no run function. The role is ${role}.`);
+          break;
       }
     }
   }
