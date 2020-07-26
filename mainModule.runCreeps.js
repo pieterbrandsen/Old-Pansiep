@@ -19,21 +19,33 @@ const roleTransfererLD = require('role.transfererLD');
 
 module.exports = {
   run: function() {
+    // Make Check For If Counter Was Runned //
     let counterIsRunned = false;
-    function addRoleToMemory(roomName, role) {
-        if (Game.time % 10 == 0) {
-          const flagMemory = Memory.flags[roomName];
-          let rolesCount = flagMemory.rolesCount;
-          if (rolesCount) {
-            if (!rolesCount[role])
-            rolesCount[role] = 0;
-            else
-            rolesCount[role]++;
-          }
 
-          if (!counterIsRunned)
-          counterIsRunned = true;
+
+    function addRoleToMemory(roomName, role) {
+      // Run Each 10 Ticks //
+      if (Game.time % 10 == 0) {
+        // Define Variables //
+        const flagMemory = Memory.flags[roomName];
+        const rolesCount = flagMemory.rolesCount;
+
+        // If FlagMemory Has RolesCount Defined //
+        if (rolesCount) {
+          // If Role Is Not Yet In Memory, Else +1 //
+          if (!rolesCount[role])
+          rolesCount[role] = 0;
+          else
+          rolesCount[role]++;
         }
+        else
+        // Define RolesCount //
+        flagMemory.rolesCount = {};
+
+        // CounterIsRunned Is True, Run At The End The RoleCount Reset //
+        if (!counterIsRunned)
+        counterIsRunned = true;
+      }
     }
 
     function resetCreepAmount() {
@@ -58,50 +70,62 @@ module.exports = {
       switch (role) {
         case "harvester-0":
         case "harvester-1":
+          // Run Role Code, Add Role To RoleCount //
           roleHarvester.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "transferer":
+          // Run Role Code, Add Role To RoleCount //
           roleTransferer.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "transfererLiTe":
+          // Run Role Code, Add Role To RoleCount //
           roleTransfererLiTe.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "builder":
+          // Run Role Code, Add Role To RoleCount //
           roleBuilder.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "upgrader":
+          // Run Role Code, Add Role To RoleCount //
           roleUpgrader.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "repairer":
+          // Run Role Code, Add Role To RoleCount //
           roleRepairer.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "extractor":
+          // Run Role Code, Add Role To RoleCount //
           roleExtractor.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "claimer":
+          // Run Role Code, Add Role To RoleCount //
           roleClaimer.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "attacker":
+          // Run Role Code, Add Role To RoleCount //
           roleAttacker.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "builderLD":
+          // Run Role Code, Add Role To RoleCount //
           roleBuilderLD.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "ruinWithdrawer":
+          // Run Role Code, Add Role To RoleCount //
           roleRuinWithdrawer.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "reserverLD":
+          // Run Role Code, Add Role To RoleCount //
           roleReserverLD.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
@@ -109,10 +133,12 @@ module.exports = {
         case "harvesterLD-1":
         case "harvesterLD-2":
         case "harvesterLD-3":
+          // Run Role Code, Add Role To RoleCount //
           roleHarvesterLD.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
         case "transfererLD":
+          // Run Role Code, Add Role To RoleCount //
           roleTransfererLD.run(creep);
           addRoleToMemory(targetRoom, role);
           break;
