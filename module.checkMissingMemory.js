@@ -4,6 +4,8 @@ module.exports = {
   run: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
+    const mainSystemMemory = Memory.mainSystem;
+
     let missingMemoryString = `${roomName} is missing the following memory: `;
     let filledMemoryString = `${roomName} got the following memory: `;
     let roomIsMissingMemory = false;
@@ -12,25 +14,20 @@ module.exports = {
     Memory.flags = {};
     if (!Memory.stats)
     Memory.stats = {};
-    if (!Memory.mainSystem)
-    Memory.mainSystem = {};
     if (!Memory.cpuTracker) {
       Memory.cpuTracker = {};
-      const cpuTracker = Memory.cpuTracker;
-      cpuTracker.loadMemory = 0;
-      cpuTracker.removeDeadCreepsMemory = 0;
-      cpuTracker.runCreeps = 0;
-      cpuTracker.cpuTracker = 0;
+      Memory.cpuTracker.loadMemory = 0;
+      Memory.cpuTracker.removeDeadCreepsMemory = 0;
+      Memory.cpuTracker.runCreeps = 0;
+      Memory.cpuTracker.cpuTracker = 0;
     }
-    if (mainSystemMemory.cpuTracker)
-    Memory.mainSystem.cpuTracker = true;
-    if (!mainSystemMemory.cpuAvgTick)
-    Memory.mainSystem.cpuAvgTicks = 100;
-    if (mainSystemMemory.performanceTracker)
-    Memory.mainSystem.performanceTracker = true;
-    if (!mainSystemMemory.performanceAvgTicks)
-    Memory.mainSystem.performanceAvgTicks = 10000;
-
+    if (!Memory.mainSystem) {
+      Memory.mainSystem = {};
+      Memory.mainSystem.cpuTracker = true;
+      Memory.mainSystem.cpuAvgTicks = 100;
+      Memory.mainSystem.performanceTracker = true;
+      Memory.mainSystem.performanceAvgTicks = 10000;
+    }
     if (!Memory.performanceTracker)
     Memory.performanceTracker = {};
     if (!Memory.outpostMemory)
@@ -81,7 +78,7 @@ module.exports = {
         if (!flagMemory.repairTarget)
         flagMemory.repairTarget = [];
         if (!flagMemory.creepAmount)
-        flagMemory.creepAmount = {};
+          flagMemory.rolesCount = {};
         if (!flagMemory.trackers) {
           flagMemory.trackers = {};
 
