@@ -77,8 +77,6 @@ module.exports = {
         flagMemory.enemyCount = 0;
         if (!flagMemory.repairTarget)
         flagMemory.repairTarget = [];
-        if (!flagMemory.creepAmount)
-          flagMemory.rolesCount = {};
         if (!flagMemory.trackers) {
           flagMemory.trackers = {};
 
