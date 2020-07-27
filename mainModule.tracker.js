@@ -6,8 +6,11 @@ module.exports = {
     const mainSystemMemory = Memory.mainSystem;
 
     function setCPUInMemory(name,startCPU,endCPU) {
+      // Get The Percentage Of What This CPU Tick Is In Avg //
       const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
       const secondairDivider = 1 - mainDivider;
+
+      // If EndCPU Is Included //
       if (endCPU == undefined)
       Memory.stats[`cpuTracker.${name}`] = secondairDivider * Memory.stats[`cpuTracker.${name}`] + mainDivider * startCPU;
       else
@@ -15,8 +18,11 @@ module.exports = {
     }
 
     function setCPUInMemoryModules(name,startCPU,endCPU) {
+      // Get The Percentage Of What This CPU Tick Is In Avg //
       const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
       const secondairDivider = 1 - mainDivider;
+
+      // If EndCPU Is Included //
       if (endCPU == undefined)
       Memory.stats[`cpuTrackerModules.${name}`] = secondairDivider * Memory.stats[`cpuTrackerModules.${name}`] + mainDivider * startCPU;
       else
@@ -24,8 +30,11 @@ module.exports = {
     }
 
     function setCPUInMemoryRooms(name,startCPU,endCPU,room) {
+      // Get The Percentage Of What This CPU Tick Is In Avg //
       const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
       const secondairDivider = 1 - mainDivider;
+
+      // If EndCPU Is Included //
       if (endCPU == undefined)
       Memory.stats[`rooms.${room}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.cpuTracker.${name}`] + mainDivider * startCPU;
       else
@@ -34,100 +43,107 @@ module.exports = {
 
 
     function mainSystem() {
+      // If Memory.mainSystem Is Defined //
       if (Memory.mainSystem) {
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
+        // If CpuTracking Is Enabled
+        if (Memory.mainSystem.cpuTracker == true)
+        return true;
+        else
         return false;
       }
+      else
+      return false;
     }
 
-
+    // Check If Tracking Is Enabled //
     if (mainSystem()) {
+      function runTracker() {
+        runCPUTracker();
+        resetTrackerMemoryGlobal();
+      }
+
+      function runRoomTracker(roomName) {
+        runRoomCPUTracker(roomName);
+        resetTrackerMemoryInRoom(roomName);
+      }
+
       function runRoomCPUTracker(roomName) {
+        // Define Memory ShortCut //
         const cpuTracker = Memory.flags[roomName].trackers.cpu;
 
+        // Enter This Tick CPU In Memory //
         setCPUInMemory("runTowers",cpuTracker.runTowers);
         setCPUInMemory("getDamagedStructures",cpuTracker.getDamagedStructures);
         setCPUInMemory("runGameTimeTimers",cpuTracker.runGameTimeTimers);
         setCPUInMemory("checkMissingMemory",cpuTracker.checkMissingMemory);
         setCPUInMemory("runRoomManager",cpuTracker.runRoomManager);
-
-        // setCPUInMemoryModules("harvestingModule",Memory.cpuTracker["harvesterCPU.total"]);
-        // setCPUInMemoryModules("upgraderModule",Memory.cpuTracker["upgraderCPU.total"]);
-        // setCPUInMemoryModules("transferModule",Memory.cpuTracker["transferCPU.total"]);
-        // setCPUInMemoryModules("withdrawModuleUpgrader",Memory.cpuTracker["withdrawCPU.upgrader"]);
-        // setCPUInMemoryModules("withdrawModuleNormal",Memory.cpuTracker["withdrawCPU.normal"]);
-        // setCPUInMemoryModules("claimerModule",Memory.cpuTracker["claimerCPU.total"]);
-        // setCPUInMemoryModules("builderModule",Memory.cpuTracker["builderCPU.total"]);
-        // setCPUInMemoryModules("repairerModule",Memory.cpuTracker["repairerCPU.total"]);
-        // Memory.cpuTracker["harvesterCPU.total"] = 0;
-        // Memory.cpuTracker["upgraderCPU.total"] = 0;
-        // Memory.cpuTracker["transferCPU.total"] = 0;
-        // Memory.cpuTracker["withdrawCPU.upgrader"] = 0;
-        // Memory.cpuTracker["withdrawCPU.normal"] = 0;
-        // Memory.cpuTracker["claimerCPU.total"] = 0;
-        // Memory.cpuTracker["builderCPU.total"] = 0;
-        // Memory.cpuTracker["repairerCPU.total"] = 0;
-        // Memory.cpuTracker["harvesterLDCPU.total"] = 0;
-        // Memory.cpuTracker["reserverCPU.total"] = 0;
-      }
-
-      function resetTrackerMemoryInRoom(roomName) {
-        const cpuTracker = Memory.flags[roomName].trackers.cpu;
-
-        cpuTracker.runTowers = 0;
-        cpuTracker.getDamagedStructures = 0;
-        cpuTracker.runGameTimeTimers = 0;
-        cpuTracker.checkMissingMemory = 0;
-        cpuTracker.runRoomManager = 0;
-      }
-      function resetTrackerMemoryGlobal() {
-        const cpuTracker = Memory.cpuTracker;
-
-        cpuTracker.loadMemory = 0;
-        cpuTracker.removeDeadCreepsMemory = 0;
-        cpuTracker.runCreeps = 0;
-        cpuTracker.cpuTracker = 0;
       }
 
       function runCPUTracker() {
+        // Define Memory ShortCut //
         const cpuTracker = Memory.cpuTracker;
 
+        // Enter This Tick CPU In Memory //
         setCPUInMemory("loadMemory", cpuTracker.loadMemory);
         setCPUInMemory("removeDeadCreepsMemory", cpuTracker.removeDeadCreepsMemory);
         setCPUInMemory("runCreeps", cpuTracker.runCreeps);
         setCPUInMemory("cpuTracker", cpuTracker.cpuTracker);
 
+        // Global Tracking //
         Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
         Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
         Memory.stats['cpu.bucket'] = Game.cpu.bucket;
         Memory.stats['resources.pixel.total'] = Game.resources.pixel;
       }
 
+      function resetTrackerMemoryInRoom(roomName) {
+        // Define Memory ShortCut //
+        const cpuTracker = Memory.flags[roomName].trackers.cpu;
+
+        // Reset Memory //
+        Object.keys(cpuTracker).forEach((item, i) => {
+          cpuTracker[item] = 0;
+        });
+        // cpuTracker.runTowers = 0;
+        // cpuTracker.getDamagedStructures = 0;
+        // cpuTracker.runGameTimeTimers = 0;
+        // cpuTracker.checkMissingMemory = 0;
+        // cpuTracker.runRoomManager = 0;
+      }
+      function resetTrackerMemoryGlobal() {
+        // Define Memory ShortCut //
+        const cpuTracker = Memory.cpuTracker;
+
+        // Reset Memory //
+        Object.keys(cpuTracker).forEach((item, i) => {
+          cpuTracker[item] = 0;
+        });
+        // cpuTracker.loadMemory = 0;
+        // cpuTracker.removeDeadCreepsMemory = 0;
+        // cpuTracker.runCreeps = 0;
+        // cpuTracker.cpuTracker = 0;
+      }
+
 
       _.forEach(Object.keys(Game.rooms), function (roomName) {
+        // Define Variables //
         const controller = Game.rooms[roomName].controller;
+
+        // If Room Is Ours //
         if (controller && controller.my) {
+          // Get FlagMemory
           const flagMemory = Memory.flags[roomName];
-          if (!flagMemory.IsMemorySetup) {
-            checkMissingMemory.run(roomName);
-          }
+          // Check If Memory Is Setup, If Not Fill Empty Memory //
+          if (!flagMemory.IsMemorySetup)
+          checkMissingMemory.run(roomName);
           else {
-            runRoomCPUTracker(roomName);
-            resetTrackerMemoryInRoom(roomName);
+            // Run Tracker //
+            runRoomTracker(roomName)
           }
         }
       })
 
-      runCPUTracker();
-
-      resetTrackerMemoryGlobal();
+      runTracker();
     }
     else {
       if (Game.time % 500 == 0)
