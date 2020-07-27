@@ -3,68 +3,93 @@ module.exports = {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
 
-    let spawn = getFirstOpenSpawn();
-
     function getFirstOpenSpawn() {
+      // Define Undefined Spawn //
+      let spawnId = "";
+
+      // Loop Through All Spawns In Room And Check For Idle Spawn //
       room.spawns.forEach((spawn, i) => {
-        if (spawn.spawning == null)
-        return spawn
+        if (spawn.spawning == null) {
+          // Set Spawn.Id To SpawnId //
+          spawnId = spawn.id;
+        }
       });
+
+      return spawnId;
     }
 
+    // Get Spawn //
+    let spawn = Game.getObjectById(getFirstOpenSpawn());
+
+    // If Spawn Is Defined //
     if (spawn) {
+      function resetRoleAndPartCount(roomName) {
+        const flagMemory = Memory.flags[roomName];
+        // Check If FlagMemory Has RolesCount //
+        if (flagMemory.rolesCount) {
+          // For Every Item In RolesCount, Reset To Zero //
+          Object.keys(flagMemory.rolesCount).forEach((item, i) => {
+            flagMemory.rolesCount[item] = 0;
+          });
+        }
+
+        // Check If FlagMemory Has PartsAmount //
+        if (flagMemory.partsAmount) {
+          // For Every Item In PartsAmount, Reset To Zero //
+          Object.keys(flagMemory.partsAmount).forEach((item, i) => {
+            flagMemory.partsAmount[item] = 0;
+          });
+        }
+      }
+
       function roomNeedsTransferer() {
-        let containerAmount = room.containers.length;
-        let linkAmount = room.links.length;
+        // EnergyStorage Is Zero At Start //
         let energyStored = 0;
 
-        if (containerAmount > 0) {
-          room.containers.forEach((item, i) => {
-            if (item.id !== flagMemory.controllerStorage && flagMemory.controllerStorage) {
-              energyStored += item.store.getUsedCapacity(RESOURCE_ENERGY);
-            }
-          });
-        }
-        if (room.terminal !== undefined) {
-          energyStored += room.terminal.store.getUsedCapacity(RESOURCE_ENERGY);
-        }
-        if (room.storage !== undefined) {
-          energyStored += room.storage.store.getUsedCapacity(RESOURCE_ENERGY);
-        }
-        if (linkAmount > 0) {
-          room.links.forEach((item, i) => {
-            if (flagMemory.links) {
-              if (flagMemory.links.linkTo1) {
-                if (room.links[i].id == flagMemory.links.linkTo1 && room.terminal) {
-                  energyStored += room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
-                }
+        // Loop Through All Containers And Count Energy In Container If Its Not The Controller Storage //
+        room.containers.forEach((container, i) => {
+          if (container.id !== flagMemory.controllerStorage || !flagMemory.controllerStorage) {
+            energyStored += container.store.getUsedCapacity(RESOURCE_ENERGY);
+          }
+        });
+        // Loop Through All Links And Count Energy In Link If Its Not The Controller Storage //
+        room.links.forEach((link, i) => {
+          if (flagMemory.links) {
+            if (flagMemory.links.linkTo1) {
+              if (link.id !== flagMemory.controllerStorage || !flagMemory.controllerStorage) {
+                energyStored += link.store.getUsedCapacity(RESOURCE_ENERGY);
               }
             }
-          });
-        }
+          }
+        });
 
-        if (energyStored > flagMemory.sources.length * 750)
+        // If There Is A Terminal In Room, Add EnergyCount
+        if (room.terminal !== undefined)
+        energyStored += room.terminal.store.getUsedCapacity(RESOURCE_ENERGY);
+
+        // If There Is A Storage In Room, Add EnergyCount
+        if (room.storage !== undefined)
+        energyStored += room.storage.store.getUsedCapacity(RESOURCE_ENERGY);
+
+        // If Energy In Storage Is High Enough For A Transferer To Work, Return True //
+        if (energyStored > 1000)
         return true;
         else return false;
       }
 
-      function spawnCreep(spawn,role,targetRoom,flagName) {
+      function spawnCreep(spawn,role,targetRoom = roomName,flagName = roomName) {
         let name = role + "-" + Math.round(Math.random() * 100);
-        if (!targetRoom)
-        targetRoom = roomName;
-        if (!flagName)
-        flagName = roomName;
 
         let directionsList = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
 
+        // Check If Room Needs To Spawn In Special Direction //
+        // This Is Because Of Top Right Of Spawn Is Reserved For Transferer
         if (room.terminal)
-        if (room.controller.level >= 6 && spawn.pos.inRangeTo(room.terminal,2)) {
-          if (role.includes("LiTe")) {
-            directionsList = [TOP_RIGHT];
-          }
-          else {
-            directionsList = [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
-          }
+        if (room.controller.level >= 6 && spawn.id == flagMemory.roomManager.headSpawn) {
+          if (role == "transfererLiTe")
+          directionsList = [TOP_RIGHT];
+          else
+          directionsList = [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
         }
 
 
@@ -87,376 +112,144 @@ module.exports = {
         let energyAvailable = flagMemory.totalEnergyAvailable;
         let energyCapacity = flagMemory.totalEnergyCapacity;
         let parts = [];
+        let energyCost;
+        let partAmount;
 
-        if (role == "harvester-0" || role == "harvester-1") {
-          const energyCost = 300;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          if (energyAvailable <= 300) {
-            parts.push(WORK);
-            parts.push(WORK);
-            parts.push(CARRY);
-            parts.push(MOVE);
-          }
-          else {
-            for (let i = 0; i < partAmount && i < 3; i++) {
-              parts.push(WORK);
-              parts.push(WORK);
-              parts.push(CARRY);
-              parts.push(MOVE);
-            }
-          }
+        switch (role) {
+          case "harvester-0":
+          case "harvester-1":
+          case "harvesterLD-0":
+          case "harvesterLD-1":
+          case "harvesterLD-2":
+          case "harvesterLD-3":
+            // Run CreepSize Code, Add The List Of Parts As Much As Possible //
+            energyCost = 300;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount && i < 3; i++)
+            parts.push(WORK,WORK,CARRY,MOVE);
+            break;
+          case "transferer":
+          case "transfererLD":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 100;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(CARRY,MOVE);
+            break;
+          case "transfererLiTe":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 100;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(CARRY,MOVE);
+            break;
+          case "builder":
+          case "builderLD":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 200;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(WORK,CARRY,MOVE);
+            break;
+          case "upgrader":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 300;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(WORK,WORK,CARRY,MOVE);
+            break;
+          case "repairer":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 200;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(WORK,CARRY,MOVE);
+            break;
+          case "extractor":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 300;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(WORK,WORK,CARRY,MOVE);
+            break;
+          case "claimer":
+          case "reserverLD":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 650;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(CLAIM,MOVE);
+            break;
+          case "attacker":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 190;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(TOUGH,ATTACK,MOVE,MOVE);
+            break;
+          case "ruinWithdrawer":
+            // Run Role Code, Add Role To RoleCount //
+            energyCost = 150;
+            partAmount = Math.floor(energyAvailable/energyCost);
+            for (let i = 0; i < partAmount; i++)
+            parts.push(CARRY,CARRY,MOVE);
+            break;
+          default:
+            console.log(`room ${roomName} is missing a role. Please add role: ${role} to its list.`);
+            break;
         }
-        else if (role == "transferer") {
-          const energyCost = 100;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          if (energyAvailable <= 300) {
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(MOVE);
-            parts.push(MOVE);
-            parts.push(MOVE);
-          }
-          else {
-            for (let i = 0; i < partAmount; i++) {
-              parts.push(CARRY);
-              parts.push(MOVE);
-            }
-          }
-        }
-        else if (role == "transfererLiTe") {
-          const energyCost = 100;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount && i < 10; i++) {
-            parts.push(CARRY);
-            parts.push(MOVE);
-          }
-        }
-        else if (role == "upgrader") {
-          const energyCost = 300;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount && i < flagMemory.sources.length*4; i++) {
-            parts.push(WORK);
-            parts.push(CARRY);
-            parts.push(MOVE);
-          }
-        }
-        // else if (role == "extractor") {
-        //   const energyCost = 300;
-        //   let partAmount = Math.floor(energyAvailable/energyCost);
-        //   if (energyAvailable <= 300) {
-        //     parts.push(WORK);
-        //     parts.push(WORK);
-        //     parts.push(CARRY);
-        //     parts.push(MOVE);
-        //   }
-        // }
-        else if (role == "builder") {
-          const energyCost = 300;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount && i < 10; i++) {
-            parts.push(WORK);
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(MOVE);
-            parts.push(MOVE);
-          }
-        }
-        else if (role == "repairer") {
-          const energyCost = 300;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount && i < 10; i++) {
-            parts.push(WORK);
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(MOVE);
-            parts.push(MOVE);
-          }
-        }
-        else if (role == "builderLD") {
-          const energyCost = 300;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount && i < 10; i++) {
-            parts.push(WORK);
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(MOVE);
-            parts.push(MOVE);
-          }
-        }
-        else if (role == "pixelFarmer") {
-          const energyCost = 50;
-          parts.push(MOVE);
-        }
-        else if (role == "ruinWithdrawer") {
-          const energyCost = 200;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount; i++) {
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(CARRY);
-            parts.push(MOVE);
-          }
-        }
-        else if (role == "reserverLD") {
-          const energyCost = 750;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < 2 && partAmount > 1&& i < partAmount; i++) {
-            parts.push(CLAIM);
-            parts.push(MOVE);
-            parts.push(MOVE);
-            parts.push(MOVE);
-          }
-        }
-        else if (role.includes("harvesterLD")) {
-          const energyCost = 350;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < 4; i++) {
-            parts.push(CARRY);
-            parts.push(WORK);
-            parts.push(WORK);
-            parts.push(MOVE);
-            parts.push(MOVE);
-          }
-        }
-        else if (role == "transfererLD") {
-          const energyCost = 100;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount && partAmount >= 18 && i < 24; i++) {
-            parts.push(CARRY);
-            parts.push(MOVE);
-          }
-        }
-        else if (role == "claimer") {
-          const energyCost = 650;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          for (let i = 0; i < partAmount; i++) {
-            parts.push(CLAIM);
-            parts.push(MOVE);
-          }
-          //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
-        }
-        else if (role == "attacker") {
-          //parts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
-          //parts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK];
-          parts = [TOUGH,ATTACK,MOVE,MOVE];
-          // const energyCost = 200;
-          // let partAmount = Math.floor(energyAvailable/energyCost);
-          // for (let i = 0; i < partAmount; i++) {
-          //   parts.push(RANGED_ATTACK);
-          //   parts.push(MOVE);
-          // }
-        }
-        else if (role == "shardUp") { // claimer
-          const energyCost = 650;
-          let partAmount = Math.floor(energyAvailable/energyCost);
-          parts.push(CLAIM);
-          parts.push(MOVE);
-          //parts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,CLAIM];
-        }
-        // else if (role == "shardUp") { // builder
-        //   const energyCost = 300;
-        //   let partAmount = Math.floor(energyAvailable/energyCost);
-        //   for (let i = 0; i < partAmount && i < 10; i++) {
-        //     parts.push(WORK);
-        //     parts.push(CARRY);
-        //     parts.push(CARRY);
-        //     parts.push(MOVE);
-        //     parts.push(MOVE);
-        //   }
-        // }
 
-
+        // Return Parts For The Creep //
         return parts;
       }
 
-      function getCreepAmount() {
-        for (let name in Game.creeps) {
-          let creep = Game.creeps[name];
-          let role = creep.memory.role;
-          const flagMemory = Memory.flags[creep.memory.spawnRoom];
-
-          if (flagMemory) {
-            if (!flagMemory.creepAmount) {
-              flagMemory.creepAmount = {};
-            }
-            if (role !== undefined && creep.memory.targetRoom == creep.memory.spawnRoom && flagMemory.creepAmount && creep.memory.spawnRoom == roomName ) {
-              if (creep.memory.role == "harvester-0") {
-                flagMemory.creepAmount.harvester0Count++;
-                flagMemory.creepAmount.harvester0WorkCount += creep.getActiveBodyparts(WORK);
-
-              }
-              if (creep.memory.role == "harvester-1") {
-                flagMemory.creepAmount.harvester1Count++;
-                flagMemory.creepAmount.harvester1WorkCount += creep.getActiveBodyparts(WORK);
-              }
-              if (creep.memory.role == "transferer") {
-                flagMemory.creepAmount.transfererCount++;
-                flagMemory.creepAmount.transfererCarryCount += creep.getActiveBodyparts(CARRY);
-              }
-              if (creep.memory.role == "transfererLiTe") {
-                flagMemory.creepAmount.transfererLiTeCount++;
-              }
-              if (creep.memory.role == "builder") {
-                flagMemory.creepAmount.builderCount++;
-                flagMemory.creepAmount.builderWorkCount += creep.getActiveBodyparts(WORK);
-              }
-              if (creep.memory.role == "upgrader") {
-                flagMemory.creepAmount.upgraderCount++;
-                flagMemory.creepAmount.upgraderWorkCount += creep.getActiveBodyparts(WORK);
-              }
-              if (creep.memory.role == "extractor") {
-                flagMemory.creepAmount.extractorCount++;
-              }
-              if (creep.memory.role == "repairer") {
-                flagMemory.creepAmount.repairerCount++;
-              }
-              if (creep.memory.role == "claimer") {
-                flagMemory.creepAmount.claimerCount++;
-              }
-              if (creep.memory.role == "attacker") {
-                flagMemory.creepAmount.attackerCount++;
-              }
-              if (creep.memory.role == "builderLD") {
-                flagMemory.creepAmount.builderLDCount++;
-              }
-              if (creep.memory.role == "pixelFarmer") {
-                flagMemory.creepAmount.pixelFarmerCount++;
-              }
-              if (creep.memory.role == "ruinWithdrawer") {
-                flagMemory.creepAmount.ruinWithdrawerCount++;
-              }
-            }
-            else if (creep.memory.flagName && creep.memory.targetRoom !== creep.memory.spawnRoom) {
-              const flag = Game.flags[creep.memory.flagName];
-              const flagMemory = Memory.flags[flag.name];
-              if (flagMemory.targetRoom) {
-                if (role !== undefined && creep.memory.targetRoom == flagMemory.targetRoom) {
-                  if (!flagMemory.creepAmount) {
-                    flagMemory.creepAmount = {};
-                  }
-                  else {
-                    if (creep.memory.role == "reserverLD") {
-                      flagMemory.creepAmount.reserverLDCount++;
-                    }
-                    else if (creep.memory.role == "attacker") {
-                      flagMemory.creepAmount.attackerCount++;
-                    }
-                    else if (creep.memory.role == "harvesterLD-0") {
-                      flagMemory.creepAmount.harvesterLD0Count++;
-                    }
-                    else if (creep.memory.role == "harvesterLD-1") {
-                      flagMemory.creepAmount.harvesterLD1Count++;
-                    }
-                    else if (creep.memory.role == "harvesterLD-2") {
-                      flagMemory.creepAmount.harvesterLD2Count++;
-                    }
-                    else if (creep.memory.role == "harvesterLD-3") {
-                      flagMemory.creepAmount.harvesterLD3Count++;
-                    }
-                    else if (creep.memory.role == "transfererLD") {
-                      flagMemory.creepAmount.transfererLDCount++;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
 
       function spawnManager() {
-        getCreepAmount();
-
-        // if (canCreepSpawn("attacker")) {
-        //   spawnCreep(spawn,"attacker");
-        // }
-        if (canCreepSpawn("transferer")) {
-          spawnCreep(spawn,"transferer");
-        }
-        else if (canCreepSpawn("harvester-0")) {
-          spawnCreep(spawn,"harvester-0");
-        }
-        else if (canCreepSpawn("harvester-1")) {
-          spawnCreep(spawn,"harvester-1");
-        }
-        else if (canCreepSpawn("builder")) {
-          spawnCreep(spawn,"builder");
-        }
-        else if (canCreepSpawn("transfererLiTe")) {
-          spawnCreep(Game.getObjectById(flagMemory.roomManager.headSpawn),"transfererLiTe");
-        }
-        else if (canCreepSpawn("upgrader")) {
-          spawnCreep(spawn,"upgrader");
-        }
-        else if (canCreepSpawn("repairer")) {
-          spawnCreep(spawn,"repairer",roomName);
-        }
-        // else if (canCreepSpawn("extractor")) {
-        //   spawnCreep(spawn,"extractor");
-        // }
-        else if (canCreepSpawn("claimer")) {
-          spawnCreep(spawn,"claimer",roomName);
-        }
-        else if (canCreepSpawn("builderLD")) {
-          spawnCreep(spawn,"builderLD",roomName);
-        }
-        // else if (canCreepSpawn("pixelFarmer")) {
-        //   spawnCreep(spawn,"pixelFarmer",roomName);
-        // }
-        // else if (canCreepSpawn("ruinWithdrawer")) {
-        //   spawnCreep(spawn,"ruinWithdrawer",roomName);
-        // }
-        // else if (canCreepSpawn("claimer")) {
-        //   spawnCreep(spawn,"shardUp",roomName);
-        // }
-        // else if (canCreepSpawn("shardUp")) {
-        //   spawnCreep(spawn,"shardUp",roomName);
-        // }
+        if (canCreepSpawn("attacker"))
+        spawnCreep(spawn,"attacker");
+        else if (canCreepSpawn("transferer"))
+        spawnCreep(spawn,"transferer");
+        else if (canCreepSpawn("harvester-0"))
+        spawnCreep(spawn,"harvester-0");
+        else if (canCreepSpawn("harvester-1"))
+        spawnCreep(spawn,"harvester-1");
+        else if (canCreepSpawn("builder"))
+        spawnCreep(spawn,"builder");
+        else if (canCreepSpawn("transfererLiTe"))
+        spawnCreep(Game.getObjectById(flagMemory.roomManager.headSpawn),"transfererLiTe");
+        else if (canCreepSpawn("upgrader"))
+        spawnCreep(spawn,"upgrader");
+        else if (canCreepSpawn("repairer"))
+        spawnCreep(spawn,"repairer",roomName);
+        // else if (canCreepSpawn("extractor"))
+        // spawnCreep(spawn,"extractor");
+        else if (canCreepSpawn("claimer"))
+        spawnCreep(spawn,"claimer",roomName);
+        // else if (canCreepSpawn("ruinWithdrawer"))
+        // spawnCreep(spawn,"ruinWithdrawer",roomName);
         else {
           getAttackRooms();
-          // if (room.controller.level >= 7) {
-          //   getRemotes();
-          // }
-        }
+          if (room.controller.level >= 7) {
+            getRemotes();
+          }
 
-        if (flagMemory.creepAmount !== undefined) {
-          flagMemory.creepAmount.harvester0Count = 0;
-          flagMemory.creepAmount.harvester0WorkCount = 0;
-          flagMemory.creepAmount.harvester1Count = 0;
-          flagMemory.creepAmount.harvester1WorkCount = 0;
-          flagMemory.creepAmount.transfererCount = 0;
-          flagMemory.creepAmount.transfererCarryCount = 0;
-          flagMemory.creepAmount.transfererLiTeCount = 0;
-          flagMemory.creepAmount.builderCount = 0;
-          flagMemory.creepAmount.builderWorkCount = 0;
-          flagMemory.creepAmount.upgraderCount = 0;
-          flagMemory.creepAmount.upgraderWorkCount = 0;
-          flagMemory.creepAmount.repairerCount = 0;
-          flagMemory.creepAmount.extractorCount = 0;
-          flagMemory.creepAmount.claimerCount = 0;
-          flagMemory.creepAmount.builderLDCount = 0;
-          flagMemory.creepAmount.builderWorkCount = 0;
-          flagMemory.creepAmount.pixelFarmerCount = 0;
-          flagMemory.creepAmount.ruinWithdrawerCount = 0;
+          resetRoleAndPartCount(roomName);
         }
       }
 
       function canCreepSpawn(role) {
         let result = false;
-        //if (Game.shard.name == "shard0")
-        //console.log(`${roomName} - ${role}`)
-        if (flagMemory.creepAmount) {
+        if (flagMemory.rolesCount && flagMemory.partsAmount) {
           switch(role) {
             case "transferer":
-            if (((flagMemory.creepAmount.transfererCarryCount < flagMemory.sources.length * 15 + 10 && room.containers.length == 0) || (flagMemory.creepAmount.transfererCarryCount < flagMemory.sources.length * 30 && room.containers.length > 0)) && roomNeedsTransferer()) {
-              if (flagMemory.creepAmount.transfererCount < 6) {
+            if (((flagMemory.partsAmount["transferer-CARRY"] < flagMemory.sources.length * 15 + 10 && room.containers.length == 0) || (flagMemory.partsAmount["transferer-CARRY"] < flagMemory.sources.length * 30 && room.containers.length > 0)) && roomNeedsTransferer()) {
+              if (flagMemory.rolesCount["transferer"] < 6) {
                 result = true;
               }
             }
             break;
             case "transfererLiTe":
-            if (flagMemory.creepAmount.transfererLiTeCount < 1 && flagMemory.links.linkTo1 !== undefined && room.storage && room.terminal) {
+            if (flagMemory.rolesCount["transfererLiTe"] < 1 && flagMemory.links.linkTo1 !== undefined && room.storage && room.terminal) {
               if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
                 if (flagMemory.links.linkTo2.length > 0) {
                   result = true;
@@ -465,50 +258,49 @@ module.exports = {
             }
             break;
             case "harvester-0":
-            if (flagMemory.creepAmount.harvester0WorkCount < 6) {
+            if (flagMemory.partsAmount["harvester-0-WORK"] < 6) {
               if (flagMemory.sources[0] !== undefined) {
-                if (flagMemory.sources[0].openSpots > flagMemory.creepAmount.harvester0Count) {
+                if (flagMemory.sources[0].openSpots > flagMemory.partsAmount["harvester-0-WORK"]) {
                   result = true;
                 }
               }
             }
             break;
             case "harvester-1":
-            if (flagMemory.creepAmount.harvester1WorkCount < 6) {
+            if (flagMemory.partsAmount["harvester-1-WORK"] < 6) {
               if (flagMemory.sources[1] !== undefined) {
-                if (flagMemory.sources[1].openSpots > flagMemory.creepAmount.harvester1Count) {
+                if (flagMemory.sources[1].openSpots > flagMemory.partsAmount["harvester-1-WORK"]) {
                   result = true;
                 }
               }
             }
             break;
             case "builder":
-            if (flagMemory.creepAmount.builderCount < 5 && flagMemory.constructionSitesAmount > 0) {
-              if (flagMemory.creepAmount.builderWorkCount < (flagMemory.creepAmount.harvester0WorkCount + flagMemory.creepAmount.harvester0WorkCount) /2) {
+            if (flagMemory.rolesCount["builder"] < 8 && flagMemory.constructionSitesAmount > 0 && roomNeedsTransferer()) {
+              if (flagMemory.partsAmount["builder-WORK"] < (flagMemory.partsAmount["harvester-0-WORK"] * flagMemory.sources.length) / 2) {
                 result = true;
               }
             }
             break;
             case "upgrader":
-            //console.log(`${flagMemory.creepAmount.upgraderWorkCount} - ${flagMemory.sources.length*4} - ${flagMemory.constructionSitesAmount == 0} - ${!Game.flags["builderLD"+roomName]} - ${roomName}`)
-            if (flagMemory.creepAmount.upgraderWorkCount < flagMemory.sources.length*4 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
-              if (flagMemory.creepAmount.upgraderCount < 4) {
+            if (flagMemory.partsAmount["upgrader-WORK"] < flagMemory.sources.length*4 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
+              if (flagMemory.rolesCount["upgrader"] < 4) {
                 result = true;
               }
             }
             break;
             case "repairer":
-            if (flagMemory.creepAmount.repairerCount < 2 && room.towers.length == 0) {
+            if (flagMemory.rolesCount["repairer"] < 2 && room.towers.length == 0) {
               result = true;
             }
             break;
             case "extractor":
-            if (flagMemory.creepAmount.extractorCount < 1 && flagMemory.mineralAmount > 0 && room.controller.level >= 6) {
+            if (flagMemory.rolesCount["extractor"] < 1 && flagMemory.mineralAmount > 0 && room.controller.level >= 6) {
               result = true;
             }
             break;
             case "claimer":
-            if (flagMemory.creepAmount.claimerCount < 3 && Game.flags["claim"]) {
+            if (flagMemory.rolesCount["claimer"] < 3 && Game.flags["claim"]) {
               if (Memory.flags["claim"]) {
                 if (roomName == Memory.flags["claim"].spawnRoom) {
                   result = true;
@@ -518,33 +310,19 @@ module.exports = {
                 Memory.flags["claim"] = {};
                 Memory.flags["claim"].spawnRoom = "";
                 Memory.flags["claim"].claimRoom = "";
+                console.log("Claim flag is missing memory!")
               }
             }
             break;
-            case "builderLD":
-            if (flagMemory.creepAmount.builderLDCount < 4 && Game.flags["builderLD" + roomName]) {
-              result = true;
-            }
-            break;
-            case "pixelFarmer":
-            if (Game.time % 200 == 0 && roomName == "E42N2") {
-              result = true;
-            }
-            break;
             case "ruinWithdrawer":
-            if (flagMemory.creepAmount.ruinWithdrawerCount < 1 && room.storage) {
-              result = true;
-            }
             break;
             case "claimer":
             if (Memory.flags["claim"])
             if (roomName == Memory.flags["claim"].spawnRoom)
             result = true;
             break;
-            // case "shardUp":
-            // if (roomName == "E42N2" && Game.flags["testtest"] !== undefined) {
-            //   result = true;
-            // }
+            default:
+            result = false;
             break;
           }
         }
@@ -558,21 +336,21 @@ module.exports = {
         if (flagMemory.creepAmount) {
           switch(role) {
             case "transferer":
-            if (flagMemory.creepAmount.transfererCarryCount < 40 && roomNeedsTransferer()) {
-              if (flagMemory.creepAmount.transfererCount < 6) {
+            if (flagMemory.partsAmount["transferer-CARRY"] < 40) {
+              if (flagMemory.rolesCount["transferer"] < 6) {
                 result = true;
               }
             }
             break;
             case "attacker":
-            if (flagMemory.creepAmount.attackerCount < 1) {
+            if (flagMemory.rolesCount["attacker"] < 1) {
               if (Memory.flags[roomName].totalEnergyAvailable > 1600) {
                 result = true;
               }
             }
             break;
             case "reserverLD":
-            if (flagMemory.creepAmount.reserverLDCount < 1) {
+            if (flagMemory.rolesCount["reserverLD"] < 1) {
               if (!flagMemory.reserveTicksLeft || flagMemory.reserveTicksLeft < 2000) {
                 result = true;
               }
@@ -580,55 +358,49 @@ module.exports = {
             break;
             case "harvesterLD-0":
             if (flagMemory.sourceAmount > 0) {
-              if (flagMemory.creepAmount.harvesterLD0Count < 1) {
+              if (flagMemory.rolesCount["harvestrerLD-0"] < 1) {
                 result = true;
               }
             }
             break;
             case "harvesterLD-1":
             if (flagMemory.sourceAmount > 1) {
-              if (flagMemory.creepAmount.harvesterLD1Count < 1) {
+              if (flagMemory.rolesCount["harvesterLD-1"] < 1) {
                 result = true;
               }
             }
             break;
             case "harvesterLD-2":
             if (flagMemory.sourceAmount > 2) {
-              if (flagMemory.creepAmount.harvesterLD2Count < 1) {
+              if (flagMemory.rolesCount["harvesterLD-2"] < 1) {
                 result = true;
               }
             }
             break;
             case "harvesterLD-3":
             if (flagMemory.sourceAmount > 3) {
-              if (flagMemory.creepAmount.harvesterLD3Count < 1) {
+              if (flagMemory.rolesCount["harvesterLD-3"] < 1) {
                 result = true;
               }
             }
             break;
             case "transfererLD":
             if (flagMemory.sourceAmount > 0) {
-              if (flagMemory.creepAmount.transfererLDCount < flagMemory.sourceAmount) {
+              if (flagMemory.rolesCount["transfererLD"] < flagMemory.sourceAmount) {
                 result = true;
               }
+            }
+            break;
+            case "builderLD":
+            if (flagMemory.rolesCount["builderLD"] < 4 && Game.flags["builderLD" + roomName]) {
+              result = true;
             }
             break;
             default:
             break;
           }
-          return result;
-        }
-        else {
-          if (!flagMemory.creepAmount)
-          flagMemory.creepAmount = {};
 
-          flagMemory.creepAmount.reserverLDCount = 0;
-          flagMemory.creepAmount.harvesterLD0Count = 0;
-          flagMemory.creepAmount.harvesterLD1Count = 0;
-          flagMemory.creepAmount.harvesterLD2Count = 0;
-          flagMemory.creepAmount.harvesterLD3Count = 0;
-          flagMemory.creepAmount.attackerCount = 0;
-          flagMemory.creepAmount.transfererLDCount = 0;
+          return result;
         }
       }
 
@@ -660,59 +432,43 @@ module.exports = {
               const flagMemory = Memory.flags[flag.name];
 
 
-              if (Game.time % 10 == 0) {
-                if (Game.rooms[flagMemory.targetRoom].controller.reservation) {
-                  flagMemory.reserveTicksLeft = Game.rooms[flagMemory.targetRoom].controller.reservation.ticksToEnd;
-                }
-              }
+              if (Game.rooms[flagMemory.targetRoom].controller.reservation)
+              flagMemory.reserveTicksLeft = Game.rooms[flagMemory.targetRoom].controller.reservation.ticksToEnd;
 
-              if (canRemoteCreepSpawn(flagMemory,"transferer")) {
-                spawnCreep(spawn,"transferer");
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"transfererLD")) {
-                spawnCreep(spawn,"transfererLD",flagMemory.targetRoom,flag.name);
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"reserverLD")) {
-                spawnCreep(spawn,"reserverLD",flagMemory.targetRoom,flag.name);
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-0")) {
-                spawnCreep(spawn,"harvesterLD-0",flagMemory.targetRoom,flag.name);
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-1")) {
-                spawnCreep(spawn,"harvesterLD-1",flagMemory.targetRoom,flag.name);
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-2")) {
-                spawnCreep(spawn,"harvesterLD-2",flagMemory.targetRoom,flag.name);
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-3")) {
-                spawnCreep(spawn,"harvesterLD-3",flagMemory.targetRoom,flag.name);
-              }
-              else if (canRemoteCreepSpawn(flagMemory,"transfererLD")) {
-                spawnCreep(spawn,"transfererLD",flagMemory.targetRoom,flag.name);
-              }
-              flagMemory.creepAmount.reserverLDCount = 0;
-              flagMemory.creepAmount.harvesterLD0Count = 0;
-              flagMemory.creepAmount.harvesterLD1Count = 0;
-              flagMemory.creepAmount.harvesterLD2Count = 0;
-              flagMemory.creepAmount.harvesterLD3Count = 0;
-              flagMemory.creepAmount.transfererLDCount = 0;
+              if (canRemoteCreepSpawn(flagMemory,"transferer"))
+              spawnCreep(spawn,"transferer");
+              else if (canRemoteCreepSpawn(flagMemory,"transfererLD"))
+              spawnCreep(spawn,"transfererLD",flagMemory.targetRoom,flag.name);
+              else if (canRemoteCreepSpawn(flagMemory,"reserverLD"))
+              spawnCreep(spawn,"reserverLD",flagMemory.targetRoom,flag.name);
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-0"))
+              spawnCreep(spawn,"harvesterLD-0",flagMemory.targetRoom,flag.name);
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-1"))
+              spawnCreep(spawn,"harvesterLD-1",flagMemory.targetRoom,flag.name);
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-2"))
+              spawnCreep(spawn,"harvesterLD-2",flagMemory.targetRoom,flag.name);
+              else if (canRemoteCreepSpawn(flagMemory,"harvesterLD-3"))
+              spawnCreep(spawn,"harvesterLD-3",flagMemory.targetRoom,flag.name);
+              else if (canRemoteCreepSpawn(flagMemory,"transfererLD"))
+              spawnCreep(spawn,"transfererLD",flagMemory.targetRoom,flag.name);
+              else if (canCreepSpawn("builderLD"))
+              spawnCreep(spawn,"builderLD",roomName,flagMemory.targetRoom,flag.name);
+
+              resetRoleAndPartCount(flag.name);
             }
           }
         }
       }
 
       function checkIfAttackMemoryIsSetup(flag) {
-        if (!Memory.flags[flag.name]) {
-          Memory.flags[flag.name] = {};
-        }
+        if (!Memory.flags[flag.name])
+        Memory.flags[flag.name] = {};
         else {
           const flagMemory = Memory.flags[flag.name];
-          if (flagMemory.targetRoom) {
-            return true;
-          }
-          else {
-            console.log(`The flag ${flag.name} is missing the targetRoom`)
-          }
+          if (flagMemory.targetRoom)
+          return true;
+          else
+          console.log(`The flag ${flag.name} is missing the targetRoom`)
         }
       }
 
@@ -724,9 +480,8 @@ module.exports = {
               const flagMemory = Memory.flags[flag.name];
 
 
-              if (canRemoteCreepSpawn(flagMemory,"attacker")) {
-                spawnCreep(spawn,"attacker",flagMemory.targetRoom);
-              }
+              if (canRemoteCreepSpawn(flagMemory,"attacker"))
+              spawnCreep(spawn,"attacker",flagMemory.targetRoom);
 
               flagMemory.creepAmount.attackerCount = 0;
             }
