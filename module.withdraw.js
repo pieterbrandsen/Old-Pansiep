@@ -54,7 +54,7 @@ module.exports = {
             flagMemory.controllerStorage = linkInRange.id;
           }
           else if (constructionSiteInRange == null) {
-            enterValueInMemory(`controller.HasStructure`, false);
+            flagMemory.roomManager[`controller.HasStructure`] = false;
           }
           else {
             harvestModule.run(creep);
@@ -87,8 +87,6 @@ module.exports = {
         case ERR_NOT_ENOUGH_RESOURCES:
         break;
         case ERR_INVALID_TARGET:
-        if (!creep.pos.inRangeTo(creep.room.controller,4))
-        creep.travelTo(creep.room.controller);
         break;
         case ERR_FULL:
         break;

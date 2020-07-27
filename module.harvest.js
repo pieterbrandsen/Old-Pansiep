@@ -30,18 +30,11 @@ module.exports = {
 
       // If there are sources found get the source that matches the name else get the nearest source //
       if (sources.length > 0) {
-        if (creep.name.includes("0-")) {
-          creep.memory.sourceId = sources[0].id;
-        }
-        else if (creep.name.includes("1-")) {
-          creep.memory.sourceId = sources[1].id;
-        }
-        else if (creep.name.includes("2-")) {
-          creep.memory.sourceId = sources[2].id;
-        }
-        else if (creep.name.includes("3-")) {
-          creep.memory.sourceId = sources[3].id;
-        }
+        roleName = creep.memory.role;
+        if (roleName.includes("-0"))
+        creep.memory.sourceId = flagMemory.sources[0].id;
+        else if (roleName.includes("-1"))
+        creep.memory.sourceId = flagMemory.sources[1].id;
         else {
           if (creep.memory.role.includes("extractor")) {
             if (flagMemory.mineralId)
@@ -87,7 +80,7 @@ module.exports = {
           break;
         case ERR_NOT_IN_RANGE:
           creep.say("Moving");
-          creep.moveTo(target);
+          creep.travelTo(target);
           break;
         case ERR_TIRED:
           break;

@@ -1,4 +1,5 @@
 const builderModule = require('module.builder');
+const checkMissingMemory = require('module.checkMissingMemory')
 
 module.exports = {
   run: function(creep) {
@@ -7,8 +8,8 @@ module.exports = {
     if (!creep.memory.waitTransferer || Game.time % 20 == 0) {
       creep.memory.waitTransferer = false;
     }
-    if (!creep.memory.targetId)
-    creep.memory.targetId = "";
+    if (!creep.memory.transferId)
+    creep.memory.transferId = "";
 
 
 
@@ -34,7 +35,7 @@ module.exports = {
         case OK:
         creep.say("Transfer");
         creep.memory.transferStructure = target.structureType;
-        creep.memory.targetId = "";
+        creep.memory.transferId = "";
         case ERR_NOT_OWNER:
         break;
         case ERR_BUSY:
@@ -70,11 +71,20 @@ module.exports = {
 
 
         if (containerInRange !== null)
-        creep.memory.targetId = containerInRange.id;
+        creep.memory.transferId = containerInRange.id;
         else if (linkInRange !== null)
-        creep.memory.targetId = linkInRange.id;
-        else
-        builderModule.run(creep);
+        creep.memory.transferId = linkInRange.id;
+        else {
+          builderModule.run(creep);
+          if (creep.memory.role.includes("-0"))
+          flagMemory.roomManager[`source-0.HasStructure`] = false;
+          if (creep.memory.role.includes("-1"))
+          flagMemory.roomManager[`source-1.HasStructure`] = false;
+          if (creep.memory.role.includes("-2"))
+          flagMemory.roomManager[`source-2.HasStructure`] = false;
+          if (creep.memory.role.includes("-3"))
+          flagMemory.roomManager[`source-3.HasStructure`] = false;
+        }
       }
       else {
 
@@ -89,7 +99,7 @@ module.exports = {
           });
 
           if (target !== null)
-          creep.memory.targetId = target.id;
+          creep.memory.transferId = target.id;
           else
           creep.memory.waitTransferer = true;
         }
@@ -98,10 +108,10 @@ module.exports = {
             if (flagMemory.totalEnergyCapacity !== flagMemory.totalEnergyAvailable)
             creep.memory.waitTransferer = false;
             else if (controllerStorage.store.getUsedCapacity() < 1000 && (controllerStorage.structureType == STRUCTURE_CONTAINER || creep.room.controller.level < 6))
-            creep.memory.targetId = controllerStorage.id;
+            creep.memory.transferId = controllerStorage.id;
             else {
               if (creep.room.storage)
-              creep.memory.targetId = creep.room.storage.id
+              creep.memory.transferId = creep.room.storage.id
             }
           }
         }
@@ -113,7 +123,7 @@ module.exports = {
       let start = Game.cpu.getUsed();
 
       // Run the part //
-      transferTarget(Game.getObjectById(creep.memory.targetId));
+      transferTarget(Game.getObjectById(creep.memory.transferId));
 
       // Set the average CPU Usage in the memory //
 
@@ -121,7 +131,7 @@ module.exports = {
     }
     else {
       // Run the part without tracking //
-      transferTarget(Game.getObjectById(creep.memory.targetId));
+      transferTarget(Game.getObjectById(creep.memory.transferId));
     }
   }
 };

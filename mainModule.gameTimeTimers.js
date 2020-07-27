@@ -6,7 +6,7 @@ module.exports = {
   run: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
-
+    
 
     // Every 10 Ticks Run This //
     if (Game.time % 10 == 0) {

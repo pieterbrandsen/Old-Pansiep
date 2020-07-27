@@ -77,6 +77,25 @@ module.exports = {
         flagMemory.enemyCount = 0;
         if (!flagMemory.repairTarget)
         flagMemory.repairTarget = [];
+        if (!flagMemory.rolesCount) {
+          flagMemory.rolesCount = {};
+          flagMemory.rolesCount["transferer"] = 0;
+          flagMemory.rolesCount["transfererLiTe"] = 0;
+          flagMemory.rolesCount["builder"] = 0;
+          flagMemory.rolesCount["upgrader"] = 0;
+          flagMemory.rolesCount["repairer"] = 0;
+          flagMemory.rolesCount["extractor"] = 0;
+          flagMemory.rolesCount["claimer"] = 0;
+        }
+
+        if (!flagMemory.partsAmount) {
+          flagMemory.partsAmount = {};
+          flagMemory.partsAmount["transferer-CARRY"] = 0;
+          flagMemory.partsAmount["harvester-0-WORK"] = 0;
+          flagMemory.partsAmount["harvester-1-WORK"] = 0;
+          flagMemory.partsAmount["builder-WORK"] = 0;
+          flagMemory.partsAmount["upgrader-WORK"] = 0;
+        }
         if (!flagMemory.trackers) {
           flagMemory.trackers = {};
 

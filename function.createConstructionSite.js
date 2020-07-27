@@ -12,7 +12,7 @@ module.exports = {
     const x = object.pos.x;
     const y = object.pos.y;
     // Make The Range It's Own Variable //
-    let range = getRange++;
+    let range = getRange;
 
     // Define The Return Variables //
     let structureType;
@@ -102,8 +102,8 @@ module.exports = {
         let optimalPositions = [0,[0,0], 50];
 
         // Get All Possible Possitions And Enter Them In A List //
-        for (let i = 1; i < range; i++) {
-          for (let j = 0; j < range; j++) {
+        for (let i = 1; i < range+1; i++) {
+          for (let j = 1; j < range+1; j++) {
             possiblePositions.push([x-j,y-i])
             possiblePositions.push([x+j,y-i])
             possiblePositions.push([x-j,y+i])
@@ -150,7 +150,7 @@ module.exports = {
     // Run Head Function //
     checkIfCanBuildStructure();
 
-
+    //console.log([constructionSiteCanBeBuild, isThereStruture, errorMessage,id])
     return [constructionSiteCanBeBuild, isThereStruture, errorMessage];
   }
 };

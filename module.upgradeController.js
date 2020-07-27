@@ -27,7 +27,7 @@ module.exports = {
 
     function upgradeController() {
       // If there is a controller in current room check if creep can upgrade //
-      if(creep.room.controller) {
+      if(creep.room.controller && flagMemory.constructionSitesAmount == 0) {
         const runUpgrade = creep.upgradeController(creep.room.controller);
 
         switch(runUpgrade) {
