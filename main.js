@@ -21,9 +21,32 @@ module.exports.loop = function() {
   const mainSystemMemory = Memory.mainSystem;
 
   // Every Time The Bucket Reaches It's Limit, Generate A Pixel //
-  if (Game.cpu.bucket == 10000) {
-    Game.cpu.generatePixel();
+  // if (Game.cpu.bucket == 10000) {
+  //   Game.cpu.generatePixel();
+  // }
+
+  if (!Memory.flags)
+  Memory.flags = {};
+  if (!Memory.stats)
+  Memory.stats = {};
+  if (!Memory.cpuTracker) {
+    Memory.cpuTracker = {};
+    Memory.cpuTracker.loadMemory = 0;
+    Memory.cpuTracker.removeDeadCreepsMemory = 0;
+    Memory.cpuTracker.runCreeps = 0;
+    Memory.cpuTracker.cpuTracker = 0;
   }
+  if (!Memory.mainSystem) {
+    Memory.mainSystem = {};
+    Memory.mainSystem.cpuTracker = true;
+    Memory.mainSystem.cpuAvgTicks = 100;
+    Memory.mainSystem.performanceTracker = true;
+    Memory.mainSystem.performanceAvgTicks = 10000;
+  }
+  if (!Memory.performanceTracker)
+  Memory.performanceTracker = {};
+  if (!Memory.outpostMemory)
+  Memory.outpostMemory = {};
 
 
   // Loop Through All Rooms With Vision //
@@ -134,7 +157,6 @@ module.exports.loop = function() {
     else
     return false;
   }
-
 
   function removeDeadCreepsMemory() {
     if (Game.time % 10 == 0) {
