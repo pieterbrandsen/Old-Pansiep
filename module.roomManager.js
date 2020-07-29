@@ -102,6 +102,8 @@ module.exports = {
     }
 
     if (flagMemory) {
+      flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
+      
       if (flagMemory.roomManager) {
         if (Game.time % 10 == 0)
         getSpawningEnergy();

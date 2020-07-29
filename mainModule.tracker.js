@@ -1,9 +1,12 @@
 const deleteMemory = require("module.deleteMemory");
 const checkMissingMemory = require('module.checkMissingMemory');
+const mainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function() {
+    // Get the variables needed for module //
     const mainSystemMemory = Memory.mainSystem;
+    const runMainSystem = mainSystem.run();
 
     function setCPUInMemory(name,startCPU,endCPU) {
       // Get The Percentage Of What This CPU Tick Is In Avg //
@@ -29,34 +32,17 @@ module.exports = {
       Memory.stats[`cpuTrackerModules.${name}`] = secondairDivider * Memory.stats[`cpuTrackerModules.${name}`] + mainDivider * (endCPU - startCPU);
     }
 
-    function setCPUInMemoryRooms(name,startCPU,endCPU,room) {
+    function setCPUInMemoryRooms(name,cpuUsage,roomName) {
       // Get The Percentage Of What This CPU Tick Is In Avg //
       const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
       const secondairDivider = 1 - mainDivider;
 
-      // If EndCPU Is Included //
-      if (endCPU == undefined)
-      Memory.stats[`rooms.${room}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.cpuTracker.${name}`] + mainDivider * startCPU;
-      else
-      Memory.stats[`rooms.${room}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.cpuTracker.${name}`] + mainDivider * (endCPU - startCPU);
+      Memory.stats[`rooms.${roomName}.cpuTracker.${name}`] = secondairDivider * Memory.stats[`rooms.${roomName}.cpuTracker.${name}`] + mainDivider * cpuUsage;
     }
 
-
-    function mainSystem() {
-      // If Memory.mainSystem Is Defined //
-      if (Memory.mainSystem) {
-        // If CpuTracking Is Enabled
-        if (Memory.mainSystem.cpuTracker == true)
-        return true;
-        else
-        return false;
-      }
-      else
-      return false;
-    }
 
     // Check If Tracking Is Enabled //
-    if (mainSystem()) {
+    if (runMainSystem) {
       function runTracker() {
         runCPUTracker();
         resetTrackerMemoryGlobal();
@@ -72,11 +58,16 @@ module.exports = {
         const cpuTracker = Memory.flags[roomName].trackers.cpu;
 
         // Enter This Tick CPU In Memory //
-        setCPUInMemory("runTowers",cpuTracker.runTowers);
-        setCPUInMemory("getDamagedStructures",cpuTracker.getDamagedStructures);
-        setCPUInMemory("runGameTimeTimers",cpuTracker.runGameTimeTimers);
-        setCPUInMemory("checkMissingMemory",cpuTracker.checkMissingMemory);
-        setCPUInMemory("runRoomManager",cpuTracker.runRoomManager);
+
+        // MainModules //
+        setCPUInMemoryRooms("runTowers",cpuTracker.runTowers, roomName);
+        setCPUInMemoryRooms("getDamagedStructures",cpuTracker.getDamagedStructures, roomName);
+        setCPUInMemoryRooms("runGameTimeTimers",cpuTracker.runGameTimeTimers, roomName);
+        setCPUInMemoryRooms("checkMissingMemory",cpuTracker.checkMissingMemory, roomName);
+        setCPUInMemoryRooms("runRoomManager",cpuTracker.runRoomManager, roomName);
+
+        // Modules //
+        setCPUInMemoryRooms("builderModule",cpuTracker.builderModule, roomName);
       }
 
       function runCPUTracker() {
@@ -104,11 +95,6 @@ module.exports = {
         Object.keys(cpuTracker).forEach((item, i) => {
           cpuTracker[item] = 0;
         });
-        // cpuTracker.runTowers = 0;
-        // cpuTracker.getDamagedStructures = 0;
-        // cpuTracker.runGameTimeTimers = 0;
-        // cpuTracker.checkMissingMemory = 0;
-        // cpuTracker.runRoomManager = 0;
       }
       function resetTrackerMemoryGlobal() {
         // Define Memory ShortCut //
@@ -118,10 +104,6 @@ module.exports = {
         Object.keys(cpuTracker).forEach((item, i) => {
           cpuTracker[item] = 0;
         });
-        // cpuTracker.loadMemory = 0;
-        // cpuTracker.removeDeadCreepsMemory = 0;
-        // cpuTracker.runCreeps = 0;
-        // cpuTracker.cpuTracker = 0;
       }
 
 

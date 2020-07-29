@@ -1,27 +1,14 @@
+const mainSystem = require('miniModule.mainSystem');
+
 module.exports = {
   run: function(creep) {
     // Get the variables needed for module //
+    const runMainSystem = mainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
     const target = Game.getObjectById(creep.memory.sourceId);
 
     if (!creep.memory.harvesterWorkCount) {
       creep.memory.harvesterWorkCount = creep.getActiveBodyparts(WORK);
-    }
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
     }
 
     function findNewSourceInRoom() {
@@ -103,7 +90,7 @@ module.exports = {
     }
 
 
-    if (mainSystem()) {
+    if (runMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 

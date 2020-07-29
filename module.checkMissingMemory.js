@@ -107,6 +107,7 @@ module.exports = {
 
           flagMemory.trackers.cpu = {};
           let cpuTracker = flagMemory.trackers.cpu;
+          // MainModules //
           cpuTracker.runTowers = 0;
           cpuTracker.getDamagedStructures = 0;
           cpuTracker.runGameTimeTimers = 0;
@@ -114,6 +115,7 @@ module.exports = {
           cpuTracker.runRoomManager = 0;
           cpuTracker.runRoomCPUTracker = 0;
 
+          // Modules //
           cpuTracker.harvestingModule = 0;
           cpuTracker.upgraderModule = 0;
           cpuTracker.transferModule = 0;
@@ -122,6 +124,11 @@ module.exports = {
           cpuTracker.claimerModule = 0;
           cpuTracker.builderModule = 0;
           cpuTracker.repairerModule = 0;
+
+          // MiniModules //
+          cpuTracker.getCreepState = 0;
+          cpuTracker.mainSystem = 0;
+          
 
           flagMemory.trackers.performance = {};
           const performanceTracker = flagMemory.trackers.performance;
