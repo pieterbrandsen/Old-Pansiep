@@ -1,57 +1,51 @@
+const mainSystem = require('miniModule.mainSystem');
+
 module.exports = {
   run: function(creep) {
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
+    // Get The Variables Needed For Module //
+    const runMainSystem = mainSystem.run();
+    const flagMemory = Memory.flags[creep.room.name];
+    const controller = creep.room.controller;
+
 
     function claimRoom() {
-      const target = creep.room.controller;
-      const runClaimController = creep.claimController(target);
-
-      switch(runClaimController) {
+      // Run Claim Target //
+      switch(creep.claimController(controller)) {
         case OK:
-        creep.say("Claimed");
-        creep.room.createFlag(25,25,"builderLD"+creep.memory.spawnRoom);
+        // Remove Claimer Flag Because Room Is Claimed //
         Game.flags["claim"].remove();
+        creep.say("Claimed");
+        // Build BuilderLD Flag So Room Get's Setup //
+        creep.room.createFlag(25,25,"builderLD"+creep.memory.spawnRoom);
+        // Suicide Creep Because He Is Not Longer Needed //
         creep.suicide();
-          break;
+        break;
         case ERR_NOT_OWNER:
-          break;
+        break;
         case ERR_BUSY:
-          break;
+        break;
         case ERR_INVALID_TARGET:
-          creep.attackController(creep.room.controller);
-          creep.travelTo(target);
-          break;
+        // If Controller Is Already Claimed //
+        creep.attackController(controller);
+        break;
         case ERR_FULL:
-          break;
+        break;
         case ERR_NOT_IN_RANGE:
-          creep.say("Moving");
-          creep.travelTo(target);
-          break;
+        // Travel To Controller //
+        creep.travelTo(controller);
+        creep.say("Moving");
+        break;
         case ERR_NO_BODYPART:
-          break;
+        break;
         case ERR_GCL_NOT_ENOUGH:
-          break;
+        break;
         default:
-          break;
+        break;
       }
     }
 
 
-    if (mainSystem()) {
+    if (runMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 
@@ -60,11 +54,10 @@ module.exports = {
 
       // Set the average CPU Usage in the memory //
 
-      Memory.cpuTracker["claimerCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpu.claimerModule += Game.cpu.getUsed() - start;
     }
-    else {
-      // Run the part without tracking //
-      claimRoom();
-    }
+    else
+    // Run the part without tracking //
+    claimRoom();
   }
 };

@@ -123,7 +123,7 @@ module.exports = {
             runRoomTracker(roomName)
           }
         }
-      })
+      });
 
       runTracker();
     }

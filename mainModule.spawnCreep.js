@@ -259,7 +259,7 @@ module.exports = {
             case "harvester-0":
             if (flagMemory.partsAmount["harvester-0-WORK"] < 6) {
               if (flagMemory.sources[0] !== undefined) {
-                if (flagMemory.sources[0].openSpots > flagMemory.partsAmount["harvester-0-WORK"]) {
+                if (flagMemory.sources[0].openSpots > flagMemory.rolesCount["harvester-0"]) {
                   result = true;
                 }
               }
@@ -268,7 +268,7 @@ module.exports = {
             case "harvester-1":
             if (flagMemory.partsAmount["harvester-1-WORK"] < 6) {
               if (flagMemory.sources[1] !== undefined) {
-                if (flagMemory.sources[1].openSpots > flagMemory.partsAmount["harvester-1-WORK"]) {
+                if (flagMemory.sources[1].openSpots > flagMemory.rolesCount["harvester-1"]) {
                   result = true;
                 }
               }
