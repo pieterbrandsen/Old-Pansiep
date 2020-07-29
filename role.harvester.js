@@ -1,26 +1,22 @@
 const harvestModule = require('module.harvest');
 const transferModule = require('module.transfer');
+const getWorkingState = require('miniModule.getCreepState');
 
 
 module.exports = {
   run: function(creep) {
-
-    // Set Working State
-    let creepCarryCapacity = creep.store.getCapacity();
-    let creepCarryUsedCapacity = creep.store.getUsedCapacity();
-    if (creep.memory.working === true && creepCarryUsedCapacity === 0) {
-      creep.memory.working = false;
-    }
-    else if (creep.memory.working === false && creepCarryUsedCapacity == creepCarryCapacity) {
-      creep.memory.working = true;
+    if (Game.time % 10 == 0) {
+      // Get Creep State, What The Creep Should Be Doing //
+      const workState = getWorkingState.run(creep.room.name, creep.store.getCapacity(), creep.store.getUsedCapacity(), creep.memory.working, creep.memory.role);
+      if (workState !== undefined)
+      creep.memory.working = workState;
     }
 
-    if (creep.memory.working === false) {
-      harvestModule.run(creep);
-    }
-
-    if (creep.memory.working === true) {
-      transferModule.run(creep);
-    }
+    // If Creep Needs To Harvest //
+    if (creep.memory.working == "withdraw")
+    harvestModule.run(creep);
+    // If Creep Needs To Transfer //
+    else if (creep.memory.working == "transfer")
+    transferModule.run(creep);
   }
 }
