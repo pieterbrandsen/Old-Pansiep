@@ -79,7 +79,6 @@ module.exports = {
 
       function spawnCreep(spawn,role,targetRoom = roomName,flagName = roomName) {
         let name = role + "-" + Math.round(Math.random() * 100);
-
         let directionsList = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
 
         // Check If Room Needs To Spawn In Special Direction //
@@ -98,8 +97,8 @@ module.exports = {
           name,
           {
             memory: {
-              working: false,
               role: role,
+              working: "withdraw",
               spawnRoom: roomName,
               targetRoom: targetRoom,
               flagName: flagName

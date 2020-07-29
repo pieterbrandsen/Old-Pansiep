@@ -38,11 +38,11 @@ module.exports = {
 
         // If FlagMemory Has RolesCount Defined //
         if (rolesCount) {
-          // If Role Is Not Yet In Memory, Else +1 //
-          if (!rolesCount[role])
-          rolesCount[role] = 0;
-          else
+          // +1 For InputRole, Else Define Role In RolesCount //
+          if (rolesCount[role] !== undefined)
           rolesCount[role]++;
+          else
+          rolesCount[role] = 0;
         }
         else
         // Define RolesCount //
@@ -63,7 +63,7 @@ module.exports = {
 
         // If FlagMemory Has PartsAmount Defined //
         if (partsAmount) {
-          // If Role With Part Is Not Yet In Memory, Else +1 //
+          // Add Parts In ParsAmount, Else Define Part In PartsAmount //
           if (partsAmount[`${role}-${part}`] !== undefined)
           partsAmount[`${role}-${part}`]+=inputPartsAmount;
           else

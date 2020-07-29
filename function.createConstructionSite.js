@@ -117,6 +117,8 @@ module.exports = {
           const posY = possiblePositions[i][1];
           // Get All Open Spots At Position //
           const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX, posY, roomName)[0];
+          const positionObject = room.lookForAt(LOOK_STRUCTURES,posX,posY)[0];
+
           // Check If Terrain At Possition Is No Wall //
           if (terrain.get(posX,posY) == 0) {
             // If This Positon Is Better Then Already Found Position //
@@ -133,6 +135,26 @@ module.exports = {
                 optimalPositions[1][0] = posX;
                 optimalPositions[1][1] = posY;
                 optimalPositions[2] = getRangeToHeadSpawn;
+              }
+            }
+          }
+          else if (positionObject !== undefined) {
+            if (positionObject.structureType == STRUCTURE_CONTAINER || positionObject.structureType == STRUCTURE_ROAD) {
+              // If This Positon Is Better Then Already Found Position //
+              if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
+                optimalPositions[0] = possiblePositionsOfPlacementPossible
+                optimalPositions[1][0] = posX;
+                optimalPositions[1][1] = posY;
+              }
+              // If This Positon Is Closer To Head Spawn Then Already Found Position //
+              else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
+                const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
+                if (possiblePositionsOfPlacementPossible == optimalPositions[0] && getRangeToHeadSpawn < optimalPositions[2]) {
+                  optimalPositions[0] = possiblePositionsOfPlacementPossible
+                  optimalPositions[1][0] = posX;
+                  optimalPositions[1][1] = posY;
+                  optimalPositions[2] = getRangeToHeadSpawn;
+                }
               }
             }
           }

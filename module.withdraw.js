@@ -1,30 +1,15 @@
 const harvestModule = require('module.harvest');
 const harvestLDModule = require('module.harvestLD');
+const runMainSystem = require('miniModule.mainSystem');
 
 
 module.exports = {
   run: function(creep) {
+    const mainSystem = runMainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
-
     if (!creep.memory.withdrawId)
-    creep.memory.withdrawId = ""
+    creep.memory.withdrawId = "";
 
 
     function enterValueInMemory(memoryPath, inputValue) {
@@ -107,7 +92,7 @@ module.exports = {
 
       function checkStorage() {
         if (room.storage)
-        if (flagMemory.totalEnergyAvailable !== flagMemory.totalEnergyCapacity)
+        if (flagMemory.totalEnergyAvailable !== flagMemory.totalEnergyCapacity || flagMemory.totalEnergyAvailable == 0)
         if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
           withdrawStructure = STRUCTURE_STORAGE;
           creep.memory.withdrawId = room.storage.id;
@@ -162,20 +147,13 @@ module.exports = {
       }
 
 
-      if (creep.memory.role !== "transferer") {
-        if (!checkContainers())
-        if (!checkTerminal())
-        if (!checkStorage())
-        if (!checkLinks()) {
-          creep.memory.withdrawId = "source";
-        }
-      }
-      else {
-        if (!checkStorage())
-        if (!checkTerminal())
-        if (!checkContainers())
-        if (!checkLinks()) {
-        }
+
+      if (!checkStorage())
+      if (!checkTerminal())
+      if (!checkContainers())
+      if (!checkLinks()) {
+        if (creep.memory.role !== "transferer")
+        creep.memory.withdrawId = "source";
       }
 
 
@@ -205,7 +183,7 @@ module.exports = {
     }
 
     if (creep.memory.role.includes("upgrader")) {
-      if (mainSystem()) {
+      if (mainSystem) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
 
@@ -222,7 +200,7 @@ module.exports = {
       }
     }
     else {
-      if (mainSystem()) {
+      if (mainSystem) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
         // Run the part //
