@@ -9,12 +9,10 @@ module.exports = {
         // Get HeadLink That's In Range To Creep Always //
         const link = Game.getObjectById(flagMemory.links.linkTo1);
 
-        if (Game.time % 10 == 0) {
-          // Get Creep State, What The Creep Should Be Doing //
-          const workState = getWorkingState.run(creep.room.name, creep.store.getCapacity(), creep.store.getUsedCapacity(), creep.memory.working, creep.memory.role);
-          if (workState !== undefined)
-          creep.memory.working = workState;
-        }
+        // Get Creep State, What The Creep Should Be Doing //
+        const workState = getWorkingState.run(creep.room.name, creep.store.getCapacity(), creep.store.getUsedCapacity(), creep.memory.working, creep.memory.role);
+        if (workState !== undefined)
+        creep.memory.working = workState;
 
         if (link !== null) {
 
