@@ -2,18 +2,18 @@ const mainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function(creep) {
-    // Get the variables needed for module //
+    // Get The Variables Needed For Module //
     const runMainSystem = mainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
     const target = Game.getObjectById(creep.memory.targetId);
 
-    // If creep has no targetId assign a empty string //
+    // If Creep Has No TargetId Assign A Empty String //
     if (!creep.memory.targetId)
     creep.memory.targetId = "";
 
 
     function findNewTarget() {
-      // Find new target to build //
+      // Find New Target To Build //
       const newTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES).id;
 
       // If NewTarget Isn't Undefined, Assign New Target //
@@ -73,11 +73,10 @@ module.exports = {
       buildTarget();
 
       // Set the average CPU Usage in the memory //
-      Memory.cpuTracker["builderCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpu.builderModule += Game.cpu.getUsed() - start;
     }
-    else {
-      // Run the part without tracking //
-      buildTarget();
-    }
+    else
+    // Run the part without tracking //
+    buildTarget();
   }
 };
