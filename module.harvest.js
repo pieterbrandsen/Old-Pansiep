@@ -2,72 +2,40 @@ const mainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function(creep) {
-    // Get the variables needed for module //
+    // Get The Variables Needed For Module //
     const runMainSystem = mainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
     const target = Game.getObjectById(creep.memory.sourceId);
 
-    if (!creep.memory.harvesterWorkCount) {
-      creep.memory.harvesterWorkCount = creep.getActiveBodyparts(WORK);
-    }
 
     function findNewSourceInRoom() {
-      // Get the energy sources in the room //
-      const sources = creep.room.find(FIND_SOURCES);
-
-      // If there are sources found get the source that matches the name else get the nearest source //
-      if (sources.length > 0) {
-        roleName = creep.memory.role;
-        if (roleName.includes("-0"))
-        creep.memory.sourceId = flagMemory.sources[0].id;
-        else if (roleName.includes("-1"))
-        creep.memory.sourceId = flagMemory.sources[1].id;
-        else {
-          if (creep.memory.role.includes("extractor")) {
-            if (flagMemory.mineralId)
-            creep.memory.sourceId = flagMemory.mineralId;
-          }
-          else {
-            creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
-          }
-        }
-      }
+      // If Creep Is Missing A Source, Find One //
+      creep.room.find(FIND_SOURCES).forEach((source, i) => {
+        if (creep.memory.role.includes(`-${i}`))
+        creep.memory.sourceId = flagMemory.sources[i].id;
+      });
     }
 
     function harvestSource() {
-      const runHarvest = creep.harvest(target);
-
-      switch(runHarvest) {
+      switch(creep.harvest(target)) {
         case OK:
-          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%")
-          if (creep.memory.harvesterWorkCount && creep.memory.role.includes("harvester")) {
-            Memory.performanceTracker[creep.room.name + ".energyHarvested"] += creep.memory.harvesterWorkCount * 2;
-          }
-          else if (creep.memory.harvesterWorkCount && creep.memory.role.includes("extractor")) {
-            Memory.performanceTracker[creep.room.name + ".mineralHarvested"] += creep.memory.harvesterWorkCount;
-          }
+        // Say Remaining Energy Percentage Left //
+        creep.say(`${Math.round(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100)}%`);
           break;
         case ERR_NOT_OWNER:
           break;
         case ERR_BUSY:
           break;
         case ERR_NOT_FOUND:
-          creep.room.createConstructionSite(target.pos,STRUCTURE_EXTRACTOR);
           break;
         case ERR_NOT_ENOUGH_RESOURCES:
-          if (target.mineralAmount) {
-            if (target.mineralAmount == 0) {
-              console.log(`The mineral is empty in room ${creep.room.name}.`);
-              flagMemory.mineralAmount = 0;
-              creep.suicide();
-            }
-          }
           break;
         case ERR_INVALID_TARGET:
           break;
         case ERR_NOT_IN_RANGE:
-          creep.say("Moving");
+          // Travel To Target Until In Range //
           creep.travelTo(target);
+          creep.say("Moving");
           break;
         case ERR_TIRED:
           break;
@@ -79,14 +47,12 @@ module.exports = {
     }
 
     function runModule() {
-      // Find source if creep has no source in the memory defined //
-      if (target == null) {
-        findNewSourceInRoom()
-      }
-      else {
-        // Else go harvest the defined source //
-        harvestSource();
-      }
+      // If Creep Is Missing Target, Find A Target //
+      if (target == null)
+      findNewSourceInRoom()
+      else
+      // Else Harvest Source //
+      harvestSource();
     }
 
 
@@ -99,7 +65,7 @@ module.exports = {
 
       // Set the average CPU Usage in the memory //
 
-      Memory.cpuTracker["harvesterCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpu.harvestingModule += Game.cpu.getUsed() - start;
     }
     else {
       // Run the part without tracking //
