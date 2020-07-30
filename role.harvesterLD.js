@@ -1,4 +1,4 @@
-const harvestLDModule = require('module.harvestLD');
+const harvestModule = require('module.harvestLD');
 const transferModule = require('module.transfer');
 const getWorkingState = require('miniModule.getCreepState');
 
@@ -20,7 +20,7 @@ module.exports = {
       if (creep.room.name == flagMemory.targetRoom) {
         // If Creep Needs To Harvest //
         if (creep.memory.working == "withdraw")
-        harvestLDModule.run(creep);
+        harvestModule.run(creep);
         // If Creep Needs To Transfer //
         else if (creep.memory.working == "transfer")
         transferModule.run(creep);

@@ -1,4 +1,4 @@
-const transferModuleLD = require('module.transferLD');
+const transferModule = require('module.transfer');
 const withdrawModule = require('module.withdraw');
 const getWorkingState = require('miniModule.getCreepState');
 
@@ -29,7 +29,7 @@ module.exports = {
       else if (creep.memory.working == "transfer") {
         // If Creep Is In The Target Room //
         if (creep.room.name == creep.memory.spawnRoom)
-        transferModuleLD.run(creep);
+        transferModule.run(creep);
         // Else Travel To Room //
         else
         creep.travelTo(Game.flags[creep.memory.spawnRoom])
