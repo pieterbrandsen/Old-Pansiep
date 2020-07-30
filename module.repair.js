@@ -1,29 +1,16 @@
+const mainSystem = require('miniModule.mainSystem');
+
 module.exports = {
   run: function(creep) {
+    // Get The Variables Needed For Module //
+    const runMainSystem = mainSystem.run();
+
+
     // Find the closest structure that is not max hits and is not a wall or rampart //
     const target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (s) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL && s.structureType !== STRUCTURE_RAMPART
     });
 
-    if (!creep.memory.repairerWorkCount) {
-      creep.memory.repairerWorkCount = creep.getActiveBodyparts(WORK);
-    }
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
 
     function repairTarget() {
       const runRepair = creep.repair(target);
@@ -66,7 +53,7 @@ module.exports = {
       }
     }
 
-    if (mainSystem()) {
+    if (runMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 
@@ -74,12 +61,10 @@ module.exports = {
       runModule();
 
       // Set the average CPU Usage in the memory //
-
-      Memory.cpuTracker["repairerCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpu.repairModule += Game.cpu.getUsed() - start;
     }
-    else {
-      // Run the part without tracking //
-      runModule();
-    }
+    else
+    // Run the part without tracking //
+    runModule();
   }
 };

@@ -1,20 +1,9 @@
+const mainSystem = require('miniModule.mainSystem');
+
 module.exports = {
   run: function(creep) {
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
+    // Get The Variables Needed For Module //
+    const runMainSystem = mainSystem.run();
 
     function reserveRoom() {
       const target = creep.room.controller;
@@ -44,7 +33,7 @@ module.exports = {
     }
 
 
-    if (mainSystem()) {
+    if (runMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 
@@ -52,12 +41,10 @@ module.exports = {
       reserveRoom();
 
       // Set the average CPU Usage in the memory //
-
-      Memory.cpuTracker["reserverCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpu.reserveModule += Game.cpu.getUsed() - start;
     }
-    else {
-      // Run the part without tracking //
-      reserveRoom();
-    }
+    else
+    // Run the part without tracking //
+    reserveRoom();
   }
 };

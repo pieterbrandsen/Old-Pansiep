@@ -1,7 +1,10 @@
 const builderModule = require('module.builder');
+const mainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function(creep) {
+    // Get The Variables Needed For Module //
+    const runMainSystem = mainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 
     if (!creep.memory.upgraderWorkCount) {

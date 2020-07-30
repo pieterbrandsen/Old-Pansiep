@@ -1,11 +1,11 @@
 const harvestModule = require('module.harvest');
 const harvestLDModule = require('module.harvestLD');
-const runMainSystem = require('miniModule.mainSystem');
-
+const mainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function(creep) {
-    const mainSystem = runMainSystem.run();
+    // Get The Variables Needed For Module //
+    const runMainSystem = mainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 
     if (!creep.memory.withdrawId)
@@ -200,7 +200,7 @@ module.exports = {
       }
     }
     else {
-      if (mainSystem) {
+      if (runMainSystem) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
         // Run the part //

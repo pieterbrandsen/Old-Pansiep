@@ -1,8 +1,9 @@
-const builderModule = require('module.builder');
-const checkMissingMemory = require('module.checkMissingMemory')
+const mainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function(creep) {
+    // Get The Variables Needed For Module //
+    const runMainSystem = mainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 
     if (!creep.memory.waitTransferer || Game.time % 20 == 0) {
