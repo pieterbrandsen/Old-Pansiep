@@ -1,10 +1,6 @@
-const mainSystem = require('miniModule.mainSystem');
-
 module.exports = {
   run: function(creep) {
     // Get The Variables Needed For Module //
-    const runMainSystem = mainSystem.run();
-    const flagMemory = Memory.flags[creep.room.name];
     const controller = creep.room.controller;
 
 
@@ -43,21 +39,5 @@ module.exports = {
         break;
       }
     }
-
-
-    if (runMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
-
-      // Run the part //
-      claimRoom();
-
-      // Set the average CPU Usage in the memory //
-
-      flagMemory.trackers.cpu.claimerModule += Game.cpu.getUsed() - start;
-    }
-    else
-    // Run the part without tracking //
-    claimRoom();
   }
 };

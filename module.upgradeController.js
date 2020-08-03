@@ -5,40 +5,17 @@ module.exports = {
   run: function(creep) {
     // Get The Variables Needed For Module //
     const runMainSystem = mainSystem.run();
+    const room = Game.rooms[creep.room.name];
     const flagMemory = Memory.flags[creep.room.name];
 
-    if (!creep.memory.upgraderWorkCount) {
-      creep.memory.upgraderWorkCount = creep.getActiveBodyparts(WORK);
-    }
-
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
 
     function upgradeController() {
-      // If there is a controller in current room check if creep can upgrade //
+      // Find Controller And Check If Building Doesn't Need To Be Done //
       if(creep.room.controller && flagMemory.constructionSitesAmount == 0) {
-        const runUpgrade = creep.upgradeController(creep.room.controller);
-
-        switch(runUpgrade) {
+        switch(creep.upgradeController(creep.room.controller)) {
           case OK:
-            creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
-            if (creep.memory.upgraderWorkCount) {
-              Memory.performanceTracker[creep.room.name + ".upgraderEnergy"] += creep.memory.upgraderWorkCount;
-            }
+          // Say Remaining Energy Percentage Left //
+          creep.say(`${Math.round(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100)}%`);
             break;
           case ERR_NOT_OWNER:
             break;
@@ -49,8 +26,9 @@ module.exports = {
           case ERR_INVALID_TARGET:
             break;
           case ERR_NOT_IN_RANGE:
-            creep.say("Moving");
+          // Travel To Target Until In Range //
             creep.travelTo(creep.room.controller);
+            creep.say("Moving");
             break;
           case ERR_NO_BODYPART:
             break;
@@ -60,33 +38,57 @@ module.exports = {
       }
     }
 
-    function runModule() {
-      // If creep has no target, go build //
-      if (!flagMemory.controllerStorage) {
-        let containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, 3,
-          {filter: {structureType: STRUCTURE_CONTAINER}
-        })[0];
-        let linkInRange = creep.room.controller.pos.findInRange(creep.room.links, 3,
-          {filter: {structureType: STRUCTURE_LINK}
-        })[0];
-        if (containerInRange) {
-          flagMemory.controllerStorage = containerInRange.id;
-        }
-        else if (linkInRange) {
-          flagMemory.controllerStorage = linkInRange.id;
-        }
-        else {
-          builderModule.run(creep);
-        }
+    function findStructureInRange(objectId, range) {
+      function findContainer() {
+        // Loop Through Each Container And Look For The Container In Range //
+        room.containers.forEach((structure, i) => {
+          if (structure.pos.inRangeTo(object,range))
+          return [true, structure.id];
+        });
+        return false;
       }
+
+      function findLink() {
+        // Loop Through Each Link And Look For The Link In Range //
+        room.links.forEach((structure, i) => {
+          if (structure.pos.inRangeTo(object,range))
+          return [true, structure.id];
+        });
+        return false;
+      }
+
+      // Check If There Is Already A Structure Being Build //
+      if (!findContainer())
+      if (!findLink())
+
+      return false;
+
+      return true;
+    }
+
+    function runModule() {
+      // If Room Has Storage //
+      if (flagMemory.controllerStorage)
+      // Upgrade controller //
+      upgradeController();
       else {
-        // Upgrade controller //
-        upgradeController();
+        const range = 4;
+        const findStructure = findStructureInRange(creep.room.controller.id, range);
+        if (findStructure[0])
+        flagMemory.controllerStorage = findStructure[1];
+        else {
+          const newTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+
+          if (newTarget !== null)
+          builderModule.run(creep);
+          else
+          upgradeController();
+        }
       }
     }
 
 
-    if (mainSystem()) {
+    if (runMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 
@@ -95,7 +97,7 @@ module.exports = {
 
       // Set the average CPU Usage in the memory //
 
-      Memory.cpuTracker["upgraderCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpu.upgraderModule += Game.cpu.getUsed() - start;
     }
     else {
       // Run the part without tracking //

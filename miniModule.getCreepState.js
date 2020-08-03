@@ -4,17 +4,18 @@ module.exports = {
   run: function(roomName, creepCarryCapacity, creepCarryUsedCapacity, currentState) {
     // Get The Variables Needed For Module //
     const runMainSystem = mainSystem.run();
+    let creepState;
 
     function runGetCreepState() {
       // If Creep Working State Is Transfer But The Creep Is Empty //
       // Withdraw Energy Then //
       if (currentState == "transfer" && creepCarryUsedCapacity == 0)
-      return "withdraw";
+      creepState = "withdraw";
 
       // If Creep Working State Is Withdraw But The Creep Is Full //
       // Transfer Energy Then //
       else if (currentState == "withdraw" && creepCarryUsedCapacity == creepCarryCapacity)
-      return "transfer";
+      creepState = "transfer";
     }
 
     if (runMainSystem) {
@@ -30,5 +31,8 @@ module.exports = {
     else
     // Run the part without tracking //
     runGetCreepState();
+
+
+    return creepState
   }
 }

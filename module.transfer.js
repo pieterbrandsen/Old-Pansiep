@@ -5,36 +5,24 @@ module.exports = {
     // Get The Variables Needed For Module //
     const runMainSystem = mainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
+    const target = Game.getObjectById(creep.memory.transferId);
 
-    if (!creep.memory.waitTransferer || Game.time % 20 == 0) {
-      creep.memory.waitTransferer = false;
-    }
+    // Reset WaitTransferer //
+    if (!creep.memory.waitTransferer || Game.time % 20 == 0)
+    creep.memory.waitTransferer = false;
+    // Define TransfererId //
     if (!creep.memory.transferId)
     creep.memory.transferId = "";
 
-
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
 
     function transferTarget(target) {
       const runTransfer = creep.transfer(target,RESOURCE_ENERGY);
       switch(runTransfer) {
         case OK:
+        // Succesfol Transfer //
         creep.say("Transfer");
+
+        // Enter Structure Type In Memory //
         creep.memory.transferStructure = target.structureType;
         creep.memory.transferId = "";
         case ERR_NOT_OWNER:
@@ -44,12 +32,15 @@ module.exports = {
         case ERR_NOT_ENOUGH_RESOURCES:
         break;
         case ERR_INVALID_TARGET:
+        // Find New Target //
         findNewTarget();
         break;
         case ERR_FULL:
+        // Find New Target //
         findNewTarget();
         break;
         case ERR_NOT_IN_RANGE:
+        // Travel To Target Until In Range //
         creep.travelTo(target);
         break;
         case ERR_INVALID_ARGS:
@@ -61,36 +52,41 @@ module.exports = {
 
 
     function findNewTarget() {
+      // If Transferer Is A Harvester //
       if (creep.memory.role.includes("harvest")) {
+        // Define SourceStorage And SourceObject //
+        let sourceStorageId;
         let sourceObject = Game.getObjectById(creep.memory.sourceId);
-        let containerInRange = creep.pos.findClosestByRange(creep.room.containers, {filter: (structure) => {
-          return (structure.pos.inRangeTo(sourceObject,2));
-        }});
-        let linkInRange = creep.pos.findClosestByRange(creep.room.links, {filter: (structure) => {
-          return (structure.pos.inRangeTo(sourceObject,2));
-        }});
+
+        // Loop Through Containers And Links, Search For Storage Object That Is In Range TO SourceObject //
+        creep.room.containers.forEach((container, i) => {
+          if (container.pos.inRangeTo(sourceObject,2))
+          sourceStorageId = container.id;
+        });
+        creep.room.links.forEach((link, i) => {
+          if (link.pos.inRangeTo(sourceObject,2))
+          sourceStorageId = link.id;
+        });
 
 
-        if (containerInRange !== null)
-        creep.memory.transferId = containerInRange.id;
-        else if (linkInRange !== null)
-        creep.memory.transferId = linkInRange.id;
+        // If SouceStorage Is Found //
+        if (sourceStorageId !== undefined)
+        creep.memory.transferId = sourceStorageId
         else {
+          // Go Build New Structure //
           builderModule.run(creep);
-          if (creep.memory.role.includes("-0"))
-          flagMemory.roomManager[`source-0.HasStructure`] = false;
-          if (creep.memory.role.includes("-1"))
-          flagMemory.roomManager[`source-1.HasStructure`] = false;
-          if (creep.memory.role.includes("-2"))
-          flagMemory.roomManager[`source-2.HasStructure`] = false;
-          if (creep.memory.role.includes("-3"))
-          flagMemory.roomManager[`source-3.HasStructure`] = false;
+
+          flagMemory.sources.forEach((source, i) => {
+            if (creep.memory.role.includes(`-${i}`))
+            flagMemory.roomManager[`source-${i}.HasStructure`] = false;
+          });
         }
       }
       else {
-
+        // UPDATE THIS //
         const controllerStorage = Game.getObjectById(flagMemory.controllerStorage);
 
+        // UPDATE THIS //
         if (creep.memory.waitTransferer == false && creep.memory.role == "transferer") {
           let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
             filter: (s) => (s.structureType === STRUCTURE_SPAWN
@@ -104,6 +100,7 @@ module.exports = {
           else
           creep.memory.waitTransferer = true;
         }
+        // UPDATE THIS //
         else {
           if (controllerStorage) {
             if (flagMemory.totalEnergyCapacity !== flagMemory.totalEnergyAvailable && creep.memory.role == "transferer")
@@ -119,20 +116,21 @@ module.exports = {
       }
     }
 
-    if (mainSystem()) {
+
+    if (runMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 
       // Run the part //
-      transferTarget(Game.getObjectById(creep.memory.transferId));
+      transferTarget(target);
 
       // Set the average CPU Usage in the memory //
 
-      Memory.cpuTracker["transferCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpu.transfererModule += Game.cpu.getUsed() - start;
     }
     else {
       // Run the part without tracking //
-      transferTarget(Game.getObjectById(creep.memory.transferId));
+      transferTarget(target);
     }
   }
 };

@@ -160,23 +160,25 @@ module.exports = {
           return roomIsMissingMemory
         };
 
-        if (!checkIfMemoryIsSetup())
+        const checkMemory = checkIfMemoryIsSetup();
+        if (!checkMemory)
         flagMemory.IsMemorySetup = true;
       }
-
-      if (runMainSystem) {
-        // Get the CPU Usage //
-        let start = Game.cpu.getUsed();
-
-        // Run the part //
-        runMissingMemory();
-
-        // Set the average CPU Usage in the memory //
-        flagMemory.trackers.cpu.checkMissingMemory += Game.cpu.getUsed() - start;
-      }
-      else
-      // Run the part without tracking //
-      runMissingMemory();
     }
+
+    
+    if (runMainSystem) {
+      // Get the CPU Usage //
+      let start = Game.cpu.getUsed();
+
+      // Run the part //
+      runMissingMemory();
+
+      // Set the average CPU Usage in the memory //
+      flagMemory.trackers.cpu.checkMissingMemory += Game.cpu.getUsed() - start;
+    }
+    else
+    // Run the part without tracking //
+    runMissingMemory();
   }
 };

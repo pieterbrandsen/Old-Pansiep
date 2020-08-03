@@ -6,24 +6,21 @@ module.exports = {
 
 
       function runRoomPlanner(flagName) {
-        if (!Memory.flags[flagName]) {
-          Memory.flags[flagName] = {}
-        }
+        if (!Memory.flags[flagName])
+        Memory.flags[flagName] = {};
+
         const flag = Game.flags[flagName];
         const flagMemory = Memory.flags[flagName];
         const room = flag.room;
         let controllerLevel;
         if (flag) {
           if (room) {
-            controllerLevel = room.controller.level;
-
             const x = flag.pos.x;
             const y = flag.pos.y;
 
 
-            if (controllerLevel >= 1) {
-              room.createConstructionSite(x-1, y+1, STRUCTURE_SPAWN,room.name + "-1");
-            }
+            if (controllerLevel >= 1)
+            room.createConstructionSite(x-1, y+1, STRUCTURE_SPAWN,room.name + "-1");
             if (controllerLevel >= 2) {
               room.createConstructionSite(x+3, y-1, STRUCTURE_EXTENSION);
               room.createConstructionSite(x+3, y-2, STRUCTURE_EXTENSION);
@@ -74,9 +71,9 @@ module.exports = {
               room.createConstructionSite(x+5, y+2, STRUCTURE_EXTENSION);
             }
             if (controllerLevel >= 6) {
-              const mineral = room.find(FIND_MINERALS)[0];
-              if (mineral)
-              room.createConstructionSite(mineral,STRUCTURE_EXTRACTOR)
+              const roomMineral = room.find(FIND_MINERALS)[0];
+              if (roomMineral)
+              room.createConstructionSite(roomMineral,STRUCTURE_EXTRACTOR)
 
 
               room.createConstructionSite(x+1, y, STRUCTURE_TERMINAL);
@@ -237,9 +234,9 @@ module.exports = {
         }
         else {
           const flagName = "roomPlannerCheck1";
-          if (!Memory.flags[flagName]) {
-            Memory.flags[flagName] = {}
-          }
+          if (!Memory.flags[flagName])
+          Memory.flags[flagName] = {}
+
           const flag = Game.flags[flagName];
           const flagMemory = Memory.flags[flagName];
           const room = flag.room;
@@ -286,15 +283,12 @@ module.exports = {
 
       for (let i  = 0; i < 25; i++) {
         if (Game.flags["roomPlanner1-"+i] || Memory.flags["roomPlanner1-"+i]) {
-
           const flagName = "roomPlanner1-"+i;
 
-          if (!Game.flags[flagName] && Memory.flags[flagName]) {
-            delete Memory.flags[flagName]
-          }
-          else {
-            runRoomPlanner(flagName);
-          }
+          if (!Game.flags[flagName] && Memory.flags[flagName])
+          delete Memory.flags[flagName]
+          else
+          runRoomPlanner(flagName);
         }
       }
     }

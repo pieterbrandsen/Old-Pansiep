@@ -61,13 +61,13 @@ module.exports = {
       let start = Game.cpu.getUsed();
 
       // Run the part //
-      runLinks();
+      runGameTimeTimers();
 
       // Set the average CPU Usage in the memory //
       flagMemory.trackers.cpu.links += Game.cpu.getUsed() - start;
     }
     else
     // Run the part without tracking //
-    runLinks();
+    runGameTimeTimers();
   }
 }

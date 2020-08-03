@@ -10,10 +10,15 @@ module.exports = {
 
     function findNewSourceInRoom() {
       // If Creep Is Missing A Source, Find One //
-      creep.room.find(FIND_SOURCES).forEach((source, i) => {
-        if (creep.memory.role.includes(`-${i}`))
-        creep.memory.sourceId = flagMemory.sources[i].id;
-      });
+      if (creep.memory.role.includes("harvester")) {
+        creep.room.find(FIND_SOURCES).forEach((source, i) => {
+          if (creep.memory.role.includes(`-${i}`))
+          creep.memory.sourceId = flagMemory.sources[i].id;
+        });
+      }
+      // Else If Creep Has No Harvester Role //
+      else
+      creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
     }
 
     function harvestSource() {
@@ -33,7 +38,7 @@ module.exports = {
         case ERR_INVALID_TARGET:
           break;
         case ERR_NOT_IN_RANGE:
-          // Travel To Target Until In Range //
+        // Travel To Target Until In Range //
           creep.travelTo(target);
           creep.say("Moving");
           break;

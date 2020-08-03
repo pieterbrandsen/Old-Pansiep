@@ -14,11 +14,11 @@ module.exports = {
 
     function findNewTarget() {
       // Find New Target To Build //
-      const newTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES).id;
+      const newTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 
       // If NewTarget Isn't Undefined, Assign New Target //
-      if (newTarget !== undefined)
-      creep.memory.targetId = newTarget;
+      if (newTarget !== null)
+      creep.memory.targetId = newTarget.id;
       // Else Update Memory And Suicide //
       else {
         // Reset ConstructionSitesAmount In Room Memory //

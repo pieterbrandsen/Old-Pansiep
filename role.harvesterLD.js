@@ -1,4 +1,4 @@
-const harvestModule = require('module.harvestLD');
+const harvestModule = require('module.harvest');
 const transferModule = require('module.transfer');
 const getWorkingState = require('miniModule.getCreepState');
 
