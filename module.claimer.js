@@ -1,43 +1,70 @@
 module.exports = {
   run: function(creep) {
-    // Get The Variables Needed For Module //
-    const controller = creep.room.controller;
-
+    function mainSystem() {
+      // If Memory.mainSystem is defined //
+      if (Memory.mainSystem) {
+        // If Memory.mainSystem is allowed to track cpu return True //
+        if (Memory.mainSystem.cpuTracker == true) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+      else {
+        return false;
+      }
+    }
 
     function claimRoom() {
-      // Run Claim Target //
-      switch(creep.claimController(controller)) {
+      const target = creep.room.controller;
+      const runClaimController = creep.claimController(target);
+
+      switch(runClaimController) {
         case OK:
-        // Remove Claimer Flag Because Room Is Claimed //
-        Game.flags["claim"].remove();
         creep.say("Claimed");
-        // Build BuilderLD Flag So Room Get's Setup //
         creep.room.createFlag(25,25,"builderLD"+creep.memory.spawnRoom);
-        // Suicide Creep Because He Is Not Longer Needed //
+        Game.flags["claim"].remove();
         creep.suicide();
-        break;
+          break;
         case ERR_NOT_OWNER:
-        break;
+          break;
         case ERR_BUSY:
-        break;
+          break;
         case ERR_INVALID_TARGET:
-        // If Controller Is Already Claimed //
-        creep.attackController(controller);
-        break;
+          creep.attackController(creep.room.controller);
+          creep.travelTo(target);
+          break;
         case ERR_FULL:
-        break;
+          break;
         case ERR_NOT_IN_RANGE:
-        // Travel To Controller //
-        creep.travelTo(controller);
-        creep.say("Moving");
-        break;
+          creep.say("Moving");
+          creep.travelTo(target);
+          break;
         case ERR_NO_BODYPART:
-        break;
+          break;
         case ERR_GCL_NOT_ENOUGH:
-        break;
+          break;
         default:
-        break;
+          break;
       }
+    }
+
+
+    if (mainSystem()) {
+      // Get the CPU Usage //
+      let start = Game.cpu.getUsed();
+
+      // Run the part //
+      claimRoom();
+
+      // Set the average CPU Usage in the memory //
+
+      Memory.cpuTracker["claimerCPU.total"] += Game.cpu.getUsed() - start;
+    }
+    else {
+      // Run the part without tracking //
+      claimRoom();
     }
   }
 };

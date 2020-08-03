@@ -2,11 +2,11 @@ module.exports = {
   run: function(creep) {
     // Get the variables needed for module //
     const flagMemory = Memory.flags[creep.room.name];
+    // const target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => {
+    //   return (structure.structureType == STRUCTURE_RAMPART);
+    // }});
     const target = Game.getObjectById(creep.memory.sourceId);
 
-    if (!creep.memory.harvesterWorkCount) {
-      creep.memory.harvesterWorkCount = creep.getActiveBodyparts(WORK);
-    }
 
     function mainSystem() {
       // If Memory.mainSystem is defined //
@@ -25,11 +25,8 @@ module.exports = {
     }
 
     function findNewSourceInRoom() {
-      // Get the energy sources in the room //
-      const sources = creep.room.find(FIND_SOURCES);
-
-      // If there are sources found get the source that matches the name else get the nearest source //
-      if (sources.length > 0) {
+      if (creep.memory.role.includes("harvesterLD")) {
+        const sources = creep.room.find(FIND_SOURCES);
         if (creep.name.includes("0-")) {
           creep.memory.sourceId = sources[0].id;
         }
@@ -42,12 +39,14 @@ module.exports = {
         else if (creep.name.includes("3-")) {
           creep.memory.sourceId = sources[3].id;
         }
-        else {
-          if (creep.memory.role.includes("extractor")) {
-            if (flagMemory.mineralId)
-            creep.memory.sourceId = flagMemory.mineralId;
-          }
-          else {
+      }
+      else {
+        if (Game.time % 10 == 0) {
+          // Get the energy sources in the room //
+          const sources = creep.room.find(FIND_SOURCES_ACTIVE);
+
+          // If there are sources found get the source that matches the name else get the nearest source //
+          if (sources.length > 0) {
             creep.memory.sourceId = creep.pos.findClosestByRange(FIND_SOURCES).id;
           }
         }
@@ -55,16 +54,13 @@ module.exports = {
     }
 
     function harvestSource() {
-      const runHarvest = creep.harvest(target);
+      const runHarvest = creep.dismantle(target);
 
       switch(runHarvest) {
         case OK:
-          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%")
+          creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
           if (creep.memory.harvesterWorkCount && creep.memory.role.includes("harvester")) {
             Memory.performanceTracker[creep.room.name + ".energyHarvested"] += creep.memory.harvesterWorkCount * 2;
-          }
-          else if (creep.memory.harvesterWorkCount && creep.memory.role.includes("extractor")) {
-            Memory.performanceTracker[creep.room.name + ".mineralHarvested"] += creep.memory.harvesterWorkCount;
           }
           break;
         case ERR_NOT_OWNER:
@@ -75,19 +71,13 @@ module.exports = {
           creep.room.createConstructionSite(target.pos,STRUCTURE_EXTRACTOR);
           break;
         case ERR_NOT_ENOUGH_RESOURCES:
-          if (target.mineralAmount) {
-            if (target.mineralAmount == 0) {
-              console.log(`The mineral is empty in room ${creep.room.name}.`);
-              flagMemory.mineralAmount = 0;
-              creep.suicide();
-            }
-          }
+          findNewSourceInRoom();
           break;
         case ERR_INVALID_TARGET:
           break;
         case ERR_NOT_IN_RANGE:
           creep.say("Moving");
-          creep.moveTo(target);
+          creep.travelTo(target);
           break;
         case ERR_TIRED:
           break;
@@ -119,7 +109,7 @@ module.exports = {
 
       // Set the average CPU Usage in the memory //
 
-      Memory.cpuTracker["harvesterCPU.total"] += Game.cpu.getUsed() - start;
+      Memory.cpuTracker["harvesterLDCPU.total"] += Game.cpu.getUsed() - start;
     }
     else {
       // Run the part without tracking //

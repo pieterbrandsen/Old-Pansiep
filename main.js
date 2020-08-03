@@ -158,6 +158,7 @@ module.exports.loop = function() {
     return false;
   }
 
+
   function removeDeadCreepsMemory() {
     if (Game.time % 10 == 0) {
       // Loop Through Every Creep In Memory And Check If there Is Still Vision On Creep //

@@ -1,27 +1,115 @@
 const harvestModule = require('module.harvest');
-const mainSystem = require('miniModule.mainSystem');
+const harvestLDModule = require('module.harvestLD');
+
 
 module.exports = {
   run: function(creep) {
-    // Get The Variables Needed For Module //
-    const runMainSystem = mainSystem.run();
-    const room = Game.rooms[creep.room.name];
     const flagMemory = Memory.flags[creep.room.name];
 
+
+    function mainSystem() {
+      // If Memory.mainSystem is defined //
+      if (Memory.mainSystem) {
+        // If Memory.mainSystem is allowed to track cpu return True //
+        if (Memory.mainSystem.cpuTracker == true) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+      else {
+        return false;
+      }
+    }
+
     if (!creep.memory.withdrawId)
-    creep.memory.withdrawId = "";
+    creep.memory.withdrawId = ""
+
 
     function enterValueInMemory(memoryPath, inputValue) {
       flagMemory.roomManager[memoryPath] = inputValue;
     };
 
+    function withdrawUpgraderSection() {
+      const target = Game.getObjectById(flagMemory.controllerStorage);
+      if (!target) {
+        if (creep.room.controller) {
+          let range = 5;
+          let containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range,
+            {filter: {structureType: STRUCTURE_CONTAINER}
+          })[0];
+          let linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range,
+            {filter: {structureType: STRUCTURE_LINK}
+          })[0];
+          let constructionSiteInRange = creep.room.controller.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: (structure) => {
+            return (structure.pos.inRangeTo(creep.room.controller,range))
+          }});
+
+
+          if (containerInRange) {
+            flagMemory.controllerStorage = containerInRange.id;
+          }
+          else if (linkInRange) {
+            flagMemory.controllerStorage = linkInRange.id;
+          }
+          else if (constructionSiteInRange == null) {
+            enterValueInMemory(`controller.HasStructure`, false);
+          }
+          else {
+            harvestModule.run(creep);
+          }
+        }
+      }
+      else {
+        if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.travelTo(target);
+        }
+      }
+    }
+
+    function runWithdraw(target) {
+      if (target)
+      if ((target.structureType == "storage" || target.structureType == "terminal") && flagMemory.totalEnergyCapacity == flagMemory.totalEnergyAvailable)
+        return false;
+
+      const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
+      switch(runWithdraw) {
+        case OK:
+        creep.say("Withdraw");
+        creep.memory.withdrawStructure = target.structureType;
+        creep.memory.withdrawId = "";
+        break;
+        case ERR_NOT_OWNER:
+        break;
+        case ERR_BUSY:
+        break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+        break;
+        case ERR_INVALID_TARGET:
+        if (!creep.pos.inRangeTo(creep.room.controller,4))
+        creep.travelTo(creep.room.controller);
+        break;
+        case ERR_FULL:
+        break;
+        case ERR_NOT_IN_RANGE:
+        creep.say("Moving");
+        creep.travelTo(target);
+        break;
+        case ERR_INVALID_ARGS:
+        break;
+        default:
+        break;
+      }
+    }
+
     function findWithdrawStructure() {
+      const room = creep.room;
       let withdrawStructure = null;
 
       function checkStorage() {
-        // Check If Storage Is Defined And Big Enough For Withdrawing //
         if (room.storage)
-        if (flagMemory.totalEnergyAvailable !== flagMemory.totalEnergyCapacity || flagMemory.totalEnergyAvailable == 0)
+        if (flagMemory.totalEnergyAvailable !== flagMemory.totalEnergyCapacity)
         if (room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
           withdrawStructure = STRUCTURE_STORAGE;
           creep.memory.withdrawId = room.storage.id;
@@ -29,7 +117,6 @@ module.exports = {
         }
       }
       function checkTerminal() {
-        // Check If Terminal Is Defined And Big Enough For Withdrawing //
         if (room.terminal)
         if (room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
           withdrawStructure = STRUCTURE_TERMINAL
@@ -38,8 +125,6 @@ module.exports = {
         }
       }
       function checkContainers() {
-        // Find Container And Check If Big Enough For Withdraw //
-
         if (room.containers.length > 0) {
           let energyStored = 0;
           room.containers.forEach((item, i) => {
@@ -58,8 +143,6 @@ module.exports = {
         }
       }
       function checkLinks() {
-        // Find Link And Check If Big Enough For Withdraw //
-
         if (room.links.length > 0) {
           let energyStored = 0;
           room.links.forEach((item, i) => {
@@ -81,137 +164,50 @@ module.exports = {
       }
 
 
-      // Check All Possible Storages //
-      if (!checkStorage())
-      if (!checkTerminal())
-      if (!checkContainers())
-      if (!checkLinks()) {
-        if (creep.memory.role !== "transferer")
-        creep.memory.withdrawId = "source";
+      if (creep.memory.role !== "transferer") {
+        if (!checkContainers())
+        if (!checkTerminal())
+        if (!checkStorage())
+        if (!checkLinks()) {
+          creep.memory.withdrawId = "source";
+        }
+      }
+      else {
+        if (!checkStorage())
+        if (!checkTerminal())
+        if (!checkContainers())
+        if (!checkLinks()) {
+        }
       }
 
-      // If Structure Is Found, Say Structure //
+
       if (withdrawStructure !== null)
       creep.say(withdrawStructure)
 
-      // Return Structure //
       return withdrawStructure;
     }
 
-    function findStructureInRange(objectId, range) {
-      const object = Game.getObjectById(objectId);
-
-      function findContainer() {
-        // Loop Through Each Container And Look For The Container In Range //
-        room.containers.forEach((structure, i) => {
-          if (structure.pos.inRangeTo(object,range))
-          return [true, structure.id];
-        });
-        return false;
-      }
-
-      function findLink() {
-        // Loop Through Each Link And Look For The Link In Range //
-        room.links.forEach((structure, i) => {
-          if (structure.pos.inRangeTo(object,range))
-          return [true, structure.id];
-        });
-        return false;
-      }
-
-      // Check If There Is Already A Structure Being Build //
-      if (!findContainer())
-      if (!findLink())
-      return false;
-
-      return true;
-    }
-
-    function withdrawUpgraderSection() {
-      // Get Controller Storage //
-      const target = Game.getObjectById(flagMemory.controllerStorage);
-
-      // If Controller Storage Is Defined //
-      if (target) {
-        // Withdraw From Controller Storage //
-        if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-        creep.travelTo(target);
+    function withdrawStructure() {
+      if (creep.memory.role.includes("LD")) {
+        harvestModule.run(creep);
       }
       else {
-        // If Creep Is In Room With Controller //
-        if (creep.room.controller) {
-          // Find Structure //
-          const range = 4;
-          const findStructure = findStructureInRange(creep.room.controller.id, range);
-
-          // If Strucutre Is Found //
-          if (findStructure[0])
-          // Set Id In ControllerStorage Memory //
-          flagMemory.controllerStorage = findStructure[1];
-          // Else Harvest Energy From Source //
-          else
+        if (creep.memory.withdrawId.length > 0) {
+          if (creep.memory.withdrawId == "source")
           harvestModule.run(creep);
+          else
+          runWithdraw(Game.getObjectById(creep.memory.withdrawId));
+        }
+        else {
+          if (Game.time % 5 == 0) {
+            findWithdrawStructure();
+          }
         }
       }
     }
 
-    function runWithdraw(target) {
-      // Check If Creep Doesn't Keep On Withdrawing From Storage And Transfer Back ///
-      if (target)
-      if ((target.structureType == "storage" || target.structureType == "terminal") && flagMemory.totalEnergyCapacity == flagMemory.totalEnergyAvailable)
-        return false;
-
-      const runWithdraw = creep.withdraw(target,RESOURCE_ENERGY);
-      switch(runWithdraw) {
-        case OK:
-        // Succesfol Withdraw //
-        creep.say("Withdraw");
-
-        // Set Last WithdrawStructure In Memory And Reset WithdrawId //
-        creep.memory.withdrawStructure = target.structureType;
-        creep.memory.withdrawId = "";
-        break;
-        case ERR_NOT_OWNER:
-        break;
-        case ERR_BUSY:
-        break;
-        case ERR_NOT_ENOUGH_RESOURCES:
-        break;
-        case ERR_INVALID_TARGET:
-        break;
-        case ERR_FULL:
-        break;
-        case ERR_NOT_IN_RANGE:
-        // Travel To Target Until In Range //
-        creep.travelTo(target);
-        creep.say("Moving");
-        break;
-        case ERR_INVALID_ARGS:
-        break;
-        default:
-        break;
-      }
-    }
-
-    function withdrawStructure() {
-      // If WithdrawId Is In Memory //
-      if (creep.memory.withdrawId.length > 0) {
-        // If WithdrawId Is Source, Go Harvest A Source //
-        if (creep.memory.withdrawId == "source")
-        harvestModule.run(creep);
-        // Run Withdraw Structure //
-        else
-        runWithdraw(Game.getObjectById(creep.memory.withdrawId));
-      }
-      else
-      // Go Get A new Structure //
-      if (Game.time % 5 == 0)
-      findWithdrawStructure();
-    }
-
-
     if (creep.memory.role.includes("upgrader")) {
-      if (mainSystem) {
+      if (mainSystem()) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
 
@@ -220,7 +216,7 @@ module.exports = {
 
         // Set the average CPU Usage in the memory //
 
-        flagMemory.trackers.cpu.withdrawModule += Game.cpu.getUsed() - start;
+        Memory.cpuTracker["withdrawCPU.upgrader"] += Game.cpu.getUsed() - start;
       }
       else {
         // Run the part without tracking //
@@ -228,7 +224,7 @@ module.exports = {
       }
     }
     else {
-      if (runMainSystem) {
+      if (mainSystem()) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
         // Run the part //
@@ -236,7 +232,7 @@ module.exports = {
 
         // Set the average CPU Usage in the memory //
 
-        flagMemory.trackers.cpu.withdrawModule += Game.cpu.getUsed() - start;
+        Memory.cpuTracker["withdrawCPU.normal"] += Game.cpu.getUsed() - start;
       }
       else {
         // Run the part without tracking //

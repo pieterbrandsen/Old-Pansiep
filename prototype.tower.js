@@ -6,9 +6,6 @@ function () {
     this.attack(target);
   }
 };
-
-// OLD CODE //
-// BACKUP //
 /*StructureTower.prototype.repair =
 function () {
 

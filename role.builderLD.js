@@ -1,32 +1,53 @@
 const withdrawModule = require('module.withdraw');
 const builderModule = require('module.builder');
-const getWorkingState = require('miniModule.getCreepState');
 
 module.exports = {
   run: function(creep) {
-    // Get Creep State, What The Creep Should Be Doing //
-    const workState = getWorkingState.run(creep.room.name, creep.store.getCapacity(), creep.store.getUsedCapacity(), creep.memory.working, creep.memory.role);
-    if (workState !== undefined)
-    creep.memory.working = workState;
-
-    // Get Flag Of TargetRoom //
-    let targetRoom = Game.flags["builderLD" + creep.memory.spawnRoom];
-
-    // Check If There Is Vision In Room //
-    if (targetRoom.room) {
-      // If Creep Is In Target Room //
-      if (creep.room.name == targetRoom.room.name) {
-        // If Creep Needs To Withdraw //
-        if (creep.memory.working == "withdraw")
-        withdrawModule.run(creep);
-        // If Creep Needs To Transfer //
-        else if (creep.memory.working == "transfer")
-        builderModule.run(creep);
-      }
-      else
-      creep.travelTo(targetRoom)
+    let creepCarryCapacity = creep.store.getCapacity();
+    let creepCarryUsedCapacity = creep.store.getUsedCapacity();
+    if (creep.memory.working === true && creepCarryUsedCapacity === 0) {
+      creep.memory.working = false;
     }
-    else
-    creep.travelTo(targetRoom)
+    else if (creep.memory.working === false && creepCarryUsedCapacity == creepCarryCapacity) {
+      creep.memory.working = true;
+    }
+
+    if (!creep.memory.flagTarget) {
+      creep.memory.flagTarget = 1;
+    }
+
+    let flag = Game.flags["builderLD" + creep.memory.spawnRoom];
+    if (flag) {
+      if (flag.room) {
+        if (creep.room.name == flag.room.name) {
+          if (creep.memory.working === false) {
+            withdrawModule.run(creep);
+          }
+          else if (creep.memory.working === true) {
+            builderModule.run(creep);
+          }
+        }
+        else {
+          creep.travelTo(flag)
+        }
+      }
+      else {
+        // creep.travelTo(flag)
+        if (!Game.flags[creep.memory.flagTarget].room)
+        creep.travelTo(Game.flags[creep.memory.flagTarget])
+        else {
+          if (creep.pos.getRangeTo(Game.flags[creep.memory.flagTarget]) == 1) {
+            creep.travelTo(Game.flags[creep.memory.flagTarget])
+            creep.memory.flagTarget++;
+          }
+          else {
+            creep.travelTo(Game.flags[creep.memory.flagTarget])
+          }
+        }
+      }
+    }
+    else {
+      creep.suicide();
+    }
   }
 };

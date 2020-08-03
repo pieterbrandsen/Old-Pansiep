@@ -12,7 +12,7 @@ module.exports = {
     const x = object.pos.x;
     const y = object.pos.y;
     // Make The Range It's Own Variable //
-    let range = getRange;
+    let range = getRange++;
 
     // Define The Return Variables //
     let structureType;
@@ -47,44 +47,59 @@ module.exports = {
 
     function findContainer() {
       // Loop Through Each Container And Look For The Container In Range //
+      let structureFound = false;
       room.containers.forEach((structure, i) => {
-        if (structure.pos.inRangeTo(object,range))
-        return [true, structure.id];
+        if (structure.pos.inRangeTo(object,range)) {
+          structureFound = true;
+        }
       });
-      return false;
+      return structureFound;
     }
 
     function findStructureInRange() {
       function findLink() {
         // Loop Through Each Link And Look For The Link In Range //
+        let structureFound = false;
         room.links.forEach((structure, i) => {
-          if (structure.pos.inRangeTo(object,range))
-          return [true, structure.id];
+          if (structure.pos.inRangeTo(object,range)) {
+            structureFound = true;
+          }
         });
-        return false;
+        return structureFound;
       }
       function findConstructionSite() {
+        let structureFound = false;
         room.find(FIND_CONSTRUCTION_SITES).forEach((constructionSite, i) => {
           // Loop Through Each ConstructionSite And Look For The ConstructionSite In Range, Check If Found For Container Or Link //
-          if (constructionSite.pos.inRangeTo(object,range))
-          if (constructionSite.structureType == "container" || constructionSite.structureType == "link")
-          return [true, constructionSite.id];
+          if (constructionSite.pos.inRangeTo(object,range)) {
+            if (constructionSite.structureType == "container" || constructionSite.structureType == "link") {
+              structureFound = true;
+            }
+          }
         });
-        return false;
+        return structureFound;
       }
 
-      // Check If There Is Already A Structure Being Build //
-      if (!findContainer())
-      if (!findLink())
-      if (!findConstructionSite())
-      return false;
 
-      return true;
+      // Check If There Is Already A Structure Being Build //
+      let structureFound = true;
+
+      if (!findContainer()) {
+        if (!findLink()) {
+          if (!findConstructionSite()) {
+            structureFound = false;
+          }
+        }
+      }
+
+
+      return structureFound;
     }
 
     function checkIfCanBuildStructure() {
       // If Function Can't Find An Strucutre In Range, Continue //
-      if (!findStructureInRange()) {
+      let isStructureFound = findStructureInRange();
+      if (isStructureFound == false) {
         // Get StructureType //
         getStructureType();
 
@@ -103,7 +118,7 @@ module.exports = {
 
         // Get All Possible Possitions And Enter Them In A List //
         for (let i = 1; i < range+1; i++) {
-          for (let j = 1; j < range+1; j++) {
+          for (let j = 0; j < range+1; j++) {
             possiblePositions.push([x-j,y-i])
             possiblePositions.push([x+j,y-i])
             possiblePositions.push([x-j,y+i])
@@ -117,8 +132,6 @@ module.exports = {
           const posY = possiblePositions[i][1];
           // Get All Open Spots At Position //
           const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX, posY, roomName)[0];
-          const positionObject = room.lookForAt(LOOK_STRUCTURES,posX,posY)[0];
-
           // Check If Terrain At Possition Is No Wall //
           if (terrain.get(posX,posY) == 0) {
             // If This Positon Is Better Then Already Found Position //
@@ -138,28 +151,9 @@ module.exports = {
               }
             }
           }
-          else if (positionObject !== undefined) {
-            if (positionObject.structureType == STRUCTURE_CONTAINER || positionObject.structureType == STRUCTURE_ROAD) {
-              // If This Positon Is Better Then Already Found Position //
-              if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
-                optimalPositions[0] = possiblePositionsOfPlacementPossible
-                optimalPositions[1][0] = posX;
-                optimalPositions[1][1] = posY;
-              }
-              // If This Positon Is Closer To Head Spawn Then Already Found Position //
-              else if (Game.getObjectById(flagMemory.roomManager.headSpawn) !== null) {
-                const getRangeToHeadSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn).pos.getRangeTo(posX,posY)
-                if (possiblePositionsOfPlacementPossible == optimalPositions[0] && getRangeToHeadSpawn < optimalPositions[2]) {
-                  optimalPositions[0] = possiblePositionsOfPlacementPossible
-                  optimalPositions[1][0] = posX;
-                  optimalPositions[1][1] = posY;
-                  optimalPositions[2] = getRangeToHeadSpawn;
-                }
-              }
-            }
-          }
         }
 
+        console.log(optimalPositions + " - " + id + " - " + possiblePositions.length)
         // Get If Structure Is Placed //
         constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1]);
       }
@@ -169,10 +163,11 @@ module.exports = {
       }
     }
 
+
     // Run Head Function //
     checkIfCanBuildStructure();
 
-    //console.log([constructionSiteCanBeBuild, isThereStruture, errorMessage,id])
+
     return [constructionSiteCanBeBuild, isThereStruture, errorMessage];
   }
 };
