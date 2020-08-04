@@ -134,6 +134,57 @@ module.exports = {
             }
           }
         }
+
+
+
+        // Performance Trackers //
+
+        // Performance Trackers //
+
+        // Performance Trackers //
+
+        // Performance Trackers //
+
+        // Performance Trackers //
+
+        function getTotalRoomEnergy() {
+          // EnergyStorage Is Zero At Start //
+          let energyStored = 0;
+
+          // Loop Through All Containers And Count Energy In Container If Its Not The Controller Storage //
+          room.containers.forEach((container, i) => {
+            if (container.id !== flagMemory.controllerStorage || !flagMemory.controllerStorage) {
+              energyStored += container.store.getUsedCapacity(RESOURCE_ENERGY);
+            }
+          });
+          // Loop Through All Links And Count Energy In Link If Its Not The Controller Storage //
+          room.links.forEach((link, i) => {
+            if (flagMemory.links) {
+              if (flagMemory.links.linkTo1) {
+                if (link.id !== flagMemory.controllerStorage || !flagMemory.controllerStorage) {
+                  energyStored += link.store.getUsedCapacity(RESOURCE_ENERGY);
+                }
+              }
+            }
+          });
+
+          // If There Is A Terminal In Room, Add EnergyCount
+          if (room.terminal !== undefined)
+          energyStored += room.terminal.store.getUsedCapacity(RESOURCE_ENERGY);
+
+          // If There Is A Storage In Room, Add EnergyCount
+          if (room.storage !== undefined)
+          energyStored += room.storage.store.getUsedCapacity(RESOURCE_ENERGY);
+
+          // Return EnergyCount
+          return energyStored;
+        }
+
+
+        // Run Performance Logger Each 100 Ticks //
+        if (Game.time % 100 == 0) {
+          flagMemory.trackers.performance.energyStored = getTotalRoomEnergy();
+        }
       }
     }
   }

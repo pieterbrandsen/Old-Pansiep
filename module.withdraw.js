@@ -4,7 +4,7 @@ const runMainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function(creep) {
-    // Get the variables needed for module //
+    // Get The Variables Needed For Module //
     const getMainSystem = runMainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 

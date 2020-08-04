@@ -35,8 +35,5 @@ module.exports = {
         creep.travelTo(Game.flags[creep.memory.spawnRoom])
       }
     }
-
-
-    //Memory.performanceTracker[creep.room.name + ".remoteProfit"] += creepCarryUsedCapacity - creep.store.getUsedCapacity();
   }
 };

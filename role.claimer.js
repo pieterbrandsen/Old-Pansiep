@@ -39,15 +39,11 @@ module.exports = {
     runHealCreep();
 
 
-    if (Game.shard.name == shardTarget) {
-      if (flag && flagMemory) {
-        if (!flag.room)
-        creep.travelTo(flag);
-        else
-        claimerModule.run(creep);
-      }
+    if (flag && flagMemory) {
+      if (!flag.room)
+      creep.travelTo(flag);
+      else
+      claimerModule.run(creep);
     }
-    else
-    creep.travelTo(Game.flags["shardUp"]);
   }
 };

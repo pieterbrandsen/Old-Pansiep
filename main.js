@@ -27,29 +27,6 @@ module.exports.loop = function() {
   if (Game.cpu.bucket == 10000)
   Game.cpu.generatePixel();
 
-  if (!Memory.flags)
-  Memory.flags = {};
-  if (!Memory.stats)
-  Memory.stats = {};
-  if (!Memory.cpuTracker) {
-    Memory.cpuTracker = {};
-    Memory.cpuTracker.loadMemory = 0;
-    Memory.cpuTracker.removeDeadCreepsMemory = 0;
-    Memory.cpuTracker.runCreeps = 0;
-    Memory.cpuTracker.cpuTracker = 0;
-  }
-  if (!Memory.mainSystem) {
-    Memory.mainSystem = {};
-    Memory.mainSystem.cpuTracker = true;
-    Memory.mainSystem.cpuAvgTicks = 100;
-    Memory.mainSystem.performanceTracker = true;
-    Memory.mainSystem.performanceAvgTicks = 10000;
-  }
-  if (!Memory.performanceTracker)
-  Memory.performanceTracker = {};
-  if (!Memory.outpostMemory)
-  Memory.outpostMemory = {};
-
 
   // Loop Through All Rooms With Vision //
   _.forEach(Object.keys(Game.rooms), function (roomName) {
@@ -167,7 +144,7 @@ module.exports.loop = function() {
     Memory;
 
     // Set the average CPU Usage in the memory //
-    cpuTracker.memoryLoad += Game.cpu.getUsed() - start;
+    cpuTracker.loadMemory += Game.cpu.getUsed() - start;
   }
   else {
     // Run the part without tracking //

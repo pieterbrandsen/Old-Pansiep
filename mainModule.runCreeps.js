@@ -86,86 +86,88 @@ module.exports = {
       const role = creep.memory.role
       const targetRoom = creep.memory.targetRoom;
 
-      if (Memory.flags[creep.memory.targetRoom].trackers !== undefined) {
-        // Check For Each Possible Role And Run The Right Code Part For The Creep //
-        switch (role) {
-          case "harvester-0":
-          case "harvester-1":
-            // Run Role Code, Add Role To RoleCount //
-            roleHarvester.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
-            break;
-          case "transferer":
-            // Run Role Code, Add Role To RoleCount //
-            roleTransferer.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
-            break;
-          case "transfererLiTe":
-            // Run Role Code, Add Role To RoleCount //
-            roleTransfererLiTe.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
-            break;
-          case "builder":
-            // Run Role Code, Add Role To RoleCount //
-            roleBuilder.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
-            break;
-          case "upgrader":
-            // Run Role Code, Add Role To RoleCount //
-            roleUpgrader.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
-            break;
-          case "repairer":
-            // Run Role Code, Add Role To RoleCount //
-            roleRepairer.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
-            break;
-          case "extractor":
-            // Run Role Code, Add Role To RoleCount //
-            roleExtractor.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
-            break;
-          case "claimer":
-            // Run Role Code, Add Role To RoleCount //
-            roleClaimer.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "CLAIM", creep.getActiveBodyparts(CLAIM));
-            break;
-          case "attacker":
-            // Run Role Code, Add Role To RoleCount //
-            roleAttacker.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "RANGED_ATTACK", creep.getActiveBodyparts(RANGED_ATTACK));
-            break;
-          case "builderLD":
-            // Run Role Code, Add Role To RoleCount //
-            roleBuilderLD.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
-            break;
-          case "ruinWithdrawer":
-            // Run Role Code, Add Role To RoleCount //
-            roleRuinWithdrawer.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
-            break;
-          case "reserverLD":
-            // Run Role Code, Add Role To RoleCount //
-            roleReserverLD.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "CLAIM", creep.getActiveBodyparts(CLAIM));
-            break;
-          case "harvesterLD-0":
-          case "harvesterLD-1":
-          case "harvesterLD-2":
-          case "harvesterLD-3":
-            // Run Role Code, Add Role To RoleCount //
-            roleHarvesterLD.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
-            break;
-          case "transfererLD":
-            // Run Role Code, Add Role To RoleCount //
-            roleTransfererLD.run(creep);
-            addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
-            break;
-          default:
-            console.log(`Creep in room ${creep.room.name} is missing a role or has no run function. The role is ${role}.`);
-            break;
+      if (Memory.flags[creep.memory.targetRoom]) {
+        if (Memory.flags[creep.memory.targetRoom].trackers !== undefined) {
+          // Check For Each Possible Role And Run The Right Code Part For The Creep //
+          switch (role) {
+            case "harvester-0":
+            case "harvester-1":
+              // Run Role Code, Add Role To RoleCount //
+              roleHarvester.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
+              break;
+            case "transferer":
+              // Run Role Code, Add Role To RoleCount //
+              roleTransferer.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
+              break;
+            case "transfererLiTe":
+              // Run Role Code, Add Role To RoleCount //
+              roleTransfererLiTe.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
+              break;
+            case "builder":
+              // Run Role Code, Add Role To RoleCount //
+              roleBuilder.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
+              break;
+            case "upgrader":
+              // Run Role Code, Add Role To RoleCount //
+              roleUpgrader.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
+              break;
+            case "repairer":
+              // Run Role Code, Add Role To RoleCount //
+              roleRepairer.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
+              break;
+            case "extractor":
+              // Run Role Code, Add Role To RoleCount //
+              roleExtractor.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
+              break;
+            case "claimer":
+              // Run Role Code, Add Role To RoleCount //
+              roleClaimer.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "CLAIM", creep.getActiveBodyparts(CLAIM));
+              break;
+            case "attacker":
+              // Run Role Code, Add Role To RoleCount //
+              roleAttacker.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "RANGED_ATTACK", creep.getActiveBodyparts(RANGED_ATTACK));
+              break;
+            case "builderLD":
+              // Run Role Code, Add Role To RoleCount //
+              roleBuilderLD.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
+              break;
+            case "ruinWithdrawer":
+              // Run Role Code, Add Role To RoleCount //
+              roleRuinWithdrawer.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
+              break;
+            case "reserverLD":
+              // Run Role Code, Add Role To RoleCount //
+              roleReserverLD.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "CLAIM", creep.getActiveBodyparts(CLAIM));
+              break;
+            case "harvesterLD-0":
+            case "harvesterLD-1":
+            case "harvesterLD-2":
+            case "harvesterLD-3":
+              // Run Role Code, Add Role To RoleCount //
+              roleHarvesterLD.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "WORK", creep.getActiveBodyparts(WORK));
+              break;
+            case "transfererLD":
+              // Run Role Code, Add Role To RoleCount //
+              roleTransfererLD.run(creep);
+              addRoleAndPartToMemory(targetRoom, role, "CARRY", creep.getActiveBodyparts(CARRY));
+              break;
+            default:
+              console.log(`Creep in room ${creep.room.name} is missing a role or has no run function. The role is ${role}.`);
+              break;
+          }
         }
       }
     }
