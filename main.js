@@ -13,17 +13,19 @@ const runCreeps = require('mainModule.runCreeps');
 const runTowers = require('mainModule.towers');
 const runTracker = require('mainModule.tracker');
 
+// Require Mini Modules
+const runMainSystem = require('miniModule.mainSystem');
 
 module.exports.loop = function() {
+  const getMainSystem = runMainSystem.run();
   // Make A Variable With Shard Name //
   const shardName = Game.shard.name;
   // Make A Variable With MainSystem Memory //
   const mainSystemMemory = Memory.mainSystem;
 
   // Every Time The Bucket Reaches It's Limit, Generate A Pixel //
-  // if (Game.cpu.bucket == 10000) {
-  //   Game.cpu.generatePixel();
-  // }
+  if (Game.cpu.bucket == 10000)
+  Game.cpu.generatePixel();
 
   if (!Memory.flags)
   Memory.flags = {};
@@ -75,7 +77,7 @@ module.exports.loop = function() {
           // Create Variable For Shortcut of CpuTracker //
           const cpuTracker = flagMemory.trackers.cpu;
 
-          if (mainSystem()) {
+          if (getMainSystem) {
             // Get the CPU Usage //
             let start = Game.cpu.getUsed();
 
@@ -91,7 +93,7 @@ module.exports.loop = function() {
           }
 
 
-          if (mainSystem()) {
+          if (getMainSystem) {
             // Get the CPU Usage //
             let start = Game.cpu.getUsed();
 
@@ -107,7 +109,7 @@ module.exports.loop = function() {
           }
 
 
-          if (mainSystem()) {
+          if (getMainSystem) {
             // Get the CPU Usage //
             let start = Game.cpu.getUsed();
 
@@ -123,7 +125,7 @@ module.exports.loop = function() {
           }
 
 
-          if (mainSystem()) {
+          if (getMainSystem) {
             // Get the CPU Usage //
             let start = Game.cpu.getUsed();
 
@@ -140,24 +142,10 @@ module.exports.loop = function() {
         }
       }
     }
-  });
+  })
 
 
   const cpuTracker = Memory.cpuTracker;
-
-  function mainSystem() {
-    // If Memory.mainSystem Is Defined //
-    if (Memory.mainSystem) {
-      // If CpuTracking Is Enabled
-      if (Memory.mainSystem.cpuTracker == true)
-      return true;
-      else
-      return false;
-    }
-    else
-    return false;
-  }
-
 
   function removeDeadCreepsMemory() {
     if (Game.time % 10 == 0) {
@@ -171,7 +159,7 @@ module.exports.loop = function() {
     }
   }
 
-  if (mainSystem()) {
+  if (getMainSystem) {
     // Get the CPU Usage //
     let start = Game.cpu.getUsed();
 
@@ -187,7 +175,7 @@ module.exports.loop = function() {
   }
 
 
-  if (mainSystem()) {
+  if (getMainSystem) {
     // Get the CPU Usage //
     let start = Game.cpu.getUsed();
 
@@ -203,7 +191,7 @@ module.exports.loop = function() {
   }
 
 
-  if (mainSystem()) {
+  if (getMainSystem) {
     // Get the CPU Usage //
     let start = Game.cpu.getUsed();
 
@@ -219,7 +207,7 @@ module.exports.loop = function() {
   }
 
 
-  if (mainSystem()) {
+  if (getMainSystem) {
     // Get the CPU Usage //
     let start = Game.cpu.getUsed();
 

@@ -1,27 +1,13 @@
 const harvestModule = require('module.harvest');
-const harvestLDModule = require('module.harvestLD');
+const runMainSystem = require('miniModule.mainSystem');
 
 
 module.exports = {
   run: function(creep) {
+    // Get the variables needed for module //
+    const getMainSystem = runMainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
 
     if (!creep.memory.withdrawId)
     creep.memory.withdrawId = ""
@@ -207,7 +193,7 @@ module.exports = {
     }
 
     if (creep.memory.role.includes("upgrader")) {
-      if (mainSystem()) {
+      if (getMainSystem) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
 
@@ -216,7 +202,7 @@ module.exports = {
 
         // Set the average CPU Usage in the memory //
 
-        Memory.cpuTracker["withdrawCPU.upgrader"] += Game.cpu.getUsed() - start;
+        flagMemory.trackers.cpuModule.withdrawModule += Game.cpu.getUsed() - start;
       }
       else {
         // Run the part without tracking //
@@ -224,7 +210,7 @@ module.exports = {
       }
     }
     else {
-      if (mainSystem()) {
+      if (getMainSystem) {
         // Get the CPU Usage //
         let start = Game.cpu.getUsed();
         // Run the part //

@@ -6,9 +6,9 @@ module.exports = {
 
 
     function runRoomPlanner(flagName) {
-      if (!Memory.flags[flagName]) {
-        Memory.flags[flagName] = {}
-      }
+      if (!Memory.flags[flagName])
+      Memory.flags[flagName] = {};
+      
       const flag = Game.flags[flagName];
       const flagMemory = Memory.flags[flagName];
       const room = flag.room;
@@ -16,7 +16,6 @@ module.exports = {
       if (flag) {
         if (room) {
           controllerLevel = room.controller.level;
-
           const x = flag.pos.x;
           const y = flag.pos.y;
 

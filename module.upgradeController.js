@@ -1,29 +1,11 @@
 const builderModule = require('module.builder');
+const runMainSystem = require('miniModule.mainSystem');
 
 module.exports = {
   run: function(creep) {
+    // Get the variables needed for module //
+    const getMainSystem = runMainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
-
-    if (!creep.memory.upgraderWorkCount) {
-      creep.memory.upgraderWorkCount = creep.getActiveBodyparts(WORK);
-    }
-
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
 
     function upgradeController() {
       // If there is a controller in current room check if creep can upgrade //
@@ -66,15 +48,13 @@ module.exports = {
         let linkInRange = creep.room.controller.pos.findInRange(creep.room.links, 3,
           {filter: {structureType: STRUCTURE_LINK}
         })[0];
-        if (containerInRange) {
-          flagMemory.controllerStorage = containerInRange.id;
-        }
-        else if (linkInRange) {
-          flagMemory.controllerStorage = linkInRange.id;
-        }
-        else {
-          builderModule.run(creep);
-        }
+        
+        if (containerInRange)
+        flagMemory.controllerStorage = containerInRange.id;
+        else if (linkInRange)
+        flagMemory.controllerStorage = linkInRange.id;
+        else
+        builderModule.run(creep);
       }
       else {
         // Upgrade controller //
@@ -83,7 +63,7 @@ module.exports = {
     }
 
 
-    if (mainSystem()) {
+    if (getMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 

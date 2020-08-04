@@ -1,31 +1,13 @@
+const runMainSystem = require('miniModule.mainSystem');
+
 module.exports = {
   run: function(creep) {
+    const getMainSystem = runMainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
     // If creep has no targetId assign a empty string //
     if (!creep.memory.targetId)
     creep.memory.targetId = "";
 
-    if (!creep.memory.builderWorkCount) {
-      creep.memory.builderWorkCount = creep.getActiveBodyparts(WORK);
-    }
-
-
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
 
     function findNewTarget() {
       // Find new target to build //
@@ -70,7 +52,7 @@ module.exports = {
       const runBuilder = creep.build(Game.getObjectById(creep.memory.targetId));
       switch(runBuilder) {
         case OK:
-        creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
+        creep.say(`${Math.round(creep.store.getUsedCapacity() / creep.store.getCapacity()) * 100}%`);
         if (creep.memory.builderWorkCount) {
           Memory.performanceTracker[creep.room.name + ".builderEnergy"] += creep.memory.builderWorkCount * 2;
         }
@@ -95,7 +77,7 @@ module.exports = {
     }
 
 
-    if (mainSystem()) {
+    if (getMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 

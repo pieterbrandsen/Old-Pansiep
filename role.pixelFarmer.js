@@ -1,6 +1,7 @@
 module.exports = {
   run: function(creep) {
-    if (Game.flags["shardUp"] && Game.shard.name == "shard3")
+    // Travel To A Shard Above Current Shard //
+    if (Game.flags["shardUp"])
     creep.travelTo(Game.flags["shardUp"]);
   }
 };

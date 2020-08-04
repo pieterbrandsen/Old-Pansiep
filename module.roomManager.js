@@ -10,96 +10,76 @@ module.exports = {
 
     function createConstructionSite(memoryPath, objectId, range, controllerLevel) {
       const buildStructure = createConstructionSiteForObject.run(objectId,range,controllerLevel,roomName);
-      if (!buildStructure[0])
       errorMessage = buildStructure[2];
+
       if (buildStructure[0]) {
         flagMemory.roomManager[memoryPath] = true;
         flagMemory.constructionSitesAmount++;
       }
-      else if (buildStructure[1]) {
-        flagMemory.roomManager[memoryPath] = true;
-      }
+      else if (buildStructure[1])
+      flagMemory.roomManager[memoryPath] = true;
       else
       flagMemory.roomManager[memoryPath] = false;
     }
 
     function getSpawningEnergy() {
       flagMemory.totalEnergyAvailable = room.energyAvailable;
-      let spawns = room.spawns.length;
-      let extensions = room.extensions.length;
+      let spawnsLength = room.spawns.length;
+      let extensionsLength = room.extensions.length;
 
-      if (room.controller.level == 1) {
-        if (room.spawns.length > 0) {
-          if (spawns > 1)
-          spawns = 1;
+      switch (room.controller.level) {
+        case 1:
+        if (spawnsLength > 1)
+        spawnsLength = 1;
+        if (extensionsLength > 0)
+        extensionsLength = 0;
+        break;
+        case 2:
+        if (spawnsLength > 1)
+        spawnsLength = 1;
+        if (extensionsLength > 5)
+        extensionsLength = 5;
+        break;
+        case 3:
+        if (spawnsLength > 1)
+        spawnsLength = 1;
+        if (extensionsLength > 10)
+        extensionsLength = 10;
+        break;
+        case 4:
+        if (spawnsLength > 1)
+        spawnsLength = 1;
+        if (extensionsLength > 20)
+        extensionsLength = 20;
+        break;
+        case 5:
+        if (spawnsLength > 1)
+        spawnsLength = 1;
+        if (extensionsLength > 30)
+        extensionsLength = 30;
+        break;
+        case 6:
+        if (spawnsLength > 1)
+        spawnsLength = 1;
+        if (extensionsLength > 40)
+        extensionsLength = 40;
+        break;
+        case 7:
+        if (spawnsLength > 2)
+        spawnsLength = 2;
+        if (extensionsLength > 50)
+        extensionsLength = 50;
+        break;
+        default:
+        break;
+      }
 
-          flagMemory.totalEnergyCapacity = (spawns * 300);
-        }
-      }
-      if (room.controller.level == 2) {
-        if (room.spawns.length > 0) {
-          if (spawns > 1)
-          spawns = 1;
-          if (extensions > 5)
-          extensions = 5;
-
-          flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-        }
-      }
-      else if (room.controller.level == 3) {
-        if (room.spawns.length > 0) {
-          if (spawns > 1)
-          spawns = 1;
-          if (extensions > 10) {
-            extensions = 10;
-          }
-
-          flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-        }
-      }
-      else if (room.controller.level == 4) {
-        if (room.spawns.length > 0) {
-          if (spawns > 1)
-          spawns = 1;
-          if (extensions > 20)
-          extensions = 20;
-
-          flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-        }
-      }
-      else if (room.controller.level == 5) {
-        if (room.spawns.length > 0) {
-          if (spawns > 1)
-          spawns = 1;
-          if (extensions > 30)
-          extensions = 30;
-
-          flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-        }
-      }
-      else if (room.controller.level == 6) {
-        if (room.spawns.length > 0) {
-          if (spawns > 1)
-          spawns = 1;
-          if (extensions > 40)
-          extensions = 40;
-
-          flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 50);
-        }
-      }
-      else if (room.controller.level == 7) {
-        if (room.spawns.length > 0) {
-          if (spawns > 2)
-          spawns = 2;
-          if (extensions > 50)
-          extensions = 50;
-
-          flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 100);
-        }
-      }
-      else if (room.controller.level == 8) {
-        flagMemory.totalEnergyCapacity = (spawns * 300) + (extensions * 200);
-      }
+      if (room.controller.level == 8)
+      flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 200);
+      else if (room.controller.level == 7)
+      flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 100);
+      else
+      flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 50);
     }
 
     if (flagMemory) {
@@ -122,9 +102,8 @@ module.exports = {
               }
             }
             else {
-              if (room.spawns.length == 1) {
-                flagMemory.roomManager.headSpawn = room.spawns[0].id;
-              }
+              if (room.spawns.length == 1)
+              flagMemory.roomManager.headSpawn = room.spawns[0].id;
             }
           }
 
@@ -139,21 +118,18 @@ module.exports = {
                 if (createConstructionSite(`source-${i}.HasStructure`, source.id, 2, 7))
                 console.log(`Building a storage for a source in room: ${room.name}`);
                 else {
-                  if (errorMessage.length > 0) {
-                    console.log(`Can't build a storage for a source in room: ${room.name} because of ${errorMessage}`)
-                  }
+                  if (errorMessage.length > 0)
+                  console.log(`Can't build a storage for a source in room: ${room.name} because of ${errorMessage}`)
                 }
               }
             });
 
             if (flagMemory.roomManager[`controller.HasStructure`] == false) {
-              if (createConstructionSite(`controller.HasStructure`, room.controller.id, 3, 6)) {
-                console.log(`Building a storage for the controller in room: ${room.name}`)
-              }
+              if (createConstructionSite(`controller.HasStructure`, room.controller.id, 3, 6))
+              console.log(`Building a storage for the controller in room: ${room.name}`)
               else {
-                if (errorMessage.length > 0) {
-                  console.log(`Can't build a storage for the controller in room: ${room.name} because of ${errorMessage}`)
-                }
+                if (errorMessage.length > 0)
+                console.log(`Can't build a storage for the controller in room: ${room.name} because of ${errorMessage}`)
               }
             }
           }

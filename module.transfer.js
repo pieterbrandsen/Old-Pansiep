@@ -1,34 +1,20 @@
+const runMainSystem = require('miniModule.mainSystem');
 const builderModule = require('module.builder');
 
 module.exports = {
   run: function(creep) {
+    // Get the variables needed for module //
     const flagMemory = Memory.flags[creep.room.name];
+    const getMainSystem = runMainSystem.run();
 
-    if (!creep.memory.waitTransferer || Game.time % 20 == 0) {
-      creep.memory.waitTransferer = false;
-    }
+    if (!creep.memory.waitTransferer || Game.time % 20 == 0)
+    creep.memory.waitTransferer = false;
     if (!creep.memory.targetId)
     creep.memory.targetId = "";
 
 
-
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
-
-    function transferTarget(target) {
+    function transferTarget() {
+      const target = Game.getObjectById(creep.memory.targetId);
       const runTransfer = creep.transfer(target,RESOURCE_ENERGY);
       switch(runTransfer) {
         case OK:
@@ -77,7 +63,6 @@ module.exports = {
         builderModule.run(creep);
       }
       else {
-
         const controllerStorage = Game.getObjectById(flagMemory.controllerStorage);
 
         if (creep.memory.waitTransferer == false) {
@@ -108,12 +93,12 @@ module.exports = {
       }
     }
 
-    if (mainSystem()) {
+    if (getMainSystem) {
       // Get the CPU Usage //
       let start = Game.cpu.getUsed();
 
       // Run the part //
-      transferTarget(Game.getObjectById(creep.memory.targetId));
+      transferTarget();
 
       // Set the average CPU Usage in the memory //
 
@@ -121,7 +106,7 @@ module.exports = {
     }
     else {
       // Run the part without tracking //
-      transferTarget(Game.getObjectById(creep.memory.targetId));
+      transferTarget();
     }
   }
 };

@@ -1,21 +1,5 @@
 module.exports = {
   run: function(creep) {
-    function mainSystem() {
-      // If Memory.mainSystem is defined //
-      if (Memory.mainSystem) {
-        // If Memory.mainSystem is allowed to track cpu return True //
-        if (Memory.mainSystem.cpuTracker == true) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
-
     function claimRoom() {
       const target = creep.room.controller;
       const runClaimController = creep.claimController(target);
@@ -50,21 +34,7 @@ module.exports = {
       }
     }
 
-
-    if (mainSystem()) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
-
-      // Run the part //
-      claimRoom();
-
-      // Set the average CPU Usage in the memory //
-
-      flagMemory.trackers.cpuModule.claimerModule += Game.cpu.getUsed() - start;
-    }
-    else {
-      // Run the part without tracking //
-      claimRoom();
-    }
+    // Run Claimer Module //
+    claimRoom();
   }
 };

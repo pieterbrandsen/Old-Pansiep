@@ -1,6 +1,6 @@
 StructureTower.prototype.defend =
 function () {
-  // find closes hostile creep
+  // Find Closest Hostile Creep //
   let target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
   if (target !== null) {
     this.attack(target);
