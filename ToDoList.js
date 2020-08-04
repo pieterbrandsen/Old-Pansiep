@@ -1,6 +1,7 @@
 /*
 
 1.
+!!!performance tracking in energy income and outcome!!!
 remote harvesting, for small rooms and big rooms
 2.
 mineral harvesting
