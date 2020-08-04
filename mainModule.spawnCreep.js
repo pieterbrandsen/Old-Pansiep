@@ -287,7 +287,7 @@ module.exports = {
             }
             break;
             case "upgrader":
-            if ((flagMemory.trackers.performance > 1500 && room.containers.length > 0) || flagMemory.trackers.performance > 50000) {
+            if ((flagMemory.trackers.performance > 1500 && !room.storage) || flagMemory.trackers.performance > 50000) {
               if (flagMemory.partsAmount["upgrader-WORK"] < flagMemory.sources.length*4 && flagMemory.constructionSitesAmount == 0 && !Game.flags["builderLD"+roomName]) {
                 if (flagMemory.rolesCount["upgrader"] < 4) {
                   result = true;
