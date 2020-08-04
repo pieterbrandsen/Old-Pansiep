@@ -140,7 +140,7 @@ module.exports.loop = function() {
         }
       }
     }
-  })
+  });
 
 
   const cpuTracker = Memory.cpuTracker;

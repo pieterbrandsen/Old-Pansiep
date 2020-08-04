@@ -153,7 +153,6 @@ module.exports = {
           }
         }
 
-        console.log(optimalPositions + " - " + id + " - " + possiblePositions.length)
         // Get If Structure Is Placed //
         constructionSiteCanBeBuild = createConstruction(structureType,optimalPositions[1][0],optimalPositions[1][1]);
       }

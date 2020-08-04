@@ -48,8 +48,6 @@ module.exports = {
           // Get The ConstructionSiteAmount //
           flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
         }
-
-
       }
     }
   }

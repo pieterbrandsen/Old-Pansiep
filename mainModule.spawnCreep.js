@@ -22,14 +22,14 @@ module.exports = {
         let energyStored = 0;
 
         room.containers.forEach((item, i) => {
-          if (item.id !== flagMemory.controllerStorage && flagMemory.controllerStorage) {
+          if (item.id !== flagMemory.controllerStorage || !flagMemory.controllerStorage) {
             energyStored += item.store.getUsedCapacity(RESOURCE_ENERGY);
           }
         });
         room.links.forEach((item, i) => {
           if (flagMemory.links) {
             if (flagMemory.links.linkTo1) {
-              if (room.links[i].id == flagMemory.links.linkTo1 && room.terminal) {
+              if (room.links[i].id == flagMemory.links.linkTo1 || !flagMemory.controllerStorage) {
                 energyStored += room.links[i].store.getUsedCapacity(RESOURCE_ENERGY);
               }
             }

@@ -65,87 +65,88 @@ module.exports = {
       const creep = Game.creeps[name];
       const role = creep.memory.role
       const targetRoom = creep.memory.targetRoom;
-
-      // Check For Each Possible Role And Run The Right Code Part For The Creep //
-      switch (role) {
-        case "harvester-0":
-        case "harvester-1":
-          // Run Role Code, Add Role To RoleCount //
-          roleHarvester.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "transferer":
-          // Run Role Code, Add Role To RoleCount //
-          roleTransferer.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "transfererLiTe":
-          // Run Role Code, Add Role To RoleCount //
-          roleTransfererLiTe.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "builder":
-          // Run Role Code, Add Role To RoleCount //
-          roleBuilder.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "upgrader":
-          // Run Role Code, Add Role To RoleCount //
-          roleUpgrader.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "repairer":
-          // Run Role Code, Add Role To RoleCount //
-          roleRepairer.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "extractor":
-          // Run Role Code, Add Role To RoleCount //
-          roleExtractor.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "claimer":
-          // Run Role Code, Add Role To RoleCount //
-          roleClaimer.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "attacker":
-          // Run Role Code, Add Role To RoleCount //
-          roleAttacker.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "builderLD":
-          // Run Role Code, Add Role To RoleCount //
-          roleBuilderLD.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "ruinWithdrawer":
-          // Run Role Code, Add Role To RoleCount //
-          roleRuinWithdrawer.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "reserverLD":
-          // Run Role Code, Add Role To RoleCount //
-          roleReserverLD.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "harvesterLD-0":
-        case "harvesterLD-1":
-        case "harvesterLD-2":
-        case "harvesterLD-3":
-          // Run Role Code, Add Role To RoleCount //
-          roleHarvesterLD.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        case "transfererLD":
-          // Run Role Code, Add Role To RoleCount //
-          roleTransfererLD.run(creep);
-          addRoleToMemory(targetRoom, role);
-          break;
-        default:
-          if (Game.time % 25 == 0)
-          console.log(`Creep in room ${creep.room.name} is missing a role or has no run function. The role is ${role}.`);
-          break;
+      if (Memory.flags[creep.memory.spawnRoom].IsMemorySetup) {
+        // Check For Each Possible Role And Run The Right Code Part For The Creep //
+        switch (role) {
+          case "harvester-0":
+          case "harvester-1":
+            // Run Role Code, Add Role To RoleCount //
+            roleHarvester.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "transferer":
+            // Run Role Code, Add Role To RoleCount //
+            roleTransferer.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "transfererLiTe":
+            // Run Role Code, Add Role To RoleCount //
+            roleTransfererLiTe.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "builder":
+            // Run Role Code, Add Role To RoleCount //
+            roleBuilder.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "upgrader":
+            // Run Role Code, Add Role To RoleCount //
+            roleUpgrader.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "repairer":
+            // Run Role Code, Add Role To RoleCount //
+            roleRepairer.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "extractor":
+            // Run Role Code, Add Role To RoleCount //
+            roleExtractor.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "claimer":
+            // Run Role Code, Add Role To RoleCount //
+            roleClaimer.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "attacker":
+            // Run Role Code, Add Role To RoleCount //
+            roleAttacker.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "builderLD":
+            // Run Role Code, Add Role To RoleCount //
+            roleBuilderLD.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "ruinWithdrawer":
+            // Run Role Code, Add Role To RoleCount //
+            roleRuinWithdrawer.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "reserverLD":
+            // Run Role Code, Add Role To RoleCount //
+            roleReserverLD.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "harvesterLD-0":
+          case "harvesterLD-1":
+          case "harvesterLD-2":
+          case "harvesterLD-3":
+            // Run Role Code, Add Role To RoleCount //
+            roleHarvesterLD.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          case "transfererLD":
+            // Run Role Code, Add Role To RoleCount //
+            roleTransfererLD.run(creep);
+            addRoleToMemory(targetRoom, role);
+            break;
+          default:
+            if (Game.time % 25 == 0)
+            console.log(`Creep in room ${creep.room.name} is missing a role or has no run function. The role is ${role}.`);
+            break;
+        }
       }
 
       if (counterIsRunned)

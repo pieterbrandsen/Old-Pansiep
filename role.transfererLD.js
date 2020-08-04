@@ -33,8 +33,5 @@ module.exports = {
         }
       }
     }
-
-
-    Memory.performanceTracker[creep.room.name + ".remoteProfit"] += creepCarryUsedCapacity - creep.store.getUsedCapacity();
   }
 };

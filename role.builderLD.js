@@ -28,7 +28,18 @@ module.exports = {
           }
         }
         else {
-          creep.travelTo(flag)
+          //creep.travelTo(flag)
+          if (!Game.flags[creep.memory.flagTarget].room)
+          creep.travelTo(Game.flags[creep.memory.flagTarget])
+          else {
+            if (creep.pos.getRangeTo(Game.flags[creep.memory.flagTarget]) == 1) {
+              creep.travelTo(Game.flags[creep.memory.flagTarget])
+              creep.memory.flagTarget++;
+            }
+            else {
+              creep.travelTo(Game.flags[creep.memory.flagTarget])
+            }
+          }
         }
       }
       else {

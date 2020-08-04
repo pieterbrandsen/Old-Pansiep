@@ -104,7 +104,7 @@ module.exports = {
 
       // Set the average CPU Usage in the memory //
 
-      Memory.cpuTracker["builderCPU.total"] += Game.cpu.getUsed() - start;
+      flagMemory.trackers.cpuModule.builderModule += Game.cpu.getUsed() - start;
     }
     else {
       // Run the part without tracking //
