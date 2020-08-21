@@ -190,5 +190,49 @@ module.exports = {
     }
     else
     creep.memory.canBoost = false;
+  },
+
+  boost: function(creep) {
+    const flagMemory = Memory.flags[creep.room.name];
+
+    if (creep.memory.targetI >= 0) {
+      if (flagMemory.boosting[creep.memory.targetI]) {
+        const lab = Game.getObjectById(flagMemory.boosting[creep.memory.targetI].boostLabId);
+        const boostResource = flagMemory.boosting[creep.memory.targetI].boostResource;
+
+        if (!creep.pos.inRangeTo(lab,1))
+        creep.travelTo(lab);
+        else {
+          if (lab.boostCreep(creep) == 0) {
+            if (creep.memory.targetI + 1 == Object.keys(flagMemory.boosting).length) {
+              creep.memory.canBoost = false;
+              flagMemory.boosting = {};
+            }
+            else
+            creep.memory.targetI = -1;
+          }
+        }
+      }
+    }
+    else {
+      Object.keys(flagMemory.boosting).forEach((item, i) => {
+        if (item) {
+          const lab = Game.getObjectById(flagMemory.boosting[item].boostLabId);
+          const boostResource = flagMemory.boosting[item].boostResource;
+
+          if (boostResource !== "boosted")
+          creep.memory.targetI = i;
+          else if (Object.keys(flagMemory.boosting).length == i) {
+            creep.memory.canBoost = false;
+            flagMemory.boosting = {};
+          }
+        }
+
+        if (Object.keys(flagMemory.boosting).length == i) {
+          creep.memory.canBoost = false;
+          flagMemory.boosting = {};
+        }
+      });
+    }
   }
 }
