@@ -4,7 +4,7 @@ module.exports = {
   run: function(creep) {
     // Get Flag And Memory Of Target Room //
     const flag = Game.flags[creep.memory.flagName];
-    const flagMemory = Memory.flags[flag.name];
+
 
     // Check If Memory Is Defined That Says If A Creep Can Heal //
     function runHealCreep() {
@@ -32,12 +32,16 @@ module.exports = {
 
     // If TargetFlag Is Defined //
     if (flag) {
+      const flagMemory = Memory.flags[flag.name];
+
       // If Creep Is Not In TargetRoom, Travel To Room //
-      if (creep.room.name !== flagMemory.targetRoom)
+      if (creep.room.name !== creep.memory.targetRoom)
       creep.travelTo(flag);
       // Reserve Room //
       else
       reserverModule.run(creep);
     }
+    else
+    console.log(`Build a flag named ${creep.memory.targetRoom} in ${creep.memory.targetRoom}`)
   }
 };

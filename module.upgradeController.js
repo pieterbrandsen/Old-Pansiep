@@ -7,6 +7,9 @@ module.exports = {
     const getMainSystem = runMainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 
+    if (!creep.memory.workCount)
+    creep.memory.workCount = creep.getActiveBodyparts(WORK);
+
     function upgradeController() {
       // If there is a controller in current room check if creep can upgrade //
       if(creep.room.controller) {
@@ -15,9 +18,7 @@ module.exports = {
         switch(runUpgrade) {
           case OK:
             creep.say(creep.store.getUsedCapacity() / creep.store.getCapacity() * 100 +"%");
-            if (creep.memory.upgraderWorkCount) {
-              Memory.performanceTracker[creep.room.name + ".upgraderEnergy"] += creep.memory.upgraderWorkCount;
-            }
+            Memory.flags[creep.memory.spawnRoom].trackers.performance.upgraderEnergy += creep.memory.workCount;
             break;
           case ERR_NOT_OWNER:
             break;
@@ -40,26 +41,8 @@ module.exports = {
     }
 
     function runModule() {
-      // If creep has no target, go build //
-      if (!flagMemory.controllerStorage) {
-        let containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, 3,
-          {filter: {structureType: STRUCTURE_CONTAINER}
-        })[0];
-        let linkInRange = creep.room.controller.pos.findInRange(creep.room.links, 3,
-          {filter: {structureType: STRUCTURE_LINK}
-        })[0];
-        
-        if (containerInRange)
-        flagMemory.controllerStorage = containerInRange.id;
-        else if (linkInRange)
-        flagMemory.controllerStorage = linkInRange.id;
-        else
-        builderModule.run(creep);
-      }
-      else {
-        // Upgrade controller //
-        upgradeController();
-      }
+      // Upgrade controller //
+      upgradeController();
     }
 
 
@@ -72,7 +55,7 @@ module.exports = {
 
       // Set the average CPU Usage in the memory //
 
-      flagMemory.trackers.cpuModule.upgraderModule += Game.cpu.getUsed() - start;
+      Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.upgradeModule += Game.cpu.getUsed() - start;
     }
     else {
       // Run the part without tracking //

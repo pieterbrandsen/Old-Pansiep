@@ -7,7 +7,6 @@ module.exports = {
     // Get The Variables Needed For Module //
     const getMainSystem = runMainSystem.run();
     const mainSystemMemory = Memory.mainSystem;
-    let test = 0;
 
     function setCPUInMemory(name,inputCPU) {
       // Get The Percentage Of What This CPU Tick Is In Avg //
@@ -15,7 +14,6 @@ module.exports = {
       const secondairDivider = 1 - mainDivider;
 
       // Enter Average In Memory //
-      //console.log(inputCPU)
       Memory.stats[`cpuTracker.${name}`] = secondairDivider * Memory.stats[`cpuTracker.${name}`] + mainDivider * inputCPU;
     }
 
@@ -47,11 +45,42 @@ module.exports = {
     }
 
 
+    function setPerformanceInMemory(name,currentTickPerformance) {
+      const mainDivider = 1 / Memory.mainSystem.performanceAvgTicks;
+      const secondairDivider = 1 - mainDivider;
+      Memory.stats[`performanceTracker.${name}`] = secondairDivider * Memory.stats[`performanceTracker.${name}`] + mainDivider * currentTickPerformance;
+    }
+
+    function setPerformanceInMemoryRooms(name,currentTickPerformance,room, noAverage) {
+      const mainDivider = 1 / Memory.mainSystem.performanceAvgTicks;
+      const secondairDivider = 1 - mainDivider;
+
+      if (!noAverage)
+      Memory.stats[`rooms.${room}.performance.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.performance.${name}`] + mainDivider * currentTickPerformance;
+      else
+      Memory.stats[`rooms.${room}.grafana.${name}`] = currentTickPerformance;
+    }
+    function setSpawnerPerformanceInMemoryRooms(name,currentTickPerformance,room) {
+      const mainDivider = 1 / Memory.mainSystem.performanceAvgTicks;
+      const secondairDivider = 1 - mainDivider;
+
+      Memory.stats[`rooms.${room}.spawner.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.spawner.${name}`] + mainDivider * currentTickPerformance;
+    }
+    function setCreepCPUInMemoryRooms(name,currentTickPerformance,room) {
+      const mainDivider = 1 / Memory.mainSystem.performanceAvgTicks;
+      const secondairDivider = 1 - mainDivider;
+
+      Memory.stats[`rooms.${room}.cpuTrackerCreeps.${name}`] = secondairDivider * Memory.stats[`rooms.${room}.cpuTrackerCreeps.${name}`] + mainDivider * currentTickPerformance;
+    }
+
 
     function resetTrackerMemoryInRoom(roomName) {
       // Define Memory ShortCut //
       const cpuTrackerMain = Memory.flags[roomName].trackers.cpu;
       const cpuTrackerModules = Memory.flags[roomName].trackers.cpuModule;
+      const performanceTracker = Memory.flags[roomName].trackers.performance;
+      const spawnerTracker = Memory.flags[roomName].trackers.spawner;
+      const creepCPUTracker = Memory.flags[roomName].trackers.cpuCreeps;
 
 
       // Reset Memory //
@@ -65,7 +94,23 @@ module.exports = {
           cpuTrackerModules[item] = 0;
         });
       }
+      if (performanceTracker) {
+        Object.keys(performanceTracker).forEach((item, i) => {
+          performanceTracker[item] = 0;
+        });
+      }
+      if (spawnerTracker) {
+        Object.keys(spawnerTracker).forEach((item, i) => {
+          spawnerTracker[item] = 0;
+        });
+      }
+      if (creepCPUTracker) {
+        Object.keys(creepCPUTracker).forEach((item, i) => {
+          creepCPUTracker[item] = 0;
+        });
+      }
     }
+
     function resetTrackerMemoryGlobal() {
       // Define Memory ShortCut //
       const cpuTracker = Memory.cpuTracker;
@@ -78,23 +123,17 @@ module.exports = {
       }
     }
 
-    // Check If Tracking Is Enabled //
-    if (getMainSystem) {
-      function runTracker() {
-        runCPUTracker();
-        resetTrackerMemoryGlobal();
-      }
-
-      function runRoomTracker(roomName) {
-        runRoomCPUTracker(roomName);
-        resetTrackerMemoryInRoom(roomName);
-        roomPerformance(roomName);
-      }
-
-      function runRoomCPUTracker(roomName) {
+    function setRoomTrackingInMemory(roomName) {
+      if (Memory.flags[roomName].IsMemorySetup) {
         // Define Memory ShortCut //
         const cpuTrackerMain = Memory.flags[roomName].trackers.cpu;
         const cpuTrackerModules = Memory.flags[roomName].trackers.cpuModule;
+        const performanceTracker = Memory.flags[roomName].trackers.performance;
+        const roomTracker = Memory.flags[roomName].trackers.room;
+        const spawnerTracker = Memory.flags[roomName].trackers.spawner;
+        const creepCPUTracker = Memory.flags[roomName].trackers.cpuCreeps;
+        const creepAmountTracker = Memory.flags[roomName].rolesCount;
+        const creepPartsTracker = Memory.flags[roomName].partsAmount;
 
         // Enter This Tick CPU In Memory //
         Object.keys(cpuTrackerMain).forEach((item, i) => {
@@ -103,32 +142,54 @@ module.exports = {
         Object.keys(cpuTrackerModules).forEach((item, i) => {
           setModuleCPUInMemoryRooms(item,cpuTrackerModules[item],roomName);
         });
-      }
-
-      function roomPerformance(roomName) {
-        const performanceTracker = Memory.flags[roomName].trackers.performance;
         Object.keys(performanceTracker).forEach((item, i) => {
-          Memory.stats[`rooms.${roomName}.performanceTracker.${item}`] = performanceTracker[item];
+          setPerformanceInMemoryRooms(item,performanceTracker[item],roomName);
         });
+        Object.keys(roomTracker).forEach((item, i) => {
+          setPerformanceInMemoryRooms(item,roomTracker[item],roomName, true);
+        });
+        Object.keys(spawnerTracker).forEach((item, i) => {
+          setSpawnerPerformanceInMemoryRooms(item,spawnerTracker[item],roomName);
+        });
+        Object.keys(creepCPUTracker).forEach((item, i) => {
+          setCreepCPUInMemoryRooms(item,creepCPUTracker[item],roomName);
+        });
+      }
+    }
 
+    function runCPUTracker() {
+      // Define Memory ShortCut //
+      const cpuTracker = Memory.cpuTracker;
+
+      // Enter This Tick CPU In Memory //
+      Object.keys(cpuTracker).forEach((item, i) => {
+        setCPUInMemory(item,cpuTracker[item]);
+      });
+
+      // Global Tracking //
+      Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
+      Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
+      Memory.stats['cpu.bucket'] = Game.cpu.bucket;
+      Memory.stats['gcl.progress'] = Game.gcl.progress;
+      Memory.stats['gcl.progressTotal'] = Game.gcl.progressTotal;
+      Memory.stats['gcl.level'] = Game.gcl.level;
+      Memory.stats['resources.pixel'] = Game.resources.pixel;
+      Memory.stats['resources.credits'] = Game.resources.credits;
+
+      Memory.stats['creepsTotal'] = Object.keys(Game.creeps).length;
+    }
+
+    // Check If Tracking Is Enabled //
+    if (getMainSystem) {
+      function runTracker() {
+        runCPUTracker();
+        resetTrackerMemoryGlobal();
       }
 
-      function runCPUTracker() {
-        // Define Memory ShortCut //
-        const cpuTracker = Memory.cpuTracker;
-
-        // Enter This Tick CPU In Memory //
-        Object.keys(cpuTracker).forEach((item, i) => {
-          setCPUInMemory(item,cpuTracker[item]);
-        });
-
-        // Global Tracking //
-        Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
-        Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
-        Memory.stats['cpu.bucket'] = Game.cpu.bucket;
-        Memory.stats['resources.pixel.total'] = Game.resources.pixel;
+      function runRoomTracker(roomName) {
+        setRoomTrackingInMemory(roomName);
+        resetTrackerMemoryInRoom(roomName);
       }
-
 
       _.forEach(Object.keys(Game.rooms), function (roomName) {
         // Define Variables //
@@ -139,9 +200,7 @@ module.exports = {
           // Get FlagMemory
           const flagMemory = Memory.flags[roomName];
           // Check If Memory Is Setup, If Not Fill Empty Memory //
-          if (!flagMemory.IsMemorySetup)
-          checkMissingMemory.run(roomName);
-          else {
+          if (flagMemory.IsMemorySetup) {
             // Run Tracker //
             runRoomTracker(roomName)
           }

@@ -1,8 +1,11 @@
 module.exports = {
   run: function(creep) {
-    const firstEnemyId = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (creep) => {
-      return ((creep.getActiveBodyparts(ATTACK) > 0) || (creep.getActiveBodyparts(RANGED_ATTACK) > 0)).id
+    const firstEnemy = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (creep) => {
+      return ((creep.getActiveBodyparts(ATTACK) > 0) || (creep.getActiveBodyparts(RANGED_ATTACK) > 0))
     }});
+
+    if (!creep.memory.targetId)
+    creep.memory.targetId = "";
 
     function attackCreep(targetId) {
       // Get Target By Id //
@@ -37,21 +40,37 @@ module.exports = {
     }
 
     // Search For Enemy With Attack Or Ranged Attack Parts //
-    if (firstEnemyId !== undefined)
-    attackCreep(firstEnemyId);
+    if (firstEnemy)
+    attackCreep(firstEnemy.id);
     else {
-      const secondEnemyId = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (creep) => {
-        return (creep.getActiveBodyparts(HEAL) > 0).id
+      const secondEnemy = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (creep) => {
+        return (creep.getActiveBodyparts(HEAL) > 0)
       }});
 
-      if (secondEnemyId !== undefined)
-      attackCreep(secondEnemyId)
+      if (secondEnemy)
+      attackCreep(secondEnemy.id);
       else {
-        const thirdEnemyId = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS).id;
-        if (thirdEnemyId)
-        attackCreep(thirdEnemyId)
+        const thirdEnemy = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+        if (thirdEnemy)
+        attackCreep(thirdEnemy.id);
         else {
-          // Structure Finding Part //
+          const target = Game.getObjectById(creep.memory.targetId);
+          if (target !== null) {
+            if(creep.attack(target) == ERR_NOT_IN_RANGE)
+            creep.travelTo(target);
+          }
+          else {
+            const rampart = creep.pos.findClosestByRange(creep.room.ramparts);
+            const wall = creep.pos.findClosestByRange(creep.room.walls);
+
+            if (rampart !== null)
+            creep.memory.targetId = rampart.id;
+            else if (wall !== null)
+            creep.memory.targetId = wall.id;
+            else if (!creep.pos.inRangeTo(Game.flags[creep.memory.targetRoom],2))
+            creep.moveTo(Game.flags[creep.memory.targetRoom])
+          }
         }
       }
     }

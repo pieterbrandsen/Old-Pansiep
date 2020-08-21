@@ -8,7 +8,7 @@ module.exports = {
     function runRoomPlanner(flagName) {
       if (!Memory.flags[flagName])
       Memory.flags[flagName] = {};
-      
+
       const flag = Game.flags[flagName];
       const flagMemory = Memory.flags[flagName];
       const room = flag.room;
@@ -22,6 +22,7 @@ module.exports = {
 
           if (controllerLevel >= 1) {
             room.createConstructionSite(x-1, y+1, STRUCTURE_SPAWN,room.name + "-1");
+            room.createConstructionSite(x-1, y+1, STRUCTURE_RAMPART);
           }
           if (controllerLevel >= 2) {
             room.createConstructionSite(x+3, y-1, STRUCTURE_EXTENSION);
@@ -32,6 +33,7 @@ module.exports = {
           }
           if (controllerLevel >= 3) {
             room.createConstructionSite(x, y+1, STRUCTURE_TOWER);
+            room.createConstructionSite(x, y+1, STRUCTURE_RAMPART);
 
 
             room.createConstructionSite(x+4, y-2, STRUCTURE_EXTENSION);
@@ -42,6 +44,7 @@ module.exports = {
           }
           if (controllerLevel >= 4) {
             room.createConstructionSite(x-1, y, STRUCTURE_STORAGE);
+            room.createConstructionSite(x-1, y, STRUCTURE_RAMPART);
 
 
             room.createConstructionSite(x, y-5, STRUCTURE_EXTENSION);
@@ -58,6 +61,7 @@ module.exports = {
           }
           if (controllerLevel >= 5) {
             room.createConstructionSite(x, y-1, STRUCTURE_TOWER);
+            room.createConstructionSite(x, y-1, STRUCTURE_RAMPART);
 
 
             room.createConstructionSite(x+2, y+4, STRUCTURE_EXTENSION);
@@ -79,9 +83,11 @@ module.exports = {
 
 
             room.createConstructionSite(x+1, y, STRUCTURE_TERMINAL);
+            room.createConstructionSite(x, y+1, STRUCTURE_RAMPART);
 
 
             room.createConstructionSite(x+1, y+1, STRUCTURE_LINK);
+            room.createConstructionSite(x+1, y+1, STRUCTURE_RAMPART);
 
 
             room.createConstructionSite(x, y-3, STRUCTURE_ROAD);
@@ -167,9 +173,11 @@ module.exports = {
 
 
             room.createConstructionSite(x+5, y, STRUCTURE_SPAWN,room.name + "-2");
+            room.createConstructionSite(x+5, y, STRUCTURE_RAMPART);
 
 
             room.createConstructionSite(x, y-2, STRUCTURE_TOWER);
+            room.createConstructionSite(x, y-2, STRUCTURE_RAMPART);
 
 
             room.createConstructionSite(x-4, y+2, STRUCTURE_EXTENSION);
@@ -183,30 +191,36 @@ module.exports = {
             room.createConstructionSite(x-4, y, STRUCTURE_EXTENSION);
             room.createConstructionSite(x-5, y-1, STRUCTURE_EXTENSION);
             room.createConstructionSite(x-4, y-1, STRUCTURE_EXTENSION);
-          }
-          if (controllerLevel >= 8) {
-            room.createConstructionSite(x+1, y-1, STRUCTURE_POWER_SPAWN,room.name + "-1");
 
-
-            room.createConstructionSite(x-5, y, STRUCTURE_SPAWN,room.name + "-3");
-
-
-            room.createConstructionSite(x, y+2, STRUCTURE_TOWER);
-            room.createConstructionSite(x-2, y, STRUCTURE_TOWER);
-            room.createConstructionSite(x+2, y, STRUCTURE_TOWER);
-
-
-            room.createConstructionSite(x-3, y-1, STRUCTURE_LAB);
-            room.createConstructionSite(x-3, y-2, STRUCTURE_LAB);
-            room.createConstructionSite(x-3, y-3, STRUCTURE_LAB);
-            room.createConstructionSite(x-3, y-4, STRUCTURE_LAB);
             room.createConstructionSite(x-4, y-2, STRUCTURE_LAB);
 
-            room.createConstructionSite(x-4, y-3, STRUCTURE_LAB);
+            room.createConstructionSite(x-3, y-3, STRUCTURE_LAB);
             room.createConstructionSite(x-2, y-2, STRUCTURE_LAB);
             room.createConstructionSite(x-2, y-3, STRUCTURE_LAB);
             room.createConstructionSite(x-2, y-4, STRUCTURE_LAB);
             room.createConstructionSite(x-1, y-3, STRUCTURE_LAB);
+          }
+          if (controllerLevel >= 8) {
+            room.createConstructionSite(x+1, y-1, STRUCTURE_POWER_SPAWN,room.name + "-1");
+            room.createConstructionSite(x+1, y-1, STRUCTURE_RAMPART);
+
+
+            room.createConstructionSite(x-5, y, STRUCTURE_SPAWN,room.name + "-3");
+            room.createConstructionSite(x-5, y, STRUCTURE_RAMPART);
+
+
+            room.createConstructionSite(x, y+2, STRUCTURE_TOWER);
+            room.createConstructionSite(x, y+2, STRUCTURE_RAMPART);
+            room.createConstructionSite(x-2, y, STRUCTURE_TOWER);
+            room.createConstructionSite(x-2, y, STRUCTURE_RAMPART);
+            room.createConstructionSite(x+2, y, STRUCTURE_TOWER);
+            room.createConstructionSite(x+2, y, STRUCTURE_RAMPART);
+
+
+            room.createConstructionSite(x-3, y-1, STRUCTURE_LAB);
+            room.createConstructionSite(x-3, y-3, STRUCTURE_LAB);
+            room.createConstructionSite(x-4, y-2, STRUCTURE_LAB);
+            room.createConstructionSite(x-4, y-3, STRUCTURE_LAB);
 
 
             room.createConstructionSite(x-5, y-2, STRUCTURE_EXTENSION);

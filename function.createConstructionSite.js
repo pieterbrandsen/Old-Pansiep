@@ -22,15 +22,13 @@ module.exports = {
 
     function getStructureType() {
       // If The Room Controller Level Is Higher Then Inputed, StructureType Is Link //
-      if (room.controller.level >= controllerLevel) {
-        structureType = STRUCTURE_LINK;
-      }
+      if (room.controller.level >= controllerLevel || (flagMemory.sources.length == 1 && room.controller.level == 6))
+      structureType = STRUCTURE_LINK;
       else {
         structureType = STRUCTURE_CONTAINER;
         // If Structure Is Container But Is Not Controller, Place It Next To Source //
-        if (id !== room.controller.id) {
-          range = 1;
-        }
+        if (id !== room.controller.id)
+        range = 1;
       }
     }
 
@@ -47,11 +45,10 @@ module.exports = {
 
     function findContainer() {
       // Loop Through Each Container And Look For The Container In Range //
-      let structureFound = false;
+      let structureFound = [false,""];
       room.containers.forEach((structure, i) => {
-        if (structure.pos.inRangeTo(object,range)) {
-          structureFound = true;
-        }
+        if (structure.pos.inRangeTo(object,range+1))
+        structureFound = [true, structure.id];
       });
       return structureFound;
     }
@@ -61,7 +58,7 @@ module.exports = {
         // Loop Through Each Link And Look For The Link In Range //
         let structureFound = false;
         room.links.forEach((structure, i) => {
-          if (structure.pos.inRangeTo(object,range)) {
+          if (structure.pos.inRangeTo(object,range+1)) {
             structureFound = true;
           }
         });
@@ -71,7 +68,7 @@ module.exports = {
         let structureFound = false;
         room.find(FIND_CONSTRUCTION_SITES).forEach((constructionSite, i) => {
           // Loop Through Each ConstructionSite And Look For The ConstructionSite In Range, Check If Found For Container Or Link //
-          if (constructionSite.pos.inRangeTo(object,range)) {
+          if (constructionSite.pos.inRangeTo(object,range+1)) {
             if (constructionSite.structureType == "container" || constructionSite.structureType == "link") {
               structureFound = true;
             }
@@ -84,7 +81,7 @@ module.exports = {
       // Check If There Is Already A Structure Being Build //
       let structureFound = true;
 
-      if (!findContainer()) {
+      if (!findContainer()[0]) {
         if (!findLink()) {
           if (!findConstructionSite()) {
             structureFound = false;
@@ -92,13 +89,16 @@ module.exports = {
         }
       }
 
-
       return structureFound;
     }
 
     function checkIfCanBuildStructure() {
       // If Function Can't Find An Strucutre In Range, Continue //
       let isStructureFound = findStructureInRange();
+
+      if ((findContainer()[0] == true && room.controller.level >= 6 && id == room.controller.id) || findContainer()[0] == true && room.controller.level >= 7 || (findContainer()[0] == true && room.controller.level >= 6 && flagMemory.sources.length == 1))
+      isStructureFound = false;
+
       if (isStructureFound == false) {
         // Get StructureType //
         getStructureType();
@@ -106,10 +106,12 @@ module.exports = {
         // If Structure Being Checked Is A Link, Check This //
         if (structureType == STRUCTURE_LINK) {
           // Get Possible Container In Range //
-          const container = findContainer();
+          const container = Game.getObjectById(findContainer()[1]);
           // If Container Is Found, Destroy It By Getting Object Of The Found Structure //
-          if (container[0])
-          Game.getObjectById(container[1]).destroy();
+          if (container !== null) {
+            container.destroy();
+            flagMemory.controllerStorage = "";
+          }
         }
 
         // Start Variables For Best Positions //

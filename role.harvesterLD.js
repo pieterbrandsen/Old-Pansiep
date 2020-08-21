@@ -17,7 +17,7 @@ module.exports = {
       const flagMemory = Memory.flags[creep.memory.flagName];
 
       // If Creep Is In The Target Room //
-      if (creep.room.name == flagMemory.targetRoom) {
+      if (creep.room.name == creep.memory.targetRoom) {
         // If Creep Needs To Harvest //
         if (creep.memory.working == "withdraw")
         harvestModule.run(creep);

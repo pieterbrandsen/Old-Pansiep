@@ -9,7 +9,6 @@ module.exports = {
         creep.say("Claimed");
         creep.room.createFlag(25,25,"builderLD"+creep.memory.spawnRoom);
         Game.flags["claim"].remove();
-        creep.suicide();
           break;
         case ERR_NOT_OWNER:
           break;
@@ -28,6 +27,7 @@ module.exports = {
         case ERR_NO_BODYPART:
           break;
         case ERR_GCL_NOT_ENOUGH:
+        Game.notify("GCL IS NOT HIGH ENOUGH FOR CLAIMING");
           break;
         default:
           break;

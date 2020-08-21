@@ -111,6 +111,7 @@ module.exports = {
           // Check Buildings At Sources And Controller //
           if (flagMemory.roomManager.headSpawn && Game.time % 500 == 0 || !flagMemory.roomIsChecked) {
             roomPlanner.run();
+            flagMemory.controllerLevel = room.controller.level;
             flagMemory.roomIsChecked = true;
 
             room.find(FIND_SOURCES).forEach((source, i) => {
@@ -182,8 +183,39 @@ module.exports = {
 
 
         // Run Performance Logger Each 100 Ticks //
-        if (Game.time % 100 == 0) {
-          flagMemory.trackers.performance.energyStored = getTotalRoomEnergy();
+        if (Game.time % 50 == 0) {
+          if (flagMemory.IsMemorySetup) {
+            flagMemory.trackers.room.energyStored = getTotalRoomEnergy();
+
+            let totalWallHitPoints = 0;
+            let totalWallAmount = 0;
+            if (room.walls) {
+              room.walls.forEach((wall, i) => {
+                if (wall) {
+                  totalWallHitPoints += wall.hits;
+                  totalWallAmount++;
+                }
+              });
+            }
+
+            let totalRampartHitPoints = 0;
+            let totalRampartAmount = 0;
+            if (room.ramparts) {
+              room.ramparts.forEach((rampart, i) => {
+                if (rampart) {
+                  totalRampartHitPoints += rampart.hits;
+                  totalRampartAmount++;
+                }
+              });
+            }
+
+
+            flagMemory.trackers.room.averageWallHP = totalWallHitPoints / totalWallAmount;
+            flagMemory.trackers.room.averageRampartHP = totalRampartHitPoints / totalRampartAmount;
+            flagMemory.trackers.room.rclLevel = room.controller.level;
+            flagMemory.trackers.room.rclProgress = room.controller.progress;
+            flagMemory.trackers.room.rclProgressTotal = room.controller.progressTotal;
+          }
         }
       }
     }

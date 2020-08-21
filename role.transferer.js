@@ -1,6 +1,8 @@
 const transferModule = require('module.transfer');
 const withdrawModule = require('module.withdraw');
 const getWorkingState = require('miniModule.getCreepState');
+const roles = require('roles');
+const renewCreep = require('module.renewCreep');
 
 module.exports = {
   run: function(creep) {
@@ -9,15 +11,12 @@ module.exports = {
     if (workState !== undefined)
     creep.memory.working = workState;
 
+
     // If Creep Needs To Withdraw //
     if (creep.memory.working == "withdraw")
     withdrawModule.run(creep);
     // If Creep Needs To Transfer //
     else if (creep.memory.working == "transfer")
     transferModule.run(creep);
-
-    // if (creepCarryCapacity - creep.store.getUsedCapacity() <= 300) {
-    //   Memory.performanceTracker[creep.room.name + ".spawnEnergyTransfer"] += creepCarryUsedCapacity - creep.store.getUsedCapacity();
-    // }
   }
 };

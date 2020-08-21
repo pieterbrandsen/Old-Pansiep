@@ -6,23 +6,24 @@ module.exports = {
     function findLinkInRange(objectId,range) {
       // Check If Input Object Is Defined
       const object = Game.getObjectById(objectId);
+      let linkObject;
       if (object !== null) {
         // Check If Every Link In Memory Is Defined, Else Return Undefined //
         room.links.forEach((link, i) => {
           if (!link)
           return undefined
+          else if (link.pos.inRangeTo(object,range))
+          linkObject = link;
         });
 
-        const link = object.pos.findClosestByRange(room.links, range)
-
         // If Link Is Found, Return The Id //
-        if (link !== null)
-        return link.id;
+        if (linkObject !== undefined)
+        return linkObject.id;
       }
     }
 
-    function transferLinkEnergy(fromLink,toLink) {
-      Game.getObjectById(fromLink).transferEnergy(Game.getObjectById(toLink))
+    function transferLinkEnergy(fromLinkId,toLinkId) {
+      Game.getObjectById(fromLinkId).transferEnergy(Game.getObjectById(toLinkId))
     }
 
     // If Link Has Its Memory //
@@ -30,18 +31,33 @@ module.exports = {
       // If Both Links Has Memory //
       if (flagMemory.links.linkTo1 && flagMemory.links.linkTo2) {
         // Try To Transfer Energy From One To The Other //
+        if (!Game.getObjectById(flagMemory.links.linkTo1))
+        flagMemory.links.linkTo1 = "";
+        if (!Game.getObjectById(flagMemory.links.linkTo2))
+        flagMemory.links.linkTo2 = "";
+
         transferLinkEnergy(flagMemory.links.linkTo1, flagMemory.links.linkTo2);
       }
 
       // If Both Links Has Memory //
       if (flagMemory.links.linkFrom1 && flagMemory.links.linkTo1) {
         // Try To Transfer Energy From One To The Other //
+        if (!Game.getObjectById(flagMemory.links.linkFrom1))
+        flagMemory.links.linkFrom1 = "";
+        if (!Game.getObjectById(flagMemory.links.linkTo1))
+        flagMemory.links.linkTo1 = "";
+
         transferLinkEnergy(flagMemory.links.linkFrom1, flagMemory.links.linkTo1);
       }
 
       // If Both Links Has Memory //
       if (flagMemory.links.linkFrom2 && flagMemory.links.linkTo1) {
         // Try To Transfer Energy From One To The Other //
+        if (!Game.getObjectById(flagMemory.links.linkFrom2))
+        flagMemory.links.linkFrom2 = "";
+        if (!Game.getObjectById(flagMemory.links.linkTo1))
+        flagMemory.links.linkTo1 = "";
+
         transferLinkEnergy(flagMemory.links.linkFrom2, flagMemory.links.linkTo1);
       }
 
@@ -73,8 +89,8 @@ module.exports = {
 
       // If Room Is Missing This Link //
       if (!flagMemory.links.linkFrom1) {
-        if (room.controller.level >= 7) {
-          const link = findLinkInRange(flagMemory.sources[0],3);
+        if (room.controller.level >= 6) {
+          const link = findLinkInRange(flagMemory.sources[0].id,3);
 
           // If Link Is Found, Save The Link //
           if (link)
