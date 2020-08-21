@@ -52,7 +52,7 @@ module.exports = {
     if (creepHasVisionInTargetRoom()) {
       // If Room Is Missing The Standard FlagName Each Of My Rooms Should Have, Create One //
       if (!Game.flags[targetRoomName]) {
-        targetRoom.createFlag(targetFlag.pos,targetRoomName)
+        targetFlag.room.createFlag(targetFlag.pos,targetRoomName)
         Memory.flags[targetRoomName] = {};
       }
       // If Room Has The Standard Flag And Creep Is In The TargetRoom, Travel To It So Creep Doesn't Stay On The Exit's //
