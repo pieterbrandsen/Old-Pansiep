@@ -67,9 +67,6 @@ module.exports.loop = function() {
     const flagMemory = Memory.flags[roomName];
     const controller = Game.rooms[roomName].controller;
 
-    // Reset All Room Memory //
-    //Memory.flags[roomName] = {};
-
 
     if (controller && controller.my) {
       // If Room Is Missing Flag For Data Storage, Create One //
