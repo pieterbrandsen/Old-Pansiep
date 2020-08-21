@@ -32,7 +32,6 @@ module.exports.loop = function() {
   const getMainSystem = runMainSystem.run();
 
 
-
   // Make A Variable With Shard Name //
   const shardName = Game.shard.name;
   // Make A Variable With MainSystem Memory //
