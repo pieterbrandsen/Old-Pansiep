@@ -355,7 +355,7 @@ module.exports = {
           // Limit The Loop Count //
           loopMaxCount = 10;
           // Min Limit The Loop Count //
-          loopMinCount = 5;
+          loopMinCount = 0;
 
           // Check If LoopCount Is Higher The LoopMinCount //
           if (loopAmount >= loopMinCount) {
@@ -547,7 +547,7 @@ module.exports = {
           // If Role Is Repairer //
           case "repairer":
           // If There Are Less Then 2 Repairers And There Are No Towers Or There Are Towers And Ramparts To Repair, Return True //
-          if (flagMemory.rolesCount[role] < 2 && (room.towers.length == 0 || (room.towers.length > 0 && room.ramparts.length > 0 && flagMemory.trackers.room.energyStored > 50*1000 && flagMemory.totalEnergyAvailable *1,25 > flagMemory.totalEnergyCapacity && ((flagMemory.trackers.room.averageWallHP < 5 * 1000 * 1000 && flagMemory.trackers.room.averageWallHP > 0) || (flagMemory.trackers.room.averageRampartHP < 5 * 1000 * 1000 && flagMemory.trackers.room.averageRampartHP > 0)))))
+          if (flagMemory.rolesCount[role] < 2 && (room.towers.length == 0 || (room.towers.length > 0 && room.ramparts.length > 0 && flagMemory.trackers.room.energyStored > 50*1000 && flagMemory.totalEnergyAvailable * 1,25 > flagMemory.totalEnergyCapacity && ((flagMemory.trackers.room.averageWallHP < 5 * 1000 * 1000 && flagMemory.trackers.room.averageWallHP > 0) || (flagMemory.trackers.room.averageRampartHP < 5 * 1000 * 1000 && flagMemory.trackers.room.averageRampartHP > 0)))))
           result = true;
           break;
           // If Role Is Claimer //
