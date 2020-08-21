@@ -1,25 +1,29 @@
 /*
 
+ramparts
+multi part boosting
 1.
-!!!performance tracking in energy income and outcome!!!
-remote harvesting, for small rooms and big rooms
 2.
-mineral harvesting
-Attack Creep Spawn On Enemy Entry (thats big enough to tank towers or are more then 2 creeps)
+Roads in remote auto.
+Build roads everywhere
+Automate remoting
 3.
-AttackModule Strucutres upgrade
+Factory code
+Power code
+Power Harvesting Code
+Deposit Harvesting Code
 4.
-more tracking
-terminal system
+Ghodium is not being inputted in Memory at the right time, make your own reaction list.
+Market code
 5.
-extensions and room spawns that need energy, put it in an array and get it from the transferer
-files recheck
 6.
-tower whitelist array
+Advanced Market code
 7.
+Advanced advancd market code
 8.
 9.
 10.
+
 
 
 */
