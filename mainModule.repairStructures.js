@@ -13,34 +13,41 @@ module.exports = {
         if (room.towers.length > 0) {
           // Input Variables //
           const towers = room.towers;
-          //let repairAmount = flagMemory.repairTargetAmount;
-          let repairAmount = 250*1000;
+          let repairAmount = flagMemory.repairTargetAmount;
 
 
           // If There Is Nothing To Repair And Its Time To Check Again //
-          if (flagMemory.repairTarget.length == 0 && Game.time % 100 == 0 && flagMemory.totalEnergyAvailable == flagMemory.totalEnergyCapacity) {
+          if (flagMemory.repairTarget.length == 0 && Game.time % 1000 == 0 && flagMemory.totalEnergyAvailable > flagMemory.totalEnergyCapacity / 2) {
             let repairTarget = flagMemory.repairTarget;
             // Loop Through All Structures That Are Under The RepairAmount //
             let targetRepair = room.find(FIND_STRUCTURES, {
               filter: (s) => s.hits < s.hitsMax && s.hits < repairAmount
             });
+            let targetRepairUnderTarget = room.find(FIND_STRUCTURES, {
+              filter: (s) => 250*1000 < s.hitsMax && s.hits < repairAmount-50*1000
+            });
+
 
             // If There Are Strucutres Found //
             if (targetRepair.length > 0) {
-              if (flagMemory.targetRepair > 100*1000)
-              flagMemory.repairTargetAmount = flagMemory.repairTargetAmount - 100*1000;
               // Enter Each Structure In Memory //
               for (let i = 0; targetRepair.length > i; i++) {
                 flagMemory.repairTarget[i] = targetRepair[i].id
               }
             }
-            // else if (flagMemory.repairTargetAmount < 1 * 100 * 1000)
-            // flagMemory.repairTargetAmount = flagMemory.repairTargetAmount + 200*1000;
+
+
+            if (targetRepairUnderTarget.length > 0) {
+              if (flagMemory.targetRepair > 100*1000)
+              flagMemory.repairTargetAmount = flagMemory.repairTargetAmount - 100*1000;
+            }
+            else if (flagMemory.repairTargetAmount < 5 * 1000 * 1000)
+            flagMemory.repairTargetAmount = flagMemory.repairTargetAmount + 200*1000;
           }
 
 
           // If There Is Still Something To Repair //
-          if (flagMemory.repairTarget.length > 0) {
+          if (flagMemory.repairTarget.length > 0 && flagMemory.totalEnergyAvailable > flagMemory.totalEnergyCapacity / 2) {
             for (let tower of towers) {
               // Get First Target Out Of Array //
               let target = Game.getObjectById(flagMemory.repairTarget[0]);

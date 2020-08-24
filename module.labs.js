@@ -12,7 +12,7 @@ const possbileReactions = [RESOURCE_HYDROXIDE,RESOURCE_ZYNTHIUM_KEANITE,RESOURCE
       const room = Game.rooms[roomName];
       const flagMemory = Memory.flags[roomName];
 
-      if (flagMemory.labs && Game.cpu.bucket > 2500) {
+      if (flagMemory.labs && Game.cpu.bucket > 5000) {
         const inputLab0 = Game.getObjectById(flagMemory.labs.inputLabsIds[0]);
         const inputLab1 = Game.getObjectById(flagMemory.labs.inputLabsIds[1]);
 

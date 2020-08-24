@@ -35,7 +35,7 @@ module.exports = {
           // Check If CPU Tracking Is Enabled //
           if (runMainSystem.run() && Memory.flags[creep.memory.targetRoom] && Memory.flags[creep.memory.targetRoom].IsMemorySetup) {
             // Get CPU Usage Of Role And Log It In Memory //
-            Memory.flags[creep.memory.targetRoom].trackers.cpuCreeps[role] += Game.cpu.getUsed() - start;
+            Memory.flags[creep.memory.spawnRoom].trackers.cpuCreeps[role] += Game.cpu.getUsed() - start;
           }
         }
       }

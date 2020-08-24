@@ -99,7 +99,7 @@ module.exports = {
             let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
               filter: (s) => (s.structureType === STRUCTURE_SPAWN
                 || s.structureType === STRUCTURE_EXTENSION
-                || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 500 && creep.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && flagMemory.energyAvailable == flagMemory.energyCapacity
+                || (s.structureType === STRUCTURE_TOWER && s.store.getUsedCapacity(RESOURCE_ENERGY) < 750)
               ) && s.energy < s.energyCapacity
             });
 
