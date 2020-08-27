@@ -16,7 +16,7 @@ const possbileReactions = [RESOURCE_HYDROXIDE,RESOURCE_ZYNTHIUM_KEANITE,RESOURCE
         const inputLab0 = Game.getObjectById(flagMemory.labs.inputLabsIds[0]);
         const inputLab1 = Game.getObjectById(flagMemory.labs.inputLabsIds[1]);
 
-        if (flagMemory.labs.outputLabsIds.length > 0 && Object.keys(flagMemory.boosting).length == 0) {
+        if (flagMemory.labs.outputLabsIds.length > 0 && Object.keys(flagMemory.boosting).length == 0 && Object.keys(flagMemory.unBoost).length == 0) {
           flagMemory.labs.outputLabsIds.forEach((labId, i) => {
             const lab = Game.getObjectById(labId);
             if (lab.cooldown == 0)

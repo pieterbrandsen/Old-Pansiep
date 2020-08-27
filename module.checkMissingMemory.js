@@ -96,6 +96,8 @@ module.exports = {
           flagMemory.repairTarget = [];
           if (!flagMemory.boosting)
           flagMemory.boosting = {};
+          if (!flagMemory.unBoost)
+          flagMemory.unBoost = {};
           if (!flagMemory.repairTargetAmount)
           flagMemory.repairTargetAmount = 100 * 1000; // 100K
 

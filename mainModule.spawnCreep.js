@@ -71,6 +71,7 @@ module.exports = {
                 targetRoom: targetRoom,
                 flagName: flagName,
                 canRenew: false,
+                hasBeenBoosted: false,
               }, directions: directionsList
             }
           );
@@ -229,9 +230,9 @@ module.exports = {
             // Amount Of Time Its Possible To Loop With The Current Energy //
             loopAmount = Math.floor(energyAvailable/energyCost);
             // Limit The Loop Count //
-            loopMaxCount = 99;
+            loopMaxCount = 5;
             // Min Limit The Loop Count //
-            loopMinCount = 1;
+            loopMinCount = 0;
 
             // Check If LoopCount Is Higher The LoopMinCount //
             if (loopAmount >= loopMinCount) {
@@ -249,9 +250,9 @@ module.exports = {
             // Amount Of Time Its Possible To Loop With The Current Energy //
             loopAmount = Math.floor(energyAvailable/energyCost);
             // Limit The Loop Count //
-            loopMaxCount = 99;
+            loopMaxCount = 20;
             // Min Limit The Loop Count //
-            loopMinCount = 3;
+            loopMinCount = 0;
 
             // Check If LoopCount Is Higher The LoopMinCount //
             if (loopAmount >= loopMinCount) {
@@ -465,7 +466,7 @@ module.exports = {
           // If Role Is Transferer //
           case "transferer":
           // Check If The Part Amount Is Enough For The Level The Room Is In //
-          if ((flagMemory.partsAmount[`${role}-CARRY`] < 20 && room.containers.length == 0) || (flagMemory.partsAmount[`${role}-CARRY`] < flagMemory.sources.length * 25 && room.containers.length > 0)) {
+          if ((flagMemory.partsAmount[`${role}-CARRY`] < 20 && room.containers.length == 0) || (flagMemory.partsAmount[`${role}-CARRY`] < flagMemory.sources.length * 20 && room.containers.length > 0)) {
             // Check If There Is Energy Enough For A Transferer To Withdraw From //
             if (roomNeedsTransferer()) {
               // Check If The Amount Of Transferers Is Less Then Six, Return True //
@@ -535,7 +536,7 @@ module.exports = {
           // If Role Is Upgrader //
           case "upgrader":
           // If There Is Enough Energy To Upgrade With //
-          if ((flagMemory.trackers.room.energyStored > 1500 && !room.storage) || flagMemory.trackers.room.energyStored > 100000 || (room.controller.level < 4 && room.storage)) {
+          if ((flagMemory.trackers.room.energyStored > 1500 && !room.storage) || flagMemory.trackers.room.energyStored > 50000 || (room.controller.level < 4 && room.storage)) {
             // If There Is Less Upgrader Parts Then There Are Sources * 5 And There Are No ConstructionSites To Be Build //
             if ((flagMemory.partsAmount[`${role}-WORK`] < flagMemory.sources.length * 5 || (flagMemory.partsAmount[`${role}-WORK`] < flagMemory.sources.length * 10 && flagMemory.trackers.room.energyStored > 200 * 1000)) && flagMemory.constructionSitesAmount == 0) {
               // If There Are Less Then 4 Upgraders, Return True //
@@ -591,7 +592,7 @@ module.exports = {
               // Check If There At Least 3 Labs To Start The Reactions //
               if (room.labs.length >= 3) {
                 // If There Is More Then Zero Reactions That Still Need To Be Made, Return True //
-                if (flagMemory.labs.reactionsNeeded.length > 0)
+                if (flagMemory.labs.reactionsNeeded.length > 0 || Object.keys(flagMemory.boosting).length > 0 || Object.keys(flagMemory.unBoost).length > 0)
                 result = true;
               }
             }

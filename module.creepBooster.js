@@ -5,7 +5,7 @@ module.exports = {
 
 
     if (creep.ticksToLive > 0) {
-      if (room.storage && flagMemory.controllerLevel >= 4 && creep.ticksToLive > 1400) {
+      if (room.storage && flagMemory.controllerLevel >= 4 && creep.ticksToLive > 200) {
         let resourceTypes = [];
 
         boostParts.forEach((item, i) => {
@@ -13,7 +13,7 @@ module.exports = {
           if (runGetResource !== undefined && boostTiers[i] > 0)
           resourceTypes[resourceTypes.length] = runGetResource;
         });
-        
+
         function getResourceType(role, boostPart, boostTier) {
           let resource;
           switch (boostPart) {
@@ -175,14 +175,10 @@ module.exports = {
 
         flagMemory.boosting = {};
         resourceTypes.forEach((resource, i) => {
-          if (flagMemory.rolesCount["scientist"] > 0) {
-            creep.memory.canBoost = true;
-            flagMemory.boosting[i] = {};
-            flagMemory.boosting[i].boostResource = resource;
-            flagMemory.boosting[i].boostLabId = room.labs[i].id;
-          }
-          else
-          creep.memory.canBoost = false;
+          creep.memory.canBoost = true;
+          flagMemory.boosting[i] = {};
+          flagMemory.boosting[i].boostResource = resource;
+          flagMemory.boosting[i].boostLabId = room.labs[i].id;
         });
 
 
@@ -206,6 +202,9 @@ module.exports = {
         creep.travelTo(lab);
         else {
           if (lab.boostCreep(creep) == 0) {
+            creep.memory.hasBeenBoosted = true;
+            flagMemory.boosting[creep.memory.targetI].boostResource = "boosted";
+
             if (creep.memory.targetI + 1 == Object.keys(flagMemory.boosting).length) {
               creep.memory.canBoost = false;
               flagMemory.boosting = {};
@@ -236,5 +235,30 @@ module.exports = {
         }
       });
     }
+  },
+
+  unBoost: function(creep) {
+    const lab = creep.pos.findClosestByRange(creep.room.labs, {
+      filter: function(lab) {
+        return lab.cooldown == 0;
+      }
+    });
+    const flagMemory = Memory.flags[creep.room.name];
+
+    if (lab && creep.ticksToLive > 5) {
+      flagMemory.unBoost.lab = lab.id;
+
+      if (creep.pos.inRangeTo(lab,1)) {
+        if (lab.unboostCreep(creep) == 0) {
+          flagMemory.unBoost = {};
+          creep.suicide();
+        }
+      }
+
+      else
+      creep.moveTo(lab);
+    }
+    else
+    flagMemory.unBoost = {};
   }
 }

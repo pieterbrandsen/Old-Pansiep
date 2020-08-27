@@ -14,7 +14,7 @@ module.exports = {
     if (workState !== undefined)
     creep.memory.working = workState;
 
-    if (creep.memory.canBoost !== undefined && creep.memory.canBoost == false) {
+    if ((creep.memory.canBoost !== undefined && creep.memory.canBoost == false && creep.ticksToLive > 300) || (creep.memory.canBoost !== undefined && creep.memory.hasBeenBoosted == false && creep.memory.canBoost == false)) {
       // If Creep Needs To Harvest //
       if (creep.memory.working == "withdraw")
       harvestModule.run(creep);
@@ -23,10 +23,14 @@ module.exports = {
       transferModule.run(creep);
     }
     else {
-      if (!creep.memory.canBoost)
-      creepBooster.check(creep,["work", "carry", "move"],[1,1,1]);
-      else
-      creepBooster.boost(creep)
+      if ((creep.ticksToLive > 300 && creep.memory.hasBeenBoosted == false) || (!creep.memory.canBoost && creep.memory.hasBeenBoosted == false)) {
+        if (!creep.memory.canBoost)
+        creepBooster.check(creep,["work", "carry", "move"],[0,0,0]);
+        else
+        creepBooster.boost(creep);
+      }
+      else if (creep.memory.hasBeenBoosted == true)
+      creepBooster.unBoost(creep);
     }
   }
 }

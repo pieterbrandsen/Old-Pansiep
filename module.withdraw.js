@@ -26,7 +26,7 @@ module.exports = {
         if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
         creep.travelTo(target);
       }
-      else if (Game.time % 5 == 0) {
+      else if (Game.time % 10 == 0) {
         const range = 3;
         const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
         const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
@@ -90,9 +90,9 @@ module.exports = {
           }
         }
       }
-      function checkTerminal(canSkip) {
+      function checkTerminal() {
         if (room.terminal) {
-          if (flagMemory.totalEnergyAvailable !== flagMemory.totalEnergyCapacity || creep.memory.role !== "transferer" || canSkip) {
+          if (flagMemory.totalEnergyAvailable !== flagMemory.totalEnergyCapacity || creep.memory.role !== "transferer") {
             if (room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
               withdrawStructure = STRUCTURE_TERMINAL
               creep.memory.withdrawId = room.terminal.id;
@@ -120,8 +120,6 @@ module.exports = {
             creep.memory.withdrawId = containerId;
             return true;
           }
-          else if (room.containers.length == 0)
-          checkTerminal(true);
         }
       }
       function checkLinks() {

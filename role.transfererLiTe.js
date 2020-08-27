@@ -29,8 +29,8 @@ const terminalEnergyMin = 100*1000;
 const terminalEnergyMax = 105*1000;
 
 
-const storageResourceMin = 10*1000;
-const storageResourceMax = 15*1000;
+const storageResourceMin = 1*1000;
+const storageResourceMax = 2*1000;
 const terminalResourceMin = 4000;
 const terminalResourceMax = 5000;
 

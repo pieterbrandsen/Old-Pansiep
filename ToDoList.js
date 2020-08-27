@@ -3,11 +3,11 @@
 ramparts
 multi part boosting
 1.
-recycle or suicide to small creeps
 2.
 Roads in remote auto.
 Build roads everywhere
 Automate remoting
+let creeps check if vision in remote room, not walk into it.
 3.
 Factory code
 Power code
