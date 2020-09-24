@@ -1,4 +1,4 @@
-const harvestModule = require('module.harvest');
+const harvestModule = require('creepModule.harvest');
 const runMainSystem = require('miniModule.mainSystem');
 
 
@@ -145,7 +145,6 @@ module.exports = {
         }
       }
 
-
       if (!checkStorage()) {
         if (!checkTerminal()) {
           if (!checkContainers()) {
@@ -170,9 +169,13 @@ module.exports = {
       else {
         if (creep.memory.withdrawId) {
           const target = Game.getObjectById(creep.memory.withdrawId);
+          creep.say(true)
 
-          if (creep.memory.withdrawId == "source")
-          harvestModule.run(creep);
+          if (creep.memory.withdrawId == "source") {
+            harvestModule.run(creep);
+            if (Game.time % 10 == 0)
+            creep.memory.withdrawId = "";
+          }
           else if (target == null)
           creep.memory.withdrawId = "";
           else

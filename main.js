@@ -20,6 +20,10 @@ const countCreepsAndParts = require('miniModule.countCreepsAndParts')
 const terminal = require('miniModule.terminal')
 
 module.exports.loop = function() {
+  if (!Memory.flags)
+  Memory.flags = {};
+
+  
   // Get the CPU Usage //
   let start = Game.cpu.getUsed();
 
@@ -27,6 +31,7 @@ module.exports.loop = function() {
   Memory;
 
   // Set the average CPU Usage in the memory //
+  if (Memory.cpuTracker)
   Memory.cpuTracker.loadMemory += Game.cpu.getUsed() - start;
 
   const getMainSystem = runMainSystem.run();
@@ -39,7 +44,7 @@ module.exports.loop = function() {
 
 
   // Every Time The Bucket Reaches It's Limit, Generate A Pixel //
-  if (Game.cpu.bucket == 10000)
+  if (Game.cpu.bucket == 10000 && shardName.includes("shard"))
   Game.cpu.generatePixel();
 
 
@@ -62,7 +67,6 @@ module.exports.loop = function() {
   // Loop Through All Rooms With Vision //
   _.forEach(Object.keys(Game.rooms), function (roomName) {
     const room = Game.rooms[roomName];
-    const flagMemory = Memory.flags[roomName];
     const controller = Game.rooms[roomName].controller;
 
 
@@ -77,6 +81,8 @@ module.exports.loop = function() {
       if (!Memory.flags[roomName])
       Memory.flags[roomName] = {};
       else {
+        const flagMemory = Memory.flags[roomName];
+
         // If FlagMemory Is Not Setup, Run The Function //
         if (!flagMemory.IsMemorySetup)
         checkMissingMemory.run(roomName);

@@ -1,5 +1,5 @@
 const runMainSystem = require('miniModule.mainSystem');
-const builderModule = require('module.build');
+const builderModule = require('creepModule.build');
 
 module.exports = {
   run: function(creep) {

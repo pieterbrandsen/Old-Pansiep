@@ -1,5 +1,5 @@
 const runMainSystem = require('miniModule.mainSystem');
-const repairModule = require('module.repair');
+const repairModule = require('creepModule.repair');
 
 module.exports = {
   run: function(creep) {

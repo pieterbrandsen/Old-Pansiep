@@ -1,4 +1,4 @@
-const builderModule = require('module.build');
+const builderModule = require('creepModule.build');
 const runMainSystem = require('miniModule.mainSystem');
 
 module.exports = {

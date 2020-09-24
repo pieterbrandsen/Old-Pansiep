@@ -43,8 +43,6 @@ module.exports = {
       terminal.setup();
       if (!Memory.performanceTracker)
       Memory.performanceTracker = {};
-      if (!Memory.outpostMemory)
-      Memory.outpostMemory = {};
 
       function enterValueInMemory(memoryPath, inputValue) {
         flagMemory.roomManager[memoryPath] = inputValue;

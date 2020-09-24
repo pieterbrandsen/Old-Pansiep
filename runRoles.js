@@ -74,7 +74,7 @@ function creepHasVisionInTargetRoom(creep) {
 function runCreep(creep, moduleName) {
   // Get The Role File Of The Creep By Getting The Right Name //
   // A Harvester-0 File Doesn't Exist So That The Reason For The Split //
-  const creepModule = require(`module.${moduleName}`);
+  const creepModule = require(`creepModule.${moduleName}`);
 
 
   // If Module File Is Defined, Run Creep //
@@ -121,7 +121,7 @@ module.exports = {
 
         // If Creep Needs To Harvest //
         if (creep.memory.working == "withdraw")
-        runCreep(creep, "harvest");
+        runCreep(creep, "withdraw");
         // If Creep Needs To Transfer //
         else if (creep.memory.working == "transfer")
         runCreep(creep, "build");
@@ -136,7 +136,7 @@ module.exports = {
 
         // If Creep Needs To Harvest //
         if (creep.memory.working == "withdraw")
-        runCreep(creep, "harvest");
+        runCreep(creep, "withdraw");
         // If Creep Needs To Transfer //
         else if (creep.memory.working == "transfer")
         runCreep(creep, "build");
@@ -162,7 +162,7 @@ module.exports = {
       runHealCreep(creep);
 
       if (creepHasVisionInTargetRoom(creep))
-      runCreep(creep, "claimer");
+      runCreep(creep, "claim");
     }
   },
 
@@ -218,7 +218,7 @@ module.exports = {
 
         // If Creep Needs To Harvest //
         if (creep.memory.working == "withdraw")
-        runCreep(creep, "harvest");
+        runCreep(creep, "withdraw");
         // If Creep Needs To Transfer //
         else if (creep.memory.working == "transfer")
         runCreep(creep, "repair");
@@ -233,7 +233,7 @@ module.exports = {
       if (creepHasVisionInTargetRoom(creep)) {
         getCreepWorkState(creep);
 
-        runCreep(creep, "reserver");
+        runCreep(creep, "reserve");
       }
     }
   },

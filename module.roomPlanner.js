@@ -1,35 +1,27 @@
 module.exports = {
   run: function() {
-
-    if (!Memory.flags)
-    Memory.flags = {};
-
-
     function runRoomPlanner(flagName) {
-      if (!Memory.flags[flagName])
-      Memory.flags[flagName] = {};
-
       const flag = Game.flags[flagName];
       const flagMemory = Memory.flags[flagName];
       const room = flag.room;
-      let controllerLevel;
+
       if (flag) {
         if (room) {
-          controllerLevel = room.controller.level;
+          let controllerLevel = room.controller.level;
           const x = flag.pos.x;
           const y = flag.pos.y;
 
 
-          if (controllerLevel >= 1) {
-            room.createConstructionSite(x-1, y+1, STRUCTURE_SPAWN,room.name + "-1");
-            room.createConstructionSite(x-1, y+1, STRUCTURE_RAMPART);
-          }
+          if (controllerLevel >= 1)
+          room.createConstructionSite(x-1, y+1, STRUCTURE_SPAWN,`${room.name}-1`);
           if (controllerLevel >= 2) {
             room.createConstructionSite(x+3, y-1, STRUCTURE_EXTENSION);
             room.createConstructionSite(x+3, y-2, STRUCTURE_EXTENSION);
             room.createConstructionSite(x+2, y-2, STRUCTURE_EXTENSION);
             room.createConstructionSite(x+2, y-3, STRUCTURE_EXTENSION);
             room.createConstructionSite(x+1, y-3, STRUCTURE_EXTENSION);
+
+            room.createConstructionSite(x-1, y+1, STRUCTURE_RAMPART);
           }
           if (controllerLevel >= 3) {
             room.createConstructionSite(x, y+1, STRUCTURE_TOWER);
@@ -168,9 +160,10 @@ module.exports = {
           }
           if (controllerLevel >= 7) {
             room.createConstructionSite(x-1, y-1, STRUCTURE_FACTORY);
+            room.createConstructionSite(x-1, y-1, STRUCTURE_RAMPART);
 
 
-            room.createConstructionSite(x+5, y, STRUCTURE_SPAWN,room.name + "-2");
+            room.createConstructionSite(x+5, y, STRUCTURE_SPAWN,`${room.name}-2`);
             room.createConstructionSite(x+5, y, STRUCTURE_RAMPART);
 
 
@@ -199,11 +192,11 @@ module.exports = {
             room.createConstructionSite(x-1, y-3, STRUCTURE_LAB);
           }
           if (controllerLevel >= 8) {
-            room.createConstructionSite(x+1, y-1, STRUCTURE_POWER_SPAWN,room.name + "-1");
+            room.createConstructionSite(x+1, y-1, STRUCTURE_POWER_SPAWN,`${room.name}`);
             room.createConstructionSite(x+1, y-1, STRUCTURE_RAMPART);
 
 
-            room.createConstructionSite(x-5, y, STRUCTURE_SPAWN,room.name + "-3");
+            room.createConstructionSite(x-5, y, STRUCTURE_SPAWN,`${room.name}-3`);
             room.createConstructionSite(x-5, y, STRUCTURE_RAMPART);
 
 
