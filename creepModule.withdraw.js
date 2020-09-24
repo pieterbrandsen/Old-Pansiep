@@ -65,7 +65,7 @@ module.exports = {
         case ERR_FULL:
         break;
         case ERR_NOT_IN_RANGE:
-        creep.moveTo(target);
+        creep.travelTo(target, {maxRooms: 1});
         creep.say("Moving");
         break;
         case ERR_INVALID_ARGS:
@@ -151,6 +151,8 @@ module.exports = {
             if (!checkLinks()) {
               if (!creep.memory.role.includes("transferer"))
               creep.memory.withdrawId = "source";
+              else if (!creep.pos.inRangeTo(creep.room.controller,5) && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
+              creep.moveTo(creep.room.controller);
             }
           }
         }

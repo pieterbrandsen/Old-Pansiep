@@ -99,21 +99,22 @@ module.exports = {
       if ((findContainer()[0] == true && room.controller.level >= 6 && id == room.controller.id) || findContainer()[0] == true && room.controller.level >= 7 || (findContainer()[0] == true && room.controller.level >= 6 && flagMemory.sources.length == 1))
       isStructureFound = false;
 
-      if (isStructureFound == false) {
-        // Get StructureType //
-        getStructureType();
+      // Get StructureType //
+      getStructureType();
 
-        // If Structure Being Checked Is A Link, Check This //
-        if (structureType == STRUCTURE_LINK) {
-          // Get Possible Container In Range //
-          const container = Game.getObjectById(findContainer()[1]);
-          // If Container Is Found, Destroy It By Getting Object Of The Found Structure //
-          if (container !== null) {
-            container.destroy();
-            flagMemory.controllerStorage = "";
-          }
+      // If Structure Being Checked Is A Link, Check This //
+      if (structureType == STRUCTURE_LINK) {
+        // Get Possible Container In Range //
+        const container = Game.getObjectById(findContainer()[1]);
+        // If Container Is Found, Destroy It By Getting Object Of The Found Structure //
+        if (container !== null) {
+          container.destroy();
+          flagMemory.controllerStorage = "";
         }
+      }
 
+      
+      if (isStructureFound == false) {
         // Start Variables For Best Positions //
         const possiblePositions = [];
         let optimalPositions = [0,[0,0], 50];

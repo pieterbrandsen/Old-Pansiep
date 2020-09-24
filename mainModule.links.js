@@ -31,7 +31,7 @@ module.exports = {
         transferEnergyAmount = fromLink.store.getUsedCapacity(RESOURCE_ENERGY);
 
 
-        if (transferEnergyAmount > 0)
+        if (transferEnergyAmount > 10)
         fromLink.transferEnergy(toLink, transferEnergyAmount);
       }
     };

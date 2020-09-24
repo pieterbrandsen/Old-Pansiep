@@ -43,8 +43,8 @@ module.exports = {
       }
     }
 
-    // Every 10.000 Ticks Run This //
-    if (Game.time % 10000 == 0) {
+    // Every 1.000 Ticks Run This //
+    if (Game.time % 1000 == 0) {
       // Recheck Room //
       flagMemory.roomIsChecked = false;
     }

@@ -23,6 +23,8 @@ module.exports.loop = function() {
   if (!Memory.flags)
   Memory.flags = {};
 
+  Memory.mainSystem.performanceAvgTicks = 100;
+
 
   // Get the CPU Usage //
   let start = Game.cpu.getUsed();

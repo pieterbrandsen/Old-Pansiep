@@ -252,7 +252,7 @@ module.exports = {
             // Limit The Loop Count //
             loopMaxCount = 20;
             // Min Limit The Loop Count //
-            loopMinCount = 0;
+            loopMinCount = 6;
 
             // Check If LoopCount Is Higher The LoopMinCount //
             if (loopAmount >= loopMinCount) {
@@ -466,7 +466,7 @@ module.exports = {
           // If Role Is Transferer //
           case "transferer":
           // Check If The Part Amount Is Enough For The Level The Room Is In //
-          if ((flagMemory.partsAmount[`${role}-CARRY`] < 20 && room.containers.length == 0) || (flagMemory.partsAmount[`${role}-CARRY`] < flagMemory.sources.length * 20 && room.containers.length > 0)) {
+          if (((flagMemory.partsAmount[`${role}-CARRY`] < 20 && room.containers.length == 0 && flagMemory.enemys.length <= 1) || (flagMemory.partsAmount[`${role}-CARRY`] < 20 && room.containers.length == 0 && flagMemory.enemys.length > 1)) || (flagMemory.partsAmount[`${role}-CARRY`] < flagMemory.sources.length * 20 && room.containers.length > 0)) {
             // Check If There Is Energy Enough For A Transferer To Withdraw From //
             if (roomNeedsTransferer()) {
               // Check If The Amount Of Transferers Is Less Then Six, Return True //
