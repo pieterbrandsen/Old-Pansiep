@@ -18,48 +18,53 @@ module.exports = {
 
 
           // If There Is Nothing To Repair And Its Time To Check Again //
-          if (flagMemory.repairTarget.length == 0 && Game.time % 1000 == 0 && flagMemory.totalEnergyAvailable > flagMemory.totalEnergyCapacity / 2) {
-            let repairTarget = flagMemory.repairTarget;
-            // Loop Through All Structures That Are Under The RepairAmount //
+          if (flagMemory.repairTarget.length == 0 && Game.time % 1000 == 0) {
             let targetRepair = room.find(FIND_STRUCTURES, {
-              filter: (s) => s.hits < s.hitsMax && s.hits < repairAmount
+              filter: (s) => s.hits < s.hitsMax && s.hits < 1*1000*1000
             });
+            // let repairTarget = flagMemory.repairTarget;
+            // // Loop Through All Structures That Are Under The RepairAmount //
+            // let targetRepair = room.find(FIND_STRUCTURES, {
+            //   filter: (s) => s.hits < s.hitsMax && s.hits < repairAmount
+            // });
 
-            // If There Are Strucutres Found //
-            if (targetRepair.length > 0) {
-              if (flagMemory.targetRepair > 100*1000)
-              flagMemory.repairTargetAmount = flagMemory.repairTargetAmount - 100*1000;
-              // Enter Each Structure In Memory //
-              for (let i = 0; targetRepair.length > i; i++) {
-                flagMemory.repairTarget[i] = targetRepair[i].id
-              }
-            }
-            else if (flagMemory.repairTargetAmount < 5 * 100 * 1000)
-            flagMemory.repairTargetAmount = flagMemory.repairTargetAmount + 200*1000;
+            // // If There Are Strucutres Found //
+            // if (targetRepair.length > 0) {
+            //   if (flagMemory.targetRepair > 100*1000)
+            //   flagMemory.repairTargetAmount = flagMemory.repairTargetAmount - 100*1000;
+            //   // Enter Each Structure In Memory //
+            //   for (let i = 0; targetRepair.length > i; i++) {
+            //     flagMemory.repairTarget[i] = targetRepair[i].id
+            //   }
+            // }
+            // else if (flagMemory.repairTargetAmount < 5 * 100 * 1000)
+            // flagMemory.repairTargetAmount = flagMemory.repairTargetAmount + 200*1000;
           }
 
 
           // If There Is Still Something To Repair //
           if (flagMemory.repairTarget.length > 0) {
-            for (let tower of towers) {
-              // Get First Target Out Of Array //
-              let target = Game.getObjectById(flagMemory.repairTarget[0]);
-              // If Target Is Not Null //
-              if (target !== null) {
-                // If Target Is Still Under The RepairAmount And Is Not Full Health //
-                if (target.hits < target.hitsMax && target.hits < repairAmount) {
-                  // Repair Structure //
-                  if (tower.repair(target) == 0)
-                  flagMemory.trackers.performance.repairerEnergy += 10
+            if (flagMemory.totalEnergyAvailable > flagMemory.totalEnergyCapacity / 2) {
+              for (let tower of towers) {
+                // Get First Target Out Of Array //
+                let target = Game.getObjectById(flagMemory.repairTarget[0]);
+                // If Target Is Not Null //
+                if (target !== null) {
+                  // If Target Is Still Under The RepairAmount And Is Not Full Health //
+                  if (target.hits < target.hitsMax && target.hits < repairAmount) {
+                    // Repair Structure //
+                    if (tower.repair(target) == 0)
+                    flagMemory.trackers.performance.repairerEnergy += 10
+                  }
+                  else {
+                    // Remove Target From Memory //
+                    flagMemory.repairTarget.shift();
+                  }
                 }
                 else {
                   // Remove Target From Memory //
                   flagMemory.repairTarget.shift();
                 }
-              }
-              else {
-                // Remove Target From Memory //
-                flagMemory.repairTarget.shift();
               }
             }
           }

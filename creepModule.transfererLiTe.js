@@ -51,7 +51,6 @@ module.exports = {
         creep.memory.working = workState;
 
         if (link !== null) {
-
           // If Creep Needs To Withdraw //
           if (creep.memory.working == "withdraw") {
             if (link.store.getUsedCapacity(RESOURCE_ENERGY) < 100) {
