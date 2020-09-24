@@ -23,7 +23,7 @@ module.exports.loop = function() {
   if (!Memory.flags)
   Memory.flags = {};
 
-  
+
   // Get the CPU Usage //
   let start = Game.cpu.getUsed();
 
@@ -68,6 +68,7 @@ module.exports.loop = function() {
   _.forEach(Object.keys(Game.rooms), function (roomName) {
     const room = Game.rooms[roomName];
     const controller = Game.rooms[roomName].controller;
+    const flagMemory = Memory.flags[roomName];
 
 
     if (controller && controller.my) {
@@ -81,8 +82,6 @@ module.exports.loop = function() {
       if (!Memory.flags[roomName])
       Memory.flags[roomName] = {};
       else {
-        const flagMemory = Memory.flags[roomName];
-
         // If FlagMemory Is Not Setup, Run The Function //
         if (!flagMemory.IsMemorySetup)
         checkMissingMemory.run(roomName);
