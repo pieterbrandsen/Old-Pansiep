@@ -4,7 +4,7 @@ module.exports = {
   run: function(creep) {
     // Get the variables needed for module //
     const getMainSystem = runMainSystem.run();
-    const flagMemory = Memory.flags[creep.room.name];
+    const flagMemory = Memory.flags[creep.memory.targetRoom];
     const target = Game.getObjectById(creep.memory.sourceId);
 
     if (!creep.memory.workCount)
@@ -12,9 +12,6 @@ module.exports = {
 
 
     function findNewSourceInRoom() {
-      // Get the energy sources in the room //
-      const sources = creep.room.find(FIND_SOURCES);
-
       // If there are sources found get the source that matches the name else get the nearest source //
       if (creep.memory.role.includes("harvester")) {
         flagMemory.sources.forEach((source, i) => {
@@ -81,11 +78,12 @@ module.exports = {
     }
 
     function runModule() {
-      // Find source if creep has no source in the memory defined //
-      if (target == null) {
+      const targetRoom = Game.rooms[creep.memory.targetRoom];
+      if (targetRoom) {
+        // Find source if creep has no source in the memory defined //
+        if (target == null)
         findNewSourceInRoom()
-      }
-      else {
+        else
         // Else go harvest the defined source //
         harvestSource();
       }

@@ -1,4 +1,4 @@
-const builderModule = require('module.builder');
+const builderModule = require('module.build');
 const runMainSystem = require('miniModule.mainSystem');
 
 module.exports = {

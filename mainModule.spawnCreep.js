@@ -675,8 +675,7 @@ module.exports = {
             // If There Are More Then Zero Sources //
             if (flagMemory.sources.length >= 0) {
               // If There Are Less Transferers Then Sources, Return True;
-              //if (flagMemory.partsAmount[`${role}-CARRY`] < flagMemory.sources.length * 50)
-              if (flagMemory.rolesCount[role] < flagMemory.sources.length)
+              if (flagMemory.rolesCount[role] < 1)
               result = true;
             }
             break;

@@ -11,7 +11,7 @@ module.exports = {
     for (let name in Game.creeps) {
       // Define Variables //
       const creep = Game.creeps[name];
-      const role = creep.memory.role;
+      const role = creep.memory.role.split("-")[0];
 
       // This Function Runs The Creep So It Will Do Work //
       function runCreep() {
@@ -22,13 +22,11 @@ module.exports = {
         // If Memory Is Setup //
         if (Memory.flags[creep.memory.spawnRoom] && Memory.flags[creep.memory.spawnRoom].IsMemorySetup && role) {
           // Get The Role File Of The Creep By Getting The Right Name //
-          // A Harvester-0 File Doesn't Exist So That The Reason For The Split //
-          const creepRole = require(`role.${role.split('-')[0]}`);
+          const allRoles = require(`runRoles`);
 
           // If CreepRole File Is Defined, Run Creep //
-          if (creepRole)
-          creepRole.run(creep);
-          // Else Send Me An Email With The CurrentRoom And Role So I Fix The Problem //
+          if (allRoles[role] !== undefined)
+          allRoles[role](creep);
           else
           Game.notify(`Creep in room ${creep.room.name} is missing a role or has no run function. The role is ${role}.`);
 

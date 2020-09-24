@@ -15,8 +15,10 @@ module.exports = {
         case ERR_BUSY:
           break;
         case ERR_INVALID_TARGET:
-          creep.attackController(creep.room.controller);
-          creep.travelTo(target);
+          if (creep.room.controller.owner !== 'PandaMaster') {
+            creep.attackController(creep.room.controller);
+            creep.travelTo(target);
+          }
           break;
         case ERR_FULL:
           break;

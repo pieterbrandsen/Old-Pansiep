@@ -44,12 +44,13 @@ module.exports = {
 
     const target = creep.pos.findInRange(FIND_DROPPED_RESOURCES,5);
 
-    if (target) {
-      if (creep.pickup(target) == ERR_NOT_IN_RANGE)
-      creep.moveTo(target);
+    if (target[0]) {
+      if (creep.pickup(target[0]) == ERR_NOT_IN_RANGE)
+      creep.moveTo(target[0]);
     }
 
-    if (target == null) {
+
+    if (target[0] == null) {
       if (Object.keys(flagMemory.unBoost).length == 0) {
         if (Object.keys(flagMemory.boosting).length == 0) {
           if (labsFlagMemory && labsFlagMemory.reactionsNeeded) {

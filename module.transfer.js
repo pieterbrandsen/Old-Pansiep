@@ -1,5 +1,5 @@
 const runMainSystem = require('miniModule.mainSystem');
-const builderModule = require('module.builder');
+const builderModule = require('module.build');
 
 module.exports = {
   run: function(creep) {
@@ -59,15 +59,15 @@ module.exports = {
           let containerId;
           let linkId;
 
-          creep.room.containers.forEach((container, i) => {
-            if (container) {
+          Game.rooms[creep.memory.targetRoom].containers.forEach((container, i) => {
+            if (container && sourceObject) {
               if (container.pos.inRangeTo(sourceObject,2))
               containerId = container.id;
             }
           });
 
-          creep.room.links.forEach((link, i) => {
-            if (link) {
+          Game.rooms[creep.memory.targetRoom].links.forEach((link, i) => {
+            if (link && sourceObject) {
               if (link.pos.inRangeTo(sourceObject,2))
               linkId = link.id;
             }
@@ -128,7 +128,7 @@ module.exports = {
             }
           }
         }
-        else
+        else if (creep.room.storage && creep.room.controller.level >= 4)
         creep.memory.targetId = creep.room.storage.id;
       }
     }

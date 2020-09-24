@@ -54,24 +54,24 @@ module.exports = {
 
         if (thirdEnemy)
         attackCreep(thirdEnemy.id);
-        else {
-          const target = Game.getObjectById(creep.memory.targetId);
-          if (target !== null) {
-            if(creep.attack(target) == ERR_NOT_IN_RANGE)
-            creep.travelTo(target);
-          }
-          else {
-            const rampart = creep.pos.findClosestByRange(creep.room.ramparts);
-            const wall = creep.pos.findClosestByRange(creep.room.walls);
-
-            if (rampart !== null)
-            creep.memory.targetId = rampart.id;
-            else if (wall !== null)
-            creep.memory.targetId = wall.id;
-            else if (!creep.pos.inRangeTo(Game.flags[creep.memory.targetRoom],2))
-            creep.moveTo(Game.flags[creep.memory.targetRoom])
-          }
-        }
+        // else {
+        //   const target = Game.getObjectById(creep.memory.targetId);
+        //   if (target !== null) {
+        //     if(creep.attack(target) == ERR_NOT_IN_RANGE)
+        //     creep.travelTo(target);
+        //   }
+        //   else {
+        //     const rampart = creep.pos.findClosestByRange(creep.room.ramparts);
+        //     const wall = creep.pos.findClosestByRange(creep.room.walls);
+        //
+        //     if (rampart !== null)
+        //     creep.memory.targetId = rampart.id;
+        //     else if (wall !== null)
+        //     creep.memory.targetId = wall.id;
+        //     else if (!creep.pos.inRangeTo(Game.flags[creep.memory.targetRoom],2))
+        //     creep.moveTo(Game.flags[creep.memory.targetRoom])
+        //   }
+        // }
       }
     }
   }
