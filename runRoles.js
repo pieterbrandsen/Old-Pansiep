@@ -1,4 +1,4 @@
-const getWorkingState = require('miniModule.getCreepState');
+const getWorkingState = require('function.getCreepState');
 const creepBooster = require('module.creepBooster');
 
 

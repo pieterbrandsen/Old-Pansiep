@@ -17,7 +17,7 @@ const runTracker = require('mainModule.tracker');
 // Require Mini Modules
 const runMainSystem = require('function.mainSystem');
 const countCreepsAndParts = require('function.countCreepsAndParts')
-const terminal = require('function.terminal')
+const terminal = require('module.terminal')
 
 module.exports.loop = function() {
   if (!Memory.flags)
