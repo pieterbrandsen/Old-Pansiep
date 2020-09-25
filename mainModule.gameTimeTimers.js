@@ -2,6 +2,104 @@ const spawnCreep = require('mainModule.spawnCreep');
 const manageLinks = require('mainModule.links');
 const roomManager = require('module.roomManager');
 
+function getSpawningEnergy() {
+  flagMemory.totalEnergyAvailable = room.energyAvailable;
+  let spawnsLength = room.spawns.length;
+  let extensionsLength = room.extensions.length;
+
+  switch (room.controller.level) {
+    case 1:
+    if (spawnsLength > 1)
+    spawnsLength = 1;
+    if (extensionsLength > 0)
+    extensionsLength = 0;
+    break;
+    case 2:
+    if (spawnsLength > 1)
+    spawnsLength = 1;
+    if (extensionsLength > 5)
+    extensionsLength = 5;
+    break;
+    case 3:
+    if (spawnsLength > 1)
+    spawnsLength = 1;
+    if (extensionsLength > 10)
+    extensionsLength = 10;
+    break;
+    case 4:
+    if (spawnsLength > 1)
+    spawnsLength = 1;
+    if (extensionsLength > 20)
+    extensionsLength = 20;
+    break;
+    case 5:
+    if (spawnsLength > 1)
+    spawnsLength = 1;
+    if (extensionsLength > 30)
+    extensionsLength = 30;
+    break;
+    case 6:
+    if (spawnsLength > 1)
+    spawnsLength = 1;
+    if (extensionsLength > 40)
+    extensionsLength = 40;
+    break;
+    case 7:
+    if (spawnsLength > 2)
+    spawnsLength = 2;
+    if (extensionsLength > 50)
+    extensionsLength = 50;
+    break;
+    default:
+    break;
+  }
+
+  if (room.controller.level == 8)
+  flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 200);
+  else if (room.controller.level == 7)
+  flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 100);
+  else
+  flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 50);
+}
+
+function runPerformanceTracker() {
+  if (Game.time % 50 == 0) {
+    if (flagMemory.IsMemorySetup) {
+      flagMemory.trackers.room.energyStored = getTotalRoomEnergy();
+
+      let totalWallHitPoints = 0;
+      let totalWallAmount = 0;
+      if (room.walls) {
+        room.walls.forEach((wall, i) => {
+          if (wall) {
+            totalWallHitPoints += wall.hits;
+            totalWallAmount++;
+          }
+        });
+      }
+
+      let totalRampartHitPoints = 0;
+      let totalRampartAmount = 0;
+      if (room.ramparts) {
+        room.ramparts.forEach((rampart, i) => {
+          if (rampart) {
+            totalRampartHitPoints += rampart.hits;
+            totalRampartAmount++;
+          }
+        });
+      }
+
+
+      flagMemory.trackers.room.averageWallHP = totalWallHitPoints / totalWallAmount;
+      flagMemory.trackers.room.averageRampartHP = totalRampartHitPoints / totalRampartAmount;
+      flagMemory.trackers.room.rclLevel = room.controller.level;
+      flagMemory.trackers.room.rclProgress = room.controller.progress;
+      flagMemory.trackers.room.rclProgressTotal = room.controller.progressTotal;
+    }
+  }
+}
+
+
 module.exports = {
   run: function(roomName) {
     const room = Game.rooms[roomName];
@@ -17,6 +115,11 @@ module.exports = {
 
       // Run The RoomManager //
       roomManager.run(roomName);
+
+      // Run Spawner Energy Getter //
+      getSpawningEnergy(room,flagMemory);
+
+      runPerformanceTracker(room, flagMemory);
     }
 
 
@@ -43,7 +146,7 @@ module.exports = {
     }
 
     // Every 1.000 Ticks Run This //
-    if (Game.time % 1000 == 0) {
+    if (Game.time % 1000 == 0 || !flagMemory.roomIsChecked) {
       // Recheck Room //
       roomManager.update();
     }
