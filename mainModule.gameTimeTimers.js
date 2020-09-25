@@ -1,6 +1,6 @@
 const spawnCreep = require('mainModule.spawnCreep');
 const manageLinks = require('mainModule.links');
-const roomManager = require('module.roomManager');
+const roomManager = require('module.ownedRoomManager');
 
 function getSpawningEnergy() {
   flagMemory.totalEnergyAvailable = room.energyAvailable;

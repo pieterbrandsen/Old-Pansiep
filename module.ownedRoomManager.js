@@ -1,7 +1,7 @@
 const roomPlanner = require('module.roomPlanner');
 const createConstructionSiteForObject = require('function.createConstructionSite');
 
-function createConstructionSite(memoryPath, objectId, range, controllerLevel) {
+function createConstructionSite(memoryPath, objectId, range, controllerLevel, room, flagMemory) {
   const buildStructure = createConstructionSiteForObject.run(objectId,range,controllerLevel,roomName);
   errorMessage = buildStructure[2];
 
@@ -15,7 +15,7 @@ function createConstructionSite(memoryPath, objectId, range, controllerLevel) {
   flagMemory.roomManager[memoryPath] = false;
 }
 
-function getTotalRoomEnergy() {
+function getTotalRoomEnergy(room, flagMemory) {
   // EnergyStorage Is Zero At Start //
   let energyStored = 0;
 
@@ -48,7 +48,7 @@ function getTotalRoomEnergy() {
   return energyStored;
 }
 
-function getHeadSpawn() {
+function getHeadSpawn(room, flagMemory) {
   // Get HeadSpawn For RCL 6+ //
   if (!flagMemory.roomManager.headSpawn && room.spawns.length > 1 && room.terminal) {
     const spawn = room.terminal.pos.findInRange(room.spawns, 2,
@@ -62,7 +62,7 @@ function getHeadSpawn() {
     flagMemory.roomManager.headSpawn = room.spawns[0].id;
 }
 
-function hasStructure() {
+function hasStructures(room, flagMemory) {
   room.find(FIND_SOURCES).forEach((source, i) => {
     if (flagMemory.roomManager[`source-${i}.HasStructure`] == false) {
       if (createConstructionSite(`source-${i}.HasStructure`, source.id, 2, 7))
@@ -88,5 +88,6 @@ module.exports = {
     flagMemory.controllerLevel = room.controller.level;
     flagMemory.roomIsChecked = true;
 
-    hasStructure(room, flagMemory);
+    hasStructures(room, flagMemory);
   }
+};

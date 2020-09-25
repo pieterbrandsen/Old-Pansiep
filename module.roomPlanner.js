@@ -1,13 +1,5 @@
 module.exports = {
   run: function() {
-    function createRoadToImportantSpot(headSpawnId, targetSpotId) {
-      const headSpawn = Game.getObjectById(headSpawnId);
-      const targetSpot = Game.getObjectById(targetSpotId);
-
-      if (headSpawn && targetSpot)
-      headSpawn.room.findPath(headSpawn.pos, targetSpot,pos);
-    }
-
     function runRoomPlanner(flagName) {
       const flag = Game.flags[flagName];
       const flagMemory = Memory.flags[flagName];
