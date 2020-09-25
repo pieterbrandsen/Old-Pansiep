@@ -84,7 +84,7 @@ module.exports.loop = function() {
       else {
         // If FlagMemory Is Not Setup, Run The Function //
         if (!flagMemory.IsMemorySetup)
-        checkMissingMemory.run(roomName);
+        checkMissingMemory.setup(roomName);
         else {
           // Create Variable For Shortcut of CpuTracker //
           const cpuTracker = flagMemory.trackers.cpu;
@@ -203,7 +203,7 @@ module.exports.loop = function() {
           else {
             // If FlagMemory Is Not Setup, Run The Function //
             if (!flagMemory.IsMemorySetup)
-            checkMissingMemory.run(roomName);
+            checkMissingMemory.setup(roomName);
           }
         }
       }

@@ -235,7 +235,7 @@ module.exports = {
             const flagMemory = Memory.flags[roomName];
             // Check If Memory Is Setup, If Not Fill Empty Memory //
             if (!flagMemory.IsMemorySetup)
-            checkMissingMemory.run(roomName);
+            checkMissingMemory.setup(roomName);
             else {
               // Reset Tracker //
               resetTrackerMemoryInRoom(roomName);
