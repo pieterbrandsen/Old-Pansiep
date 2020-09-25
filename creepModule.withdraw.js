@@ -1,5 +1,5 @@
 const harvestModule = require('creepModule.harvest');
-const runMainSystem = require('miniModule.mainSystem');
+const runMainSystem = require('function.mainSystem');
 
 
 module.exports = {

@@ -1,4 +1,4 @@
-const runMainSystem = require('miniModule.mainSystem');
+const runMainSystem = require('function.mainSystem');
 
 const targetHitsDefense = 5*1000*1000;
 const targetHitsNormal = 50*1000;

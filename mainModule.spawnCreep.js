@@ -1,5 +1,5 @@
-const getHostileCreepsInRoom = require('miniModule.getHostileCreepsInRoom');
-const countCreepsAndParts = require('miniModule.countCreepsAndParts');
+const getHostileCreepsInRoom = require('function.getHostileCreepsInRoom');
+const countCreepsAndParts = require('function.countCreepsAndParts');
 
 module.exports = {
   run: function(roomName) {

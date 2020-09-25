@@ -2,8 +2,8 @@ const getAccesPoints = require('function.getAccesPoints');
 
 const runLabs = require('module.labs')
 
-const runMainSystem = require('miniModule.mainSystem');
-const terminal = require('miniModule.terminal')
+const runMainSystem = require('function.mainSystem');
+const terminal = require('module.terminal')
 
 
 module.exports = {

@@ -1,5 +1,5 @@
-// Require Mini Modules
-const runMainSystem = require('miniModule.mainSystem');
+// Require function Modules
+const runMainSystem = require('function.mainSystem');
 
 module.exports = {
   run: function() {

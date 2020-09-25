@@ -1,4 +1,4 @@
-const getHostileCreepsInRoom = require('miniModule.getHostileCreepsInRoom');
+const getHostileCreepsInRoom = require('function.getHostileCreepsInRoom');
 
 module.exports = {
   run: function(roomName) {

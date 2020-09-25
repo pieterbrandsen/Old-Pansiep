@@ -15,9 +15,9 @@ const runTowers = require('mainModule.towers');
 const runTracker = require('mainModule.tracker');
 
 // Require Mini Modules
-const runMainSystem = require('miniModule.mainSystem');
-const countCreepsAndParts = require('miniModule.countCreepsAndParts')
-const terminal = require('miniModule.terminal')
+const runMainSystem = require('function.mainSystem');
+const countCreepsAndParts = require('function.countCreepsAndParts')
+const terminal = require('function.terminal')
 
 module.exports.loop = function() {
   if (!Memory.flags)

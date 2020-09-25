@@ -1,6 +1,6 @@
 const deleteMemory = require("module.deleteMemory");
 const checkMissingMemory = require('module.checkMissingMemory');
-const runMainSystem = require('miniModule.mainSystem');
+const runMainSystem = require('function.mainSystem');
 
 module.exports = {
   run: function() {
