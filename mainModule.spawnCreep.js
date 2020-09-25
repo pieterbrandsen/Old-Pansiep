@@ -26,8 +26,6 @@ module.exports = {
     // Get All Open Spawns //
     getOpenSpawns();
 
-    console.log(roomName)
-
     // If There Is Atleast One Open Spawn //
     if (freeSpawnIds.length > 0) {
       // This Function Will Spawn All The Creeps Based On The Inputs //
@@ -76,7 +74,6 @@ module.exports = {
               }, directions: directionsList
             }
           );
-
 
           // If Creep Spawn Is OK //
           if (spawnCreep == 0) {
@@ -169,6 +166,7 @@ module.exports = {
         let energyCost;
         // Amount Of Parts Being Pushed Each Loop //
         let partPushAmount;
+        let loopAmount;
         // Limit The Loop Count //
         let loopMaxCount;
         // Min Limit The Loop Count //
@@ -253,7 +251,7 @@ module.exports = {
             // Limit The Loop Count //
             loopMaxCount = 25;
             // Min Limit The Loop Count //
-            loopMinCount = 6;
+            loopMinCount = 2;
 
             // Check If LoopCount Is Higher The LoopMinCount //
             if (loopAmount >= loopMinCount) {

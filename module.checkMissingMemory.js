@@ -101,7 +101,6 @@ module.exports = {
 
           runLabs.setup(roomName);
           if (!flagMemory.mineralId) {
-            roomIsMissingMemory = true;
             const mineral = room.find(FIND_MINERALS)[0];
             if (mineral) {
               // Save The MineralAmount And Id //
@@ -117,7 +116,6 @@ module.exports = {
             }
           }
           if (!flagMemory.rolesCount) {
-            roomIsMissingMemory = true;
             // Define All Role's //
             flagMemory.rolesCount = {};
             flagMemory.rolesCount["harvester-0"] = 0;
@@ -141,7 +139,6 @@ module.exports = {
             flagMemory.rolesCount["scientist"] = 0;
           }
           if (!flagMemory.partsAmount) {
-            roomIsMissingMemory = true;
             // Define ALl Important Roles With Their Parts //
             flagMemory.partsAmount = {};
             flagMemory.partsAmount["harvester-0-WORK"] = 0;
@@ -165,7 +162,6 @@ module.exports = {
             flagMemory.partsAmount["transfererLD-CARRY"] = 0;
           }
           if (!flagMemory.trackers) {
-            roomIsMissingMemory = true;
             flagMemory.trackers = {};
 
             flagMemory.trackers.room = {};
@@ -251,16 +247,13 @@ module.exports = {
           }
 
 
-          if (roomIsMissingMemory == false) {
-            console.log(missingMemoryString);
-            console.log(filledMemoryString);
-            console.log()
-          }
-          return roomIsMissingMemory
+          console.log(missingMemoryString);
+          console.log(filledMemoryString);
+          console.log()
         };
 
 
-        if (!checkIfMemoryIsSetup())
+        checkIfMemoryIsSetup();
         flagMemory.IsMemorySetup = true;
       }
     }

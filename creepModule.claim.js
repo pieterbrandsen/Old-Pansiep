@@ -10,7 +10,7 @@ module.exports = {
         switch(runClaimController) {
           case OK:
           creep.say("Claimed");
-          creep.room.createFlag(25,25,"builderLD"+creep.memory.spawnRoom);
+          creep.room.createFlag(25,25,`builderLD${creep.memory.spawnRoom}`);
           Game.flags["claim"].remove();
           break;
           case ERR_NOT_OWNER:
