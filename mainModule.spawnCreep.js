@@ -26,6 +26,7 @@ module.exports = {
     // Get All Open Spawns //
     getOpenSpawns();
 
+    console.log(roomName)
 
     // If There Is Atleast One Open Spawn //
     if (freeSpawnIds.length > 0) {
@@ -187,7 +188,7 @@ module.exports = {
           // Limit The Loop Count //
           loopMaxCount = 4;
           // Min Limit The Loop Count //
-          loopMinCount = 0;
+          loopMinCount = 1;
 
           // Check If LoopCount Is Higher The LoopMinCount //
           if (loopAmount >= loopMinCount) {

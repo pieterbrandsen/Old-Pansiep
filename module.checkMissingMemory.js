@@ -259,6 +259,7 @@ module.exports = {
           return roomIsMissingMemory
         };
 
+
         if (!checkIfMemoryIsSetup())
         flagMemory.IsMemorySetup = true;
       }

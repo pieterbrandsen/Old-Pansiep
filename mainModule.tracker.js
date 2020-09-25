@@ -167,7 +167,11 @@ module.exports = {
       });
 
       // Global Tracking //
-      Memory.stats['cpu.avg50'] = 0.98 * Memory.stats['cpu.avg50'] + 0.02 * Game.cpu.getUsed();
+      const mainDivider = 1 / mainSystemMemory.cpuAvgTicks;
+      const secondairDivider = 1 - mainDivider;
+
+      // Enter Average In Memory //
+      Memory.stats[`cpu.avg${mainSystemMemory.cpuAvgTicks}`] = secondairDivider * Memory.stats[`cpu.avg${mainSystemMemory.cpuAvgTicks}`] + mainDivider * Game.cpu.getUsed();
       Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
       Memory.stats['cpu.bucket'] = Game.cpu.bucket;
       Memory.stats['gcl.progress'] = Game.gcl.progress;
