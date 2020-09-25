@@ -45,7 +45,7 @@ module.exports = {
     // Every 1.000 Ticks Run This //
     if (Game.time % 1000 == 0) {
       // Recheck Room //
-      flagMemory.roomIsChecked = false;
+      roomManager.update();
     }
   }
 }
