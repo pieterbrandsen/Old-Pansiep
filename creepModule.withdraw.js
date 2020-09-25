@@ -26,7 +26,7 @@ module.exports = {
         if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
         creep.travelTo(target);
       }
-      else  {
+      else {
         const range = 3;
         const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
         const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
