@@ -34,7 +34,7 @@ const storageResourceMax = 2*1000;
 const terminalResourceMin = 4000;
 const terminalResourceMax = 5000;
 
-const getWorkingState = require('miniModule.getCreepState');
+const getWorkingState = require('function.getCreepState');
 
 module.exports = {
   run: function(creep) {

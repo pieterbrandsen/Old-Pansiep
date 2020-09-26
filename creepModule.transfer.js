@@ -93,7 +93,7 @@ module.exports = {
       }
       else {
         if (creep.memory.role == "transferer") {
-          const controllerStorage = Game.getObjectById(flagMemory.controllerStorage);
+          const controllerStructureId = Game.getObjectById(flagMemory.controllerStructureId);
 
           if (creep.memory.waitTransferer == false) {
             let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
@@ -109,11 +109,11 @@ module.exports = {
             creep.memory.waitTransferer = true;
           }
           else {
-            if (controllerStorage) {
+            if (controllerStructureId) {
               if (flagMemory.totalEnergyCapacity !== flagMemory.totalEnergyAvailable)
               creep.memory.waitTransferer = false;
-              else if (controllerStorage.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && (controllerStorage.structureType == STRUCTURE_CONTAINER || creep.room.controller.level < 6)) {
-                creep.memory.targetId = controllerStorage.id;
+              else if (controllerStructureId.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && (controllerStructureId.structureType == STRUCTURE_CONTAINER || creep.room.controller.level < 6)) {
+                creep.memory.targetId = controllerStructureId.id;
               }
               else {
                 if (creep.room.storage && creep.room.controller.level >= 4)
