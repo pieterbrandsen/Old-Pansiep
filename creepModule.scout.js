@@ -75,10 +75,11 @@ module.exports = {
           targetFlagMemory.IsMemorySetup = true;
           Memory.flags[targetRoomName] = {};
         }
+        
         if (Memory.flags[targetRoomName]) {
           // If Room's FlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
           if (!Memory.flags[targetRoomName].IsMemorySetup)
-          checkMissingMemory.run(targetRoomName);
+          checkMissingMemory.setup(targetRoomName);
         }
         else
         Memory.flags[targetRoomName] = {};

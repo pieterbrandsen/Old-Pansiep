@@ -1,7 +1,10 @@
 const spawnCreep = require('mainModule.spawnCreep');
 const manageLinks = require('mainModule.links');
 
-function getSpawningEnergy() {
+function getSpawningEnergy(roomName) {
+  const room = Game.rooms[roomName];
+  const flagMemory = Memory.flags[roomName];
+
   flagMemory.totalEnergyAvailable = room.energyAvailable;
   let spawnsLength = room.spawns.length;
   let extensionsLength = room.extensions.length;
@@ -61,7 +64,10 @@ function getSpawningEnergy() {
   flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 50);
 }
 
-function runPerformanceTracker() {
+function runPerformanceTracker(roomName) {
+  const room = Game.rooms[roomName];
+  const flagMemory = Memory.flags[roomName];
+
   if (Game.time % 50 == 0) {
     if (flagMemory.IsMemorySetup) {
       flagMemory.trackers.room.energyStored = getTotalRoomEnergy();
@@ -113,9 +119,9 @@ module.exports = {
       manageLinks.run(roomName);
 
       // Run Spawner Energy Getter //
-      getSpawningEnergy(room,flagMemory);
+      getSpawningEnergy(roomName);
 
-      runPerformanceTracker(room, flagMemory);
+      runPerformanceTracker(roomName);
     }
 
 
