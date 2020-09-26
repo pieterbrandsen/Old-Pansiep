@@ -74,7 +74,7 @@ function getControllerStructure(roomName) {
 
 
   if ((container && link == null && flagMemory.controllerLevel >= 6) || (container == null && link == null)) {
-    if (createConstructionSite(`controller.HasStructure`, source.id, 2, 7, roomName))
+    if (createConstructionSite(`controller.HasStructure`, room.controller.id, 2, 7, roomName))
     console.log(`Building a storage for the controller in room: ${room.name}`);
   }
   else if (container) {
