@@ -1,6 +1,5 @@
 const spawnCreep = require('mainModule.spawnCreep');
 const manageLinks = require('mainModule.links');
-const roomManager = require('module.ownedRoomManager');
 
 function getSpawningEnergy() {
   flagMemory.totalEnergyAvailable = room.energyAvailable;
@@ -113,9 +112,6 @@ module.exports = {
       // Run The LinkManager //
       manageLinks.run(roomName);
 
-      // Run The RoomManager //
-      roomManager.run(roomName);
-
       // Run Spawner Energy Getter //
       getSpawningEnergy(room,flagMemory);
 
@@ -143,12 +139,6 @@ module.exports = {
         // Get The ConstructionSiteAmount //
         flagMemory.constructionSitesAmount = room.find(FIND_CONSTRUCTION_SITES).length;
       }
-    }
-
-    // Every 1.000 Ticks Run This //
-    if (Game.time % 1000 == 0 || !flagMemory.roomIsChecked) {
-      // Recheck Room //
-      roomManager.update();
     }
   }
 }

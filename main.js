@@ -3,21 +3,18 @@ require('traveler');
 require('prototype.Room.structures');
 
 // Require Modules
-const roomManager = require('module.roomManager');
+const ownedRoomManager = require('module.ownedRoomManager');
+const remoteRoomManager = require('module.ownedRoomManager');
 const checkMissingMemory = require('module.checkMissingMemory');
-const runLabs = require('module.labs');
 
 // Require Main Modules
-const getDamagedStructures = require('mainModule.repairStructures');
-const runGameTimeTimers = require('mainModule.gameTimeTimers');
 const runCreeps = require('mainModule.runCreeps');
-const runTowers = require('mainModule.towers');
 const runTracker = require('mainModule.tracker');
 
 // Require Mini Modules
 const runMainSystem = require('function.mainSystem');
-const countCreepsAndParts = require('function.countCreepsAndParts')
-const terminal = require('module.terminal')
+const countCreepsAndParts = require('function.countCreepsAndParts');
+const terminal = require('module.terminal');
 
 module.exports.loop = function() {
   if (!Memory.flags)
@@ -74,8 +71,8 @@ module.exports.loop = function() {
     if (controller && controller.my) {
       // If Room Is Missing Flag For Data Storage, Create One //
       if (!Game.flags[roomName]) {
-        room.createFlag(25,25, roomName)
-        Memory.flags[roomName] = {}
+        room.createFlag(25,25, roomName);
+        Memory.flags[roomName] = {};
       }
 
       // If Room Is Missing Memory In Room, Give It Memory //
@@ -94,96 +91,14 @@ module.exports.loop = function() {
             let start = Game.cpu.getUsed();
 
             // Run the part //
-            runTowers.run(roomName);
+            ownedRoomManager.run(roomName);
 
             // Set the average CPU Usage in the memory //
-            cpuTracker.runTowers += Game.cpu.getUsed() - start;
+            cpuTracker.runOwnedRoomManager += Game.cpu.getUsed() - start;
           }
           else {
             // Run the part without tracking //
-            runTowers.run(roomName);
-          }
-
-
-          if (getMainSystem) {
-            // Get the CPU Usage //
-            let start = Game.cpu.getUsed();
-
-            // Run the part //
-            getDamagedStructures.run(roomName);
-
-            // Set the average CPU Usage in the memory //
-            cpuTracker.getDamagedStructures += Game.cpu.getUsed() - start;
-          }
-          else {
-            // Run the part without tracking //
-            getDamagedStructures.run(roomName);
-          }
-
-
-          if (getMainSystem) {
-            // Get the CPU Usage //
-            let start = Game.cpu.getUsed();
-
-            // Run the part //
-            runGameTimeTimers.run(roomName);
-
-            // Set the average CPU Usage in the memory //
-            cpuTracker.runGameTimeTimers += Game.cpu.getUsed() - start;
-          }
-          else {
-            // Run the part without tracking //
-            runGameTimeTimers.run(roomName);
-          }
-
-
-          if (getMainSystem) {
-            // Get the CPU Usage //
-            let start = Game.cpu.getUsed();
-
-            // Run the part //
-            roomManager.run(roomName);
-
-            // Set the average CPU Usage in the memory //
-            cpuTracker.runRoomManager += Game.cpu.getUsed() - start;
-          }
-          else {
-            // Run the part without tracking //
-            roomManager.run(roomName);
-          }
-
-
-          if (getMainSystem) {
-            // Get the CPU Usage //
-            let start = Game.cpu.getUsed();
-
-            // Run the part //
-            terminal.update(roomName);
-
-            // Set the average CPU Usage in the memory //
-            cpuTracker.terminal += Game.cpu.getUsed() - start;
-          }
-          else {
-            // Run the part without tracking //
-            terminal.update(roomName);
-          }
-
-
-          if (getMainSystem) {
-            // Get the CPU Usage //
-            let start = Game.cpu.getUsed();
-
-            // Run the part //
-            runLabs.run(roomName);
-            runLabs.update(roomName);
-
-            // Set the average CPU Usage in the memory //
-            cpuTracker.labs += Game.cpu.getUsed() - start;
-          }
-          else {
-            // Run the part without tracking //
-            runLabs.run(roomName);
-            runLabs.update(roomName);
+            ownedRoomManager.run(roomName);
           }
         }
       }
@@ -204,6 +119,25 @@ module.exports.loop = function() {
             // If FlagMemory Is Not Setup, Run The Function //
             if (!flagMemory.IsMemorySetup)
             checkMissingMemory.setup(roomName);
+            else {
+              // Create Variable For Shortcut of CpuTracker //
+              const cpuTracker = flagMemory.trackers.cpu;
+
+              if (getMainSystem) {
+                // Get the CPU Usage //
+                let start = Game.cpu.getUsed();
+
+                // Run the part //
+                remoteRoomManager.run(roomName);
+
+                // Set the average CPU Usage in the memory //
+                cpuTracker.runRemoteRoomManager += Game.cpu.getUsed() - start;
+              }
+              else {
+                // Run the part without tracking //
+                remoteRoomManager.run(roomName);
+              }
+            }
           }
         }
       }
@@ -247,22 +181,6 @@ module.exports.loop = function() {
     let start = Game.cpu.getUsed();
 
     // Run the part //
-    runCreeps.run();
-
-    // Set the average CPU Usage in the memory //
-    cpuTracker.runCreeps += Game.cpu.getUsed() - start;
-  }
-  else {
-    // Run the part without tracking //
-    runCreeps.run();
-  }
-
-
-  if (getMainSystem) {
-    // Get the CPU Usage //
-    let start = Game.cpu.getUsed();
-
-    // Run the part //
     terminal.run();
 
     // Set the average CPU Usage in the memory //
@@ -273,6 +191,21 @@ module.exports.loop = function() {
     terminal.run();
   }
 
+
+  if (getMainSystem) {
+    // Get the CPU Usage //
+    let start = Game.cpu.getUsed();
+
+    // Run the part //
+    runCreeps.run();
+
+    // Set the average CPU Usage in the memory //
+    cpuTracker.runCreeps += Game.cpu.getUsed() - start;
+  }
+  else {
+    // Run the part without tracking //
+    runCreeps.run();
+  }
 
   if (getMainSystem) {
     // Get the CPU Usage //

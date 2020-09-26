@@ -14,8 +14,8 @@ module.exports = {
     const mainSystemMemory = Memory.mainSystem;
 
 
-    (!Memory.flags) ? (Memory.flags = {});
-    (!Memory.stats) ? (Memory.stats = {});
+    if (!Memory.flags) Memory.flags = {};
+    if (!Memory.stats) Memory.stats = {};
     if (!Memory.cpuTracker) {
       Memory.cpuTracker = {};
       Memory.cpuTracker["loadMemory"] = 0;
@@ -32,16 +32,17 @@ module.exports = {
       Memory.mainSystem["performanceTracker"] = 0;
       Memory.mainSystem["performanceAvgTicks"] = 0;
     }
-    (!Memory.terminal) ? (terminal.setup());
-    (!Memory.performanceTracker) ? (Memory.performanceTracker = {});
+    if (!Memory.terminal) terminal.setup();
+    if (!Memory.performanceTracker) Memory.performanceTracker = {};
 
     if (!flagMemory.roomManager) {
       flagMemory.roomManager = {};
-      (!flagMemory.sources) ? (flagMemory.sources = []);
+      if (!flagMemory.sources) flagMemory.sources = [];
       room.find(FIND_SOURCES).forEach((source, i) => {
         flagMemory.sources[i] = {};
         flagMemory.sources[i].id = source.id;
-        flagMemory.sources[i].openSpots = getAccesPoints.run(source.pos.x,source.pos.y, roomName)[0]
+        flagMemory.sources[i].openSpots = getAccesPoints.run(source.pos.x,source.pos.y, roomName)[0];
+        flagMemory.sources[i].structureId = "";
 
         flagMemory.roomManager[`source-${i}.HasStructure`] = false;
       });
@@ -50,17 +51,17 @@ module.exports = {
 
 
 
-      (!flagMemory.links) ? (flagMemory.links = {});
-      (!flagMemory.controllerLevel) ? (flagMemory.controllerLevel = {});
-      (!flagMemory.constructionSitesAmount) ? (flagMemory.constructionSitesAmount = {});
-      (!flagMemory.enemyCreepCount) ? (flagMemory.enemyCreepCount = {});
-      (!flagMemory.enemys) ? (flagMemory.enemys = []);
-      (!flagMemory.towerTarget) ? (flagMemory.towerTarget = "");
-      (!flagMemory.repairTarget) ? (flagMemory.repairTarget = []);
-      (!flagMemory.boosting) ? (flagMemory.boosting = {});
-      (!flagMemory.unBoost) ? (flagMemory.unBoost = {});
-      (!flagMemory.repairTargetAmount) ? (flagMemory.repairTargetAmount = 100 * 1000);
-      (!flagMemory.labs) ? (runLabs.setup(roomName));
+      if (!flagMemory.links) flagMemory.links = {};
+      if (!flagMemory.controllerLevel) flagMemory.controllerLevel = {};
+      if (!flagMemory.constructionSitesAmount) flagMemory.constructionSitesAmount = {};
+      if (!flagMemory.enemyCreepCount) flagMemory.enemyCreepCount = {};
+      if (!flagMemory.enemys) flagMemory.enemys = [];
+      if (!flagMemory.towerTarget) flagMemory.towerTarget = "";
+      if (!flagMemory.repairTarget) flagMemory.repairTarget = [];
+      if (!flagMemory.boosting) flagMemory.boosting = {};
+      if (!flagMemory.unBoost) flagMemory.unBoost = {};
+      if (!flagMemory.repairTargetAmount) flagMemory.repairTargetAmount = 100 * 1000;
+      if (!flagMemory.labs) runLabs.setup(roomName);
 
       if (!flagMemory.mineralId) {
         const mineral = room.find(FIND_MINERALS)[0];
@@ -141,7 +142,8 @@ module.exports = {
         cpuTracker["runTowers"] = 0;
         cpuTracker["getDamagedStructures"] = 0;
         cpuTracker["runGameTimeTimers"] = 0;
-        cpuTracker["runRoomManager"] = 0;
+        cpuTracker["runOwnedRoomManager"] = 0;
+        cpuTracker["runRemoteRoomManager"] = 0;
         cpuTracker["terminal"] = 0;
         cpuTracker["labs"] = 0;
 

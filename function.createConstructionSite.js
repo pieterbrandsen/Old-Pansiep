@@ -109,7 +109,7 @@ module.exports = {
         // If Container Is Found, Destroy It By Getting Object Of The Found Structure //
         if (container !== null) {
           container.destroy();
-          flagMemory.controllerStorage = "";
+          flagMemory.controllerStructureId = "";
         }
       }
 
