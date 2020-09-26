@@ -42,7 +42,7 @@ module.exports = {
         flagMemory.sources[i] = {};
         flagMemory.sources[i].id = source.id;
         flagMemory.sources[i].openSpots = getAccesPoints.run(source.pos.x,source.pos.y, roomName)[0];
-        flagMemory.sources[i].structureId = "";
+        flagMemory.sources[i].structure = "None";
 
         flagMemory.roomManager[`source-${i}.HasStructure`] = false;
       });

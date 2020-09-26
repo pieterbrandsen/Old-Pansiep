@@ -1,5 +1,6 @@
 // Require Modules
 const checkMissingMemory = require('module.checkMissingMemory');
+const remoteRoomManager = require('module.remoteRoomManager');
 
 module.exports = {
   run: function(creep) {
@@ -63,26 +64,7 @@ module.exports = {
       switch (scoutGoal) {
         // If ScoutGoal Is Remote, Get All The Remote Memory That's Needed //
         case "remote":
-        // If TargetFlagMemory Is Missing The TargetRoom, Define It Using The TargetRoomName //
-        if (!targetFlagMemory.targetRoom)
-        targetFlagMemory.targetRoom = targetRoomName;
-        // If TargetFlagMemory Is Missing The SourceAmount, Define It By Counting The Source's That Are In The Target Room //
-        if (!targetFlagMemory.sourceAmount)
-        targetFlagMemory.sourceAmount = targetRoom.find(FIND_SOURCES).length;
-        // If TargetFlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
-        // Reset Also The Room Flag Memory To Be Sure All The Memory Is In The Room //
-        if (!targetFlagMemory.IsMemorySetup) {
-          targetFlagMemory.IsMemorySetup = true;
-          Memory.flags[targetRoomName] = {};
-        }
-        
-        if (Memory.flags[targetRoomName]) {
-          // If Room's FlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
-          if (!Memory.flags[targetRoomName].IsMemorySetup)
-          checkMissingMemory.setup(targetRoomName);
-        }
-        else
-        Memory.flags[targetRoomName] = {};
+        remoteRoomManager.setup(creep.name);
         break;
         default:
         // If Creep Has No ScoutGoal, Get The Default Goal In Its Memory //

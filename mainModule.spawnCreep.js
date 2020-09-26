@@ -68,6 +68,8 @@ module.exports = {
                 working: "withdraw",
                 spawnRoom: roomName,
                 targetRoom: targetRoom,
+                withdrawId: "",
+                transferId: "",
                 flagName: flagName,
                 canRenew: false,
                 hasBeenBoosted: false,
