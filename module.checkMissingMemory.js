@@ -35,8 +35,9 @@ module.exports = {
     if (!Memory.terminal) terminal.setup();
     if (!Memory.performanceTracker) Memory.performanceTracker = {};
 
-    if (!flagMemory.roomManager) {
-      flagMemory.roomManager = {};
+    if (!flagMemory.roomManager)
+    flagMemory.roomManager = {};
+    else {
       if (!flagMemory.sources) flagMemory.sources = [];
       room.find(FIND_SOURCES).forEach((source, i) => {
         flagMemory.sources[i] = {};
@@ -62,6 +63,10 @@ module.exports = {
       if (!flagMemory.unBoost) flagMemory.unBoost = {};
       if (!flagMemory.repairTargetAmount) flagMemory.repairTargetAmount = 100 * 1000;
       if (!flagMemory.labs) runLabs.setup(roomName);
+      if (!flagMemory.controller) {
+        flagMemory.controller = {};
+        flagMemory.controller.structure = "None";
+      }
 
       if (!flagMemory.mineralId) {
         const mineral = room.find(FIND_MINERALS)[0];
@@ -209,7 +214,10 @@ module.exports = {
         spawnerTracker["transfererLD"] = 0;
         spawnerTracker["scientist"] = 0;
       }
-      flagMemory.IsMemorySetup = true;
     }
+
+
+    if (Game.time % 10 == 0)
+    flagMemory.IsMemorySetup = true;
   }
 };

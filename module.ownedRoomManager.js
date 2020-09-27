@@ -1,4 +1,5 @@
 const runMainSystem = require('function.mainSystem');
+const createRoadsFunction = require('function.createRoads');
 
 const runLabs = require('module.labs');
 const roomPlanner = require('module.roomPlanner');
@@ -17,13 +18,14 @@ function getHeadSpawn(roomName) {
   if (!flagMemory.roomManager.headSpawn && room.spawns.length > 1 && room.terminal) {
     const spawn = room.terminal.pos.findInRange(room.spawns, 2,
       {filter: {structureType: STRUCTURE_SPAWN
-      }});
+      }
+    });
 
-      if (spawn[0])
-      flagMemory.roomManager.headSpawn = spawn[0].id;
-    }
-    else if (room.spawns.length == 1)
-    flagMemory.roomManager.headSpawn = room.spawns[0].id;
+    if (spawn[0])
+    flagMemory.roomManager.headSpawn = spawn[0].id;
+  }
+  else if (room.spawns.length == 1)
+  flagMemory.roomManager.headSpawn = room.spawns[0].id;
 }
 
 const createConstructionSiteForObject = require('function.createConstructionSite');
@@ -78,13 +80,30 @@ function getControllerStructure(roomName) {
     console.log(`Building a storage for the controller in room: ${room.name}`);
   }
   else if (container) {
-    flagMemory.controllerStructureId = container.id;
+    flagMemory.controller.structure = container.id;
     flagMemory.roomManager[`controller.HasStructure`] = true;
   }
   else if (link) {
-    flagMemory.controllerStructureId = link.id;
+    flagMemory.controller.structure = link.id;
     flagMemory.roomManager[`controller.HasStructure`] = true;
   }
+}
+
+function createRoads(roomName) {
+  const room = Game.rooms[roomName];
+  const flagMemory = Memory.flags[roomName];
+
+  const headSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn);
+  flagMemory.sources.forEach((source, i) => {
+    const sourceObject = Game.getObjectById(source.id);
+
+    if (headSpawn && sourceObject)
+    flagMemory.sources[i].roadPath = createRoadsFunction.run(roomName,headSpawn.pos, sourceObject.pos, flagMemory.sources[i].roadPath);
+  });
+
+  const controller = room.controller;
+  if (headSpawn && controller)
+  flagMemory.controller.roadPath = createRoadsFunction.run(roomName,headSpawn.pos, controller.pos, flagMemory.controller.roadPath);
 }
 
 
@@ -97,6 +116,8 @@ module.exports = {
     getControllerStructure(roomName);
     getHeadSpawn(roomName);
     roomPlanner.run(roomName);
+    createRoads(roomName);
+
 
     flagMemory.controllerLevel = room.controller.level;
     flagMemory.roomIsChecked = true;
@@ -107,91 +128,93 @@ module.exports = {
     const getMainSystem = runMainSystem.run();
 
     // Every 1.000 Ticks Run This //
-    if (Game.time % 1000 == 0 || !flagMemory.roomIsChecked) {
+    if (Game.time % 1000 == 0 || (!flagMemory.roomIsChecked && flagMemory.IsMemorySetup)) {
       // Recheck Room //
       this.update(roomName);
     }
 
     // Create Variable For Shortcut of CpuTracker //
-    const cpuTracker = flagMemory.trackers.cpu;
+    if (flagMemory.trackers) {
+      const cpuTracker = flagMemory.trackers.cpu;
 
-    if (getMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
+      if (getMainSystem) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
 
-      // Run the part //
-      runTowers.run(roomName);
+        // Run the part //
+        runTowers.run(roomName);
 
-      // Set the average CPU Usage in the memory //
-      cpuTracker.runTowers += Game.cpu.getUsed() - start;
-    }
-    else {
-      // Run the part without tracking //
-      runTowers.run(roomName);
-    }
-
-
-    if (getMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
-
-      // Run the part //
-      getDamagedStructures.run(roomName);
-
-      // Set the average CPU Usage in the memory //
-      cpuTracker.getDamagedStructures += Game.cpu.getUsed() - start;
-    }
-    else {
-      // Run the part without tracking //
-      getDamagedStructures.run(roomName);
-    }
+        // Set the average CPU Usage in the memory //
+        cpuTracker.runTowers += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        runTowers.run(roomName);
+      }
 
 
-    if (getMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
+      if (getMainSystem) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
 
-      // Run the part //
-      runGameTimeTimers.run(roomName);
+        // Run the part //
+        getDamagedStructures.run(roomName);
 
-      // Set the average CPU Usage in the memory //
-      cpuTracker.runGameTimeTimers += Game.cpu.getUsed() - start;
-    }
-    else {
-      // Run the part without tracking //
-      runGameTimeTimers.run(roomName);
-    }
+        // Set the average CPU Usage in the memory //
+        cpuTracker.getDamagedStructures += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        getDamagedStructures.run(roomName);
+      }
 
-    if (getMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
 
-      // Run the part //
-      terminal.update(roomName);
+      if (getMainSystem) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
 
-      // Set the average CPU Usage in the memory //
-      cpuTracker.terminal += Game.cpu.getUsed() - start;
-    }
-    else {
-      // Run the part without tracking //
-      terminal.update(roomName);
-    }
+        // Run the part //
+        runGameTimeTimers.run(roomName);
 
-    if (getMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
+        // Set the average CPU Usage in the memory //
+        cpuTracker.runGameTimeTimers += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        runGameTimeTimers.run(roomName);
+      }
 
-      // Run the part //
-      runLabs.run(roomName);
-      runLabs.update(roomName);
+      if (getMainSystem) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
 
-      // Set the average CPU Usage in the memory //
-      cpuTracker.labs += Game.cpu.getUsed() - start;
-    }
-    else {
-      // Run the part without tracking //
-      runLabs.run(roomName);
-      runLabs.update(roomName);
+        // Run the part //
+        terminal.update(roomName);
+
+        // Set the average CPU Usage in the memory //
+        cpuTracker.terminal += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        terminal.update(roomName);
+      }
+
+      if (getMainSystem) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
+
+        // Run the part //
+        runLabs.run(roomName);
+        runLabs.update(roomName);
+
+        // Set the average CPU Usage in the memory //
+        cpuTracker.labs += Game.cpu.getUsed() - start;
+      }
+      else {
+        // Run the part without tracking //
+        runLabs.run(roomName);
+        runLabs.update(roomName);
+      }
     }
   }
 };

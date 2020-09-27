@@ -33,6 +33,25 @@ function getSourceStructures(roomName) {
   });
 }
 
+const createRoadsFunction = require('function.createRoads');
+function createRoads(roomName) {
+  const room = Game.rooms[roomName];
+  const flagMemory = Memory.flags[roomName];
+
+  const spawnRoomFlagMemory = Memory.flags[flagMemory.spawnRoom];
+  const headSpawn = Game.getObjectById(spawnRoomFlagMemory.roomManager.headSpawn);
+  flagMemory.sources.forEach((source, i) => {
+    const sourceObject = Game.getObjectById(source.id);
+
+    if (headSpawn && sourceObject)
+    flagMemory.sources[i].roadPath = createRoadsFunction.run(roomName,headSpawn.pos, sourceObject.pos, flagMemory.sources[i].roadPath);
+  });
+
+  const controller = room.controller;
+  if (headSpawn && controller)
+  flagMemory.controller.roadPath = createRoadsFunction.run(roomName,headSpawn.pos, controller.pos, flagMemory.controller.roadPath);
+}
+
 
 module.exports = {
   update: function(roomName) {
@@ -40,6 +59,7 @@ module.exports = {
 
     flagMemory.roomIsChecked = true;
     getSourceStructures(roomName);
+    createRoads(roomName);
   },
 
   setup: function(creepName) {

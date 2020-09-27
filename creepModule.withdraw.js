@@ -21,7 +21,7 @@ module.exports = {
     };
 
     function withdrawUpgraderSection() {
-      const target = Game.getObjectById(flagMemory.controllerStructureId);
+      const target = Game.getObjectById(flagMemory.controller.structure);
       if (target) {
         if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
         creep.travelTo(target);
@@ -34,9 +34,9 @@ module.exports = {
 
 
         if (containerInRange)
-        flagMemory.controllerStructureId = containerInRange.id;
+        flagMemory.controller.structure = containerInRange.id;
         else if (linkInRange)
-        flagMemory.controllerStructureId = linkInRange.id;
+        flagMemory.controller.structure = linkInRange.id;
         else if (constructionSiteInRange == null)
         enterValueInMemory(`controller.HasStructure`, false);
         else
@@ -107,7 +107,7 @@ module.exports = {
 
           room.containers.forEach((container, i) => {
             if (container) {
-              if (container.id !== flagMemory.controllerStructureId) {
+              if (flagMemory.controller && container.id !== flagMemory.controller.structure) {
                 if (container.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
                   containerId = container.id;
                   withdrawStructure = "container";
@@ -128,7 +128,7 @@ module.exports = {
 
           room.links.forEach((link, i) => {
             if (link) {
-              if (link.id !== flagMemory.controllerStructureId) {
+              if (link.id !== flagMemory.controller.structure) {
                 if (link.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
                   withdrawStructure = "link";
                   linkId = link.id;

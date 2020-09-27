@@ -18,7 +18,7 @@ module.exports = {
 
 
           // If There Is Nothing To Repair And Its Time To Check Again //
-          if (flagMemory.repairTarget.length == 0 && Game.time % 1000 == 0) {
+          if (flagMemory.repairTarget.length == 0 && Game.time % 500 == 0) {
             let targetRepair = room.find(FIND_STRUCTURES, {
               filter: (s) => s.hits < s.hitsMax && s.hits < 1*1000*1000
             });

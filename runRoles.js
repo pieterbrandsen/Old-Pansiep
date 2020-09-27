@@ -317,7 +317,7 @@ module.exports = {
 
         // If Creep Needs To Harvest //
         if (creep.memory.working == "withdraw")
-        runCreep(creep, "withdraw");
+        runCreep(creep, "transfererLiTe");
         // If Creep Needs To Transfer //
         else if (creep.memory.working == "transfer")
         runCreep(creep, "transfererLiTe");

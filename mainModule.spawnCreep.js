@@ -130,7 +130,7 @@ module.exports = {
         // Loop Through All Containers And Count Energy In Container If Its Not The Controller Storage //
         room.containers.forEach((container, i) => {
           if (container) {
-            if (container.id !== flagMemory.controllerStructureId || !flagMemory.controllerStructureId)
+            if (container.id !== flagMemory.controller.structure || !flagMemory.controller.structure)
             energyStored += container.store.getUsedCapacity(RESOURCE_ENERGY);
           }
         });

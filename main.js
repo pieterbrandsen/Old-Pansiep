@@ -122,7 +122,7 @@ module.exports.loop = function() {
             else {
               // Create Variable For Shortcut of CpuTracker //
               const cpuTracker = flagMemory.trackers.cpu;
-              if (Game.time % 500 == 0 || !flagMemory.roomIsChecked) {
+              if (Game.time % 500 == 0 || (!flagMemory.roomIsChecked && flagMemory.IsMemorySetup)) {
                 if (getMainSystem) {
                   // Get the CPU Usage //
                   let start = Game.cpu.getUsed();

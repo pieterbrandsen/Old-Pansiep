@@ -22,7 +22,10 @@ function transferTarget(creepName) {
     findNewTarget(creep.name);
     break;
     case ERR_NOT_IN_RANGE:
-    creep.moveTo(target);
+    const runMoveTo = creep.moveTo(target);
+    
+    if (runMoveTo == ERR_NO_PATH)
+    findNewTarget(creep.name);
     break;
     case ERR_INVALID_ARGS:
     break;
@@ -58,7 +61,7 @@ function findNewTarget(creepName) {
   }
   else {
     if (creep.memory.role == "transferer") {
-      const controllerStructureId = Game.getObjectById(flagMemory.controllerStructureId);
+      const controllerStructureId = Game.getObjectById(flagMemory.controller.structure);
 
       if (creep.memory.waitTransferer == false) {
         let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
