@@ -3,6 +3,41 @@ const runMainSystem = require('function.mainSystem');
 
 
 module.exports = {
+  upgrader: function(creep) {
+    if (creep.ticksToLive < 50)
+    creep.suicide();
+
+    // Get The Variables Needed For Module //
+    const getMainSystem = runMainSystem.run();
+    const flagMemory = Memory.flags[creep.room.name];
+
+    function findStructure() {
+      const range = 2;
+      const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
+      const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
+      const constructionSiteInRange = creep.room.controller.pos.findInRange(FIND_CONSTRUCTION_SITES, range)[0];
+
+
+      if (containerInRange)
+      flagMemory.controller.structure = containerInRange.id;
+      else if (linkInRange)
+      flagMemory.controller.structure = linkInRange.id;
+      else
+      harvestModule.run(creep);
+    }
+
+    function withdrawStructure() {
+      const target = Game.getObjectById(flagMemory.controller.structure);
+      if (target) {
+        if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+        creep.travelTo(target);
+      }
+      else findStructure();
+    }
+
+    withdrawStructure();
+  },
+
   run: function(creep) {
     if (creep.ticksToLive < 50)
     creep.suicide();
@@ -12,37 +47,12 @@ module.exports = {
     const flagMemory = Memory.flags[creep.room.name];
 
 
-    if (!creep.memory.withdrawId)
-    creep.memory.withdrawId = ""
+    if (!creep.memory.withdrawId) creep.memory.withdrawId = "";
 
 
     function enterValueInMemory(memoryPath, inputValue) {
       flagMemory.roomManager[memoryPath] = inputValue;
     };
-
-    function withdrawUpgraderSection() {
-      const target = Game.getObjectById(flagMemory.controller.structure);
-      if (target) {
-        if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-        creep.travelTo(target);
-      }
-      else  {
-        const range = 3;
-        const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
-        const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
-        const constructionSiteInRange = creep.room.controller.pos.findInRange(FIND_CONSTRUCTION_SITES, range)[0];
-
-
-        if (containerInRange)
-        flagMemory.controller.structure = containerInRange.id;
-        else if (linkInRange)
-        flagMemory.controller.structure = linkInRange.id;
-        else if (constructionSiteInRange == null)
-        enterValueInMemory(`controller.HasStructure`, false);
-        else
-        harvestModule.run(creep);
-      }
-    }
 
     function runWithdraw(targetId) {
       const target = Game.getObjectById(targetId);
@@ -196,7 +206,7 @@ module.exports = {
       if (creep.memory.role !== "upgrader")
       withdrawStructure();
       else
-      withdrawUpgraderSection();
+      this.upgrader(creep);
 
       // Set the average CPU Usage in the memory //
       Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.withdrawModule += Game.cpu.getUsed() - start;
@@ -206,7 +216,7 @@ module.exports = {
       if (creep.memory.role !== "upgrader")
       withdrawStructure();
       else
-      withdrawUpgraderSection();
+      this.upgrader(creep);
     }
   }
 };

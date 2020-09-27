@@ -22,9 +22,9 @@ function transferTarget(creepName) {
     findNewTarget(creep.name);
     break;
     case ERR_NOT_IN_RANGE:
-    const runMoveTo = creep.moveTo(target);
+    const runTravelTo = creep.travelTo(target, {maxRooms: 1});
 
-    if (runMoveTo == ERR_NO_PATH)
+    if (runTravelTo == ERR_NO_PATH)
     findNewTarget(creep.name);
     break;
     case ERR_INVALID_ARGS:
@@ -46,7 +46,7 @@ function findNewTarget(creepName) {
 
 
     const sourceNumber = creep.memory.role.split("-")[1];
-    if (flagMemory.sources.length > 0 && Game.getObjectById(flagMemory.sources[sourceNumber].structureId) !== null)
+    if (flagMemory.sources && Game.getObjectById(flagMemory.sources[sourceNumber].structureId) !== null)
     creep.memory.transferId = flagMemory.sources[sourceNumber].structureId;
     else {
       if (Game.time % 50 == 0)
@@ -107,7 +107,7 @@ module.exports = {
 
     function runModule() {
       if (target) {
-        if (target.hits < 200000)
+        if (target.hits < 100000)
         creep.repair(target);
         else
         transferTarget(creep.name);
