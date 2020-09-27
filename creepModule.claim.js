@@ -1,7 +1,7 @@
 module.exports = {
   run: function(creep) {
     function claimRoom() {
-      const targetRoom = Game.rooms[creep.memory.targetRoom];
+      const targetRoom = Game.flags["claim"].room;
 
       if (targetRoom) {
         const target = targetRoom.controller;
@@ -39,7 +39,7 @@ module.exports = {
         }
       }
       else
-      creep.travelTo(Game.flags[creep.memory.targetRoom]);
+      creep.travelTo(Game.flags["claim"]);
     }
 
     // Run Claimer Module //

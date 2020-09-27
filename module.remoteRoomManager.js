@@ -68,6 +68,7 @@ module.exports = {
       if (Memory.flags[targetRoomName]) {
         // If Room's FlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
         if (!Memory.flags[targetRoomName].IsMemorySetup) checkMissingMemory.setup(targetRoomName);
+        if (!Memory.flags[targetRoomName].spawnRoom) Memory.flags[targetRoomName].spawnRoom = creep.memory.spawnRoom;
       }
       else
       Memory.flags[targetRoomName] = {};

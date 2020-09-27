@@ -80,20 +80,23 @@ module.exports = {
     }
 
 
-    if (getMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
+    if (creep.room.name == creep.memory.targetRoom) {
+      if (getMainSystem) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
 
-      // Run the part //
-      buildTarget();
+        // Run the part //
+        buildTarget();
 
-      // Set the average CPU Usage in the memory //
+        // Set the average CPU Usage in the memory //
 
-      Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.buildModule += Game.cpu.getUsed() - start;
-    }
-    else {
+        Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.buildModule += Game.cpu.getUsed() - start;
+      }
+      else
       // Run the part without tracking //
       buildTarget();
     }
+    else
+    creep.travelTo(Game.flags[creep.memory.targetRoom]);
   }
 };
