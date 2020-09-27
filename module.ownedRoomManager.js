@@ -51,7 +51,7 @@ function getSourceStructures(roomName) {
     const link = source.pos.findInRange(room.links, 2)[0];
 
     if ((container && link == null && flagMemory.sources.length == 2 && flagMemory.controllerLevel >= 7) || (container && link == null && flagMemory.sources.length == 1 && flagMemory.controllerLevel >= 6) || (container == null && link == null)) {
-      if (createConstructionSite(`source-${i}.HasStructure`, source.id, 2, 7, roomName))
+      if (createConstructionSite(`source-${i}.HasStructure`, source.id, 1, 7, roomName))
       console.log(`Building a storage for a source in room: ${room.name}`);
     }
     else if (container) {

@@ -113,7 +113,7 @@ module.exports = {
         }
       }
 
-      
+
       if (isStructureFound == false) {
         // Start Variables For Best Positions //
         const possiblePositions = [];
@@ -136,7 +136,7 @@ module.exports = {
           // Get All Open Spots At Position //
           const possiblePositionsOfPlacementPossible = getAccesPoints.run(posX, posY, roomName)[0];
           // Check If Terrain At Possition Is No Wall //
-          if (terrain.get(posX,posY) == 0) {
+          if (terrain.get(posX,posY) !== 1) {
             // If This Positon Is Better Then Already Found Position //
             if (possiblePositionsOfPlacementPossible > optimalPositions[0]) {
               optimalPositions[0] = possiblePositionsOfPlacementPossible
