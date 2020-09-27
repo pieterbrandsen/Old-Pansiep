@@ -1,5 +1,6 @@
 const runMainSystem = require('function.mainSystem');
 const createRoadsFunction = require('function.createRoads');
+const getDamagedStructures = require('function.getDamagedStructures');
 
 const runLabs = require('module.labs');
 const roomPlanner = require('module.roomPlanner');
@@ -7,7 +8,7 @@ const terminal = require('module.terminal');
 
 const runTowers = require('mainModule.towers');
 const runGameTimeTimers = require('mainModule.gameTimeTimers');
-const getDamagedStructures = require('mainModule.repairStructures');
+const repairStructures = require('mainModule.repairStructures');
 
 
 function getHeadSpawn(roomName) {
@@ -117,6 +118,7 @@ module.exports = {
     getHeadSpawn(roomName);
     roomPlanner.run(roomName);
     createRoads(roomName);
+    getDamagedStructures.run(roomName);
 
 
     flagMemory.controllerLevel = room.controller.level;
@@ -158,14 +160,14 @@ module.exports = {
         let start = Game.cpu.getUsed();
 
         // Run the part //
-        getDamagedStructures.run(roomName);
+        repairStructures.run(roomName);
 
         // Set the average CPU Usage in the memory //
-        cpuTracker.getDamagedStructures += Game.cpu.getUsed() - start;
+        cpuTracker.repairStructures += Game.cpu.getUsed() - start;
       }
       else {
         // Run the part without tracking //
-        getDamagedStructures.run(roomName);
+        repairStructures.run(roomName);
       }
 
 

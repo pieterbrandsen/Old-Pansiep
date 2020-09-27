@@ -39,17 +39,19 @@ function createRoads(roomName) {
   const flagMemory = Memory.flags[roomName];
 
   const spawnRoomFlagMemory = Memory.flags[flagMemory.spawnRoom];
-  const headSpawn = Game.getObjectById(spawnRoomFlagMemory.roomManager.headSpawn);
-  flagMemory.sources.forEach((source, i) => {
-    const sourceObject = Game.getObjectById(source.id);
+  if (spawnRoomFlagMemory) {
+    const headSpawn = Game.getObjectById(spawnRoomFlagMemory.roomManager.headSpawn);
+    flagMemory.sources.forEach((source, i) => {
+      const sourceObject = Game.getObjectById(source.id);
 
-    if (headSpawn && sourceObject)
-    flagMemory.sources[i].roadPath = createRoadsFunction.run(roomName,headSpawn.pos, sourceObject.pos, flagMemory.sources[i].roadPath);
-  });
+      if (headSpawn && sourceObject)
+      flagMemory.sources[i].roadPath = createRoadsFunction.run(roomName,headSpawn.pos, sourceObject.pos, flagMemory.sources[i].roadPath);
+    });
 
-  const controller = room.controller;
-  if (headSpawn && controller)
-  flagMemory.controller.roadPath = createRoadsFunction.run(roomName,headSpawn.pos, controller.pos, flagMemory.controller.roadPath);
+    const controller = room.controller;
+    if (headSpawn && controller)
+    flagMemory.controller.roadPath = createRoadsFunction.run(roomName,headSpawn.pos, controller.pos, flagMemory.controller.roadPath);
+  }
 }
 
 
@@ -67,31 +69,32 @@ module.exports = {
     if (creep) {
       // Define The Flag And Memory Of The TargetRoom //
       const targetFlag = Game.flags[creep.memory.flagName];
-      const targetFlagMemory = Memory.flags[creep.memory.flagName];
+      let targetFlagMemory = Memory.flags[creep.memory.flagName];
 
       // Define TargetRoom And The Room Where The Creep Currently Is In //
       const currentRoomName = creep.room.name;
-      const targetRoomName = targetFlagMemory.targetRoom;
-      const targetRoom = Game.rooms[targetRoomName];
+      const targetRoomName = targetFlag.room.name;
+      const targetRoom = targetFlag.room;
 
-      // If TargetFlagMemory Is Missing The TargetRoom, Define It Using The TargetRoomName //
-      if (!targetFlagMemory.targetRoom) targetFlagMemory.targetRoom = targetRoomName;
-      // If TargetFlagMemory Is Missing The SourceAmount, Define It By Counting The Source's That Are In The Target Room //
-      if (!targetFlagMemory.sourceAmount) targetFlagMemory.sourceAmount = targetRoom.find(FIND_SOURCES).length;
-      // If TargetFlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
-      // Reset Also The Room Flag Memory To Be Sure All The Memory Is In The Room //
-      if (!targetFlagMemory.IsMemorySetup) {
-        targetFlagMemory.IsMemorySetup = true;
+      if (creep.pos.inRangeTo(targetRoom.controller,5) == false)
+      creep.moveTo(targetRoom.controller);
+
+      if (targetFlag && targetRoom && targetFlagMemory) {
+        if (!targetFlagMemory.IsMemorySetup) {
+          Memory.flags[targetRoomName] = {};
+          targetFlagMemory.IsMemorySetup = true;
+        }
+
+        if (Memory.flags[targetRoomName]) {
+          // If Room's FlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
+          if (!Memory.flags[targetRoomName].IsMemorySetup) checkMissingMemory.setup(targetRoomName);
+          if (!Memory.flags[targetRoomName].spawnRoom) Memory.flags[targetRoomName].spawnRoom = creep.memory.spawnRoom;
+        }
+        else
         Memory.flags[targetRoomName] = {};
       }
-
-      if (Memory.flags[targetRoomName]) {
-        // If Room's FlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
-        if (!Memory.flags[targetRoomName].IsMemorySetup) checkMissingMemory.setup(targetRoomName);
-        if (!Memory.flags[targetRoomName].spawnRoom) Memory.flags[targetRoomName].spawnRoom = creep.memory.spawnRoom;
-      }
       else
-      Memory.flags[targetRoomName] = {};
+      targetFlagMemory = {};
     }
   }
 }

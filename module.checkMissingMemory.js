@@ -13,6 +13,8 @@ module.exports = {
     const flagMemory = Memory.flags[roomName];
     const mainSystemMemory = Memory.mainSystem;
 
+    const flagMemoryLengthStart = Object.values(flagMemory).length;
+
 
     if (!Memory.flags) Memory.flags = {};
     if (!Memory.stats) Memory.stats = {};
@@ -58,7 +60,6 @@ module.exports = {
       if (!flagMemory.enemyCreepCount) flagMemory.enemyCreepCount = {};
       if (!flagMemory.enemys) flagMemory.enemys = [];
       if (!flagMemory.towerTarget) flagMemory.towerTarget = "";
-      if (!flagMemory.repairTarget) flagMemory.repairTarget = [];
       if (!flagMemory.boosting) flagMemory.boosting = {};
       if (!flagMemory.unBoost) flagMemory.unBoost = {};
       if (!flagMemory.repairTargetAmount) flagMemory.repairTargetAmount = 100 * 1000;
@@ -66,6 +67,12 @@ module.exports = {
       if (!flagMemory.controller) {
         flagMemory.controller = {};
         flagMemory.controller.structure = "None";
+      }
+      if (!flagMemory.repair) {
+        flagMemory.repair = {};
+
+        flagMemory.repair.targets = [];
+        flagMemory.repair.hitsTarget = 250*1000;
       }
 
       if (!flagMemory.mineralId) {
@@ -145,7 +152,7 @@ module.exports = {
         flagMemory.trackers.cpu = {};
         let cpuTracker = flagMemory.trackers.cpu;
         cpuTracker["runTowers"] = 0;
-        cpuTracker["getDamagedStructures"] = 0;
+        cpuTracker["repairStructures"] = 0;
         cpuTracker["runGameTimeTimers"] = 0;
         cpuTracker["runOwnedRoomManager"] = 0;
         cpuTracker["runRemoteRoomManager"] = 0;
@@ -216,8 +223,10 @@ module.exports = {
       }
     }
 
+    const flagMemoryLengthEnd = Object.values(flagMemory).length;
 
-    if (Game.time % 10 == 0)
+
+    if (Game.time % 10 == 0 && flagMemoryLengthStart > 0 && flagMemoryLengthStart == flagMemoryLengthEnd)
     flagMemory.IsMemorySetup = true;
   }
 };

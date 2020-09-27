@@ -15,8 +15,6 @@ module.exports = {
 
     // Define TargetRoom And The Room Where The Creep Currently Is In //
     const currentRoomName = creep.room.name;
-    const targetRoomName = targetFlagMemory.targetRoom;
-    const targetRoom = Game.rooms[targetRoomName];
 
 
     // This Function Is Being Called To See If Creep Has Vision In The TargetRoom //
@@ -32,8 +30,8 @@ module.exports = {
 
       // If TargetRoom Is Defined And Has Vision In It, Return True //
       if (targetFlag && targetFlag.room) {
-        // If There Is Vision, Update The TargetRoomName Memory With The RoomName Of The Target Room //
-        targetFlagMemory.targetRoom = targetFlag.room.name;
+        // // If There Is Vision, Update The TargetRoomName Memory With The RoomName Of The Target Room //
+        // targetFlagMemory.targetRoom = targetFlag.room.name;
 
         // Return True //
         returnValue = true;
@@ -51,6 +49,8 @@ module.exports = {
 
     // Check If Creep Is In TargetRoom, Run The Code //
     if (creepHasVisionInTargetRoom()) {
+      const targetRoomName = targetFlag.room.name;
+      
       // If Room Is Missing The Standard FlagName Each Of My Rooms Should Have, Create One //
       if (!Game.flags[targetRoomName]) {
         targetFlag.room.createFlag(targetFlag.pos,targetRoomName)

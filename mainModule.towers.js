@@ -28,7 +28,6 @@ module.exports = {
           const enemyObject = Game.getObjectById(enemy.id);
           // If Enemy Is Defined //
           if (enemyObject) {
-            console.log(roomName)
             // If Enemy Has More Then One Active RANGED_ATTACK BodyPart //
             // If So Enemy.Id Is TargetId //
             if (enemyObject.getActiveBodyparts(RANGED_ATTACK) > 0)

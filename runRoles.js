@@ -37,10 +37,8 @@ function creepHasVisionInTargetRoom(creep) {
   const targetFlag = Game.flags[creep.memory.flagName];
   const targetFlagMemory = Memory.flags[creep.memory.flagName];
 
-  // Define TargetRoom And The Room Where The Creep Currently Is In //
+  // Define The Room Where The Creep Currently Is In //
   const currentRoomName = creep.room.name;
-  const targetRoomName = targetFlagMemory.targetRoom;
-  const targetRoom = Game.rooms[targetRoomName];
 
 
   // Define ReturnValue Variable That Returns If Creep Is In The TargetRoom //
@@ -54,8 +52,8 @@ function creepHasVisionInTargetRoom(creep) {
 
   // If TargetRoom Is Defined And Has Vision In It, Return True //
   if (targetFlag && targetFlag.room) {
-    // If There Is Vision, Update The TargetRoomName Memory With The RoomName Of The Target Room //
-    targetFlagMemory.targetRoom = targetFlag.room.name;
+    // // If There Is Vision, Update The TargetRoomName Memory With The RoomName Of The Target Room //
+    // targetFlagMemory.targetRoom = targetFlag.room.name;
 
     // Return True //
     returnValue = true;

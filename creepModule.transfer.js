@@ -23,7 +23,7 @@ function transferTarget(creepName) {
     break;
     case ERR_NOT_IN_RANGE:
     const runMoveTo = creep.moveTo(target);
-    
+
     if (runMoveTo == ERR_NO_PATH)
     findNewTarget(creep.name);
     break;
@@ -37,9 +37,6 @@ function transferTarget(creepName) {
 function findNewTarget(creepName) {
   const creep = Game.creeps[creepName];
 
-  if (creep == null) {
-    console.log(creepName)
-  }
   const room = creep.room;
   const flagMemory = Memory.flags[creep.room.name];
   if (creep.memory.role.includes("harvest")) {
@@ -49,7 +46,7 @@ function findNewTarget(creepName) {
 
 
     const sourceNumber = creep.memory.role.split("-")[1];
-    if (Game.getObjectById(flagMemory.sources[sourceNumber].structureId) !== null)
+    if (flagMemory.sources.length > 0 && Game.getObjectById(flagMemory.sources[sourceNumber].structureId) !== null)
     creep.memory.transferId = flagMemory.sources[sourceNumber].structureId;
     else {
       if (Game.time % 50 == 0)
