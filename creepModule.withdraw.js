@@ -11,21 +11,6 @@ module.exports = {
     const getMainSystem = runMainSystem.run();
     const flagMemory = Memory.flags[creep.room.name];
 
-    function findStructure() {
-      const range = 2;
-      const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
-      const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
-      const constructionSiteInRange = creep.room.controller.pos.findInRange(FIND_CONSTRUCTION_SITES, range)[0];
-
-
-      if (containerInRange)
-      flagMemory.controller.structure = containerInRange.id;
-      else if (linkInRange)
-      flagMemory.controller.structure = linkInRange.id;
-      else
-      harvestModule.run(creep);
-    }
-
     function withdrawStructure() {
       const target = Game.getObjectById(flagMemory.controller.structure);
       if (target) {
@@ -33,6 +18,23 @@ module.exports = {
         creep.travelTo(target);
       }
       else findStructure();
+    }
+
+    function findStructure() {
+      if (Game.time % 10 == 0) {
+        const range = 3;
+        const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
+        const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
+        const constructionSiteInRange = creep.room.controller.pos.findInRange(FIND_CONSTRUCTION_SITES, range)[0];
+
+
+        if (containerInRange)
+        flagMemory.controller.structure = containerInRange.id;
+        else if (linkInRange)
+        flagMemory.controller.structure = linkInRange.id;
+        else
+        harvestModule.run(creep);
+      }
     }
 
     withdrawStructure();

@@ -11,6 +11,8 @@ function transferTarget(creepName) {
     case OK:
     creep.say("Transfer");
     creep.memory.transferStructure = target.structureType;
+    if (!creep.memory.role.startsWith("harvester"))
+    creep.memory.transferId = "";
     case ERR_NOT_OWNER:
     break;
     case ERR_BUSY:
@@ -145,14 +147,19 @@ module.exports = {
       let start = Game.cpu.getUsed();
 
       // Run the part //
+      if (!creep.memory.role.includes("harvester"))
       transferTarget(creep.name);
-
+      else
+      this.harvester(creep);
       // Set the average CPU Usage in the memory //
 
       Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.transferModule += Game.cpu.getUsed() - start;
     }
     else
     // Run the part without tracking //
+    if (!creep.memory.role.includes("harvester"))
     transferTarget(creep.name);
+    else
+    this.harvester(creep);
   }
 };
