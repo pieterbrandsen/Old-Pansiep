@@ -208,6 +208,7 @@ module.exports.loop = function() {
     runCreeps.run();
   }
 
+
   if (getMainSystem) {
     // Get the CPU Usage //
     let start = Game.cpu.getUsed();

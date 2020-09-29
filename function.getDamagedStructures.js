@@ -1,9 +1,11 @@
+const runMainSystem = require('function.mainSystem');
+
 module.exports = {
-  getHitTarget: function(roomName) {
+  getHitsTarget: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
 
-    if (!room.controller.reservation) {
+    if (room && !room.controller.reservation) {
       const currentHitsTarget = flagMemory.repair.hitsTarget;
 
       if (room.walls && room.ramparts) {
@@ -34,14 +36,33 @@ module.exports = {
   run: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
-    const hitsTarget = this.getHitTarget(roomName);
+    const getMainSystem = runMainSystem.run();
+    const hitsTarget = this.getHitsTarget(roomName);
 
-    if (flagMemory.repair) {
-      flagMemory.repair.hitsTarget = hitsTarget;
+    function runModule() {
+      if (flagMemory.repair) {
+        flagMemory.repair.hitsTarget = hitsTarget;
 
-      flagMemory.repair.targets = room.find(FIND_STRUCTURES, {
-        filter: (s) => s.hits < s.hitsMax && s.hits < hitsTarget
-      });
+        flagMemory.repair.targets = room.find(FIND_STRUCTURES, {
+          filter: (s) => s.hits < s.hitsMax && s.hits < hitsTarget
+        });
+      }
+    }
+
+
+    if (getMainSystem) {
+      // Get the CPU Usage //
+      let start = Game.cpu.getUsed();
+
+      // Run the part //
+      runModule();
+
+      // Set the average CPU Usage in the memory //
+      flagMemory.trackers.cpu.getDamagedStructures += Game.cpu.getUsed() - start;
+    }
+    else {
+      // Run the part without tracking //
+      runModule();
     }
   }
 }

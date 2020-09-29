@@ -109,7 +109,7 @@ module.exports = {
 
     function runModule() {
       if (target) {
-        if (target.hits < 100000)
+        if (target.hits < 100000 && target.structureType == STRUCTURE_CONTAINER)
         creep.repair(target);
         else
         transferTarget(creep.name);

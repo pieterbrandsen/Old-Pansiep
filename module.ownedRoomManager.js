@@ -117,7 +117,7 @@ module.exports = {
     getControllerStructure(roomName);
     getHeadSpawn(roomName);
     roomPlanner.run(roomName);
-    createRoads(roomName);
+    //createRoads(roomName);
     getDamagedStructures.run(roomName);
 
 

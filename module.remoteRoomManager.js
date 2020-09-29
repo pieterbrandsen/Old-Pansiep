@@ -61,7 +61,7 @@ module.exports = {
 
     flagMemory.roomIsChecked = true;
     getSourceStructures(roomName);
-    createRoads(roomName);
+    //createRoads(roomName);
   },
 
   setup: function(creepName) {
@@ -79,11 +79,9 @@ module.exports = {
       if (creep.pos.inRangeTo(targetRoom.controller,5) == false)
       creep.moveTo(targetRoom.controller);
 
-      if (targetFlag && targetRoom && targetFlagMemory) {
-        if (!targetFlagMemory.IsMemorySetup) {
-          Memory.flags[targetRoomName] = {};
-          targetFlagMemory.IsMemorySetup = true;
-        }
+      if (targetFlag && targetRoom && targetFlagMemory && !targetFlagMemory.IsMemorySetup) {
+        Memory.flags[targetRoomName] = {};
+        targetFlagMemory.IsMemorySetup = true;
 
         if (Memory.flags[targetRoomName]) {
           // If Room's FlagMemory Has Not Listed Yet In The Memory That It Finished The Work, Return True //
