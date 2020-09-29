@@ -9,6 +9,10 @@ module.exports = {
     let scoutGoal = creep.memory.scoutGoal;
 
 
+    // if (creeps.ticksToLive < 1000)
+    // creep.suicide();
+
+
     // Define The Flag And Memory Of The TargetRoom //
     const targetFlag = Game.flags[creep.memory.flagName];
     const targetFlagMemory = Memory.flags[creep.memory.flagName];
@@ -61,6 +65,7 @@ module.exports = {
       switch (scoutGoal) {
         // If ScoutGoal Is Remote, Get All The Remote Memory That's Needed //
         case "remote":
+        if (Game.time % 100 == 0)
         remoteRoomManager.setup(creep.name);
         break;
         default:

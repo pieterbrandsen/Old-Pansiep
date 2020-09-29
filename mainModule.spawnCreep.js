@@ -688,7 +688,7 @@ module.exports = {
           return result;
         }
         // If There Is No FlagMemory, Spawn A Scout To Fix That //
-        else if (role == "scout" && Game.time % 20 == 0)
+        else if (role == "scout")
         return true;
       }
 
@@ -730,9 +730,9 @@ module.exports = {
           // Check If This Room Has Attack Flags That Need Creeps //
           getAttackRooms();
 
-          // If Room Does Fit All The Requirements For Remoting, Check If Room Has Remotes //
-          if (freeSpawnIds.length > 0 && flagMemory.controllerLevel >= 4 && room.storage && Game.cpu.bucket > 2500 && canSpawnMore)
-          getRemotes();
+          // // If Room Does Fit All The Requirements For Remoting, Check If Room Has Remotes //
+          // if (freeSpawnIds.length > 0 && flagMemory.controllerLevel >= 4 && room.storage && Game.cpu.bucket > 2500 && canSpawnMore)
+          // getRemotes();
         };
 
         // Reset All Creeps And Parts In This Room Back To Zero /
@@ -755,7 +755,7 @@ module.exports = {
               // If FlagMemory Is Not Ready Or There Is No Vision //
               if (!flagMemory.IsMemorySetup || !Game.rooms[flagMemory.targetRoom]) {
                 // Spawn A Scout To Get Vision Or Memory //
-                if (canRemoteCreepSpawn(``,"scout",flag.name))
+                if (canRemoteCreepSpawn(``,"scout",flag.name) && Game.time % 50 == 0)
                 spawnCreep(Game.getObjectById(freeSpawnIds[0]),"scout",``,flag.name);
               }
               else {
