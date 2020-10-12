@@ -4,33 +4,40 @@ module.exports = {
   getHitsTarget: function(roomName) {
     const room = Game.rooms[roomName];
     const flagMemory = Memory.flags[roomName];
+    let currentHitsTarget = flagMemory.repair.hitsTarget;
 
     if (room && !room.controller.reservation) {
-      const currentHitsTarget = flagMemory.repair.hitsTarget;
+      if (room.walls || room.ramparts) {
+        if (currentHitsTarget < 1 * 1000 * 1000)
+        currentHitsTarget = 1 * 1000 * 1000;
+        else {
+          const lowerHitsTarget = currentHitsTarget * 0.95;
+          let findLowerRamparts = 0;
+          let findLowerWalls = 0;
 
-      if (room.walls && room.ramparts) {
-        if (room.walls.length > 0 || room.ramparts.length > 0) {
-          if (currentHitsTarget < 1 * 1000 * 1000)
-          return 1 * 1000 * 1000;
-          else {
-            const lowerHitsTarget = currentHitsTarget * 0.95;
-            const findLowerRamparts = room.find(room.ramparts, {
+
+          if (room.ramparts && room.ramparts.length > 0) {
+            findLowerRamparts = room.find(room.ramparts, {
               filter: (s) => s.hits < s.hitsMax && s.hits < lowerHitsTarget
             });
-            const findLowerWalls = room.find(room.walls, {
-              filter: (s) => s.hits < s.hitsMax && s.hits < lowerHitsTarget
-            });
-
-            if (findLowerRamparts.length == 0 && findLowerWalls.length == 0)
-            return lowerHitsTarget;
-            else if (flagMemory.trackers.room.energyStored > 50*1000)
-            return currentHitsTarget * 1.1;
           }
+
+          if (room.walls && room.walls.length > 0) {
+            findLowerWalls = room.find(room.walls, {
+              filter: (s) => s.hits < s.hitsMax && s.hits < lowerHitsTarget
+            });
+          }
+
+          if (findLowerRamparts.length == 0 && findLowerWalls.length == 0)
+          currentHitsTarget = lowerHitsTarget;
+          else if (flagMemory.trackers.room.energyStored > 75*1000)
+          currentHitsTarget *= 1.1;
         }
       }
-      else return currentHitsTarget;
     }
-    else return 250*1000;
+    else currentHitsTarget = 1*1000*1000;
+
+    return currentHitsTarget
   },
 
   run: function(roomName) {
@@ -38,14 +45,18 @@ module.exports = {
     const flagMemory = Memory.flags[roomName];
     const getMainSystem = runMainSystem.run();
     const hitsTarget = this.getHitsTarget(roomName);
-
     function runModule() {
       if (flagMemory.repair) {
         flagMemory.repair.hitsTarget = hitsTarget;
-
-        flagMemory.repair.targets = room.find(FIND_STRUCTURES, {
+        targets = room.find(FIND_STRUCTURES, {
           filter: (s) => s.hits < s.hitsMax && s.hits < hitsTarget
         });
+
+        targets.forEach((target, i) => {
+          if (target.id)
+          flagMemory.repair.targets.push(target.id);
+        });
+
       }
     }
 

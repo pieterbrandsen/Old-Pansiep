@@ -4,7 +4,7 @@ const runMainSystem = require('function.mainSystem');
 
 module.exports = {
   upgrader: function(creep) {
-    if (creep.ticksToLive < 50)
+    if (creep.ticksToLive < 100)
     creep.suicide();
 
     // Get The Variables Needed For Module //

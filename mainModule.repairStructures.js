@@ -15,22 +15,20 @@ module.exports = {
           const towers = room.towers;
 
           // If There Is Still Something To Repair //
-          if (flagMemory.repair.targets.length > 0) {
-            if (flagMemory.totalEnergyAvailable > flagMemory.totalEnergyCapacity / 2) {
-              for (let tower of towers) {
-                // Get First Target Out Of Array //
-                let target = Game.getObjectById(flagMemory.repair.targets[0]);
-                // If Target Is Not Null //
-                // If Target Is Still Under The RepairAmount And Is Not Full Health //
-                if (target !== null && target.hits < target.hitsMax && target.hits < repairAmount) {
-                  // Repair Structure //
-                  if (tower.repair(target) == 0)
-                  flagMemory.trackers.performance.repairerEnergy += 10
-                }
-                else
-                // Remove Target From Memory //
-                flagMemory.repair.targets.shift();
+          if (flagMemory.repair.targets.length > 0 && flagMemory.trackers.room.energyStored > 25*1000) {
+            for (let tower of towers) {
+              // Get First Target Out Of Array //
+              let target = Game.getObjectById(flagMemory.repair.targets[0]);
+              // If Target Is Not Null //
+              // If Target Is Still Under The RepairAmount And Is Not Full Health //
+              if (target !== null && target.hits < target.hitsMax && target.hits < flagMemory.repair.hitsTarget) {
+                // Repair Structure //
+                if (tower.repair(target) == 0)
+                flagMemory.trackers.performance.repairerEnergy += 10
               }
+              else
+              // Remove Target From Memory //
+              flagMemory.repair.targets.shift();
             }
           }
         }

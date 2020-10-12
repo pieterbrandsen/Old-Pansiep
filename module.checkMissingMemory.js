@@ -29,10 +29,10 @@ module.exports = {
     }
     if (!Memory.mainSystem) {
       Memory.mainSystem = {};
-      Memory.mainSystem["cpuTracker"] = 0;
-      Memory.mainSystem["cpuAvgTicks"] = 0;
-      Memory.mainSystem["performanceTracker"] = 0;
-      Memory.mainSystem["performanceAvgTicks"] = 0;
+      Memory.mainSystem["cpuTracker"] = false;
+      Memory.mainSystem["cpuAvgTicks"] = 1000;
+      Memory.mainSystem["performanceTracker"] = false;
+      Memory.mainSystem["performanceAvgTicks"] = 1000;
     }
     if (!Memory.terminal) terminal.setup();
     if (!Memory.performanceTracker) Memory.performanceTracker = {};
@@ -62,7 +62,6 @@ module.exports = {
       if (!flagMemory.towerTarget) flagMemory.towerTarget = "";
       if (!flagMemory.boosting) flagMemory.boosting = {};
       if (!flagMemory.unBoost) flagMemory.unBoost = {};
-      if (!flagMemory.repairTargetAmount) flagMemory.repairTargetAmount = 100 * 1000;
       if (!flagMemory.labs) runLabs.setup(roomName);
       if (!flagMemory.controller) {
         flagMemory.controller = {};
@@ -72,7 +71,7 @@ module.exports = {
         flagMemory.repair = {};
 
         flagMemory.repair.targets = [];
-        flagMemory.repair.hitsTarget = 250*1000;
+        flagMemory.repair.hitsTarget = 1*1000*1000;
       }
 
       if (!flagMemory.mineralId) {
