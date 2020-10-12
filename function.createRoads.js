@@ -7,12 +7,12 @@ module.exports = {
   },
 
   run: function(roomName,pos1,pos2, oldPath) {
-    if (Game.time % 2500 == 0) {
+    if (Game.time % 1000 == 0) {
       const room = Game.rooms[roomName];
       const newPath = this.getPath(roomName,pos1,pos2);
 
 
-      if (oldPath) {
+      if (oldPath && newPath) {
         oldPath.forEach((pos, i) => {
           let isFound = false;
 
@@ -32,20 +32,20 @@ module.exports = {
             });
           }
         });
+
+
+        let returnPath = [];
+        const terrain = new Room.Terrain(roomName);
+        newPath.forEach((pos, i) => {
+          const tile = terrain.get(pos.x, pos.y);
+          returnPath[i] = {x:pos.x,y:pos.y};
+
+          if (tile !== TERRAIN_MASK_WALL)
+          room.createConstructionSite(pos.x,pos.y, STRUCTURE_ROAD);
+        });
+
+        return returnPath;
       }
-
-
-
-      let returnPath = [];
-      const newPathLength = newPath.length;
-      newPath.forEach((pos, i) => {
-        returnPath[i] = {x:pos.x,y:pos.y};
-
-        if (i !== newPathLength)
-        room.createConstructionSite(pos.x,pos.y, STRUCTURE_ROAD);
-      });
-
-      return returnPath;
     }
   },
 }

@@ -93,6 +93,7 @@ function getControllerStructure(roomName) {
 function createRoads(roomName) {
   const room = Game.rooms[roomName];
   const flagMemory = Memory.flags[roomName];
+  if (room.towers.length == 0) return;
 
   const headSpawn = Game.getObjectById(flagMemory.roomManager.headSpawn);
   flagMemory.sources.forEach((source, i) => {
@@ -117,7 +118,7 @@ module.exports = {
     getControllerStructure(roomName);
     getHeadSpawn(roomName);
     roomPlanner.run(roomName);
-    //createRoads(roomName);
+    createRoads(roomName);
     getDamagedStructures.run(roomName);
 
 
