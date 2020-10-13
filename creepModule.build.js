@@ -14,43 +14,47 @@ module.exports = {
 
 
     function findNewTarget() {
-      // Find new target to build //
-      const findNewTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+      if ((!creep.memory.role.includes("builderLD")) || (creep.memory.role.includes("builderLD") && Game.flags[`builderLD${creep.memory.targetRoom}`] && Game.flags[`builderLD${creep.memory.targetRoom}`].room && creep.room.name !== Game.flags[`builderLD${creep.memory.targetRoom}`].room.name)) {
+        // Find new target to build //
+        const findNewTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 
-      if (!findNewTarget) {
-        // If no target is found, reset constructionSiteAmount and suicide //
-        Memory.flags[creep.room.name].constructionSitesAmount = 0;
+        if (!findNewTarget) {
+          // If no target is found, reset constructionSiteAmount and suicide //
+          Memory.flags[creep.memory.targetRoom].constructionSitesAmount = 0;
 
-        if (Game.flags[`builderLD${creep.memory.spawnRoom}`])
-        Game.flags[`builderLD${creep.memory.spawnRoom}`].remove();
-        if (creep.memory.role.includes("builder"))
-        repairModule.run(creep);
-        else {
-          if (Game.time % 10 == 0) {
-            if (creep.memory.sourceId) {
-              for (var i = 0; i < 5; i++) {
-                if (creep.memory.role.includes(`${i}`))
-                flagMemory.roomManager[`source-${i}.HasStructure`] = false;
+          if (creep.memory.role == "builderLD" && Game.flags[`builderLD${creep.memory.spawnRoom}`])
+          Game.flags[`builderLD${creep.memory.spawnRoom}`].remove();
+          if (creep.memory.role.includes("builder"))
+          repairModule.run(creep);
+          else {
+            if (Game.time % 10 == 0) {
+              if (creep.memory.sourceId) {
+                for (var i = 0; i < 5; i++) {
+                  if (creep.memory.role.includes(`${i}`))
+                  flagMemory.roomManager[`source-${i}.HasStructure`] = false;
+                }
               }
             }
           }
         }
-      }
-      else {
-        // If current target is null assign the new found target //
-        if (Game.getObjectById(creep.memory.targetId) == null) {
-          creep.memory.targetId = findNewTarget.id;
-        }
         else {
-          // If creep is standing on the structure move to controller else assign the new target to the memory //
-          if (creep.pos.inRangeTo(Game.getObjectById(creep.memory.targetId),0)) {
-            creep.travelTo(creep.room.controller)
-          }
-          else {
+          // If current target is null assign the new found target //
+          if (Game.getObjectById(creep.memory.targetId) == null) {
             creep.memory.targetId = findNewTarget.id;
           }
+          else {
+            // If creep is standing on the structure move to controller else assign the new target to the memory //
+            if (creep.pos.inRangeTo(Game.getObjectById(creep.memory.targetId),0)) {
+              creep.travelTo(creep.room.controller)
+            }
+            else {
+              creep.memory.targetId = findNewTarget.id;
+            }
+          }
         }
       }
+      else
+      creep.travelTo(Game.flags[`builderLD${creep.memory.spawnRoom}`])
     }
 
     function buildTarget() {
@@ -80,20 +84,23 @@ module.exports = {
     }
 
 
-    if (getMainSystem) {
-      // Get the CPU Usage //
-      let start = Game.cpu.getUsed();
+    if (creep.room.name == creep.memory.targetRoom) {
+      if (getMainSystem) {
+        // Get the CPU Usage //
+        let start = Game.cpu.getUsed();
 
-      // Run the part //
-      buildTarget();
+        // Run the part //
+        buildTarget();
 
-      // Set the average CPU Usage in the memory //
+        // Set the average CPU Usage in the memory //
 
-      Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.buildModule += Game.cpu.getUsed() - start;
-    }
-    else {
+        Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.buildModule += Game.cpu.getUsed() - start;
+      }
+      else
       // Run the part without tracking //
       buildTarget();
     }
+    else
+    creep.travelTo(Game.flags["CLAIM"]);
   }
 };

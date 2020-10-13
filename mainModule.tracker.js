@@ -171,8 +171,7 @@ module.exports = {
       const secondairDivider = 1 - mainDivider;
 
       // Enter Average In Memory //
-      Memory.stats[`cpu.avg${mainSystemMemory.cpuAvgTicks}`] = secondairDivider * Memory.stats[`cpu.avg${mainSystemMemory.cpuAvgTicks}`] + mainDivider * Game.cpu.getUsed();
-      Memory.stats['cpu.avg1000'] = 0.999 * Memory.stats['cpu.avg1000'] + 0.001 * Game.cpu.getUsed();
+      Memory.stats[`cpu.avg`] = secondairDivider * Memory.stats[`cpu.avg`] + mainDivider * Game.cpu.getUsed();
       Memory.stats['cpu.bucket'] = Game.cpu.bucket;
       Memory.stats['gcl.progress'] = Game.gcl.progress;
       Memory.stats['gcl.progressTotal'] = Game.gcl.progressTotal;

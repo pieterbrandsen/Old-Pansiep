@@ -68,6 +68,8 @@ module.exports = {
                 working: "withdraw",
                 spawnRoom: roomName,
                 targetRoom: targetRoom,
+                withdrawId: "",
+                transferId: "",
                 flagName: flagName,
                 canRenew: false,
                 hasBeenBoosted: false,
@@ -128,7 +130,7 @@ module.exports = {
         // Loop Through All Containers And Count Energy In Container If Its Not The Controller Storage //
         room.containers.forEach((container, i) => {
           if (container) {
-            if (container.id !== flagMemory.controllerStructureId || !flagMemory.controllerStructureId)
+            if (container.id !== flagMemory.controller.structure || !flagMemory.controller.structure)
             energyStored += container.store.getUsedCapacity(RESOURCE_ENERGY);
           }
         });
@@ -535,7 +537,7 @@ module.exports = {
           // If Role Is Upgrader //
           case "upgrader":
           // If There Is Enough Energy To Upgrade With //
-          if ((flagMemory.trackers.room.energyStored > 1500 && !room.storage) || flagMemory.trackers.room.energyStored > 100000 || (room.controller.level < 4 && room.storage)) {
+          if ((flagMemory.trackers.room.energyStored > 1500 && room.controller.level < 4) || flagMemory.trackers.room.energyStored > 75*1000 || (room.controller.level >= 4 && room.storage)) {
             // If There Is Less Upgrader Parts Then There Are Sources * 5 And There Are No ConstructionSites To Be Build //
             if ((flagMemory.partsAmount[`${role}-WORK`] < flagMemory.sources.length * 5 || (flagMemory.partsAmount[`${role}-WORK`] < flagMemory.sources.length * 10 && flagMemory.trackers.room.energyStored > 200 * 1000)) && flagMemory.constructionSitesAmount == 0) {
               // If There Are Less Then 4 Upgraders, Return True //
@@ -686,7 +688,7 @@ module.exports = {
           return result;
         }
         // If There Is No FlagMemory, Spawn A Scout To Fix That //
-        else if (role == "scout" && Game.time % 20 == 0)
+        else if (role == "scout")
         return true;
       }
 
@@ -751,9 +753,9 @@ module.exports = {
             Memory.flags[`remote-${i}-${roomName}`] = {};
             else {
               // If FlagMemory Is Not Ready Or There Is No Vision //
-              if (!flagMemory.IsMemorySetup || !Game.rooms[flagMemory.targetRoom]) {
+              if (!flagMemory.IsMemorySetup || !flag.room) {
                 // Spawn A Scout To Get Vision Or Memory //
-                if (canRemoteCreepSpawn(``,"scout",flag.name))
+                if (canRemoteCreepSpawn(``,"scout",flag.name) && Game.time % 50 == 0)
                 spawnCreep(Game.getObjectById(freeSpawnIds[0]),"scout",``,flag.name);
               }
               else {
@@ -762,26 +764,24 @@ module.exports = {
                   // Reset Reserved Room Ticks //
                   flagMemory.reserveTicksLeft = 0;
 
-                  // If There Is Vision In Target Room //
-                  if (Game.rooms[flagMemory.targetRoom]) {
-                    // Run Each 10 Ticks //
-                    if (Game.time % 10 == 0) {
-                      // Only Remove Enemys When It's Going To Be Checked //
-                      flagMemory.enemys = {};
-                      flagMemory.enemyCreepCount = 0;
+                  // Run Each 10 Ticks //
+                  if (Game.time % 10 == 0) {
+                    // Only Remove Enemys When It's Going To Be Checked //
+                    flagMemory.enemys = {};
+                    flagMemory.enemyCreepCount = 0;
 
-                      // Get All Hostile Creep's In TargetRoom //
-                      getHostileCreepsInRoom.run(flagMemory.targetRoom);
+                    // Get All Hostile Creep's In TargetRoom //
+                    getHostileCreepsInRoom.run(flag.room.name);
 
-                    }
-                    // If TargetRoom Is Reserved, Log The Ticks Left In The Memory //
-                    if (Game.rooms[flagMemory.targetRoom].controller.reservation)
-                    flagMemory.reserveTicksLeft = Game.rooms[flagMemory.targetRoom].controller.reservation.ticksToEnd;
                   }
+                  // If TargetRoom Is Reserved, Log The Ticks Left In The Memory //
+                  if (flag.room.controller.reservation)
+                  flagMemory.reserveTicksLeft = flag.room.controller.reservation.ticksToEnd;
                 }
 
+
                 // If TargetRoom Is Free Of Attackers //
-                if (Memory.flags[flagMemory.targetRoom].enemyCreepCount == 0) {
+                if (flag.room && Memory.flags[flag.room.name].enemyCreepCount == 0) {
                   if (flagMemory.reserveTicksLeft > 1000) {
                     // Get All Roles That Need To Be Checked If Spawnable //
                     const roleArray = [
@@ -801,8 +801,8 @@ module.exports = {
                       // If No Creeps Has Been Spawned //
                       if (canSpawnMore) {
                         // Check If Creep Can Be Spawned, If So CanSpawnMore Is False //
-                        if (canRemoteCreepSpawn(flagMemory.targetRoom, role, flag.name) && freeSpawnIds.length > 0) {
-                          spawnCreep(Game.getObjectById(freeSpawnIds[0]), role,flagMemory.targetRoom, flagMemory.targetRoom);
+                        if (canRemoteCreepSpawn(flag.room.name, role, flag.name) && freeSpawnIds.length > 0) {
+                          spawnCreep(Game.getObjectById(freeSpawnIds[0]), role,flag.room.name, flag.room.name);
                           canSpawnMore = false;
                         }
                       }
@@ -810,19 +810,19 @@ module.exports = {
                   }
                   // Spawn A Reserver To Reserver Room Back //
                   else {
-                    if (canRemoteCreepSpawn(flagMemory.targetRoom,"reserverLD",flag.name))
-                    spawnCreep(Game.getObjectById(freeSpawnIds[0]),"reserverLD",flagMemory.targetRoom,flagMemory.targetRoom);
+                    if (canRemoteCreepSpawn(flag.room.name,"reserverLD",flag.name))
+                    spawnCreep(Game.getObjectById(freeSpawnIds[0]),"reserverLD",flag.room.name,flag.room.name);
                   }
                 }
                 // If There Is A Attacker In The Room, Go Kill That Creep! //
                 else {
                   // Check If Attacker Can Be Spawned //
-                  if (canRemoteCreepSpawn(flagMemory.targetRoom,"attacker",flag.name))
-                  spawnCreep(Game.getObjectById(freeSpawnIds[0]),"attacker",flagMemory.targetRoom,flagMemory.targetRoom);
+                  if (canRemoteCreepSpawn(flag.room.name,"attacker",flag.name))
+                  spawnCreep(Game.getObjectById(freeSpawnIds[0]),"attacker",flag.room.name,flag.room.name);
                 }
 
                 // Reset All Creeps And Parts In This Target Room Back To Zero /
-                countCreepsAndParts.run("reset", flagMemory.targetRoom);
+                countCreepsAndParts.run("reset", flag.room.name);
               }
             }
           }

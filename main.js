@@ -4,7 +4,7 @@ require('prototype.Room.structures');
 
 // Require Modules
 const ownedRoomManager = require('module.ownedRoomManager');
-const remoteRoomManager = require('module.ownedRoomManager');
+const remoteRoomManager = require('module.remoteRoomManager');
 const checkMissingMemory = require('module.checkMissingMemory');
 
 // Require Main Modules
@@ -68,7 +68,7 @@ module.exports.loop = function() {
     const flagMemory = Memory.flags[roomName];
 
 
-    if (controller && controller.my) {
+    if (controller && controller.my && !controller.reservation) {
       // If Room Is Missing Flag For Data Storage, Create One //
       if (!Game.flags[roomName]) {
         room.createFlag(25,25, roomName);
@@ -122,20 +122,21 @@ module.exports.loop = function() {
             else {
               // Create Variable For Shortcut of CpuTracker //
               const cpuTracker = flagMemory.trackers.cpu;
+              if (Game.time % 500 == 0 || (!flagMemory.roomIsChecked && flagMemory.IsMemorySetup)) {
+                if (getMainSystem) {
+                  // Get the CPU Usage //
+                  let start = Game.cpu.getUsed();
 
-              if (getMainSystem) {
-                // Get the CPU Usage //
-                let start = Game.cpu.getUsed();
+                  // Run the part //
+                  remoteRoomManager.update(roomName);
 
-                // Run the part //
-                remoteRoomManager.run(roomName);
-
-                // Set the average CPU Usage in the memory //
-                cpuTracker.runRemoteRoomManager += Game.cpu.getUsed() - start;
-              }
-              else {
-                // Run the part without tracking //
-                remoteRoomManager.run(roomName);
+                  // Set the average CPU Usage in the memory //
+                  cpuTracker.runRemoteRoomManager += Game.cpu.getUsed() - start;
+                }
+                else {
+                  // Run the part without tracking //
+                  remoteRoomManager.update(roomName);
+                }
               }
             }
           }
@@ -206,6 +207,7 @@ module.exports.loop = function() {
     // Run the part without tracking //
     runCreeps.run();
   }
+
 
   if (getMainSystem) {
     // Get the CPU Usage //

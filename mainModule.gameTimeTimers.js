@@ -1,7 +1,48 @@
 const spawnCreep = require('mainModule.spawnCreep');
 const manageLinks = require('mainModule.links');
 
-function getSpawningEnergy() {
+
+
+function getTotalRoomEnergy(roomName) {
+  const room = Game.rooms[roomName];
+  const flagMemory = Memory.flags[roomName];
+
+  // EnergyStorage Is Zero At Start //
+  let energyStored = 0;
+
+  // Loop Through All Containers And Count Energy In Container If Its Not The Controller Storage //
+  room.containers.forEach((container, i) => {
+    if (container.id !== flagMemory.controller.structure || !flagMemory.controller.structure) {
+      energyStored += container.store.getUsedCapacity(RESOURCE_ENERGY);
+    }
+  });
+  // Loop Through All Links And Count Energy In Link If Its Not The Controller Storage //
+  room.links.forEach((link, i) => {
+    if (flagMemory.links) {
+      if (flagMemory.links.linkTo1) {
+        if (link.id !== flagMemory.controller.structure || !flagMemory.controller.structure) {
+          energyStored += link.store.getUsedCapacity(RESOURCE_ENERGY);
+        }
+      }
+    }
+  });
+
+  // If There Is A Terminal In Room, Add EnergyCount
+  if (room.terminal !== undefined)
+  energyStored += room.terminal.store.getUsedCapacity(RESOURCE_ENERGY);
+
+  // If There Is A Storage In Room, Add EnergyCount
+  if (room.storage !== undefined)
+  energyStored += room.storage.store.getUsedCapacity(RESOURCE_ENERGY);
+
+  // Return EnergyCount
+  return energyStored;
+}
+
+function getSpawningEnergy(roomName) {
+  const room = Game.rooms[roomName];
+  const flagMemory = Memory.flags[roomName];
+
   flagMemory.totalEnergyAvailable = room.energyAvailable;
   let spawnsLength = room.spawns.length;
   let extensionsLength = room.extensions.length;
@@ -61,10 +102,13 @@ function getSpawningEnergy() {
   flagMemory.totalEnergyCapacity = (spawnsLength * 300) + (extensionsLength * 50);
 }
 
-function runPerformanceTracker() {
+function runPerformanceTracker(roomName) {
+  const room = Game.rooms[roomName];
+  const flagMemory = Memory.flags[roomName];
+
   if (Game.time % 50 == 0) {
     if (flagMemory.IsMemorySetup) {
-      flagMemory.trackers.room.energyStored = getTotalRoomEnergy();
+      flagMemory.trackers.room.energyStored = getTotalRoomEnergy(roomName);
 
       let totalWallHitPoints = 0;
       let totalWallAmount = 0;
@@ -113,9 +157,9 @@ module.exports = {
       manageLinks.run(roomName);
 
       // Run Spawner Energy Getter //
-      getSpawningEnergy(room,flagMemory);
+      getSpawningEnergy(roomName);
 
-      runPerformanceTracker(room, flagMemory);
+      runPerformanceTracker(roomName);
     }
 
 

@@ -13,6 +13,8 @@ module.exports = {
     const flagMemory = Memory.flags[roomName];
     const mainSystemMemory = Memory.mainSystem;
 
+    const flagMemoryLengthStart = Object.values(flagMemory).length;
+
 
     if (!Memory.flags) Memory.flags = {};
     if (!Memory.stats) Memory.stats = {};
@@ -27,22 +29,23 @@ module.exports = {
     }
     if (!Memory.mainSystem) {
       Memory.mainSystem = {};
-      Memory.mainSystem["cpuTracker"] = 0;
-      Memory.mainSystem["cpuAvgTicks"] = 0;
-      Memory.mainSystem["performanceTracker"] = 0;
-      Memory.mainSystem["performanceAvgTicks"] = 0;
+      Memory.mainSystem["cpuTracker"] = false;
+      Memory.mainSystem["cpuAvgTicks"] = 1000;
+      Memory.mainSystem["performanceTracker"] = false;
+      Memory.mainSystem["performanceAvgTicks"] = 1000;
     }
     if (!Memory.terminal) terminal.setup();
     if (!Memory.performanceTracker) Memory.performanceTracker = {};
 
-    if (!flagMemory.roomManager) {
-      flagMemory.roomManager = {};
+    if (!flagMemory.roomManager)
+    flagMemory.roomManager = {};
+    else {
       if (!flagMemory.sources) flagMemory.sources = [];
       room.find(FIND_SOURCES).forEach((source, i) => {
         flagMemory.sources[i] = {};
         flagMemory.sources[i].id = source.id;
         flagMemory.sources[i].openSpots = getAccesPoints.run(source.pos.x,source.pos.y, roomName)[0];
-        flagMemory.sources[i].structureId = "";
+        flagMemory.sources[i].structure = "None";
 
         flagMemory.roomManager[`source-${i}.HasStructure`] = false;
       });
@@ -57,11 +60,19 @@ module.exports = {
       if (!flagMemory.enemyCreepCount) flagMemory.enemyCreepCount = {};
       if (!flagMemory.enemys) flagMemory.enemys = [];
       if (!flagMemory.towerTarget) flagMemory.towerTarget = "";
-      if (!flagMemory.repairTarget) flagMemory.repairTarget = [];
       if (!flagMemory.boosting) flagMemory.boosting = {};
       if (!flagMemory.unBoost) flagMemory.unBoost = {};
-      if (!flagMemory.repairTargetAmount) flagMemory.repairTargetAmount = 100 * 1000;
       if (!flagMemory.labs) runLabs.setup(roomName);
+      if (!flagMemory.controller) {
+        flagMemory.controller = {};
+        flagMemory.controller.structure = "None";
+      }
+      if (!flagMemory.repair) {
+        flagMemory.repair = {};
+
+        flagMemory.repair.targets = [];
+        flagMemory.repair.hitsTarget = 1*1000*1000;
+      }
 
       if (!flagMemory.mineralId) {
         const mineral = room.find(FIND_MINERALS)[0];
@@ -140,6 +151,7 @@ module.exports = {
         flagMemory.trackers.cpu = {};
         let cpuTracker = flagMemory.trackers.cpu;
         cpuTracker["runTowers"] = 0;
+        cpuTracker["repairStructures"] = 0;
         cpuTracker["getDamagedStructures"] = 0;
         cpuTracker["runGameTimeTimers"] = 0;
         cpuTracker["runOwnedRoomManager"] = 0;
@@ -209,7 +221,12 @@ module.exports = {
         spawnerTracker["transfererLD"] = 0;
         spawnerTracker["scientist"] = 0;
       }
-      flagMemory.IsMemorySetup = true;
     }
+
+    const flagMemoryLengthEnd = Object.values(flagMemory).length;
+
+
+    if (Game.time % 10 == 0 && flagMemoryLengthStart > 0 && flagMemoryLengthStart == flagMemoryLengthEnd)
+    flagMemory.IsMemorySetup = true;
   }
 };

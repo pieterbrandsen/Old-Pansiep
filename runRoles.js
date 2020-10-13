@@ -1,10 +1,11 @@
 const getWorkingState = require('function.getCreepState');
 const creepBooster = require('module.creepBooster');
+const renewCreep = require('module.creepBooster');
 
 
 function getCreepWorkState(creep) {
   // Get Creep State, What The Creep Should Be Doing //
-  if (Game.time % 2 == 0) {
+  if (Game.time % 5 == 0) {
     const workState = getWorkingState.run(creep.room.name, creep.store.getCapacity(), creep.store.getUsedCapacity(), creep.memory.working, creep.memory.role);
     if (workState !== undefined)
     creep.memory.working = workState;
@@ -37,10 +38,8 @@ function creepHasVisionInTargetRoom(creep) {
   const targetFlag = Game.flags[creep.memory.flagName];
   const targetFlagMemory = Memory.flags[creep.memory.flagName];
 
-  // Define TargetRoom And The Room Where The Creep Currently Is In //
+  // Define The Room Where The Creep Currently Is In //
   const currentRoomName = creep.room.name;
-  const targetRoomName = targetFlagMemory.targetRoom;
-  const targetRoom = Game.rooms[targetRoomName];
 
 
   // Define ReturnValue Variable That Returns If Creep Is In The TargetRoom //
@@ -54,8 +53,8 @@ function creepHasVisionInTargetRoom(creep) {
 
   // If TargetRoom Is Defined And Has Vision In It, Return True //
   if (targetFlag && targetFlag.room) {
-    // If There Is Vision, Update The TargetRoomName Memory With The RoomName Of The Target Room //
-    targetFlagMemory.targetRoom = targetFlag.room.name;
+    // // If There Is Vision, Update The TargetRoomName Memory With The RoomName Of The Target Room //
+    // targetFlagMemory.targetRoom = targetFlag.room.name;
 
     // Return True //
     returnValue = true;
@@ -317,7 +316,7 @@ module.exports = {
 
         // If Creep Needs To Harvest //
         if (creep.memory.working == "withdraw")
-        runCreep(creep, "withdraw");
+        runCreep(creep, "transfererLiTe");
         // If Creep Needs To Transfer //
         else if (creep.memory.working == "transfer")
         runCreep(creep, "transfererLiTe");

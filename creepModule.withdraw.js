@@ -3,6 +3,43 @@ const runMainSystem = require('function.mainSystem');
 
 
 module.exports = {
+  upgrader: function(creep) {
+    if ((creep.ticksToLive < 100 && !creep.memory.role.includes("LD")) || (creep.ticksToLive < 200 && creep.memory.role.includes("LD")))
+    creep.suicide();
+
+    // Get The Variables Needed For Module //
+    const getMainSystem = runMainSystem.run();
+    const flagMemory = Memory.flags[creep.room.name];
+
+    function withdrawStructure() {
+      const target = Game.getObjectById(flagMemory.controller.structure);
+      if (target) {
+        if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+        creep.travelTo(target);
+      }
+      else findStructure();
+    }
+
+    function findStructure() {
+      if (Game.time % 10 == 0) {
+        const range = 3;
+        const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
+        const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
+        const constructionSiteInRange = creep.room.controller.pos.findInRange(FIND_CONSTRUCTION_SITES, range)[0];
+
+
+        if (containerInRange)
+        flagMemory.controller.structure = containerInRange.id;
+        else if (linkInRange)
+        flagMemory.controller.structure = linkInRange.id;
+        else
+        harvestModule.run(creep);
+      }
+    }
+
+    withdrawStructure();
+  },
+
   run: function(creep) {
     if (creep.ticksToLive < 50)
     creep.suicide();
@@ -12,37 +49,12 @@ module.exports = {
     const flagMemory = Memory.flags[creep.room.name];
 
 
-    if (!creep.memory.withdrawId)
-    creep.memory.withdrawId = ""
+    if (!creep.memory.withdrawId) creep.memory.withdrawId = "";
 
 
     function enterValueInMemory(memoryPath, inputValue) {
       flagMemory.roomManager[memoryPath] = inputValue;
     };
-
-    function withdrawUpgraderSection() {
-      const target = Game.getObjectById(flagMemory.controllerStructureId);
-      if (target) {
-        if(creep.withdraw(target,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-        creep.travelTo(target);
-      }
-      else {
-        const range = 3;
-        const containerInRange = creep.room.controller.pos.findInRange(creep.room.containers, range)[0];
-        const linkInRange = creep.room.controller.pos.findInRange(creep.room.links, range)[0];
-        const constructionSiteInRange = creep.room.controller.pos.findInRange(FIND_CONSTRUCTION_SITES, range)[0];
-
-
-        if (containerInRange)
-        flagMemory.controllerStructureId = containerInRange.id;
-        else if (linkInRange)
-        flagMemory.controllerStructureId = linkInRange.id;
-        else if (constructionSiteInRange == null)
-        enterValueInMemory(`controller.HasStructure`, false);
-        else
-        harvestModule.run(creep);
-      }
-    }
 
     function runWithdraw(targetId) {
       const target = Game.getObjectById(targetId);
@@ -107,7 +119,7 @@ module.exports = {
 
           room.containers.forEach((container, i) => {
             if (container) {
-              if (container.id !== flagMemory.controllerStructureId) {
+              if (flagMemory.controller && container.id !== flagMemory.controller.structure) {
                 if (container.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
                   containerId = container.id;
                   withdrawStructure = "container";
@@ -128,7 +140,7 @@ module.exports = {
 
           room.links.forEach((link, i) => {
             if (link) {
-              if (link.id !== flagMemory.controllerStructureId) {
+              if (link.id !== flagMemory.controller.structure) {
                 if (link.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
                   withdrawStructure = "link";
                   linkId = link.id;
@@ -196,7 +208,7 @@ module.exports = {
       if (creep.memory.role !== "upgrader")
       withdrawStructure();
       else
-      withdrawUpgraderSection();
+      this.upgrader(creep);
 
       // Set the average CPU Usage in the memory //
       Memory.flags[creep.memory.spawnRoom].trackers.cpuModule.withdrawModule += Game.cpu.getUsed() - start;
@@ -206,7 +218,7 @@ module.exports = {
       if (creep.memory.role !== "upgrader")
       withdrawStructure();
       else
-      withdrawUpgraderSection();
+      this.upgrader(creep);
     }
   }
 };
