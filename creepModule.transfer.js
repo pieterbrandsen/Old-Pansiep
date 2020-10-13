@@ -40,7 +40,7 @@ function findNewTarget(creepName) {
   const creep = Game.creeps[creepName];
 
   const room = creep.room;
-  const flagMemory = Memory.flags[creep.memory.spawnRoom];
+  const flagMemory = Memory.flags[creep.memory.targetRoom];
   if (creep.memory.role.includes("harvest")) {
     let sourceObject = Game.getObjectById(creep.memory.withdrawId);
     let containerId;
