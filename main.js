@@ -17,10 +17,6 @@ const countCreepsAndParts = require('function.countCreepsAndParts');
 const terminal = require('module.terminal');
 
 module.exports.loop = function() {
-  if (!Memory.flags)
-  Memory.flags = {};
-
-
   // Get the CPU Usage //
   let start = Game.cpu.getUsed();
 
@@ -33,6 +29,8 @@ module.exports.loop = function() {
 
   const getMainSystem = runMainSystem.run();
 
+  if (!Memory.flags)
+  Memory.flags = {};
 
   // Make A Variable With Shard Name //
   const shardName = Game.shard.name;
@@ -59,6 +57,7 @@ module.exports.loop = function() {
     // Run the part without tracking //
     countCreepsAndParts.run();
   }
+
 
 
   // Loop Through All Rooms With Vision //

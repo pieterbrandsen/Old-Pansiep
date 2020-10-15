@@ -178,6 +178,7 @@ module.exports = {
       Memory.stats['gcl.level'] = Game.gcl.level;
       Memory.stats['resources.pixel'] = Game.resources.pixel;
       Memory.stats['resources.credits'] = Game.resources.credits;
+      Memory.stats['resources.memorySize'] = JSON.stringify(Memory).length;
 
       Memory.stats['creepsTotal'] = Object.keys(Game.creeps).length;
     }
