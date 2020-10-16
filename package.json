@@ -1,0 +1,21 @@
+  
+{
+  "name": "Pansiep AI",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/main.js",
+  "screeps_bot": true,
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pieterbrandsen/Pansiep/tree/Pansiep.git"
+  },
+  "author": "Pieter Brandsen",
+  "license": "CC0 1.0 Universal",
+  "bugs": {
+    "url": "https://github.com/pieterbrandsen/Pansiep/issues"
+  },
+  "scripts": {
+  }
+}
