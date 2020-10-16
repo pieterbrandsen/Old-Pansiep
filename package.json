@@ -27,12 +27,12 @@
     "rimraf": "3.0.2",
     "screeps": "4.2.0",
     "screeps-api": "1.12.1",
-    "screeps-profiler": "2.0.1",
+    "screeps-profiler": "^2.0.1",
+    "screeps-server-mockup": "^1.5.1",
     "screepsmod-admin-utils": "1.18.2",
     "screepsmod-auth": "2.4.8",
     "screepsmod-mongo": "2.9.6",
-    "uglify-js-harmony": "2.7.7",
-    "screeps-server-mockup": "^1.5.1"
+    "uglify-js-harmony": "2.7.7"
   },
   "repository": {
     "type": "git",
