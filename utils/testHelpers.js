@@ -204,8 +204,8 @@ const spawnBots = async function(line, socket, rooms, players, tickDuration) {
     await sleep(5);
 
     for (const room of rooms) {
-      console.log('> Spawn bot ' + room + ' as TooAngel');
-      socket.write(`bots.spawn('screeps-bot-tooangel', '${room}', {username: '${room}', cpu: 100, gcl: 1, x: ${players[room].x}, y: ${players[room].y}})\r\n`);
+      console.log(`> Spawn bot ${room} as Pansiep`);
+      socket.write(`bots.spawn('pansiep-ai', '${room}', {username: '${room}', cpu: 100, gcl: 1, x: ${players[room].x}, y: ${players[room].y}})\r\n`);
       await sleep(1);
     }
     return true;
