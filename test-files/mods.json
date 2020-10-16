@@ -5,6 +5,6 @@
     "../node_modules/screepsmod-mongo/index.js"
   ],
   "bots": {
-    "panda-ai": "../src"
+    "pansiep-ai": "../src"
   }
 }
