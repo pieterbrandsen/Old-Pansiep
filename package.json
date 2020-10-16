@@ -1,4 +1,4 @@
-  
+
 {
   "name": "Pansiep AI",
   "version": "0.0.1",
@@ -6,9 +6,7 @@
   "main": "src/main.js",
   "screeps_bot": true,
   "dependencies": {},
-  "devDependencies": {
-    "screeps": "4.2.0",
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git://github.com/pieterbrandsen/Pansiep/tree/Pansiep.git"
