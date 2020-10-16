@@ -37,6 +37,7 @@ module.exports = {
     switch (scoutGoal) {
       // If ScoutGoal Is Remote, Get All The Remote Memory That's Needed //
       case "remote":
+      targetFlagMemory.IsMemorySetup = true;
       if (Memory.flags[creep.room.name] && !Memory.flags[creep.room.name].IsMemorySetup) {
         checkMissingMemory.setup(creep.room.name);
         remoteRoomManager.setup(creep.name);
