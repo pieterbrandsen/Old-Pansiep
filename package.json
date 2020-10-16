@@ -6,7 +6,9 @@
   "main": "src/main.js",
   "screeps_bot": true,
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "screeps": "4.2.0",
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/pieterbrandsen/Pansiep/tree/Pansiep.git"
