@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/main.js",
   "screeps_bot": true,
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@types/lodash": "^4.14.162",
     "@types/screeps": "^3.2.1",
     "chai": "4.2.0",
@@ -30,9 +31,7 @@
     "screepsmod-admin-utils": "1.18.2",
     "screepsmod-auth": "2.4.8",
     "screepsmod-mongo": "2.9.6",
-    "uglify-js-harmony": "2.7.7"
-  },
-  "devDependencies": {
+    "uglify-js-harmony": "2.7.7",
     "screeps-server-mockup": "^1.5.1"
   },
   "repository": {
