@@ -1,0 +1,10 @@
+{
+  "mods": [
+    "../node_modules/screepsmod-auth/index.js",
+    "../node_modules/screepsmod-admin-utils/index.js",
+    "../node_modules/screepsmod-mongo/index.js"
+  ],
+  "bots": {
+    "panda-ai": "../src"
+  }
+}

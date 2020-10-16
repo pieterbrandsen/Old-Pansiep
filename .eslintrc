@@ -1,0 +1,8 @@
+extends:
+  - .eslintrc-base
+
+plugins:
+  - screeps
+
+env:
+  screeps/screeps: true

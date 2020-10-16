@@ -1,3 +1,3 @@
 module.exports.loop = function() {
-  // Main //
+  console.log(true);
 };
