@@ -1,3 +1,7 @@
+const handlers = require('./handlers');
+
+require('./handlers');
+
 module.exports.loop = function() {
-  console.log(true);
+  handlers.global();
 };
