@@ -1,14 +1,23 @@
+// #region require
+const roomPlanner = require('./roomPlanner');
+
 require('./config');
+// #endregion
+
 
 // #region functions
 function getRandomFreePos(startPos, distance) {
+  // Get the terrain of the Room //
+  const terrain = Game.map.getRoomTerrain(startPos.roomName);
   let x;
   let y;
+
+  // Loop until a random non-wall position is found
   do {
     x = startPos.x + Math.floor(Math.random()*(distance*2+1)) - distance;
     y = startPos.y + Math.floor(Math.random()*(distance*2+1)) - distance;
   }
-  while ((x+y)%2 !== (startPos.x+startPos.y)%2 || Game.map.getTerrainAt(x, y, startPos.roomName) === TERRAIN_MASK_WALL);
+  while ((x+y)%2 !== (startPos.x+startPos.y)%2 || terrain.get(x, y) === TERRAIN_MASK_WALL);
   return new RoomPosition(x, y, startPos.roomName);
 }
 // #endregion
@@ -30,7 +39,7 @@ const globalHandler = () => {
 
     // Timers handler //
     // Handles all game timers and runs their code
-    timersHandler();
+    timersHandler('global');
   }
 };
 // #endregion
@@ -38,22 +47,15 @@ const globalHandler = () => {
 
 // #region All rooms handler
 const allRoomsHandler = () => {
+  // Return if not enough space in the bucket to run rooms //
   if (Game.cpu.bucket <= config.rooms.minBucket) return;
 
 
   // Timers through all rooms with vision in them.
   _.forEach(Object.keys(Game.rooms), (roomName) => {
     const room = Game.rooms[roomName];
-    const flag = Game.flags[roomName];
-
-    if (!flag) {
-      room.createFlag((room.controller ? room.controller.pos : getRandomFreePos({x: 0, y: 0, roomName: roomName})), roomName, COLOR_RED, COLOR_WHITE);
-      Memory.flags[roomName] = {};
-      memoryHandler('ownedRoom', {room: room});
-    } else {
-      if (room.controller && room.controller.my) ownedRoomHandler(room);
-      else if (room.controller && room.controller.reservation && room.controller.reservation.username === config.username) remoteRoomHandler(room);
-    }
+    if (room.controller && room.controller.my) ownedRoomHandler(room);
+    else if (room.controller && room.controller.reservation && room.controller.reservation.username === config.username) remoteRoomHandler(room);
   });
 };
 // #endregion
@@ -61,14 +63,39 @@ const allRoomsHandler = () => {
 
 // #region Owned room handler
 const ownedRoomHandler = (room) => {
+  // Acces the flag for the room //
+  const flag = Game.flags[room.name];
 
+  // If no flag, make a new one and init the memory //
+  if (!flag) {
+    room.createFlag((room.controller ? room.controller.pos : getRandomFreePos({x: 0, y: 0, roomName: room.name})), room.name, COLOR_RED, COLOR_WHITE);
+    Memory.flags[room.name] = {};
+    memoryHandler('ownedRoom', {room: room});
+  } else {
+    // Run all timers for ownedRooms //
+    timersHandler('ownedRoom', {room: room});
+  }
 };
 // #endregion
 
 
 // #region Remote room handler
 const remoteRoomHandler = (room) => {
+  // Return if not enough space in the bucket to run remotes //
+  if (Game.cpu.bucket <= config.rooms.remote.minBucket) return;
 
+  // Acces the flag for the room //
+  const flag = Game.flags[room.name];
+
+  // If no flag, make a new one and init the memory //
+  if (!flag) {
+    room.createFlag((room.controller ? room.controller.pos : getRandomFreePos({x: 0, y: 0, roomName: room.name})), room.name, COLOR_RED, COLOR_WHITE);
+    Memory.flags[room.name] = {};
+    memoryHandler('remoteRoom', {room: room});
+  } else {
+    // Run all timers for ownedRooms //
+    timersHandler('remoteRoom', {room: room});
+  }
 };
 // #endregion
 
@@ -86,8 +113,11 @@ const creepHandler = () => {
       // Else run the creep //
       const creepMemory = Memory.creeps[creepName];
       const creepRoleName = creepMemory.role.split('-')[0];
+
+      // if no role is found, return
       if (!creepRoleName) return;
 
+      // Run the role for the creep
       roleHandler(creep, creepRoleName);
     }
   });
@@ -108,8 +138,8 @@ const memoryHandler = (goal, data) => {
   const globalMemory = () => {
     // Timers until the memory Length is the same as last time //
     let memoryLength = 0;
-    let endTimers = false;
-    while (!endTimers) {
+    let endLoop = false;
+    while (!endLoop) {
       // Init undefined memory
       if (!Memory.creeps) Memory.creeps = {};
       if (!Memory.flags) Memory.flags = {};
@@ -118,7 +148,7 @@ const memoryHandler = (goal, data) => {
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(Memory).length) {
         Memory.isFilled = true;
-        endTimers = true;
+        endLoop = true;
       } else memoryLength = Object.keys(Memory).length;
     }
   };
@@ -132,15 +162,23 @@ const memoryHandler = (goal, data) => {
 
     // Timers until the memory Length is the same as last time //
     let memoryLength = 0;
-    let endTimers = false;
-    while (!endTimers) {
+    let endLoop = false;
+    while (!endLoop) {
       // Init undefined memory
-      // None
+      if (!flagMemory.commonMemory) {
+        flagMemory.commonMemory = {
+          sourceCount: room.find(FIND_SOURCES).length,
+          mineral: {
+            mineralType: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralType : 'none',
+            mineralAmount: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralAmount : 0,
+          },
+        };
+      }
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
         flagMemory.isFilled = true;
-        endTimers = true;
+        endLoop = true;
       } else memoryLength = Object.keys(flagMemory).length;
     }
   };
@@ -153,15 +191,15 @@ const memoryHandler = (goal, data) => {
 
     // Timers until the memory Length is the same as last time //
     let memoryLength = 0;
-    let endTimers = false;
-    while (!endTimers) {
+    let endLoop = false;
+    while (!endLoop) {
       // Init undefined memory
-      // None
+      if (!flagMemory.roomPlanner) flagMemory.roomPlanner = {room: {}, base: {}};
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
         flagMemory.isFilled = true;
-        endTimers = true;
+        endLoop = true;
       } else memoryLength = Object.keys(flagMemory).length;
     }
   };
@@ -174,15 +212,15 @@ const memoryHandler = (goal, data) => {
 
     // Timers until the memory Length is the same as last time //
     let memoryLength = 0;
-    let endTimers = false;
-    while (!endTimers) {
+    let endLoop = false;
+    while (!endLoop) {
       // Init undefined memory
       // None
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
         flagMemory.isFilled = true;
-        endTimers = true;
+        endLoop = true;
       } else memoryLength = Object.keys(flagMemory).length;
     }
   };
@@ -224,7 +262,10 @@ const timersHandler = (goal, data) => {
   // #region Room timers
   // #region Global room timers
   const globalRoomTimers = (room) => {
-
+    // Run base layout planner each 5 ticks //
+    if (Game.time % 5 === 0) {
+      roomPlanner.base(room);
+    }
   };
   // #endregion
 
@@ -265,6 +306,6 @@ const timersHandler = (goal, data) => {
 
 module.exports = {
   // Global handler //
-  // Handles every other handler + main code //
+  // Handles every other handler //
   global: globalHandler,
 };
