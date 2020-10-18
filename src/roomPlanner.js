@@ -150,11 +150,13 @@ const createConstructionSite = (room, position, structureType) => {
 // #endregion
 // #endregion
 
+
+//#region BasePlanner function
 const basePlanner = (room) => {
-
 };
+//#endregion
 
-
+//#region RoomPlanner function
 const roomPlanner = (room) => {
   // Get roomName and flagMemory
   const roomName = room.name;
@@ -233,6 +235,8 @@ const roomPlanner = (room) => {
   }
   //#endregion
 };
+//#endregion
+
 
 module.exports = {
   // Run base planner //
