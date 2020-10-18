@@ -1,13 +1,14 @@
-//#region Require('/...')
+// #region Require('/...')
 const handlers = require('./handlers');
 
 require('./handlers');
 require('prototype.Room.structures');
 require('traveler');
-//#endregion
+// #endregion
 
-//#region Game loop
+
+// #region Game loop
 module.exports.loop = () => {
   handlers.global();
 };
-//#endregion
+// #endregion

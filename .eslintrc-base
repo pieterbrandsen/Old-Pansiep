@@ -66,7 +66,7 @@ rules:
 
   # Stylistic Issues
   indent: [2, 2]
-  max-len: [2, 240]
+  max-len: [2, 250]
   max-statements-per-line: 2
   require-jsdoc: 0
 
