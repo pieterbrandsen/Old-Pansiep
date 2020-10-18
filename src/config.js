@@ -5,5 +5,11 @@ global.config = {
     remote: {
       minBucket: 3000,
     },
+    loops: {
+      roomPlanner: {
+        base: 5,
+        room: 5,
+      },
+    },
   },
 };

@@ -54,6 +54,8 @@ const allRoomsHandler = () => {
   // Timers through all rooms with vision in them.
   _.forEach(Object.keys(Game.rooms), (roomName) => {
     const room = Game.rooms[roomName];
+
+    // Run room handlers //
     if (room.controller && room.controller.my) ownedRoomHandler(room);
     else if (room.controller && room.controller.reservation && room.controller.reservation.username === config.username) remoteRoomHandler(room);
   });
@@ -72,6 +74,9 @@ const ownedRoomHandler = (room) => {
     Memory.flags[room.name] = {};
     memoryHandler('ownedRoom', {room: room});
   } else {
+    // Run room visuals for ownedRooms  //
+    roomVisualHandler(room);
+
     // Run all timers for ownedRooms //
     timersHandler('ownedRoom', {room: room});
   }
@@ -93,7 +98,10 @@ const remoteRoomHandler = (room) => {
     Memory.flags[room.name] = {};
     memoryHandler('remoteRoom', {room: room});
   } else {
-    // Run all timers for ownedRooms //
+    // Run room visuals for remoteRoom  //
+    roomVisualHandler(room);
+
+    // Run all timers for remoteRoom //
     timersHandler('remoteRoom', {room: room});
   }
 };
@@ -160,6 +168,14 @@ const memoryHandler = (goal, data) => {
     // Create a acces point to the flagMemory //
     const flagMemory = Memory.flags[room.name];
 
+    // Needed memory //
+    const sources = [];
+    room.find(FIND_SOURCES).forEach((source) => {
+      // Push the id and position to the memory //
+      sources.push({id: source.id, pos: source.pos});
+    });
+
+
     // Timers until the memory Length is the same as last time //
     let memoryLength = 0;
     let endLoop = false;
@@ -169,11 +185,16 @@ const memoryHandler = (goal, data) => {
         flagMemory.commonMemory = {
           sourceCount: room.find(FIND_SOURCES).length,
           mineral: {
-            mineralType: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralType : 'none',
-            mineralAmount: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralAmount : 0,
+            id: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].id : undefined,
+            type: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralType : undefined,
+            amount: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralAmount : undefined,
           },
+          sources: sources,
+          constructionSites: [],
         };
       }
+      if (!flagMemory.roomPlanner) flagMemory.roomPlanner = {room: {sources: []}};
+      if (!flagMemory.visuals) flagMemory.visuals = {string: '', objects: {}};
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -194,7 +215,9 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
-      if (!flagMemory.roomPlanner) flagMemory.roomPlanner = {room: {}, base: {}};
+      if (!flagMemory.roomPlanner.base) flagMemory.roomPlanner.base = {};
+      if (!flagMemory.commonMemory.headSpawnId) flagMemory.commonMemory.headSpawnId = (room.terminal) ? ((room.terminal.findInRange(room.spawns, 2)[0]) ? (room.terminal.findInRange(room.spawns, 2)[0].id) : (room.spawns[0].id)) : (room.spawns[0].id);
+
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -262,16 +285,19 @@ const timersHandler = (goal, data) => {
   // #region Room timers
   // #region Global room timers
   const globalRoomTimers = (room) => {
-    // Run base layout planner each 5 ticks //
-    if (Game.time % 5 === 0) {
-      roomPlanner.base(room);
+    // Run room layout planner each ... ticks //
+    if (Game.time % config.rooms.loops.roomPlanner.room === 0) {
+      roomPlanner.room(room);
     }
   };
   // #endregion
 
   // #region Owned room timers
   const ownedRoomTimers = (room) => {
-
+    // Run base layout planner each ... ticks //
+    if (Game.time % config.rooms.loops.roomPlanner.base === 0) {
+      roomPlanner.base(room);
+    }
   };
   // #endregion
 
@@ -299,6 +325,14 @@ const timersHandler = (goal, data) => {
     Game.notify(`Unknown goal: ${goal}, check TimersHandler.`);
     break;
   }
+};
+// #endregion
+
+
+// #region Room visuals handler
+const roomVisualHandler = (room) => {
+  const flagMemory = Memory.flags[room.name];
+  room.visual.import(flagMemory.visuals.string);
 };
 // #endregion
 // #endregion
