@@ -124,6 +124,7 @@ const createConstructionSite = (room, position, structureType) => {
   // Switch based on return value of createConstructionSite
   switch (constructionSite) {
   case OK:
+    // Loop through all object's found at this position
     look.forEach((lookObject) => {
       if (lookObject.type === LOOK_CONSTRUCTION_SITES) {
         flagMemory.commonMemory.constructionSites.push(lookObject.constructionSite.id);
@@ -161,6 +162,8 @@ const roomPlanner = (room) => {
 
   // Add new room data of sources //
   flagMemory.visuals.objects.sources = [];
+
+  //#region Source structures
   for (let i = 0; i < flagMemory.commonMemory.sources.length; i++) {
     // Check if room already has this source planned
     if (flagMemory.roomPlanner.room.sources[i]) return;
@@ -193,8 +196,10 @@ const roomPlanner = (room) => {
       flagMemory.visuals.objects.sources.push(true);
     }
   }
+  //#endregion
 
 
+  //#region Controller structure
   // Add new room data of the controller //
   // Check if room already has the controller planned
   if (flagMemory.roomPlanner.room.controller) return;
@@ -226,6 +231,7 @@ const roomPlanner = (room) => {
     flagMemory.visuals.string = room.visual.export();
     flagMemory.visuals.objects.controller = true;
   }
+  //#endregion
 };
 
 module.exports = {
