@@ -4,7 +4,6 @@ const roomPlanner = require('./roomPlanner');
 require('./config');
 // #endregion
 
-
 // #region functions
 function getRandomFreePos(startPos, distance) {
   // Get the terrain of the Room //
@@ -14,14 +13,15 @@ function getRandomFreePos(startPos, distance) {
 
   // Loop until a random non-wall position is found
   do {
-    x = startPos.x + Math.floor(Math.random()*(distance*2+1)) - distance;
-    y = startPos.y + Math.floor(Math.random()*(distance*2+1)) - distance;
-  }
-  while ((x+y)%2 !== (startPos.x+startPos.y)%2 || terrain.get(x, y) === TERRAIN_MASK_WALL);
+    x = startPos.x + Math.floor(Math.random() * (distance * 2 + 1)) - distance;
+    y = startPos.y + Math.floor(Math.random() * (distance * 2 + 1)) - distance;
+  } while (
+    (x + y) % 2 !== (startPos.x + startPos.y) % 2 ||
+    terrain.get(x, y) === TERRAIN_MASK_WALL
+  );
   return new RoomPosition(x, y, startPos.roomName);
 }
 // #endregion
-
 
 // #region Handlers
 
@@ -44,24 +44,33 @@ const globalHandler = () => {
 };
 // #endregion
 
-
 // #region All rooms handler
 const allRoomsHandler = () => {
   // Return if not enough space in the bucket to run rooms //
   if (Game.cpu.bucket <= config.rooms.minBucket) return;
 
-
   // Timers through all rooms with vision in them.
   _.forEach(Object.keys(Game.rooms), (roomName) => {
     const room = Game.rooms[roomName];
 
+
+    // room.find(FIND_CONSTRUCTION_SITES).forEach((site) => {
+    //   site.remove();
+    // });
+
+
     // Run room handlers //
     if (room.controller && room.controller.my) ownedRoomHandler(room);
-    else if (room.controller && room.controller.reservation && room.controller.reservation.username === config.username) remoteRoomHandler(room);
+    else if (
+      room.controller &&
+      room.controller.reservation &&
+      room.controller.reservation.username === config.username
+    ) {
+      remoteRoomHandler(room);
+    }
   });
 };
 // #endregion
-
 
 // #region Owned room handler
 const ownedRoomHandler = (room) => {
@@ -70,7 +79,14 @@ const ownedRoomHandler = (room) => {
 
   // If no flag, make a new one and init the memory //
   if (!flag) {
-    room.createFlag((room.controller ? room.controller.pos : getRandomFreePos({x: 0, y: 0, roomName: room.name})), room.name, COLOR_RED, COLOR_WHITE);
+    room.createFlag(
+      room.controller ?
+        room.controller.pos :
+        getRandomFreePos({x: 0, y: 0, roomName: room.name}),
+      room.name,
+      COLOR_RED,
+      COLOR_WHITE,
+    );
     Memory.flags[room.name] = {};
     memoryHandler('ownedRoom', {room: room});
   } else {
@@ -83,7 +99,6 @@ const ownedRoomHandler = (room) => {
 };
 // #endregion
 
-
 // #region Remote room handler
 const remoteRoomHandler = (room) => {
   // Return if not enough space in the bucket to run remotes //
@@ -94,7 +109,14 @@ const remoteRoomHandler = (room) => {
 
   // If no flag, make a new one and init the memory //
   if (!flag) {
-    room.createFlag((room.controller ? room.controller.pos : getRandomFreePos({x: 0, y: 0, roomName: room.name})), room.name, COLOR_RED, COLOR_WHITE);
+    room.createFlag(
+      room.controller ?
+        room.controller.pos :
+        getRandomFreePos({x: 0, y: 0, roomName: room.name}),
+      room.name,
+      COLOR_RED,
+      COLOR_WHITE,
+    );
     Memory.flags[room.name] = {};
     memoryHandler('remoteRoom', {room: room});
   } else {
@@ -106,7 +128,6 @@ const remoteRoomHandler = (room) => {
   }
 };
 // #endregion
-
 
 // #region Creep handler
 const creepHandler = () => {
@@ -132,12 +153,9 @@ const creepHandler = () => {
 };
 // #endregion
 
-
 // #region Role handler
-const roleHandler = (creep, roleName) => {
-};
+const roleHandler = (creep, roleName) => {};
 // #endregion
-
 
 // #region Memory handler
 const memoryHandler = (goal, data) => {
@@ -175,7 +193,6 @@ const memoryHandler = (goal, data) => {
       sources.push({id: source.id, pos: source.pos});
     });
 
-
     // Timers until the memory Length is the same as last time //
     let memoryLength = 0;
     let endLoop = false;
@@ -185,15 +202,25 @@ const memoryHandler = (goal, data) => {
         flagMemory.commonMemory = {
           sourceCount: room.find(FIND_SOURCES).length,
           mineral: {
-            id: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].id : undefined,
-            type: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralType : undefined,
-            amount: (room.find(FIND_MINERALS)[0]) ? room.find(FIND_MINERALS)[0].mineralAmount : undefined,
+            id: room.find(FIND_MINERALS)[0] ?
+              room.find(FIND_MINERALS)[0].id :
+              undefined,
+            type: room.find(FIND_MINERALS)[0] ?
+              room.find(FIND_MINERALS)[0].mineralType :
+              undefined,
+            amount: room.find(FIND_MINERALS)[0] ?
+              room.find(FIND_MINERALS)[0].mineralAmount :
+              undefined,
           },
           sources: sources,
-          constructionSites: [],
+          constructionSites: room
+            .find(FIND_CONSTRUCTION_SITES)
+            .map((c) => c.id),
         };
       }
-      if (!flagMemory.roomPlanner) flagMemory.roomPlanner = {room: {sources: []}};
+      if (!flagMemory.roomPlanner) {
+        flagMemory.roomPlanner = {room: {sources: []}};
+      }
       if (!flagMemory.visuals) flagMemory.visuals = {string: '', objects: {}};
 
       // Check if current memory size is the same as last loop
@@ -216,8 +243,13 @@ const memoryHandler = (goal, data) => {
     while (!endLoop) {
       // Init undefined memory
       if (!flagMemory.roomPlanner.base) flagMemory.roomPlanner.base = {};
-      if (!flagMemory.commonMemory.headSpawnId) flagMemory.commonMemory.headSpawnId = (room.terminal) ? ((room.terminal.findInRange(room.spawns, 2)[0]) ? (room.terminal.findInRange(room.spawns, 2)[0].id) : (room.spawns[0].id)) : (room.spawns[0].id);
-
+      if (!flagMemory.commonMemory.headSpawnId) {
+        flagMemory.commonMemory.headSpawnId = room.terminal ?
+          room.terminal.findInRange(room.spawns, 2)[0] ?
+            room.terminal.findInRange(room.spawns, 2)[0].id :
+            room.spawns[0].id :
+          room.spawns[0].id;
+      }
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -250,7 +282,6 @@ const memoryHandler = (goal, data) => {
   // #endregion
   // #endregion
 
-
   // Switch between te possible goals and get the memory for that goal //
   switch (goal) {
   case 'global':
@@ -270,16 +301,13 @@ const memoryHandler = (goal, data) => {
   }
 };
 
-
 // #endregion
-
 
 // #region Timers handler
 const timersHandler = (goal, data) => {
   // #region Global timers
   // Get a object back with all the universal timers for a owned and remote room //
-  const globalTimers = () => {
-  };
+  const globalTimers = () => {};
   // #endregion
 
   // #region Room timers
@@ -294,17 +322,29 @@ const timersHandler = (goal, data) => {
 
   // #region Owned room timers
   const ownedRoomTimers = (room) => {
+    // Create a acces point to the flagMemory //
+    const flagMemory = Memory.flags[room.name];
+
     // Run base layout planner each ... ticks //
     if (Game.time % config.rooms.loops.roomPlanner.base === 0) {
       roomPlanner.base(room);
+    }
+
+    // Check all structures saved in memory if they still alive each ... ticks //
+    if (Game.time % config.rooms.loops.structureChecker === 0) {
+      if (Game.getObjectById() === null) {
+        flagMemory.commonMemory.headSpawnId = room.terminal ?
+          room.terminal.findInRange(room.spawns, 2)[0] ?
+            room.terminal.findInRange(room.spawns, 2)[0].id :
+            room.spawns[0].id :
+          room.spawns[0].id;
+      }
     }
   };
   // #endregion
 
   // #region Remote room timers
-  const remoteRoomTimers = (room) => {
-
-  };
+  const remoteRoomTimers = (room) => {};
   // #endregion
   // #endregion
 
@@ -328,7 +368,6 @@ const timersHandler = (goal, data) => {
 };
 // #endregion
 
-
 // #region Room visuals handler
 const roomVisualHandler = (room) => {
   const flagMemory = Memory.flags[room.name];
@@ -336,7 +375,6 @@ const roomVisualHandler = (room) => {
 };
 // #endregion
 // #endregion
-
 
 module.exports = {
   // Global handler //
