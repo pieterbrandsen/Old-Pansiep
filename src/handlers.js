@@ -1,7 +1,14 @@
 // #region require
 const roomPlanner = require('./roomPlanner');
+const spawnCreep = require('./spawnCreep');
+const runRoles = require('./runRoles');
 
 require('./config');
+// #endregion
+
+// #region global variables
+let roleCountByRoomByRole = {};
+roleCountByRoomByRole = {1: 1};
 // #endregion
 
 // #region functions
@@ -27,15 +34,17 @@ function getRandomFreePos(startPos, distance) {
 
 // #region Global handler
 const globalHandler = () => {
+  roleCountByRoomByRole = {};
+
   if (!Memory.isFilled) memoryHandler('global');
   else {
-    // Rooms handler //
-    // Handles ALL global room related code
-    allRoomsHandler();
-
     // Creep handler //
     // Handles all creeps and runs their role
     creepHandler();
+
+    // Rooms handler //
+    // Handles ALL global room related code
+    allRoomsHandler();
 
     // Timers handler //
     // Handles all game timers and runs their code
@@ -52,12 +61,10 @@ const allRoomsHandler = () => {
   // Timers through all rooms with vision in them.
   _.forEach(Object.keys(Game.rooms), (roomName) => {
     const room = Game.rooms[roomName];
-
-
-    // room.find(FIND_CONSTRUCTION_SITES).forEach((site) => {
-    //   site.remove();
-    // });
-
+    if (!roleCountByRoomByRole[roomName]) roleCountByRoomByRole[roomName] = {};
+    config.allRoles.forEach((role) => {
+      if (!roleCountByRoomByRole[roomName][role]) roleCountByRoomByRole[roomName][role] = 0;
+    });
 
     // Run room handlers //
     if (room.controller && room.controller.my) ownedRoomHandler(room);
@@ -148,13 +155,22 @@ const creepHandler = () => {
 
       // Run the role for the creep
       roleHandler(creep, creepRoleName);
+
+      // Role counter //
+      if (!roleCountByRoomByRole[creep.room.name]) roleCountByRoomByRole[creep.room.name] = {};
+      if (!roleCountByRoomByRole[creep.room.name][creepMemory.role]) roleCountByRoomByRole[creep.room.name][creepMemory.role] = 0;
+      roleCountByRoomByRole[creep.room.name][creepMemory.role]++;
     }
   });
 };
 // #endregion
 
 // #region Role handler
-const roleHandler = (creep, roleName) => {};
+const roleHandler = (creep, roleName) => {
+  const shortRoleName = roleName.replace('LD', '');
+
+  runRoles[shortRoleName](creep, shortRoleName);
+};
 // #endregion
 
 // #region Memory handler
@@ -250,6 +266,8 @@ const memoryHandler = (goal, data) => {
             room.spawns[0].id :
           room.spawns[0].id;
       }
+      // TODO LET REMOTES SPAWN FORM HERE
+      if (!flagMemory.remotes) flagMemory.remotes = {totalSourceCount: 0, rooms: []};
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -328,6 +346,27 @@ const timersHandler = (goal, data) => {
     // Run base layout planner each ... ticks //
     if (Game.time % config.rooms.loops.roomPlanner.base === 0) {
       roomPlanner.base(room);
+    }
+
+    // Run spawn creep each ... ticks //
+    if (Game.time % config.rooms.loops.spawnCreep === 0) {
+      const lastRole = spawnCreep.execute(room, 'owned', {}, roleCountByRoomByRole[room.name]);
+
+      // If role is remote, this means that nothing spawned
+      if (lastRole === 'end') {
+        if (flagMemory.remotes.rooms.length > 0) {
+          let continueLoop = true;
+          flagMemory.remotes.rooms.forEach((remoteRoomName) => {
+            const remoteRoom = Game.rooms[remoteRoomName];
+
+            // TODO doesn't do anything when remoteRoom is null
+            if (remoteRoom !== null && continueLoop) {
+              const remoteLastRole = spawnCreep.execute(room, 'remote', {target: remoteRoom.name}, roleCountByRoomByRole[remoteRoom.name]);
+              if (remoteLastRole === 'end') continueLoop = false;
+            }
+          });
+        }
+      }
     }
 
     // Check all structures saved in memory if they still alive each ... ticks //
