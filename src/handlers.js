@@ -1,5 +1,7 @@
 // #region require
 const roomPlanner = require('./roomPlanner');
+const spawnCreep = require('./spawnCreep');
+const runCreeps = require('./runCreeps');
 
 require('./config');
 // #endregion
@@ -154,7 +156,11 @@ const creepHandler = () => {
 // #endregion
 
 // #region Role handler
-const roleHandler = (creep, roleName) => {};
+const roleHandler = (creep, roleName) => {
+  const shortRoleName = roleName.split('-')[0].replace("LD","");
+
+  runCreeps[shortRoleName](creep, shortRoleName);
+};
 // #endregion
 
 // #region Memory handler
@@ -328,6 +334,11 @@ const timersHandler = (goal, data) => {
     // Run base layout planner each ... ticks //
     if (Game.time % config.rooms.loops.roomPlanner.base === 0) {
       roomPlanner.base(room);
+    }
+
+    // Run spawn creep each ... ticks //
+    if (Game.time % config.rooms.loops.spawnCreep === 0) {
+      spawnCreep.execute(room);
     }
 
     // Check all structures saved in memory if they still alive each ... ticks //

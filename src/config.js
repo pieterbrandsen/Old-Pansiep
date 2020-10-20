@@ -16,6 +16,7 @@ global.config = {
         room: 5,
       },
       structureChecker: 5000,
+      spawnCreep: 10,
     },
   },
 };
