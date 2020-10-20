@@ -96,7 +96,7 @@ const getBaseLayoutType = (room) => {
   const terrain = new Room.Terrain(room.name);
 
   // Check if there is already a spawn
-  if (flagMemory.commonMemory.headSpawnId !== undefined && flagMemory.roomPlanner.base.type === undefined && 2 === 1) {
+  if (flagMemory.commonMemory.headSpawnId !== undefined && flagMemory.roomPlanner.base.type === undefined) {
     // Make a base based on current already placed layout
     const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
     if (headSpawn === null) return;
