@@ -1,4 +1,4 @@
-const masterOfNone = (creep, roleName) => {
+const pioneer = (creep, roleName) => {
 };
 
 const harvester = (creep, roleName) => {
@@ -24,8 +24,8 @@ const claimer = (creep, roleName) => {
 
 module.exports = {
   // Run the harvester's //
-  masterOfNone: (creep, shortRoleName) => {
-    masterOfNone(creep, shortRoleName);
+  pioneer: (creep, shortRoleName) => {
+    pioneer(creep, shortRoleName);
   },
 
   // Run the harvester's //
@@ -58,7 +58,7 @@ module.exports = {
     reserver(creep, shortRoleName);
   },
 
-      // Run the claimer's //
+  // Run the claimer's //
   claimer: (creep, shortRoleName) => {
     claimer(creep, shortRoleName);
   },
