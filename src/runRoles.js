@@ -25,7 +25,29 @@ const moveToRoom = (creep, targetRoom) => {
 
 const pioneer = (creep, roleName) => {
   // Check if creep needs to move to another room
-  if (isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
+  if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
+
+  // Get creep module
+  let creepModule;
+  try {
+    // eslint-disable-next-line global-require
+    creepModule = require(`./creepModule.${creep.memory.job}`);
+  } catch (error) {
+    creep.memory.job = 'harvest';
+    return;
+  }
+
+  const result = creepModule.execute(creep);
+  switch (result) {
+  case 'full':
+    // Switch to one of the roles that drains energy
+    break;
+  case 'empty':
+    // Switch to one of the roles that gets energy
+    break;
+  default:
+    break;
+  }
 };
 
 const harvester = (creep, roleName) => {
