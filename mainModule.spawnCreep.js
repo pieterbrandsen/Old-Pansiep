@@ -195,7 +195,7 @@ module.exports = {
             // Loop Until On Max Loop //
             for (let i = 0; i < loopAmount && i < loopMaxCount && parts.length + partPushAmount <= maxPartsAmount; i++)
             // Add All The Parts Needed //
-            parts.push(WORK,WORK,CARRY,MOVE);
+            parts.push(WORK,CARRY,MOVE);
           }
           break;
           case "harvesterLD-0":
@@ -219,7 +219,7 @@ module.exports = {
             // Loop Until On Max Loop //
             for (let i = 0; i < loopAmount && i < loopMaxCount && parts.length + partPushAmount <= maxPartsAmount; i++)
             // Add All The Parts Needed //
-            parts.push(WORK,WORK,CARRY,MOVE);
+            parts.push(WORK,WORK,CARRY,CARRY,MOVE);
           }
           break;
           case "transferer":
@@ -355,7 +355,7 @@ module.exports = {
           // Amount Of Time Its Possible To Loop With The Current Energy //
           loopAmount = Math.floor(energyAvailable/energyCost);
           // Limit The Loop Count //
-          loopMaxCount = 10;
+          loopMaxCount = 5;
           // Min Limit The Loop Count //
           loopMinCount = 0;
 
@@ -539,7 +539,7 @@ module.exports = {
           // If There Is Enough Energy To Upgrade With //
           if ((flagMemory.trackers.room.energyStored > 1500 && room.controller.level < 4) || flagMemory.trackers.room.energyStored > 75*1000 || (room.controller.level >= 4 && room.storage && !room.terminal)) {
             // If There Is Less Upgrader Parts Then There Are Sources * 5 And There Are No ConstructionSites To Be Build //
-            if ((flagMemory.partsAmount[`${role}-WORK`] < flagMemory.sources.length * 5 || (flagMemory.partsAmount[`${role}-WORK`] < flagMemory.sources.length * 10 && flagMemory.trackers.room.energyStored > 200 * 1000)) && flagMemory.constructionSitesAmount == 0) {
+            if (flagMemory.partsAmount[`${role}-WORK`] < 10) {
               // If There Are Less Then 4 Upgraders, Return True //
               if (flagMemory.rolesCount[role] < 4)
               result = true;
@@ -706,7 +706,7 @@ module.exports = {
           "extractor",
           "claimer",
           "builderLD",
-          "scientist",
+          //"scientist",
         ];
 
         // Cap The Spawning At one So It Doesnt Spawns The Last Role First //

@@ -6,36 +6,36 @@ module.exports = {
     const flagMemory = Memory.flags[roomName];
     let currentHitsTarget = flagMemory.repair.hitsTarget;
 
-    // if (room && !room.controller.reservation) {
-    //   if (room.walls || room.ramparts) {
-    //     if (currentHitsTarget < 1 * 1000 * 1000)
-    //     currentHitsTarget = 1 * 1000 * 1000;
-    //     else {
-    //       const lowerHitsTarget = currentHitsTarget * 0.95;
-    //       let findLowerRamparts = 0;
-    //       let findLowerWalls = 0;
-    //
-    //
-    //       if (room.ramparts && room.ramparts.length > 0) {
-    //         findLowerRamparts = room.find(room.ramparts, {
-    //           filter: (s) => s.hits < s.hitsMax && s.hits < lowerHitsTarget
-    //         });
-    //       }
-    //
-    //       if (room.walls && room.walls.length > 0) {
-    //         findLowerWalls = room.find(room.walls, {
-    //           filter: (s) => s.hits < s.hitsMax && s.hits < lowerHitsTarget
-    //         });
-    //       }
-    //
-    //       if (findLowerRamparts.length == 0 && findLowerWalls.length == 0)
-    //       currentHitsTarget = lowerHitsTarget;
-    //       else if (flagMemory.trackers.room.energyStored > 75*1000)
-    //       currentHitsTarget *= 1.1;
-    //     }
-    //   }
-    // }
-    // else currentHitsTarget = 1*1000*1000;
+    if (room && !room.controller.reservation) {
+      if (room.walls || room.ramparts) {
+        if (currentHitsTarget < 1 * 1000 * 1000)
+        currentHitsTarget = 1 * 1000 * 1000;
+        else {
+          const lowerHitsTarget = currentHitsTarget * 0.95;
+          let findLowerRamparts = 0;
+          let findLowerWalls = 0;
+
+
+          if (room.ramparts && room.ramparts.length > 0) {
+            findLowerRamparts = room.find(room.ramparts, {
+              filter: (s) => s.hits < s.hitsMax && s.hits < lowerHitsTarget
+            });
+          }
+
+          if (room.walls && room.walls.length > 0) {
+            findLowerWalls = room.find(room.walls, {
+              filter: (s) => s.hits < s.hitsMax && s.hits < lowerHitsTarget
+            });
+          }
+
+          if (findLowerRamparts.length == 0 && findLowerWalls.length == 0)
+          currentHitsTarget = lowerHitsTarget;
+          else if (flagMemory.trackers.room.energyStored > 75*1000)
+          currentHitsTarget *= 1.1;
+        }
+      }
+    }
+    else currentHitsTarget = 1*1000*1000;
     currentHitsTarget = 1*1000*1000
     return currentHitsTarget
   },
