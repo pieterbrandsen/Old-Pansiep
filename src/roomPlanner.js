@@ -897,6 +897,17 @@ const createConstructionSite = (
   return constructionSite;
 };
 // #endregion
+// #region StructureExist
+const structureExist = (room, pos, structureType) => {
+  const structures = room.lookForAt(LOOK_STRUCTURES, pos);
+  for (const structure of structures) {
+    if (structure.structureType === structureType) {
+      return [true, structure.id];
+    }
+  }
+  return [false, ''];
+};
+// #endregion
 // #endregion
 
 // #region BasePlanner function
@@ -921,12 +932,28 @@ const roomPlanner = (room) => {
 
   // #region Source structures
   for (let i = 0; i < flagMemory.commonMemory.sources.length; i++) {
+    // Default is container
+    let structureType = STRUCTURE_CONTAINER;
+
+    if (flagMemory.commonMemory.sources.length === 0) return;
+    // Is 7 (3 links needed) and 6 otherwise (2 links needed)
+    if (room.controller.level >= 5+flagMemory.commonMemory.sources.length) {
+      structureType = STRUCTURE_LINK;
+    }
+
     // Check if room already has this source planned
-    if (flagMemory.roomPlanner.room.sources[i]) return;
+    if (flagMemory.roomPlanner.room.sources[i] && flagMemory.roomPlanner.room.sources[i].structureType === structureType) return;
 
     const source = flagMemory.commonMemory.sources[i];
-    // TODO GET STRUCTURE BASED ON ROOM SPECS (like source count and controller level)
-    const structureType = STRUCTURE_CONTAINER;
+    if (flagMemory.roomPlanner.room.sources[i] !== undefined) {
+      const bestSourcePosition = flagMemory.roomPlanner.room.sources[i];
+      const structureExistResult = structureExist(room, bestSourcePosition.pos, structureType);
+      if (structureExistResult[0]) {
+        const structureObject = Game.getObjectById(structureExistResult[1]);
+        structureObject.destroy();
+      }
+    }
+
     const bestSourcePosition = getBestFreeSpot(room, source.pos, structureType);
     // Check if best position is found, otherwise return
     if (bestSourcePosition === undefined) return;
@@ -942,6 +969,7 @@ const roomPlanner = (room) => {
     if (returnConstruction !== OK) return;
 
     // Set best position to room planner memory for this source
+    bestSourcePosition.structureType = structureType;
     flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
 
     // * Handle visual to show target //
@@ -968,12 +996,28 @@ const roomPlanner = (room) => {
 
   // #region Controller structure
   // Add new room data of the controller //
+  // Default is container
+  let structureType = STRUCTURE_CONTAINER;
+
+
+  // Is 7 (3 links needed) and 6 otherwise (2 links needed)
+  if (room.controller.level >= 6) {
+    structureType = STRUCTURE_LINK;
+  }
+
   // Check if room already has the controller planned
-  if (flagMemory.roomPlanner.room.controller) return;
+  if (flagMemory.roomPlanner.room.controller && flagMemory.roomPlanner.room.controller.structureType === structureType) return;
 
   const controller = room.controller;
-  // TODO GET STRUCTURE BASED ON ROOM SPECS (like source count and controller level)
-  const structureType = STRUCTURE_CONTAINER;
+  if (flagMemory.roomPlanner.room.controller !== undefined) {
+    const bestSourcePosition = flagMemory.roomPlanner.room.controller;
+    const structureExistResult = structureExist(room, bestSourcePosition.pos, structureType);
+    if (structureExistResult[0]) {
+      const structureObject = Game.getObjectById(structureExistResult[1]);
+      structureObject.destroy();
+    }
+  }
+
   const bestControllerPosition = getBestFreeSpot(
     room,
     controller.pos,
@@ -992,6 +1036,7 @@ const roomPlanner = (room) => {
   if (returnConstruction !== OK) return;
 
   // Set best position to room planner memory for this source
+  bestControllerPosition.structureType = structureType;
   flagMemory.roomPlanner.room.controller = bestControllerPosition;
 
   // * Handle visual to show target //
