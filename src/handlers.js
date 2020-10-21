@@ -266,8 +266,8 @@ const memoryHandler = (goal, data) => {
             room.spawns[0].id :
           room.spawns[0].id;
       }
-      // TODO LET REMOTES SPAWN FORM HERE
       if (!flagMemory.remotes) flagMemory.remotes = {totalSourceCount: 0, rooms: []};
+      if (!flagMemory.commonMemory.spawnEnergyStructures) flagMemory.commonMemory.spawnEnergyStructures = [];
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -367,6 +367,12 @@ const timersHandler = (goal, data) => {
           });
         }
       }
+    }
+
+
+    // Get all structures that need's energy each ... ticks //
+    if (Game.time % config.rooms.loops.getSpawnEnergy === 0) {
+      flagMemory.commonMemory.spawnEnergyStructures = room.find(FIND_MY_STRUCTURES, {filter: (s) => [STRUCTURE_LAB, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].indexOf(s.structureType) !== -1}).map((s) => s.id);
     }
 
     // Check all structures saved in memory if they still alive each ... ticks //
