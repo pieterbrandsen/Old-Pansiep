@@ -17,6 +17,7 @@ global.config = {
       },
       structureChecker: 1000,
       spawnCreep: 10,
+      getSpawnEnergy: 50,
     },
   },
   allRoles: ['pioneer',

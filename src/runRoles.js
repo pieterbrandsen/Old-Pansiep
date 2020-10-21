@@ -1,7 +1,35 @@
+// #region Functions
+const isInTargetRoom = (creep, currentRoom, targetRoom) => {
+  // Check if current room is target room, return true if not false
+  if (currentRoom === targetRoom) return true;
+  else moveToRoom(creep, targetRoom);
+};
+
+const moveToRoom = (creep, targetRoom) => {
+  // Define the way how the creep is going to this room
+  let travelWay = 'travelTo';
+  const targetRoomFlag = Game.flags[targetRoom];
+
+
+  if (targetRoomFlag) travelWay = 'flag';
+  switch (travelWay) {
+  case 'flag':
+    creep.travelTo(targetRoomFlag);
+    break;
+  default:
+    creep.travelTo(new RoomPosition(25, 25, targetRoom));
+    break;
+  }
+};
+// #endregion
+
 const pioneer = (creep, roleName) => {
+  // Check if creep needs to move to another room
+  if (isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
 };
 
 const harvester = (creep, roleName) => {
+
 };
 
 const transferer = (creep, roleName) => {
