@@ -268,6 +268,7 @@ const memoryHandler = (goal, data) => {
       }
       if (!flagMemory.remotes) flagMemory.remotes = {totalSourceCount: 0, rooms: []};
       if (!flagMemory.commonMemory.spawnEnergyStructures) flagMemory.commonMemory.spawnEnergyStructures = [];
+      if (!flagMemory.commonMemory.energyStorages) flagMemory.commonMemory.energyStorages = {usable: 0, capacity: 0};
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -373,6 +374,21 @@ const timersHandler = (goal, data) => {
     // Get all structures that need's energy each ... ticks //
     if (Game.time % config.rooms.loops.getSpawnEnergy === 0) {
       flagMemory.commonMemory.spawnEnergyStructures = room.find(FIND_MY_STRUCTURES, {filter: (s) => [STRUCTURE_LAB, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].indexOf(s.structureType) !== -1}).map((s) => s.id);
+    }
+
+    // Get total energy capacity and usage each ... ticks //
+    if (Game.time % config.rooms.loops.getSpawnEnergy === 0) {
+      const energyStructures = room.find(FIND_STRUCTURES, {filter: (s) => [STRUCTURE_TERMINAL, STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK].indexOf(s.structureType) !== -1});
+      let energyUsable = 0;
+      let energyCapacity = 0;
+
+      energyStructures.forEach((storageStructure) => {
+        energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
+        energyCapacity += storageStructure.store.getTotalCapacity(RESOURCE_ENERGY);
+      });
+
+      flagMemory.commonMemory.energyStorages.usable = energyUsable;
+      flagMemory.commonMemory.energyStorages.capacity = energyCapacity;
     }
 
     // Check all structures saved in memory if they still alive each ... ticks //
