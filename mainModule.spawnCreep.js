@@ -539,7 +539,7 @@ module.exports = {
           // If There Is Enough Energy To Upgrade With //
           if ((flagMemory.trackers.room.energyStored > 1500 && room.controller.level < 4) || flagMemory.trackers.room.energyStored > 75*1000 || (room.controller.level >= 4 && room.storage && !room.terminal)) {
             // If There Is Less Upgrader Parts Then There Are Sources * 5 And There Are No ConstructionSites To Be Build //
-            if (flagMemory.partsAmount[`${role}-WORK`] < 10) {
+            if (flagMemory.partsAmount[`${role}-WORK`] < 15) {
               // If There Are Less Then 4 Upgraders, Return True //
               if (flagMemory.rolesCount[role] < 4)
               result = true;
