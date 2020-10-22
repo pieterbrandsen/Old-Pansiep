@@ -12,10 +12,10 @@ global.config = {
     },
     loops: {
       roomPlanner: {
-        base: 5,
-        room: 5,
+        base: 2500,
+        room: 5000,
       },
-      structureChecker: 1000,
+      structureChecker: 5,
       spawnCreep: 10,
       getSpawnEnergy: 50,
     },

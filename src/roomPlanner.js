@@ -916,6 +916,9 @@ const basePlanner = (room) => {
   const roomName = room.name;
   const flagMemory = Memory.flags[roomName];
 
+  // Wait until all other construction sites are build
+  if (flagMemory.commonMemory.constructionSites.length > 0) return;
+
   if (!flagMemory.roomPlanner.base.type) getBaseLayoutType(room);
   else getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
 };
