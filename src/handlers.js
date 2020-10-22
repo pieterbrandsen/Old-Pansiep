@@ -148,10 +148,14 @@ const creepHandler = () => {
     } else {
       // Else run the creep //
       const creepMemory = Memory.creeps[creepName];
+      const flagMemory = Memory.flags[creep.room.name];
       const creepRoleName = creepMemory.role.split('-')[0];
 
       // if no role is found, return
       if (!creepRoleName) return;
+
+      // If flagMemory is not yet ready, return
+      if (!flagMemory.isFilled) return;
 
       // Run the role for the creep
       roleHandler(creep, creepRoleName);
@@ -241,7 +245,6 @@ const memoryHandler = (goal, data) => {
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
-        flagMemory.isFilled = true;
         endLoop = true;
       } else memoryLength = Object.keys(flagMemory).length;
     }
@@ -269,6 +272,9 @@ const memoryHandler = (goal, data) => {
       if (!flagMemory.remotes) flagMemory.remotes = {totalSourceCount: 0, rooms: []};
       if (!flagMemory.commonMemory.spawnEnergyStructures) flagMemory.commonMemory.spawnEnergyStructures = [];
       if (!flagMemory.commonMemory.energyStorages) flagMemory.commonMemory.energyStorages = {usable: 0, capacity: 0};
+      if (!flagMemory.commonMemory.controllerStorage) flagMemory.commonMemory.controllerStorage = {type: '', id: ''};
+
+      timersHandler('ownedRoom', {room: room});
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -289,7 +295,7 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
-      // None
+      timersHandler('remoteRoom', {room: room});
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -332,8 +338,12 @@ const timersHandler = (goal, data) => {
   // #region Room timers
   // #region Global room timers
   const globalRoomTimers = (room) => {
+    // Create a acces point to the flagMemory //
+    const flagMemory = Memory.flags[room.name];
+
     // Run room layout planner each ... ticks //
-    if (Game.time % config.rooms.loops.roomPlanner.room === 0) {
+    console.log(!flagMemory.isFilled);
+    if (Game.time % config.rooms.loops.roomPlanner.room === 0 || !flagMemory.isFilled) {
       roomPlanner.room(room);
     }
   };
@@ -345,12 +355,12 @@ const timersHandler = (goal, data) => {
     const flagMemory = Memory.flags[room.name];
 
     // Run base layout planner each ... ticks //
-    if (Game.time % config.rooms.loops.roomPlanner.base === 0) {
+    if (Game.time % config.rooms.loops.roomPlanner.base === 0 || !flagMemory.isFilled) {
       roomPlanner.base(room);
     }
 
     // Run spawn creep each ... ticks //
-    if (Game.time % config.rooms.loops.spawnCreep === 0) {
+    if (Game.time % config.rooms.loops.spawnCreep === 0 || !flagMemory.isFilled) {
       const lastRole = spawnCreep.execute(room, 'owned', {}, roleCountByRoomByRole[room.name]);
 
       // If role is remote, this means that nothing spawned
@@ -372,12 +382,12 @@ const timersHandler = (goal, data) => {
 
 
     // Get all structures that need's energy each ... ticks //
-    if (Game.time % config.rooms.loops.getSpawnEnergy === 0) {
+    if (Game.time % config.rooms.loops.getSpawnEnergy === 0 || !flagMemory.isFilled) {
       flagMemory.commonMemory.spawnEnergyStructures = room.find(FIND_MY_STRUCTURES, {filter: (s) => [STRUCTURE_LAB, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].indexOf(s.structureType) !== -1}).map((s) => s.id);
     }
 
     // Get total energy capacity and usage each ... ticks //
-    if (Game.time % config.rooms.loops.getSpawnEnergy === 0) {
+    if (Game.time % config.rooms.loops.getSpawnEnergy === 0 || !flagMemory.isFilled) {
       const energyStructures = room.find(FIND_STRUCTURES, {filter: (s) => [STRUCTURE_TERMINAL, STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK].indexOf(s.structureType) !== -1});
       let energyUsable = 0;
       let energyCapacity = 0;
@@ -389,16 +399,35 @@ const timersHandler = (goal, data) => {
 
       flagMemory.commonMemory.energyStorages.usable = energyUsable;
       flagMemory.commonMemory.energyStorages.capacity = energyCapacity;
+      if (Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null) {
+        flagMemory.commonMemory.controllerStorage.usable = Game.getObjectById(flagMemory.commonMemory.controllerStorage.id).store.getUsedCapacity();
+      }
     }
 
     // Check all structures saved in memory if they still alive each ... ticks //
-    if (Game.time % config.rooms.loops.structureChecker === 0) {
-      if (Game.getObjectById() === null) {
+    if (Game.time % config.rooms.loops.structureChecker === 0 || !flagMemory.isFilled) {
+      if (Game.getObjectById(flagMemory.commonMemory.headSpawnId) === null) {
         flagMemory.commonMemory.headSpawnId = room.terminal ?
           room.terminal.findInRange(room.spawns, 2)[0] ?
             room.terminal.findInRange(room.spawns, 2)[0].id :
             room.spawns[0].id :
           room.spawns[0].id;
+      }
+      if (Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) === null) {
+        if (flagMemory.roomPlanner.room.controller) {
+          const controllerPos = flagMemory.roomPlanner.room.controller.pos;
+          const foundStructures = room.lookForAt(LOOK_STRUCTURES, controllerPos.x, controllerPos.y);
+
+          let controllerStorage;
+          foundStructures.forEach((structure) => {
+            if (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_LINK) {
+              controllerStorage = {type: structure.structureType, id: structure.id};
+            }
+          });
+
+          if (!controllerStorage) flagMemory.commonMemory.controllerStorage = {type: '', id: ''};
+          else flagMemory.commonMemory.controllerStorage = controllerStorage;
+        }
       }
     }
   };
