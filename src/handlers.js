@@ -242,6 +242,16 @@ const memoryHandler = (goal, data) => {
         flagMemory.roomPlanner = {room: {sources: []}};
       }
       if (!flagMemory.visuals) flagMemory.visuals = {string: '', objects: {}};
+      if (!flagMemory.repair) {
+        flagMemory.repair = {
+          targets = room
+          .find(FIND_STRUCTURES, {
+            filter: (s) => s.hits < s.hitsMax && s.hits < 250*1000
+          })
+          .map((c) => c.id),
+          hitTarget = 250*1000
+        };
+      };
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {

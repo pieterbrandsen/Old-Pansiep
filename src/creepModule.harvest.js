@@ -3,7 +3,7 @@ const harvest = (creep) => {
   const creepMemory = creep.memory;
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
-  // Return full if current storage is full
+  // Return full if current creep's storage is full
   if (creep.store.getUsedCapacity() === creep.store.getCapacity()) return 'full';
 
   // If creep has no sourceId saved
@@ -80,7 +80,7 @@ const harvest = (creep) => {
 
 
     // Move to source
-    creep.say(creep.moveTo(sourcePos.x, sourcePos.y));
+    creep.moveTo(sourcePos.x, sourcePos.y);
     return;
   } else {
     const result = creep.harvest(source);
