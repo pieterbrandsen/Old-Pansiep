@@ -3,7 +3,7 @@ const transfer = (creep) => {
   const creepMemory = creep.memory;
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
-  // Return full if current creep's storage is full
+  // Return empty if current creep's storage is empty
   if (creep.store.getUsedCapacity() === 0) return 'empty';
 
   // If there is no structures left to transfer to, return full to get another goal if possible
