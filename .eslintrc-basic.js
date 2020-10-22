@@ -1,7 +1,7 @@
 module.exports = {
   "extends": ["google", '.eslintrc-slow'],
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2020
   },
   "env": {
     "mocha": true
