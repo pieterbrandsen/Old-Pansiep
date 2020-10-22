@@ -272,7 +272,7 @@ const memoryHandler = (goal, data) => {
       if (!flagMemory.remotes) flagMemory.remotes = {totalSourceCount: 0, rooms: []};
       if (!flagMemory.commonMemory.spawnEnergyStructures) flagMemory.commonMemory.spawnEnergyStructures = [];
       if (!flagMemory.commonMemory.energyStorages) flagMemory.commonMemory.energyStorages = {usable: 0, capacity: 0};
-      if (!flagMemory.commonMemory.controllerStorage) flagMemory.commonMemory.controllerStorage = {type: '', id: ''};
+      if (!flagMemory.commonMemory.controllerStorage) flagMemory.commonMemory.controllerStorage = {type: undefined, id: undefined};
 
       timersHandler('ownedRoom', {room: room});
 
@@ -342,7 +342,6 @@ const timersHandler = (goal, data) => {
     const flagMemory = Memory.flags[room.name];
 
     // Run room layout planner each ... ticks //
-    console.log(!flagMemory.isFilled);
     if (Game.time % config.rooms.loops.roomPlanner.room === 0 || !flagMemory.isFilled) {
       roomPlanner.room(room);
     }
@@ -425,8 +424,7 @@ const timersHandler = (goal, data) => {
             }
           });
 
-          if (!controllerStorage) flagMemory.commonMemory.controllerStorage = {type: '', id: ''};
-          else flagMemory.commonMemory.controllerStorage = controllerStorage;
+          if (controllerStorage) flagMemory.commonMemory.controllerStorage = controllerStorage.id;
         }
       }
     }

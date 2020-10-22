@@ -15,7 +15,7 @@ global.config = {
         base: 2500,
         room: 5000,
       },
-      structureChecker: 5,
+      structureChecker: 1000,
       spawnCreep: 10,
       getSpawnEnergy: 50,
     },
