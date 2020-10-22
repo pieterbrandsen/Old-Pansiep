@@ -1,4 +1,6 @@
-const withdraw = (creep) => {
+const repair = require('./creepModule.repair');
+
+const build = (creep) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
   const flagMemory = Memory.flags[creepMemory.targetRoom];
@@ -7,7 +9,7 @@ const withdraw = (creep) => {
   if (creep.store.getUsedCapacity() === 0) return 'empty';
 
   // If there are no construction sites left and no target, return full to get another goal if possible
-  if (!flagMemory.commonMemory.constructionSites.length == 0 && !creepMemory.targetId) return 'full';
+  if (!flagMemory.commonMemory.constructionSites.length === 0 && !creepMemory.targetId) return 'full';
 
   if (creepMemory.targetId === undefined) {
     creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures;
@@ -16,8 +18,27 @@ const withdraw = (creep) => {
     const result = creep.build(constructionSite, RESOURCE_ENERGY);
     switch (result) {
     case ERR_INVALID_TARGET:
-      // TODO LOOK AT POSITION AND CHECK IF ITS A RAMPART, IF YES SHOOT UNTIL 5K HP
-      // TODO AFTER THAT SHIFT THE STRUCTURE
+      if (constructionSite.structureType === STRUCTURE_RAMPART) {
+        const foundStructures = creep.room.lookForAt(LOOK_STRUCTURES, constructionSite.pos.x, constructionSite.pos.y);
+
+        let repairStructureId;
+        foundStructures.forEach((structure) => {
+          if (structure.structureType === STRUCTURE_RAMPART) {
+            repairStructureId = structure.id;
+          }
+        });
+
+        if (repairStructureId) {
+          repair({id: repairStructureId});
+          const repairStructure = Game.getObjectById(repairStructureId);
+          if (repairStructure.hits < 5000) {
+            return;
+          }
+        }
+      }
+
+      delete creep.memory.targetId;
+      return;
     case ERR_NOT_IN_RANGE:
       creep.moveTo(constructionSite);
       return;
@@ -29,7 +50,7 @@ const withdraw = (creep) => {
 
 module.exports = {
   execute: (creep) => {
-    const result = withdraw(creep);
+    const result = build(creep);
     return result;
   },
 };
