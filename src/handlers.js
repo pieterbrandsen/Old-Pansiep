@@ -404,7 +404,7 @@ const timersHandler = (goal, data) => {
 
       energyStructures.forEach((storageStructure) => {
         energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
-        energyCapacity += storageStructure.store.getTotalCapacity(RESOURCE_ENERGY);
+        energyCapacity += storageStructure.store.getCapacity(RESOURCE_ENERGY);
       });
 
       flagMemory.commonMemory.energyStorages.usable = energyUsable;
