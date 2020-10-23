@@ -916,6 +916,9 @@ const basePlanner = (room) => {
   const roomName = room.name;
   const flagMemory = Memory.flags[roomName];
 
+  // Wait until all other construction sites are build
+  if (flagMemory.commonMemory.constructionSites.length > 0) return;
+
   if (!flagMemory.roomPlanner.base.type) getBaseLayoutType(room);
   else getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
 };
@@ -970,6 +973,7 @@ const roomPlanner = (room) => {
 
     // Set best position to room planner memory for this source
     bestSourcePosition.structureType = structureType;
+    bestSourcePosition.spotsAround = room.lookForAtArea(LOOK_TERRAIN, source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true).filter((t) => t.terrain !== 'wall').length;
     flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
 
     // * Handle visual to show target //
@@ -1010,8 +1014,8 @@ const roomPlanner = (room) => {
 
   const controller = room.controller;
   if (flagMemory.roomPlanner.room.controller !== undefined) {
-    const bestSourcePosition = flagMemory.roomPlanner.room.controller;
-    const structureExistResult = structureExist(room, bestSourcePosition.pos, structureType);
+    const bestControllerPosition = flagMemory.roomPlanner.room.controller;
+    const structureExistResult = structureExist(room, bestControllerPosition.pos, structureType);
     if (structureExistResult[0]) {
       const structureObject = Game.getObjectById(structureExistResult[1]);
       structureObject.destroy();

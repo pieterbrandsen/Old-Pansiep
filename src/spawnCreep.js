@@ -9,8 +9,8 @@ const initCreepMemory = (room, role, data) => {
   if (!data.targetRoom) data.targetRoom = room.name;
   if (!data.spawnRoom) data.spawnRoom = room.name;
   if (!data.role) data.role = role;
-  if (!data.job) data.job = 'none';
-  if (!data.targetId) data.targetId = 'none';
+  if (!data.job) data.job = undefined;
+  if (!data.targetId) data.targetId = undefined;
 
   const flagMemory = Memory.flags[data.targetRoom];
   if (role.includes('harvester') && !data.sourceId) data.sourceId = flagMemory.commonMemory.sources[role.split('-')[1]].id;
