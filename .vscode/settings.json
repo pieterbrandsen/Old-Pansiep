@@ -1,5 +1,6 @@
 {
   "cSpell.ignoreWords": [
+    "agpl",
     "bodypart",
     "bodypart cost",
     "concat",
@@ -22,6 +23,8 @@
     "preperation",
     "proto",
     "roomname",
+    "screepsrc",
+    "somekey",
     "state",
     "state dest roomname",
     "structure",
