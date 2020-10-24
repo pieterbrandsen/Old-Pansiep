@@ -1,0 +1,40 @@
+{
+  "cSpell.ignoreWords": [
+    "agpl",
+    "bodypart",
+    "bodypart cost",
+    "concat",
+    "cond",
+    "coord",
+    "cost",
+    "default",
+    "default maxops",
+    "dest",
+    "eval",
+    "grafana",
+    "grafana tooangel token",
+    "iife",
+    "last",
+    "last coord",
+    "maxops",
+    "nuker",
+    "pathfinding",
+    "pieterbrandsen",
+    "preperation",
+    "proto",
+    "roomname",
+    "screepsrc",
+    "somekey",
+    "state",
+    "state dest roomname",
+    "structure",
+    "structure nuker",
+    "token",
+    "tooangel",
+    "trav",
+    "uncommenting"
+  ],
+  "cSpell.words": [
+    "upgrader"
+  ]
+}
