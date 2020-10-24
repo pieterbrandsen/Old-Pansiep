@@ -4,17 +4,23 @@ const harvest = (creep) => {
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return full if current creep's storage is full
-  if (creep.store.getUsedCapacity() === creep.store.getCapacity()) return 'full';
+  if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
+    return 'full';
+  }
 
   // If creep has no sourceId saved
   if (!creepMemory.sourceId) {
-    const closestActiveSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-    if (closestActiveSource !== null) creep.memory.sourceId = closestActiveSource.id;
-    else {
+    const closestActiveSource = creep.pos.findClosestByRange(
+      FIND_SOURCES_ACTIVE,
+    );
+    if (closestActiveSource !== null) {
+      creep.memory.sourceId = closestActiveSource.id;
+    } else {
       // If no active source available, move to another one and wait there.
       const closestSource = creep.pos.findClosestByRange(FIND_SOURCES);
-      if (closestSource !== null && !creep.pos.inRangeTo(closestSource, 3)) creep.moveTo(closestSource);
-      else return;
+      if (closestSource !== null && !creep.pos.inRangeTo(closestSource, 3)) {
+        creep.moveTo(closestSource);
+      } else return;
     }
   }
 
@@ -36,7 +42,10 @@ const harvest = (creep) => {
     // If no sourceNumber is found, assign one.
     if (sourceNumber === undefined) {
       // If sourceNumber is in creep's role
-      if (creep.memory.role.split('-').length > 0 && !isNaN(creep.memory.role.split('-')[1])) {
+      if (
+        creep.memory.role.split('-').length > 0 &&
+        !isNaN(creep.memory.role.split('-')[1])
+      ) {
         creepMemory.sourceNumber = creep.memory.role.split('-')[1];
       } else {
         // Else loop until assigned source's id is found
@@ -52,10 +61,23 @@ const harvest = (creep) => {
     } else {
       // Check each 10 ticks if there is still space around the source for this creep
       if (Game.time % 10 === 0) {
-        const creepsAroundTargetSource = creep.room.lookForAtArea(LOOK_CREEPS, source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true).length;
-        const roomPlannerTargetSource = flagMemory.roomPlanner.room.sources[sourceNumber];
+        const creepsAroundTargetSource = creep.room.lookForAtArea(
+          LOOK_CREEPS,
+          source.pos.y - 1,
+          source.pos.x - 1,
+          source.pos.y + 1,
+          source.pos.x + 1,
+          true,
+        ).length;
+        const roomPlannerTargetSource =
+          flagMemory.roomPlanner.room.sources[sourceNumber];
         if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround) {
-          if (creep.room.lookForAt(LOOK_CREEPS, roomPlannerTargetSource.pos)[0] === undefined) {
+          if (
+            creep.room.lookForAt(
+              LOOK_CREEPS,
+              roomPlannerTargetSource.pos,
+            )[0] === undefined
+          ) {
             sourcePos = roomPlannerTargetSource.pos;
           }
         } else {
@@ -63,9 +85,19 @@ const harvest = (creep) => {
           while (i < flagMemory.commonMemory.sources.length) {
             const newSource = flagMemory.commonMemory.sources[i];
             const roomPlannerNewSource = flagMemory.roomPlanner.room.sources[i];
-            const creepsAroundNewSource = creep.room.lookForAtArea(LOOK_CREEPS, newSource.pos.y-1, newSource.pos.x-1, newSource.pos.y+1, newSource.pos.x+1, true).length;
+            const creepsAroundNewSource = creep.room.lookForAtArea(
+              LOOK_CREEPS,
+              newSource.pos.y - 1,
+              newSource.pos.x - 1,
+              newSource.pos.y + 1,
+              newSource.pos.x + 1,
+              true,
+            ).length;
 
-            if (newSource.id !== source.id && creepsAroundNewSource < roomPlannerNewSource.spotsAround) {
+            if (
+              newSource.id !== source.id &&
+              creepsAroundNewSource < roomPlannerNewSource.spotsAround
+            ) {
               creepMemory.sourceId = newSource.id;
               creepMemory.sourceNumber = i;
               return;
@@ -77,7 +109,6 @@ const harvest = (creep) => {
         }
       }
     }
-
 
     // Move to source
     creep.moveTo(sourcePos.x, sourcePos.y);

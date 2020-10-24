@@ -13,11 +13,14 @@ global.config = {
     loops: {
       roomPlanner: {
         base: 2500,
-        room: 5000,
+        room: 2500,
       },
-      structureChecker: 1000,
+      structureNullChecker: 1000,
       spawnCreep: 10,
-      getSpawnEnergy: 50,
+      getSpawnerEnergy: 50,
+      getAllEnergyStructures: 50,
+      getConstructionStructures: 100,
+      getDamagedStructures: 5,
     },
   },
   allRoles: ['pioneer',
@@ -35,7 +38,7 @@ global.config = {
     'repairerLD',
   ],
   creepsCountMax: {
-    'pioneer': 10,
+    'pioneer': 12,
     'transferer': 3,
     'harvester': 2,
     'builder': 3,
