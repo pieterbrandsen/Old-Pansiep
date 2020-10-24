@@ -4,7 +4,7 @@ const transfer = (creep) => {
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty
-  if (creep.store.getUsedCapacity() === 0) return "empty";
+  if (creep.store.getUsedCapacity() === 0) return 'empty';
 
   // If there is no structures left to transfer to, return full to get another goal if possible
   if (
@@ -25,15 +25,16 @@ const transfer = (creep) => {
             STRUCTURE_CONTAINER) ||
         flagMemory.commonMemory.controllerStorage.id === undefined
       ) {
-        return "full";
+        return 'full';
       }
     }
   }
 
   // If the creep is a harvester, run this part
-  if (creep.memory.role.includes("harvest")) {
+  if (creepMemory.role.includes('harvest')) {
+    console.log(flagMemory.roomPlanner.room.sources[0]);
     // If creep memory is missing a targetId, find one
-    if (!creep.memory.targetId) {
+    if (!creepMemory.targetId) {
       // Set the storage pos as found in memory
       const storagePos =
         flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber].pos;
@@ -42,7 +43,7 @@ const transfer = (creep) => {
       const foundStructures = creep.room.lookForAt(
         LOOK_STRUCTURES,
         storagePos.x,
-        storagePos.y
+        storagePos.y,
       );
 
       // Loop through all structures that are found at storagePos and try to find a container or link
@@ -52,12 +53,13 @@ const transfer = (creep) => {
           structure.structureType === STRUCTURE_CONTAINER ||
           structure.structureType === STRUCTURE_LINK
         ) {
-          sourceStructure = { type: structure.structureType, id: structure.id };
+          sourceStructure = {type: structure.structureType, id: structure.id};
         }
       });
 
       // If a source structure was found, set the target Id to that structure
       if (sourceStructure) creep.memory.targetId = sourceStructure.id;
+      else delete flagMemory.roomPlanner.room.sources[creep.memory.sourceNumber];
     } else {
       // Get the saved structure from memory
       const transferStructure = Game.getObjectById(creepMemory.targetId);
@@ -67,12 +69,17 @@ const transfer = (creep) => {
 
       // Switch based on the results
       switch (result) {
-        case ERR_NOT_IN_RANGE:
-          // If creep is not in range, move to target
-          creep.moveTo(transferStructure);
-          break;
-        default:
-          break;
+      case ERR_NOT_IN_RANGE:
+        // If creep is not in range, move to target
+        creep.moveTo(transferStructure);
+        break;
+      case ERR_INVALID_TARGET:
+        // Delete targetId
+        delete creep.memory.targetId;
+        delete flagMemory.roomPlanner.room.sources[creep.memory.sourceNumber];
+        break;
+      default:
+        break;
       }
     }
   } else {
@@ -93,18 +100,22 @@ const transfer = (creep) => {
 
         // Switch based on the results
         switch (result) {
-          case OK:
-          case ERR_INVALID_TARGET:
-          case ERR_FULL:
-            // Delete targetId
-            delete creep.memory.targetId;
-            return;
-          case ERR_NOT_IN_RANGE:
-            // If creep is not in range, move to target
-            creep.moveTo(transferStructure);
-            return;
-          default:
-            break;
+        case OK:
+          if (transferStructure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+            flagMemory.commonMemory.spawnEnergyStructures.push(transferStructure.id);
+          }
+          break;
+        case ERR_INVALID_TARGET:
+        case ERR_FULL:
+          // Delete targetId
+          delete creep.memory.targetId;
+          return;
+        case ERR_NOT_IN_RANGE:
+          // If creep is not in range, move to target
+          creep.moveTo(transferStructure);
+          return;
+        default:
+          break;
         }
       }
     } else if (
@@ -135,18 +146,18 @@ const transfer = (creep) => {
 
         // Switch based on the results
         switch (result) {
-          case OK:
-          case ERR_INVALID_TARGET:
-          case ERR_FULL:
-            // Delete targetId
-            delete creep.memory.targetId;
-            return;
-          case ERR_NOT_IN_RANGE:
-            // If creep is not in range, move to target
-            creep.moveTo(transferStructure);
-            return;
-          default:
-            break;
+        case OK:
+        case ERR_INVALID_TARGET:
+        case ERR_FULL:
+          // Delete targetId
+          delete creep.memory.targetId;
+          return;
+        case ERR_NOT_IN_RANGE:
+          // If creep is not in range, move to target
+          creep.moveTo(transferStructure);
+          return;
+        default:
+          break;
         }
       }
     } else if (
@@ -164,20 +175,21 @@ const transfer = (creep) => {
 
       // Switch based on the results
       switch (result) {
-        case OK:
-        case ERR_INVALID_TARGET:
-        case ERR_FULL:
-          // Delete targetId
-          delete creep.memory.targetId;
-          if (result === ERR_INVALID_TARGET) {
-            flagMemory.commonMemory.controllerStorage.id = undefined;
-          }
-        case ERR_NOT_IN_RANGE:
-          // If creep is not in range, move to target
-          creep.moveTo(transferStructure);
-          return;
-        default:
-          break;
+      case OK:
+      case ERR_INVALID_TARGET:
+      case ERR_FULL:
+        // Delete targetId
+        delete creep.memory.targetId;
+        if (result === ERR_INVALID_TARGET) {
+          flagMemory.commonMemory.controllerStorage.id = undefined;
+        }
+        break;
+      case ERR_NOT_IN_RANGE:
+        // If creep is not in range, move to target
+        creep.moveTo(transferStructure);
+        return;
+      default:
+        break;
       }
     }
   }
