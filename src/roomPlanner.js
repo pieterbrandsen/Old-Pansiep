@@ -140,7 +140,6 @@ const getBaseLayoutType = (room) => {
 const getBaseLayoutBasedOnType = (room, layoutType) => {
   // Acces flagMemory
   const flagMemory = Memory.flags[room.name];
-
   let midPos;
   if (flagMemory.commonMemory.headSpawnId) {
     const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
@@ -642,6 +641,9 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
     ],
   ];
 
+  let i = 2;
+  let structureObject = null;
+
   switch (layoutType) {
   case 'generated':
     // #region Generated layout
@@ -652,18 +654,26 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
     // #region Bunker layout
     // * Bunker layout //
     // Build everything from the controller level and all below //
-    for (let i = 2; i <= room.controller.level; i++) {
+    while (i <= room.controller.level) {
+      // Loop through all bunker structures for this level //
       for (let y = 0; y < bunker[i].length; y++) {
-        const structureObject = bunker[i][y];
-        createConstructionSite(
-          room,
-          {x: structureObject.x, y: structureObject.y},
-          structureObject.type,
-          structureObject.name ?
-            structureObject.name.replace('{ roomName }', room.name) :
-            undefined,
-        );
+        // Get structureObject
+        structureObject = null;
+        structureObject = bunker[i][y];
+        if (structureObject !== null) {
+          // Create the construction site
+          createConstructionSite(
+            room,
+            {x: structureObject.x, y: structureObject.y},
+            structureObject.type,
+            structureObject.name ?
+              structureObject.name.replace('{ roomName }', room.name) :
+              undefined,
+          );
+        }
       }
+      // Add a controller level after execution
+      i++;
     }
     break;
     // #endregion
@@ -866,30 +876,24 @@ const createConstructionSite = (
     structureName,
   );
 
-  const look = room.lookAt(position.x, position.y);
-  const flagMemory = Memory.flags[room.name];
+  const placedConstructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, position.x, position.y);
+  // const flagMemory = Memory.flags[room.name];
 
   // Switch based on return value of createConstructionSite
   switch (constructionSite) {
   case OK:
-    // Loop through all object's found at this position
-    look.forEach((lookObject) => {
-      if (lookObject.type === LOOK_CONSTRUCTION_SITES) {
-        flagMemory.commonMemory.constructionSites.push(
-          lookObject.constructionSite.id,
-        );
-      }
-    });
+    // TODO THIS doesn't WORK BECAUSE THE CONSTRUCTION site is not yet known at time of calling
+    // // Push constructor to array
+    // if (placedConstructionSite && placedConstructionSite.id) {
+    //   flagMemory.commonMemory.constructionSites.push(
+    //     placedConstructionSite[0].id);
+    // }
     break;
   default:
-    look.forEach((lookObject) => {
-      if (lookObject.type === LOOK_CONSTRUCTION_SITES) {
-        if (lookObject.constructionSite.structureType === structureType) {
-          // Target structureType was found so set construction site to OK (good)
-          constructionSite = OK;
-        }
-      }
-    });
+    if (placedConstructionSite[0] !== undefined && placedConstructionSite[0].structureType === structureType) {
+      // Target structureType was found so set construction site to OK (good)
+      constructionSite = OK;
+    }
     break;
   }
 
@@ -948,12 +952,17 @@ const roomPlanner = (room) => {
     if (flagMemory.roomPlanner.room.sources[i] && flagMemory.roomPlanner.room.sources[i].structureType === structureType) return;
 
     const source = flagMemory.commonMemory.sources[i];
-    if (flagMemory.roomPlanner.room.sources[i] !== undefined) {
+    if (flagMemory.roomPlanner.room.sources[i]) {
       const bestSourcePosition = flagMemory.roomPlanner.room.sources[i];
       const structureExistResult = structureExist(room, bestSourcePosition.pos, structureType);
       if (structureExistResult[0]) {
         const structureObject = Game.getObjectById(structureExistResult[1]);
         structureObject.destroy();
+      } else {
+        const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSourcePosition.pos.x, bestSourcePosition.pos.y);
+        if (constructionSite.length > 0) {
+          return;
+        }
       }
     }
 
@@ -1010,7 +1019,7 @@ const roomPlanner = (room) => {
   }
 
   // Check if room already has the controller planned
-  if (flagMemory.roomPlanner.room.controller && flagMemory.roomPlanner.room.controller.structureType === structureType) return;
+  if ((flagMemory.roomPlanner.room.controller && flagMemory.roomPlanner.room.controller.structureType === structureType) || (room.controller && !room.controller.my)) return;
 
   const controller = room.controller;
   if (flagMemory.roomPlanner.room.controller !== undefined) {
@@ -1019,6 +1028,11 @@ const roomPlanner = (room) => {
     if (structureExistResult[0]) {
       const structureObject = Game.getObjectById(structureExistResult[1]);
       structureObject.destroy();
+    } else {
+      const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestControllerPosition.pos.x, bestControllerPosition.pos.y);
+      if (constructionSite.length > 0) {
+        return;
+      }
     }
   }
 

@@ -148,7 +148,7 @@ const creepHandler = () => {
     } else {
       // Else run the creep //
       const creepMemory = Memory.creeps[creepName];
-      const flagMemory = Memory.flags[creep.room.name];
+      const flagMemory = Memory.flags[creep.memory.targetRoom];
       const creepRoleName = creepMemory.role.split('-')[0];
 
       // if no role is found, return
@@ -233,9 +233,8 @@ const memoryHandler = (goal, data) => {
               undefined,
           },
           sources: sources,
-          constructionSites: room
-            .find(FIND_CONSTRUCTION_SITES)
-            .map((c) => c.id),
+          constructionSites: [],
+          energyStructures: [],
         };
       }
       if (!flagMemory.roomPlanner) {
@@ -243,13 +242,8 @@ const memoryHandler = (goal, data) => {
       }
       if (!flagMemory.visuals) flagMemory.visuals = {string: '', objects: {}};
       if (!flagMemory.repair) {
-        const targets = room
-          .find(FIND_STRUCTURES, {
-            filter: (s) => s.hits < s.hitsMax && s.hits < 250*1000,
-          })
-          .map((c) => c.id);
         flagMemory.repair = {
-          targets: targets,
+          targets: [],
           hitTarget: 250*1000,
         };
       }
@@ -356,6 +350,49 @@ const timersHandler = (goal, data) => {
     if (Game.time % config.rooms.loops.roomPlanner.room === 0 || !flagMemory.isFilled) {
       roomPlanner.room(room);
     }
+
+    // Get total energy capacity and usage each ... ticks //
+    if (Game.time % config.rooms.loops.getAllEnergyStructures === 0 || !flagMemory.isFilled) {
+      // Reset energyStructures array
+      flagMemory.commonMemory.energyStructures = [];
+
+      // Find all structures where energy can be withdrawn from
+      const energyStructures = room.find(FIND_STRUCTURES, {filter: (s) => [STRUCTURE_TERMINAL, STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK].indexOf(s.structureType) !== -1});
+      let energyUsable = 0;
+      let energyCapacity = 0;
+
+      // Loop through all structures that were found
+      energyStructures.forEach((storageStructure) => {
+        // Add the total energy available and capacity
+        energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
+        energyCapacity += storageStructure.store.getCapacity(RESOURCE_ENERGY);
+
+        // Push energy available and id to energyStructures array
+        flagMemory.commonMemory.energyStructures.push({id: storageStructure.id, usable: storageStructure.store.getUsedCapacity(RESOURCE_ENERGY)});
+      });
+
+      flagMemory.commonMemory.energyStorages.usable = energyUsable;
+      flagMemory.commonMemory.energyStorages.capacity = energyCapacity;
+      if (Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null) {
+        flagMemory.commonMemory.controllerStorage.usable = Game.getObjectById(flagMemory.commonMemory.controllerStorage.id).store.getUsedCapacity();
+      }
+    }
+
+    // Get all construction sites each ... ticks //
+    if (Game.time % config.rooms.loops.getConstructionStructures === 0 || !flagMemory.isFilled) {
+      flagMemory.commonMemory.constructionSites = room
+        .find(FIND_CONSTRUCTION_SITES)
+        .map((c) => c.id);
+    }
+
+    // Get all damaged structures each ... ticks //
+    if (Game.time % config.rooms.loops.getDamagedStructures === 0 || !flagMemory.isFilled) {
+      flagMemory.repair.targets = room
+        .find(FIND_STRUCTURES, {
+          filter: (s) => s.hits < s.hitsMax && s.hits < ((flagMemory.repair.hitTarget) ? (flagMemory.repair.hitTarget) : 250*1000),
+        })
+        .map((c) => c.id);
+    }
   };
   // #endregion
 
@@ -392,30 +429,12 @@ const timersHandler = (goal, data) => {
 
 
     // Get all structures that need's energy each ... ticks //
-    if (Game.time % config.rooms.loops.getSpawnEnergy === 0 || !flagMemory.isFilled) {
+    if (Game.time % config.rooms.loops.getSpawnerEnergy === 0 || !flagMemory.isFilled) {
       flagMemory.commonMemory.spawnEnergyStructures = room.find(FIND_MY_STRUCTURES, {filter: (s) => [STRUCTURE_LAB, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].indexOf(s.structureType) !== -1}).map((s) => s.id);
     }
 
-    // Get total energy capacity and usage each ... ticks //
-    if (Game.time % config.rooms.loops.getSpawnEnergy === 0 || !flagMemory.isFilled) {
-      const energyStructures = room.find(FIND_STRUCTURES, {filter: (s) => [STRUCTURE_TERMINAL, STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK].indexOf(s.structureType) !== -1});
-      let energyUsable = 0;
-      let energyCapacity = 0;
-
-      energyStructures.forEach((storageStructure) => {
-        energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
-        energyCapacity += storageStructure.store.getCapacity(RESOURCE_ENERGY);
-      });
-
-      flagMemory.commonMemory.energyStorages.usable = energyUsable;
-      flagMemory.commonMemory.energyStorages.capacity = energyCapacity;
-      if (Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null) {
-        flagMemory.commonMemory.controllerStorage.usable = Game.getObjectById(flagMemory.commonMemory.controllerStorage.id).store.getUsedCapacity();
-      }
-    }
-
     // Check all structures saved in memory if they still alive each ... ticks //
-    if (Game.time % config.rooms.loops.structureChecker === 0 || !flagMemory.isFilled) {
+    if (Game.time % config.rooms.loops.structureNullChecker === 0 || !flagMemory.isFilled) {
       if (Game.getObjectById(flagMemory.commonMemory.headSpawnId) === null) {
         flagMemory.commonMemory.headSpawnId = room.terminal ?
           room.terminal.findInRange(room.spawns, 2)[0] ?
@@ -470,7 +489,9 @@ const timersHandler = (goal, data) => {
 // #region Room visuals handler
 const roomVisualHandler = (room) => {
   const flagMemory = Memory.flags[room.name];
-  room.visual.import(flagMemory.visuals.string);
+  if (flagMemory !== undefined && room.visuals !== undefined) {
+    room.visual.import(flagMemory.visuals.string);
+  }
 };
 // #endregion
 // #endregion
