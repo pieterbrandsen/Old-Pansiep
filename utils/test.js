@@ -52,7 +52,7 @@ class Tester {
    * @param {object} defer
    * @return {undefined}
    */
-  async checkForSuccess(line, defer) {
+  async checkForSucces(line, defer) {
     if (botsSpawned && line.startsWith(`'OK'`)) {
       let appendix = '';
       if (this.maxRuntime > 0) {
@@ -66,9 +66,9 @@ class Tester {
         console.log(JSON.stringify(status, null, 2));
         console.log('Milestones:');
         console.log(JSON.stringify(milestones, null, 2));
-        const fails = milestones.filter((milestone) => milestone.required && milestone.tick < lastTick && !milestone.success);
-        if (fails.length > 0) {
-          for (const fail of fails) {
+        const failes = milestones.filter((milestone) => milestone.required && milestone.tick < lastTick && !milestone.success);
+        if (failes.length > 0) {
+          for (const fail of failes) {
             console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);
           }
           console.log(`${lastTick} Status check: failed`);
@@ -79,7 +79,7 @@ class Tester {
         defer.resolve();
       }
     }
-  };
+  }
 
   /**
    * execute method
@@ -115,7 +115,7 @@ class Tester {
         return;
       }
 
-      await this.checkForSuccess(line, defer);
+      await this.checkForSucces(line, defer);
     });
 
     socket.on('connect', () => {
@@ -166,7 +166,7 @@ const printCurrentStatus = function(gameTime) {
 };
 
 /**
- * updates the status object
+ * updates the stauts object
  *
  * @param {object} event
  */
