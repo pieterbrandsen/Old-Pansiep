@@ -124,7 +124,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (targetRoom === undefined) break;
 
-      if (targetFlagMemory === undefined && targetFlagMemory.commonMemory.energyStorages.usable < 1000) break;
+      if (targetFlagMemory === undefined && targetFlagMemory.commonMemory.energyStorages.usable < 1500) break;
 
       result = true;
       break;
