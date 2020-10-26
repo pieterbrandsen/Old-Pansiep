@@ -85,27 +85,30 @@ const harvest = (creep) => {
           while (i < flagMemory.commonMemory.sources.length) {
             const newSource = flagMemory.commonMemory.sources[i];
             const roomPlannerNewSource = flagMemory.roomPlanner.room.sources[i];
-            const creepsAroundNewSource = creep.room.lookForAtArea(
-              LOOK_CREEPS,
-              newSource.pos.y - 1,
-              newSource.pos.x - 1,
-              newSource.pos.y + 1,
-              newSource.pos.x + 1,
-              true,
-            ).length;
+            if (roomPlannerNewSource === null) {
 
-            if (
-              newSource.id !== source.id &&
-              creepsAroundNewSource < roomPlannerNewSource.spotsAround
-            ) {
-              creepMemory.sourceId = newSource.id;
-              creepMemory.sourceNumber = i;
-              return;
-            }
-            i++;
-          }
-
-          if (!creep.pos.inRangeTo(source, 3)) creep.moveTo(source);
+              const creepsAroundNewSource = creep.room.lookForAtArea(
+                LOOK_CREEPS,
+                newSource.pos.y - 1,
+                newSource.pos.x - 1,
+                newSource.pos.y + 1,
+                newSource.pos.x + 1,
+                true,
+                ).length;
+                
+                if (
+                  newSource.id !== source.id &&
+                  creepsAroundNewSource < roomPlannerNewSource.spotsAround
+                  ) {
+                    creepMemory.sourceId = newSource.id;
+                    creepMemory.sourceNumber = i;
+                    return;
+                  }
+                  i++;
+                }
+                
+              }
+                if (!creep.pos.inRangeTo(source, 3)) creep.moveTo(source);
         }
       }
     }
