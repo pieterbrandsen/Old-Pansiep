@@ -25,19 +25,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-      steps:
-      - checkout
-      - run: npm install
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run:
-          command: npm run test
-          no_output_timeout: 2h
-              deploy:	
-      docker:	
-        - image: circleci/node:10.16.3-stretch	
-      steps:	
-      - checkout	
-      - run: npm install	
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc	
-      - run: npm publish || true	
-      - run: npm run deploy
+    - run: npm run test
