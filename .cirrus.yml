@@ -2,5 +2,6 @@ container:
   image: node:latest
 
 test_task:
-script: npm install
+  node_modules_cache:
+    folder: node_modules
   test_script: npm run test
