@@ -983,7 +983,9 @@ const roomPlanner = (room) => {
     // Set best position to room planner memory for this source
     bestSourcePosition.structureType = structureType;
     bestSourcePosition.spotsAround = room.lookForAtArea(LOOK_TERRAIN, source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true).filter((t) => t.terrain !== 'wall').length;
-    flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
+    if (bestSourcePosition !== null) {
+      flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
+    } else break;
 
     // * Handle visual to show target //
     // If visual is already in memory, return
@@ -1053,7 +1055,9 @@ const roomPlanner = (room) => {
 
   // Set best position to room planner memory for this source
   bestControllerPosition.structureType = structureType;
-  flagMemory.roomPlanner.room.controller = bestControllerPosition;
+  if (bestControllerPosition !== null) {
+    flagMemory.roomPlanner.room.controller = bestControllerPosition;
+  } else return;
 
   // * Handle visual to show target //
   // If visual is already in memory, return

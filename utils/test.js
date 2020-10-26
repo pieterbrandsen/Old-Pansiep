@@ -39,8 +39,7 @@ class Tester {
     this.maxRuntime = 0;
     if (process.argv.length > 2) {
       try {
-        this.maxRuntime = parseInt(process.argv[2], 10) * 60;
-        console.log(this.maxRuntime/60, process.argv[2])
+        this.maxRuntime = parseInt(process.argv[2], 10) * 30;
       } catch (e) {
         console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
       }
@@ -166,11 +165,7 @@ const printCurrentStatus = function(gameTime) {
 };
 
 /**
-<<<<<<< HEAD
- * updates the stauts object
-=======
  * updates the status object
->>>>>>> Pansiep
  *
  * @param {object} event
  */
