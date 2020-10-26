@@ -1,0 +1,27 @@
+.env
+node_modules/
+dist/
+
+## used for some private servers, dist/**.js concated into build
+# make sure requrie.js is not concated and main.js is concated at last
+build/
+
+## steam sync file
+.sync
+
+## screeps.com account.email and account.password
+account.screeps.com.js
+
+.localSync.js
+
+##Autocomplete
+ScreepsAutocomplete/
+steam_appid.txt
+
+.screepsrctest-server/logs/
+test-server/logs/
+tests/logs/
+tests/db.json
+tmp-test-server/
+server/
+account_local.screeps.com.js
