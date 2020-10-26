@@ -32,12 +32,12 @@ const transfer = (creep) => {
 
   // If the creep is a harvester, run this part
   if (creepMemory.role.includes('harvest')) {
-    console.log(flagMemory.roomPlanner.room.sources[0]);
     // If creep memory is missing a targetId, find one
     if (!creepMemory.targetId) {
       // Set the storage pos as found in memory
       const storagePos =
-        flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber].pos;
+        (flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber]) ? ((flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber]).pos) : (null);
+      if (storagePos === null) return;
 
       // Find all structures that are at the storagePos
       const foundStructures = creep.room.lookForAt(

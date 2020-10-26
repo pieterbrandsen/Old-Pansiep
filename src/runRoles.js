@@ -22,7 +22,11 @@ const moveToRoom = (creep, targetRoom) => {
 };
 // #endregion
 
+<<<<<<< HEAD
 const pioneer = (creep, roleName) => {
+=======
+const pioneer = (creep) => {
+>>>>>>> Pansiep
   // Acces flagMemory
   const flagMemory = Memory.flags[creep.memory.spawnRoom];
 
@@ -71,6 +75,10 @@ const pioneer = (creep, roleName) => {
   case 'empty':
     // Delete targetId
     delete creep.memory.targetId;
+<<<<<<< HEAD
+=======
+
+>>>>>>> Pansiep
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable > 1500) {
       creep.memory.job = 'withdraw';
@@ -100,10 +108,22 @@ const harvester = (creep, roleName) => {
   const result = creepModule.execute(creep);
   switch (result) {
   case 'full':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the jobs that drains energy
     creep.memory.job = 'transfer';
     break;
   case 'empty':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the roles that gets energy
     creep.memory.job = 'harvest';
     break;
@@ -126,6 +146,12 @@ const transferer = (creep, roleName) => {
   const result = creepModule.execute(creep);
   switch (result) {
   case 'full':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Check if creep needs to move to another room
     if (!isInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
       return;
@@ -135,6 +161,12 @@ const transferer = (creep, roleName) => {
     creep.memory.job = 'transfer';
     break;
   case 'empty':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Check if creep needs to move to another room
     if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
@@ -168,10 +200,22 @@ const upgrader = (creep, roleName) => {
   const result = creepModule.execute(creep);
   switch (result) {
   case 'full':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the jobs that drains energy
     creep.memory.job = 'upgrade';
     break;
   case 'empty':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the roles that gets energy
     if (
       flagMemory.commonMemory.usable >= 10 * 1000 ||
@@ -207,10 +251,22 @@ const repairer = (creep, roleName) => {
   const result = creepModule.execute(creep);
   switch (result) {
   case 'full':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the jobs that drains energy
     creep.memory.job = 'repair';
     break;
   case 'empty':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable >= 2000) {
       creep.memory.job = 'withdraw';
@@ -243,10 +299,22 @@ const builder = (creep, roleName) => {
   const result = creepModule.execute(creep);
   switch (result) {
   case 'full':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the jobs that drains energy
     creep.memory.job = 'build';
     break;
   case 'empty':
+<<<<<<< HEAD
+=======
+    // Delete targetId
+    delete creep.memory.targetId;
+
+>>>>>>> Pansiep
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable >= 2000) {
       creep.memory.job = 'withdraw';
