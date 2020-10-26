@@ -1057,7 +1057,7 @@ const roomPlanner = (room) => {
   bestControllerPosition.structureType = structureType;
   if (bestControllerPosition !== null) {
     flagMemory.roomPlanner.room.controller = bestControllerPosition;
-  } else break;
+  } else return;
 
   // * Handle visual to show target //
   // If visual is already in memory, return

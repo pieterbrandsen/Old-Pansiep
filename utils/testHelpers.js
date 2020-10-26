@@ -63,7 +63,7 @@ module.exports.followLog = followLog;
  */
 const setPassword = function(line, socket, rooms, roomsSeen, playerRoom) {
   for (const room of rooms) {
-    if (line.startsWith(`'User ${room} with bot AI "screeps-bot-tooangel" spawned in ${room}'`)) {
+    if (line.startsWith(`'User ${room} with bot AI "screeps-bot-pansiep" spawned in ${room}'`)) {
       roomsSeen[room] = true;
       console.log(`> Set password for ${room}`);
       /* eslint max-len: ["error", 1300] */
@@ -205,7 +205,7 @@ const spawnBots = async function(line, socket, rooms, players, tickDuration) {
 
     for (const room of rooms) {
       console.log(`> Spawn bot ${room} as Pansiep`);
-      socket.write(`bots.spawn('pansiep-ai', '${room}', {username: '${room}', cpu: 100, gcl: 1, x: ${players[room].x}, y: ${players[room].y}})\r\n`);
+      socket.write(`bots.spawn('screeps-bot-pansiep', '${room}', {username: '${room}', cpu: 100, gcl: 1, x: ${players[room].x}, y: ${players[room].y}})\r\n`);
       await sleep(1);
     }
     return true;
