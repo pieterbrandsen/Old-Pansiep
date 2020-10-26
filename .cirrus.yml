@@ -1,0 +1,11 @@
+container:
+  - image: node:latest
+  - image: mongo:latest
+  - image: redis:latest
+
+test_task:
+  test: 
+  - npm install 
+  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+  - command: npm run test
+    no_output_timeout: 2h
