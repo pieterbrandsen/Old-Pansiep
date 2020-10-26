@@ -2,4 +2,5 @@ container:
   image: node:latest
 
 test_task:
-  test_script: npm install;npm run test
+install_script: npm install
+  test_script: npm run test
