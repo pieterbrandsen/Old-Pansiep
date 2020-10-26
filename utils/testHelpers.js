@@ -41,7 +41,6 @@ async function followLog(rooms, logConsole, statusUpdater, restrictToRoom) {
       path: '/',
     });
     
-    console.log(await api.auth())
     await api.auth();
 
     api.socket.connect();
