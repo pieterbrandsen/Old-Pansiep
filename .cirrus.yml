@@ -1,5 +1,5 @@
 container:
-  image: node:latest
+  image: node:12.19.0
 
 test_task:
   node_modules_cache:
