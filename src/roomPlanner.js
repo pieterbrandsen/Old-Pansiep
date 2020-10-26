@@ -938,11 +938,12 @@ const roomPlanner = (room) => {
   flagMemory.visuals.objects.sources = [];
 
   // #region Source structures
+  //
   for (let i = 0; i < flagMemory.commonMemory.sources.length; i++) {
     // Default is container
     let structureType = STRUCTURE_CONTAINER;
 
-    if (flagMemory.commonMemory.sources.length === 0) return;
+    if (flagMemory.commonMemory.sources.length === 0) break;
     // Is 7 (3 links needed) and 6 otherwise (2 links needed)
     if (room.controller.level >= 5+flagMemory.commonMemory.sources.length) {
       structureType = STRUCTURE_LINK;
@@ -961,14 +962,14 @@ const roomPlanner = (room) => {
       } else {
         const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSourcePosition.pos.x, bestSourcePosition.pos.y);
         if (constructionSite.length > 0) {
-          return;
+          break;
         }
       }
     }
 
     const bestSourcePosition = getBestFreeSpot(room, source.pos, structureType);
     // Check if best position is found, otherwise return
-    if (bestSourcePosition === undefined) return;
+    if (bestSourcePosition === undefined || bestSourcePosition === null) break;
 
     // Build a structure there //
     const returnConstruction = createConstructionSite(
@@ -976,9 +977,8 @@ const roomPlanner = (room) => {
       bestSourcePosition.pos,
       structureType,
     );
-
     // Check if structure is successfully constructed
-    if (returnConstruction !== OK) return;
+    if (returnConstruction !== OK) break;
 
     // Set best position to room planner memory for this source
     bestSourcePosition.structureType = structureType;
@@ -991,18 +991,16 @@ const roomPlanner = (room) => {
       flagMemory.visuals.objects.sources[i] === true ||
       !config.rooms.visuals.structures
     ) {
-      return;
-    }
-
-    const sourceVisualString = room.visual.circle(bestSourcePosition.pos, {
-      fill: 'transparent',
-      radius: 0.55,
-      stroke: 'red',
-    });
-    if (Object.keys(sourceVisualString).length > 0) {
-      // Update visual string in flagMemory //
-      flagMemory.visuals.string = room.visual.export();
-      flagMemory.visuals.objects.sources.push(true);
+      const sourceVisualString = room.visual.circle(bestSourcePosition.pos, {
+        fill: 'transparent',
+        radius: 0.55,
+        stroke: 'red',
+      });
+      if (Object.keys(sourceVisualString).length > 0) {
+        // Update visual string in flagMemory //
+        flagMemory.visuals.string = room.visual.export();
+        flagMemory.visuals.objects.sources[i] = true;
+      }
     }
   }
   // #endregion

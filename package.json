@@ -1,5 +1,5 @@
 {
-  "name": "pansiep-ai",
+  "name": "screeps-bot-pansiep",
   "version": "1.0.0",
   "description": "A Screeps bot",
   "main": "src/main.js",
@@ -25,7 +25,7 @@
     "request-promise-native": "1.0.9",
     "rimraf": "3.0.2",
     "screeps": "^4.2.3",
-    "screeps-api": "1.12.1",
+    "screeps-api": "^1.12.1",
     "screeps-profiler": "2.0.1",
     "screepsmod-admin-utils": "1.18.2",
     "screepsmod-auth": "2.4.8",
@@ -46,5 +46,9 @@
     "deploy": "grunt deploy",
     "lint": "eslint -c .eslintrc-basic.js src/",
     "run-test": "git checkout test-server/db.json && node utils/test_on_server.js"
+  },
+  "homepage": "https://github.com/pieterbrandsen/Pansiep#readme",
+  "directories": {
+    "test": "test"
   }
 }

@@ -4,6 +4,6 @@
     "../node_modules/screepsmod-admin-utils/index.js"
   ],
   "bots": {
-    "pansiep-ai": "../src"
+    "screeps-bot-pansiep": "../src"
   }
 }

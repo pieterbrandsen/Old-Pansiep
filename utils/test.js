@@ -40,6 +40,7 @@ class Tester {
     if (process.argv.length > 2) {
       try {
         this.maxRuntime = parseInt(process.argv[2], 10) * 60;
+        console.log(this.maxRuntime/60, process.argv[2])
       } catch (e) {
         console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
       }
@@ -96,7 +97,6 @@ class Tester {
   async execute() {
     const defer = q.defer();
     const socket = net.connect(cliPort, '127.0.0.1');
-
     socket.on('data', async (raw) => {
       const data = raw.toString('utf8');
       const line = data.replace(/^< /, '').replace(/\n< /, '');
@@ -104,7 +104,7 @@ class Tester {
         botsSpawned = true;
         return;
       }
-      if (setPassword(line, socket, rooms, this.roomsSeen, playerRoom)) {
+      if (await setPassword(line, socket, rooms, this.roomsSeen, playerRoom)) {
         if (rooms.length === Object.keys(this.roomsSeen).length) {
           console.log('> Listen to the log');
           followLog(rooms, logConsole, statusUpdater);
@@ -166,7 +166,7 @@ const printCurrentStatus = function(gameTime) {
 };
 
 /**
- * updates the stauts object
+ * updates the status object
  *
  * @param {object} event
  */
@@ -234,3 +234,4 @@ async function main() {
   await tester.run();
 }
 main();
+  
