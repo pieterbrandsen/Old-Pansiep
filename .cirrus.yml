@@ -4,8 +4,6 @@ container:
 test_task:
   node_modules_cache:
     folder: node_modules
-  test: 
-  - npm install 
-  - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-  - command: npm run test
-    no_output_timeout: 2h
+    fingerprint_script: cat package-lock.json
+    populate_script: npm ci
+  test_script: npm run test
