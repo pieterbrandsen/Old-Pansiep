@@ -4,10 +4,6 @@
     "../node_modules/screepsmod-admin-utils/index.js"
   ],
   "bots": {
-<<<<<<< HEAD
-    "pansiep-ai": "../src"
-=======
     "screeps-bot-pansiep": "../src"
->>>>>>> Pansiep
   }
 }
