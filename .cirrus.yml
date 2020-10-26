@@ -1,9 +1,9 @@
 container:
   - image: node:latest
-  - image: mongo:latest
-  - image: redis:latest
 
 test_task:
+  node_modules_cache:
+    folder: node_modules
   test: 
   - npm install 
   - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
