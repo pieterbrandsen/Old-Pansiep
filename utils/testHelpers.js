@@ -27,10 +27,6 @@ module.exports.setHostname = setHostname;
  * @return {undefined}
  */
 async function followLog(rooms, logConsole, statusUpdater, restrictToRoom) {
-<<<<<<< HEAD
-=======
-  console.log()
->>>>>>> Pansiep
   for (const room of rooms) {
     if (restrictToRoom && room !== restrictToRoom) {
       continue;
@@ -43,11 +39,7 @@ async function followLog(rooms, logConsole, statusUpdater, restrictToRoom) {
       port: port,
       path: '/',
     });
-<<<<<<< HEAD
-
-=======
     
->>>>>>> Pansiep
     await api.auth();
 
     api.socket.connect();
@@ -60,11 +52,7 @@ async function followLog(rooms, logConsole, statusUpdater, restrictToRoom) {
 module.exports.followLog = followLog;
 
 /**
-<<<<<<< HEAD
- * sets password for TooAngel user
-=======
  * sets password for Pansiep user
->>>>>>> Pansiep
  *
  * @param {string} line
  * @param {object} socket
@@ -75,11 +63,7 @@ module.exports.followLog = followLog;
  */
 const setPassword = function(line, socket, rooms, roomsSeen, playerRoom) {
   for (const room of rooms) {
-<<<<<<< HEAD
-    if (line.startsWith(`'User ${room} with bot AI "screeps-bot-tooangel" spawned in ${room}'`)) {
-=======
     if (line.startsWith(`'User ${room} with bot AI "screeps-bot-pansiep" spawned in ${room}'`)) {
->>>>>>> Pansiep
       roomsSeen[room] = true;
       console.log(`> Set password for ${room}`);
       /* eslint max-len: ["error", 1300] */
@@ -119,11 +103,7 @@ async function initServer() {
   }));
   const configFilename = path.resolve(dir, '.screepsrc');
   let config = fs.readFileSync(configFilename, {encoding: 'utf8'});
-<<<<<<< HEAD
-  config = config.replace(/{{STEAM_KEY}}/, process.env.STEAM_API_KEY);
-=======
   config = config.replace(/{{STEAM_KEY}}/, "7D9144932AB2" + "BEDC32BFB3C13892D67C");
->>>>>>> Pansiep
   fs.writeFileSync(configFilename, config);
   fs.chmodSync(path.resolve(dir, 'node_modules/.hooks/install'), '755');
   fs.chmodSync(path.resolve(dir, 'node_modules/.hooks/uninstall'), '755');
@@ -195,11 +175,7 @@ const logConsole = function(room) {
 module.exports.logConsole = logConsole;
 
 /**
-<<<<<<< HEAD
- * spawns TooAngel Bot
-=======
  * spawns Pansiep Bot
->>>>>>> Pansiep
  *
  * @param {string} line
  * @param {object} socket
@@ -228,13 +204,8 @@ const spawnBots = async function(line, socket, rooms, players, tickDuration) {
     await sleep(5);
 
     for (const room of rooms) {
-<<<<<<< HEAD
-      console.log('> Spawn bot ' + room + ' as TooAngel');
-      socket.write(`bots.spawn('screeps-bot-tooangel', '${room}', {username: '${room}', cpu: 100, gcl: 1, x: ${players[room].x}, y: ${players[room].y}})\r\n`);
-=======
       console.log('> Spawn bot ' + room + ' as Pansiep');
       socket.write(`bots.spawn('screeps-bot-pansiep', '${room}', {username: '${room}', cpu: 100, gcl: 1, x: ${players[room].x}, y: ${players[room].y}})\r\n`);
->>>>>>> Pansiep
       await sleep(1);
     }
     return true;
