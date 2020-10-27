@@ -2,7 +2,7 @@ container:
   image: node:12.19.0
 
 test_task:
-timeout_in: 150m
+timeout_in: 120m
   node_modules_cache:
     folder: node_modules
     fingerprint_script: cat package-lock.json
