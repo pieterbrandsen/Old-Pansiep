@@ -1,6 +1,6 @@
 {
   "name": "screeps-bot-pansiep",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Screeps bot",
   "main": "src/main.js",
   "screeps_bot": true,
