@@ -1,7 +1,7 @@
 container:
   image: node:12.19.0
-  cpu: 8
-  memory: 3G
+  cpu: 4
+  memory: 2G
 
 test_task:
   timeout_in: 120m
