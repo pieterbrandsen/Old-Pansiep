@@ -1,7 +1,7 @@
 gcp_credentials: ENCRYPTED[1b462c0843880db2359c3877ceeeb0a6b9de76e4]
 
-container:
-  image: node:12.19.0
+# container:
+#   image: node:12.19.0
 
 gce_container:
   image_project: ubuntu-os-cloud
