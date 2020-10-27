@@ -39,7 +39,11 @@ class Tester {
     this.maxRuntime = 0;
     if (process.argv.length > 2) {
       try {
+<<<<<<< HEAD
         this.maxRuntime = parseInt(process.argv[2], 10) * 30;
+=======
+        this.maxRuntime = parseInt(process.argv[2], 10) * 60;
+>>>>>>> release
       } catch (e) {
         console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
       }
@@ -52,7 +56,7 @@ class Tester {
    * @param {object} defer
    * @return {undefined}
    */
-  async checkForSucces(line, defer) {
+  async checkForSuccess(line, defer) {
     if (botsSpawned && line.startsWith(`'OK'`)) {
       let appendix = '';
       if (this.maxRuntime > 0) {
@@ -66,9 +70,9 @@ class Tester {
         console.log(JSON.stringify(status, null, 2));
         console.log('Milestones:');
         console.log(JSON.stringify(milestones, null, 2));
-        const failes = milestones.filter((milestone) => milestone.required && milestone.tick < lastTick && !milestone.success);
-        if (failes.length > 0) {
-          for (const fail of failes) {
+        const fails = milestones.filter((milestone) => milestone.required && milestone.tick < lastTick && !milestone.success);
+        if (fails.length > 0) {
+          for (const fail of fails) {
             console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);
           }
           console.log(`${lastTick} Status check: failed`);
@@ -114,7 +118,7 @@ class Tester {
         return;
       }
 
-      await this.checkForSucces(line, defer);
+      await this.checkForSuccess(line, defer);
     });
 
     socket.on('connect', () => {

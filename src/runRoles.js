@@ -42,8 +42,9 @@ const pioneer = (creep) => {
   const result = creepModule.execute(creep);
   switch (result) {
   case 'full':
-    // Delete targetId
+    // Delete targetId and miniJob
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the jobs that drains energy
     if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
@@ -60,17 +61,18 @@ const pioneer = (creep) => {
           STRUCTURE_CONTAINER
     ) {
       creep.memory.job = 'transfer';
-    } else if (flagMemory.commonMemory.constructionSites.length > 0) {
-      creep.memory.job = 'build';
     } else if (flagMemory.repair.targets.length > 0) {
       creep.memory.job = 'repair';
+    } else if (flagMemory.commonMemory.constructionSites.length > 0) {
+      creep.memory.job = 'build';
     } else {
       creep.memory.job = 'upgrade';
     }
     break;
   case 'empty':
-    // Delete targetId
+    // Delete targetId and sourceId
     delete creep.memory.targetId;
+    delete creep.memory.sourceId;
 
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable > 1500) {

@@ -35,7 +35,7 @@ const harvest = (creep) => {
   }
 
   // If not in range, move to source and then return
-  if (!creep.pos.inRangeTo(source, 1)) {
+  if (!creep.pos.inRangeTo(source, 1) || creepMemory._move) {
     let sourcePos = source.pos;
     const sourceNumber = creepMemory.sourceNumber;
 
@@ -60,31 +60,26 @@ const harvest = (creep) => {
       }
     } else {
       // Check each 10 ticks if there is still space around the source for this creep
-      if (Game.time % 10 === 0) {
-        const creepsAroundTargetSource = creep.room.lookForAtArea(
-          LOOK_CREEPS,
-          source.pos.y - 1,
-          source.pos.x - 1,
-          source.pos.y + 1,
-          source.pos.x + 1,
-          true,
-        ).length;
-        const roomPlannerTargetSource =
+      const creepsAroundTargetSource = creep.room.lookForAtArea(
+        LOOK_CREEPS,
+        source.pos.y - 1,
+        source.pos.x - 1,
+        source.pos.y + 1,
+        source.pos.x + 1,
+        true,
+      ).length;
+      const roomPlannerTargetSource =
           flagMemory.roomPlanner.room.sources[sourceNumber];
-        if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround) {
-          if (
-            creep.room.lookForAt(
-              LOOK_CREEPS,
-              roomPlannerTargetSource.pos,
-            )[0] === undefined
-          ) {
-            sourcePos = roomPlannerTargetSource.pos;
-          }
-        } else {
-          let i = 0;
-          while (i < flagMemory.commonMemory.sources.length) {
-            const newSource = flagMemory.commonMemory.sources[i];
-            const roomPlannerNewSource = flagMemory.roomPlanner.room.sources[i];
+      if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround) {
+        if (creepMemory.role.includes('harvester')) {
+          sourcePos = roomPlannerTargetSource.pos;
+        }
+      } else {
+        let i = 0;
+        while (i < flagMemory.commonMemory.sources.length) {
+          const newSource = flagMemory.commonMemory.sources[i];
+          const roomPlannerNewSource = flagMemory.roomPlanner.room.sources[i];
+          if (roomPlannerNewSource !== null) {
             const creepsAroundNewSource = creep.room.lookForAtArea(
               LOOK_CREEPS,
               newSource.pos.y - 1,
@@ -96,22 +91,25 @@ const harvest = (creep) => {
 
             if (
               newSource.id !== source.id &&
-              creepsAroundNewSource < roomPlannerNewSource.spotsAround
+                creepsAroundNewSource < roomPlannerNewSource.spotsAround
             ) {
-              creepMemory.sourceId = newSource.id;
-              creepMemory.sourceNumber = i;
+              creep.memory.sourceId = newSource.id;
+              creep.memory.sourceNumber = i;
               return;
             }
-            i++;
           }
-
-          if (!creep.pos.inRangeTo(source, 3)) creep.moveTo(source);
+          i++;
         }
+        if (!creep.pos.inRangeTo(source, 3)) creep.moveTo(source);
       }
     }
 
     // Move to source
-    creep.moveTo(sourcePos.x, sourcePos.y);
+    if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 0)) {
+      delete creep.memory._move;
+    } else {
+      creep.moveTo(sourcePos.x, sourcePos.y);
+    }
     return;
   } else {
     const result = creep.harvest(source);

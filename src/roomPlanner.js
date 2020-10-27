@@ -953,14 +953,14 @@ const roomPlanner = (room) => {
     if (flagMemory.roomPlanner.room.sources[i] && flagMemory.roomPlanner.room.sources[i].structureType === structureType) return;
 
     const source = flagMemory.commonMemory.sources[i];
-    if (flagMemory.roomPlanner.room.sources[i]) {
-      const bestSourcePosition = flagMemory.roomPlanner.room.sources[i];
-      const structureExistResult = structureExist(room, bestSourcePosition.pos, structureType);
+    if (flagMemory.roomPlanner.room.sources[i] !== undefined) {
+      const bestSource = flagMemory.roomPlanner.room.sources[i];
+      const structureExistResult = structureExist(room, bestSource.pos, structureType);
       if (structureExistResult[0]) {
         const structureObject = Game.getObjectById(structureExistResult[1]);
         structureObject.destroy();
       } else {
-        const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSourcePosition.pos.x, bestSourcePosition.pos.y);
+        const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSource.pos.x, bestSource.pos.y);
         if (constructionSite.length > 0) {
           break;
         }
