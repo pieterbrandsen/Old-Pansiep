@@ -4,7 +4,12 @@ const repair = (creep, data) => {
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty or no targets left to repair
-  if (creep.store.getUsedCapacity() === 0 || (flagMemory.repair.targets.length === 0)) return 'empty';
+  if (
+    creep.store.getUsedCapacity() === 0 ||
+    flagMemory.repair.targets.length === 0
+  ) {
+    return 'empty';
+  }
 
   // If there are no construction sites left and no target, return full to get another goal if possible
   if (
@@ -20,14 +25,13 @@ const repair = (creep, data) => {
   // If creep is missing a targetId
   if (targetId === undefined) {
     // Get the fist target from what is saved //
-    creep.memory.targetId = flagMemory.repair.targets.shift();
+    creep.memory.targetId = flagMemory.repair.targets[0];
   } else {
     // Get the saved structure site from memory
     const repairTarget = Game.getObjectById(targetId);
 
     // Run the repair function
     const result = creep.repair(repairTarget, RESOURCE_ENERGY);
-
     // Switch based on the results
     switch (result) {
     case OK:
@@ -36,6 +40,11 @@ const repair = (creep, data) => {
         repairTarget.hits === repairTarget.hitsMax ||
           repairTarget.hits > flagMemory.repair.hitTarget
       ) {
+        // Check if target that's going to be lost is still on the construction list, if so shift it.
+        if (flagMemory.repair.targets.indexOf(creep.memory.targetId) === 0) {
+          flagMemory.repair.targets.shift();
+        }
+
         delete creep.memory.targetId;
       }
       break;
@@ -55,7 +64,7 @@ const repair = (creep, data) => {
 
 module.exports = {
   execute: (creep, data) => {
-    const result = repair(creep, data = {});
+    const result = repair(creep, (data = {}));
     return result;
   },
 };
