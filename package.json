@@ -4,7 +4,10 @@
   "description": "A Screeps bot",
   "main": "src/main.js",
   "screeps_bot": true,
-  "dependencies": {},
+  "dependencies": {
+    "jquery.terminal": "^1.21.0",
+    "mem": "^4.0.0"
+  },
   "devDependencies": {
     "chai": "4.2.0",
     "eslint": "^7.12.0",
