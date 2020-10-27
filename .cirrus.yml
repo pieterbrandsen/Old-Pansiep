@@ -1,21 +1,7 @@
-gcp_credentials: ENCRYPTED[a1cb988ca8d72e77fb556ea2102dcfb35c8e6fa0]
-
-# container:
-#   image: node:12.19.0
-
-gce_instance:
-  image_project: ubuntu-os-cloud
-  image_name: ubuntu-1904-disco-v20190417
-  zone: us-central1-a
-  cpu: 2
-  memory: 40GB
-  disk: 20
-
-
-# gce_container:
-#   image_project: Cirrus-Ci
-#   image_name: Test
-#   container: node:12.19.0
+container:
+  image: node:12.19.0
+  cpu: 4
+  memory: 12G
 
 test_task:
   timeout_in: 120m
