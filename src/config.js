@@ -20,7 +20,7 @@ global.config = {
       getSpawnerEnergy: 50,
       getAllEnergyStructures: 50,
       getConstructionStructures: 100,
-      getDamagedStructures: 5,
+      getDamagedStructures: 50,
     },
   },
   allRoles: ['pioneer',
