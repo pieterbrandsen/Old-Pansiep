@@ -39,11 +39,7 @@ class Tester {
     this.maxRuntime = 0;
     if (process.argv.length > 2) {
       try {
-<<<<<<< HEAD
-        this.maxRuntime = parseInt(process.argv[2], 10) * 30;
-=======
         this.maxRuntime = parseInt(process.argv[2], 10) * 60;
->>>>>>> release
       } catch (e) {
         console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
       }

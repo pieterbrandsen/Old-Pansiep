@@ -35,7 +35,7 @@ const harvest = (creep) => {
   }
 
   // If not in range, move to source and then return
-  if (!creep.pos.inRangeTo(source, 1) || creepMemory._move) {
+  if (!creep.pos.inRangeTo(source, 1) || !creepMemory.onPosition) {
     let sourcePos = source.pos;
     const sourceNumber = creepMemory.sourceNumber;
 
@@ -100,16 +100,22 @@ const harvest = (creep) => {
           }
           i++;
         }
-        if (!creep.pos.inRangeTo(source, 3)) creep.moveTo(source);
+        if (!creep.pos.inRangeTo(source, 3)) {
+          creep.moveTo(source);
+          return;
+        }
       }
     }
 
     // Move to source
-    if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 0)) {
-      delete creep.memory._move;
+    if (sourcePos.x !== source.pos.x || sourcePos.y !== source.pos.y) {
+      if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 0)) creep.memory.onPosition = true;
+      else creep.moveTo(sourcePos.x, sourcePos.y);
     } else {
-      creep.moveTo(sourcePos.x, sourcePos.y);
+      if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 1)) creep.memory.onPosition = true;
+      else creep.moveTo(sourcePos.x, sourcePos.y);
     }
+
     return;
   } else {
     const result = creep.harvest(source);
