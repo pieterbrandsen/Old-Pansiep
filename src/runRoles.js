@@ -61,10 +61,10 @@ const pioneer = (creep) => {
           STRUCTURE_CONTAINER
     ) {
       creep.memory.job = 'transfer';
-    } else if (flagMemory.commonMemory.constructionSites.length > 0) {
-      creep.memory.job = 'build';
     } else if (flagMemory.repair.targets.length > 0) {
       creep.memory.job = 'repair';
+    } else if (flagMemory.commonMemory.constructionSites.length > 0) {
+      creep.memory.job = 'build';
     } else {
       creep.memory.job = 'upgrade';
     }
