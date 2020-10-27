@@ -953,14 +953,14 @@ const roomPlanner = (room) => {
     if (flagMemory.roomPlanner.room.sources[i] && flagMemory.roomPlanner.room.sources[i].structureType === structureType) return;
 
     const source = flagMemory.commonMemory.sources[i];
-    if (flagMemory.roomPlanner.room.sources[i]) {
-      const bestSourcePosition = flagMemory.roomPlanner.room.sources[i];
-      const structureExistResult = structureExist(room, bestSourcePosition.pos, structureType);
+    if (flagMemory.roomPlanner.room.sources[i] !== undefined) {
+      const bestSource = flagMemory.roomPlanner.room.sources[i];
+      const structureExistResult = structureExist(room, bestSource.pos, structureType);
       if (structureExistResult[0]) {
         const structureObject = Game.getObjectById(structureExistResult[1]);
         structureObject.destroy();
       } else {
-        const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSourcePosition.pos.x, bestSourcePosition.pos.y);
+        const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSource.pos.x, bestSource.pos.y);
         if (constructionSite.length > 0) {
           break;
         }
@@ -983,7 +983,9 @@ const roomPlanner = (room) => {
     // Set best position to room planner memory for this source
     bestSourcePosition.structureType = structureType;
     bestSourcePosition.spotsAround = room.lookForAtArea(LOOK_TERRAIN, source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true).filter((t) => t.terrain !== 'wall').length;
-    flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
+    if (bestSourcePosition !== null) {
+      flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
+    } else break;
 
     // * Handle visual to show target //
     // If visual is already in memory, return
@@ -1053,7 +1055,9 @@ const roomPlanner = (room) => {
 
   // Set best position to room planner memory for this source
   bestControllerPosition.structureType = structureType;
-  flagMemory.roomPlanner.room.controller = bestControllerPosition;
+  if (bestControllerPosition !== null) {
+    flagMemory.roomPlanner.room.controller = bestControllerPosition;
+  } else return;
 
   // * Handle visual to show target //
   // If visual is already in memory, return

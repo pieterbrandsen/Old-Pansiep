@@ -5,6 +5,7 @@ const ncp = require('ncp');
 const lib = require('@screeps/launcher/lib/index');
 const _ = require('lodash');
 const {ScreepsAPI} = require('screeps-api');
+require('dotenv').config();
 
 const dir = 'tmp-test-server';
 const port = 21025;
@@ -103,7 +104,7 @@ async function initServer() {
   }));
   const configFilename = path.resolve(dir, '.screepsrc');
   let config = fs.readFileSync(configFilename, {encoding: 'utf8'});
-  config = config.replace(/{{STEAM_KEY}}/, "7D9144932AB2" + "BEDC32BFB3C13892D67C");
+  config = config.replace(/{{STEAM_KEY}}/, process.env.STEAM_API_KEY);
   fs.writeFileSync(configFilename, config);
   fs.chmodSync(path.resolve(dir, 'node_modules/.hooks/install'), '755');
   fs.chmodSync(path.resolve(dir, 'node_modules/.hooks/uninstall'), '755');
@@ -192,6 +193,9 @@ const spawnBots = async function(line, socket, rooms, players, tickDuration) {
     console.log(`> system.pauseSimulation()`);
     socket.write(`system.pauseSimulation()\r\n`);
     await sleep(5);
+    console.log(`> utils.removeBots()`);
+    socket.write(`utils.removeBots()\r\n`);
+    await sleep(5);
     console.log(`> system.setTickDuration(${tickDuration})`);
     socket.write(`system.setTickDuration(${tickDuration})\r\n`);
 
@@ -204,7 +208,7 @@ const spawnBots = async function(line, socket, rooms, players, tickDuration) {
     await sleep(5);
 
     for (const room of rooms) {
-      console.log('> Spawn bot ' + room + ' as Pansiep');
+      console.log(`> Spawn bot ${room} as Pansiep`);
       socket.write(`bots.spawn('screeps-bot-pansiep', '${room}', {username: '${room}', cpu: 100, gcl: 1, x: ${players[room].x}, y: ${players[room].y}})\r\n`);
       await sleep(1);
     }

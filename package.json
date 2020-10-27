@@ -1,21 +1,21 @@
 {
-<<<<<<< HEAD
-  "name": "pansiep-ai",
-=======
   "name": "screeps-bot-pansiep",
->>>>>>> Pansiep
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "A Screeps bot",
   "main": "src/main.js",
   "screeps_bot": true,
   "dependencies": {
-    "grunt-cli": "^1.3.2"
+    "jquery.terminal": "^1.21.0",
+    "mem": "^4.0.0"
   },
   "devDependencies": {
     "chai": "4.2.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.12.0",
     "eslint-config-google": "0.14.0",
     "eslint-plugin-screeps": "2.0.0",
-    "grunt": "1.3.0",
+    "grunt": "^1.3.0",
+    "grunt-cli": "^1.3.2",
     "grunt-contrib-clean": "2.0.0",
     "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-uglify": "5.0.0",
@@ -24,21 +24,20 @@
     "grunt-mocha-test": "0.13.3",
     "grunt-screeps": "^1.4.0",
     "grunt-sync": "0.8.2",
-    "mocha": "8.1.3",
+    "mocha": "8.2.0",
     "request": "2.88.2",
     "request-promise-native": "1.0.9",
     "rimraf": "3.0.2",
-    "screeps": "^4.2.3",
-<<<<<<< HEAD
-    "screeps-api": "1.12.1",
-=======
-    "screeps-api": "^1.12.1",
->>>>>>> Pansiep
+    "screeps": "4.2.3",
+    "screeps-api": "1.12.2",
     "screeps-profiler": "2.0.1",
     "screepsmod-admin-utils": "1.18.2",
     "screepsmod-auth": "2.4.8",
     "screepsmod-mongo": "2.9.6",
-    "uglify-js-harmony": "2.7.7"
+    "snapdragon": "^0.12.0",
+    "uglify-js-harmony": "^2.7.7",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "uri-js": "^4.4.0"
   },
   "repository": {
     "type": "git",
@@ -54,12 +53,9 @@
     "deploy": "grunt deploy",
     "lint": "eslint -c .eslintrc-basic.js src/",
     "run-test": "git checkout test-server/db.json && node utils/test_on_server.js"
-<<<<<<< HEAD
-=======
   },
   "homepage": "https://github.com/pieterbrandsen/Pansiep#readme",
   "directories": {
     "test": "test"
->>>>>>> Pansiep
   }
 }
