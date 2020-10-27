@@ -92,7 +92,19 @@ const transfer = (creep) => {
       // If creep is missing targetId
       if (creepMemory.targetId === undefined) {
         // Find and shift the first energy structure in the spawner array
-        creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures.shift();
+        const freeCapacityCreep = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+
+        if (flagMemory.commonMemory.spawnEnergyStructures[0].needed < 0) {
+          flagMemory.commonMemory.spawnEnergyStructures.shift();
+          return;
+        }
+
+        if (flagMemory.commonMemory.spawnEnergyStructures[0].needed < freeCapacityCreep) {
+          creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures.shift().id;
+        } else {
+          creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures[0].id;
+          flagMemory.commonMemory.spawnEnergyStructures[0].needed -= freeCapacityCreep;
+        }
         creep.memory.miniJob = 'spawner';
       } else {
         // Get the saved structure from memory

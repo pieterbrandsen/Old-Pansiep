@@ -403,15 +403,17 @@ const timersHandler = (goal, data) => {
 
       // Loop through all structures that were found
       energyStructures.forEach((storageStructure) => {
-        // Add the total energy available and capacity
-        energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
-        energyCapacity += storageStructure.store.getCapacity(RESOURCE_ENERGY);
+        if (flagMemory.commonMemory.controllerStorage.id !== storageStructure.id) {
+          // Add the total energy available and capacity
+          energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
+          energyCapacity += storageStructure.store.getCapacity(RESOURCE_ENERGY);
 
-        // Push energy available and id to energyStructures array
-        flagMemory.commonMemory.energyStructures.push({
-          id: storageStructure.id,
-          usable: storageStructure.store.getUsedCapacity(RESOURCE_ENERGY),
-        });
+          // Push energy available and id to energyStructures array
+          flagMemory.commonMemory.energyStructures.push({
+            id: storageStructure.id,
+            usable: storageStructure.store.getUsedCapacity(RESOURCE_ENERGY),
+          });
+        }
       });
 
       flagMemory.commonMemory.energyStorages.usable = energyUsable;
@@ -511,14 +513,14 @@ const timersHandler = (goal, data) => {
       flagMemory.commonMemory.spawnEnergyStructures = room
         .find(FIND_MY_STRUCTURES, {
           filter: (s) =>
-            [
+            ([
               STRUCTURE_LAB,
               STRUCTURE_SPAWN,
               STRUCTURE_EXTENSION,
               STRUCTURE_TOWER,
-            ].indexOf(s.structureType) !== -1,
+            ].indexOf(s.structureType) !== -1 && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0),
         })
-        .map((s) => s.id);
+        .map((s) => ({id: s.id, needed: s.store.getFreeCapacity(RESOURCE_ENERGY)}));
     }
 
     // Check all structures saved in memory if they still alive each ... ticks //

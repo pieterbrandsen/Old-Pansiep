@@ -113,7 +113,9 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // If energy capacity is more then 1200 (6 work harvester && rcl 4)
       if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300) break;
 
-      result = true;
+      if (room.energyAvailable === 300) {
+        result = true;
+      }
       break;
     case 'transferer':
     case 'transfererLD':
@@ -125,13 +127,28 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (targetRoom === undefined) break;
 
+      if (targetFlagMemory === undefined || targetFlagMemory.commonMemory.energyStorages.usable < 1500) break;
+
+      result = true;
+      break;
+    case 'upgrader':
+      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+      if (room.controller.ticksToDowngrade <= 10*1000) {
+        // Check if input role is less then max creeps allowed //
+        if (roleCount[role] >= 1) break;
+      } else {
+        // Check if input role is less then max creeps allowed //
+        if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+      }
+
+      if (targetRoom === undefined) break;
+
       if (targetFlagMemory === undefined && targetFlagMemory.commonMemory.energyStorages.usable < 1500) break;
 
       result = true;
       break;
     case 'builder':
     case 'repairer':
-    case 'upgrader':
     case 'reserverLD':
     case 'builderLD':
     case 'repairerLD':
@@ -183,7 +200,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       while (
         calcBodyCost(body) + calcBodyCost(bodyIteration) <=
-          room.energyCapacityAvailable &&
+          room.energyAvailable &&
         body.length + bodyIteration.length <= MAX_CREEP_SIZE &&
         i < maxLoopCount
       ) {
@@ -205,7 +222,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       break;
     case 'harvester-0':
     case 'harvester-1':
-      if (typeof flagMemory.commonMemory.sources[role.split('-')[1]] === Object) {
+      if (typeof flagMemory.commonMemory.sources[role.split('-')[1]] === 'object') {
         const sourceStructureType = flagMemory.roomPlanner.room.sources[role.split('-')[1]].structureType;
         switch (sourceStructureType) {
         case 'container':
