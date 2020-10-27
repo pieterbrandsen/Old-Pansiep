@@ -1,9 +1,10 @@
-gcp_credentials: ENCRYPTED[1b462c0843880db2359c3877ceeeb0a6b9de76e4]
 
 # container:
 #   image: node:12.19.0
 
 gce_container:
+  environment: 
+    gcp_credentials: ENCRYPTED[1b462c0843880db2359c3877ceeeb0a6b9de76e4]
   image_project: Cirrus-Ci
   image_name: my-custom-ubuntu-with-docker
   container: golang:latest
