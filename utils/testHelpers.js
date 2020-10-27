@@ -5,6 +5,7 @@ const ncp = require('ncp');
 const lib = require('@screeps/launcher/lib/index');
 const _ = require('lodash');
 const {ScreepsAPI} = require('screeps-api');
+require('dotenv').config();
 
 const dir = 'tmp-test-server';
 const port = 21025;
@@ -191,6 +192,9 @@ const spawnBots = async function(line, socket, rooms, players, tickDuration) {
     await sleep(5);
     console.log(`> system.pauseSimulation()`);
     socket.write(`system.pauseSimulation()\r\n`);
+    await sleep(5);
+    console.log(`> utils.removeBots()`);
+    socket.write(`utils.removeBots()\r\n`);
     await sleep(5);
     console.log(`> system.setTickDuration(${tickDuration})`);
     socket.write(`system.setTickDuration(${tickDuration})\r\n`);

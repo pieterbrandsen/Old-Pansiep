@@ -111,7 +111,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
       // If energy capacity is more then 1200 (6 work harvester && rcl 4)
-      if (room.energyCapacityAvailable > 300) break;
+      if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300) break;
 
       result = true;
       break;
@@ -161,8 +161,6 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (targetFlagMemory === undefined) break;
 
-      // TODO CHECK IF SOURCE HAS PLACE FOR HARVESTER
-
       result = true;
       break;
     default:
@@ -171,51 +169,71 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     return result;
   };
 
-  const getCreepParts = (role) => {
+  const getCreepParts = (role, room) => {
+    const flagMemory = Memory.flags[room.name];
+
     // Get current body cost
     const calcBodyCost = (body) => {
       return _.reduce(body, (sum, part) => sum + BODYPART_COST[part], 0);
     };
-
     let body = [];
-    let i = 0;
-    const returnBody = (bodyIteration, maxLoopCount = 50) => {
+    const returnBody = (parts, bodyIteration, maxLoopCount = 50) => {
+      body = parts;
+      let i = 0;
+
       while (
         calcBodyCost(body) + calcBodyCost(bodyIteration) <=
-          room.energyAvailable &&
+          room.energyCapacityAvailable &&
         body.length + bodyIteration.length <= MAX_CREEP_SIZE &&
         i < maxLoopCount
       ) {
         body = body.concat(bodyIteration);
         i++;
       }
+
+      // Reset if input body is not filled with the needed parts
+      if (body.length === parts.length) body = [];
     };
 
     switch (role) {
     case 'pioneer':
-      returnBody([WORK, CARRY, CARRY, MOVE, MOVE]);
+      returnBody([CARRY, MOVE], [WORK]);
       break;
     case 'transferer':
     case 'transfererLD':
-      returnBody([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]);
+      returnBody([CARRY, CARRY, MOVE], [CARRY, CARRY, MOVE]);
       break;
     case 'harvester-0':
     case 'harvester-1':
+      if (typeof flagMemory.commonMemory.sources[role.split('-')[1]] === Object) {
+        const sourceStructureType = flagMemory.roomPlanner.room.sources[role.split('-')[1]].structureType;
+        switch (sourceStructureType) {
+        case 'container':
+          returnBody([MOVE], [WORK], 7);
+          break;
+        case 'link':
+          returnBody([MOVE, CARRY], [WORK], 7);
+          break;
+        default:
+          break;
+        }
+      }
+      break;
     case 'harvesterLD-0':
     case 'harvesterLD-1':
-      returnBody([WORK, CARRY, MOVE], 7);
+      returnBody([], [WORK, MOVE], 7);
       break;
     case 'builder':
     case 'builderLD':
     case 'repairer':
     case 'repairerLD':
-      returnBody([WORK, MOVE, MOVE, CARRY]);
+      returnBody([], [WORK, MOVE, CARRY]);
       break;
     case 'upgrader':
-      returnBody([WORK, WORK, CARRY, MOVE]);
+      returnBody([CARRY, MOVE, CARRY, MOVE], [WORK]);
       break;
     case 'reserverLD':
-      returnBody([CLAIM, MOVE]);
+      returnBody([], [CLAIM, MOVE]);
       break;
     default:
       break;
@@ -238,7 +256,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
     // Get creep memory and name
     const name = `${role}-${Math.round(Math.random() * 1000)}`;
-    const body = getCreepParts(role);
+    const body = getCreepParts(role, room, memory);
     const directions = memory.directions;
     delete memory.directions;
 
