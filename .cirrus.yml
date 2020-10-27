@@ -4,11 +4,9 @@ container:
   memory: 3G
 
 test_task:
-  use_static_ip: true
   timeout_in: 120m
   node_modules_cache:
     folder: node_modules
     fingerprint_script: cat package-lock.json
     populate_script: npm ci'
-  script: wget -qO- ifconfig.co
   test_script: npm run test
