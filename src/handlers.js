@@ -272,7 +272,7 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
-      if (!flagMemory.commonMemory.controllerLevel) flagMemory.commonMemory.controllerLevel = 0;
+      if (!flagMemory.commonMemory.controllerLevel) flagMemory.commonMemory.controllerLevel = 1;
       if (!flagMemory.roomPlanner.base) flagMemory.roomPlanner.base = {};
       if (!flagMemory.commonMemory.headSpawnId) {
         flagMemory.commonMemory.headSpawnId = room.terminal ?
@@ -300,8 +300,8 @@ const memoryHandler = (goal, data) => {
       }
       if (!flagMemory.commonMemory.controllerStorage) {
         flagMemory.commonMemory.controllerStorage = {
-          type: undefined,
-          id: undefined,
+          type: 'undefined',
+          id: 'undefined',
         };
       }
 
@@ -561,7 +561,7 @@ const timersHandler = (goal, data) => {
           });
 
           if (controllerStorage) {
-            flagMemory.commonMemory.controllerStorage = controllerStorage.id;
+            flagMemory.commonMemory.controllerStorage.id = controllerStorage.id;
           }
         }
       }

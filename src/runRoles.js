@@ -73,6 +73,7 @@ const pioneer = (creep) => {
     // Delete targetId and sourceId
     delete creep.memory.targetId;
     delete creep.memory.sourceId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable > 1500) {
@@ -105,6 +106,7 @@ const harvester = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    creep.memory.miniJob = 'harvest';
 
     // Switch to one of the jobs that drains energy
     creep.memory.job = 'transfer';
@@ -137,6 +139,7 @@ const transferer = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Check if creep needs to move to another room
     if (!isInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
@@ -149,6 +152,7 @@ const transferer = (creep, roleName) => {
   case 'empty':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Check if creep needs to move to another room
     if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {

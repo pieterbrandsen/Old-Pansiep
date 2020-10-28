@@ -69,8 +69,9 @@ const harvest = (creep) => {
         true,
       ).length;
       const roomPlannerTargetSource =
-          flagMemory.roomPlanner.room.sources[sourceNumber];
-      if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround) {
+        flagMemory.roomPlanner.room.sources[sourceNumber];
+      if (roomPlannerTargetSource === undefined) return;
+      if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround || creepMemory.role.includes('harvester')) {
         if (creepMemory.role.includes('harvester')) {
           sourcePos = roomPlannerTargetSource.pos;
         }
@@ -100,10 +101,10 @@ const harvest = (creep) => {
           }
           i++;
         }
-        if (!creep.pos.inRangeTo(source, 3)) {
+        if (!creep.pos.inRangeTo(source, 5)) {
           creep.moveTo(source);
           return;
-        }
+        } else return;
       }
     }
 

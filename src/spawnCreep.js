@@ -20,8 +20,8 @@ const initCreepMemory = (room, role, data) => {
   if (!newMemory.targetId) newMemory.targetId = undefined;
 
   const flagMemory = Memory.flags[newMemory.targetRoom];
-  if (role.includes('harvester-') && !newMemory.sourceId) {
-    if (typeof flagMemory.commonMemory.sources[role.split('-')[1]] === Object) {
+  if (role.includes('harvester') && !newMemory.sourceId) {
+    if (typeof flagMemory.commonMemory.sources[role.split('-')[1]] === 'object') {
       newMemory.sourceId = flagMemory.commonMemory.sources[role.split('-')[1]].id;
     }
   }
@@ -127,13 +127,12 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (targetRoom === undefined) break;
 
-      if (targetFlagMemory === undefined || targetFlagMemory.commonMemory.energyStorages.usable < 1500) break;
+      if (targetFlagMemory === undefined || targetFlagMemory.commonMemory.energyStorages.usable < 1000) break;
 
       result = true;
       break;
     case 'upgrader':
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
-      if (room.controller.ticksToDowngrade <= 10*1000) {
+      if (room.controller.ticksToDowngrade <= 5*1000) {
         // Check if input role is less then max creeps allowed //
         if (roleCount[role] >= 1) break;
       } else {
@@ -143,7 +142,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (targetRoom === undefined) break;
 
-      if (targetFlagMemory === undefined && targetFlagMemory.commonMemory.energyStorages.usable < 1500) break;
+      if (targetFlagMemory === undefined && targetFlagMemory.commonMemory.energyStorages.usable < 2000) break;
 
       result = true;
       break;

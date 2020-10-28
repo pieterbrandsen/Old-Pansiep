@@ -141,18 +141,16 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
   // Acces flagMemory
   const flagMemory = Memory.flags[room.name];
   let midPos;
+
   if (flagMemory.commonMemory.headSpawnId) {
     const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
     if (headSpawn === null) return;
 
     // Get middle position of bunker
-    midPos = headSpawn.pos;
-    midPos.x += 1;
-    midPos.y -= 1;
+    // midPos = {x: headSpawn.pos.x+1, y: headSpawn.pos.y-1};
+    midPos = {x: headSpawn.pos.x, y: headSpawn.pos.y};
   } else if (flagMemory.roomPlanner.base.midPos) midPos = flagMemory.roomPlanner.base.midPos;
-
   if (midPos === undefined) return;
-
 
   // * Create bunker array //
   const bunker = [
@@ -877,6 +875,7 @@ const createConstructionSite = (
   );
 
   const placedConstructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, position.x, position.y);
+  const foundStructures = room.lookForAt(LOOK_STRUCTURES, position.x, position.y, {filter: (s) => s.structureType === structureType});
   // const flagMemory = Memory.flags[room.name];
 
   // Switch based on return value of createConstructionSite
@@ -890,7 +889,7 @@ const createConstructionSite = (
     // }
     break;
   default:
-    if (placedConstructionSite[0] !== undefined && placedConstructionSite[0].structureType === structureType) {
+    if ((placedConstructionSite[0] !== undefined && placedConstructionSite[0].structureType === structureType) || foundStructures[0] !== undefined) {
       // Target structureType was found so set construction site to OK (good)
       constructionSite = OK;
     }
@@ -924,7 +923,7 @@ const basePlanner = (room) => {
   if (flagMemory.commonMemory.constructionSites.length > 0) return;
 
   if (!flagMemory.roomPlanner.base.type) getBaseLayoutType(room);
-  else getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
+  if (flagMemory.roomPlanner.base.type) getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
 };
 // #endregion
 
@@ -1050,6 +1049,7 @@ const roomPlanner = (room) => {
     bestControllerPosition.pos,
     structureType,
   );
+
   // Check if structure is successfully constructed
   if (returnConstruction !== OK) return;
 

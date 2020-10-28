@@ -13,7 +13,7 @@ global.config = {
     loops: {
       roomPlanner: {
         base: 2500,
-        room: 2500,
+        room: 500,
       },
       structureNullChecker: 1000,
       spawnCreep: 10,

@@ -13,6 +13,7 @@ const withdraw = (creep) => {
   if (!creep.memory.targetId) {
     if (creepMemory.role.includes('upgrade')) {
       // Set the storage pos as found in memory
+      if (!flagMemory.roomPlanner.room.controller) return;
       const storagePos =
       flagMemory.roomPlanner.room.controller.pos;
 
