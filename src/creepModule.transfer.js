@@ -1,76 +1,50 @@
-const transfer = (creep) => {
+const harvestJob = (creep) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty
-  if (creep.store.getUsedCapacity() === 0) return 'empty';
+  if (creep.store.getUsedCapacity() === 0) return "empty";
 
-  // If Target is already full of energy
-  if (creepMemory.targetId && Game.getObjectById(creepMemory.targetId) !== null && Game.getObjectById(creepMemory.targetId).store.getFreeCapacity(RESOURCE_ENERGY) === 0) return 'full';
+  // If creep memory is missing a targetId, find one
+  if (!creepMemory.targetId) {
+    // Set the storage pos as found in memory
+    const storagePos = flagMemory.roomPlanner.room.sources[
+      creepMemory.sourceNumber
+    ]
+      ? flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber].pos
+      : null;
+    if (storagePos === null) return;
 
-  // If there is no structures left to transfer to, return full to get another goal if possible
-  if (
-    flagMemory.commonMemory.spawnEnergyStructures.length === 0 &&
-    !creepMemory.targetId
-  ) {
-    // If there is no need of energy in the upgrader structure or in the main storage
-    if (
-      (flagMemory.commonMemory.energyStorages.capacity > 10000 &&
-        flagMemory.commonMemory.energyStorages.capacity / 10 >
-          flagMemory.commonMemory.energyStorages.usable) ||
-      flagMemory.commonMemory.energyStorages.capacity <= 10000
-    ) {
-      // If the controller structure is full enough (75%)
+    // Find all structures that are at the storagePos
+    const foundStructures = creep.room.lookForAt(
+      LOOK_STRUCTURES,
+      storagePos.x,
+      storagePos.y
+    );
+
+    // Loop through all structures that are found at storagePos and try to find a container or link
+    let sourceStructure;
+    foundStructures.forEach((structure) => {
       if (
-        (flagMemory.commonMemory.controllerStorage.usable > 1500 &&
-          flagMemory.commonMemory.controllerStorage.structureType ===
-            STRUCTURE_CONTAINER) ||
-        flagMemory.commonMemory.controllerStorage.id === undefined
+        structure.structureType === STRUCTURE_CONTAINER ||
+        structure.structureType === STRUCTURE_LINK
       ) {
-        return 'full';
+        sourceStructure = { type: structure.structureType, id: structure.id };
       }
-    }
-  }
+    });
 
-  // If the creep is a harvester, run this part
-  if (creepMemory.role.includes('harvest')) {
-    // If creep memory is missing a targetId, find one
-    if (!creepMemory.targetId) {
-      // Set the storage pos as found in memory
-      const storagePos =
-        (flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber]) ? ((flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber]).pos) : (null);
-      if (storagePos === null) return;
+    // If a source structure was found, set the target Id to that structure
+    if (sourceStructure) creep.memory.targetId = sourceStructure.id;
+  } else {
+    // Get the saved structure from memory
+    const transferStructure = Game.getObjectById(creepMemory.targetId);
 
-      // Find all structures that are at the storagePos
-      const foundStructures = creep.room.lookForAt(
-        LOOK_STRUCTURES,
-        storagePos.x,
-        storagePos.y,
-      );
+    // Run the transfer function
+    const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
 
-      // Loop through all structures that are found at storagePos and try to find a container or link
-      let sourceStructure;
-      foundStructures.forEach((structure) => {
-        if (
-          structure.structureType === STRUCTURE_CONTAINER ||
-          structure.structureType === STRUCTURE_LINK
-        ) {
-          sourceStructure = {type: structure.structureType, id: structure.id};
-        }
-      });
-
-      // If a source structure was found, set the target Id to that structure
-      if (sourceStructure) creep.memory.targetId = sourceStructure.id;
-    } else {
-      // Get the saved structure from memory
-      const transferStructure = Game.getObjectById(creepMemory.targetId);
-
-      // Run the transfer function
-      const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
-
-      // Switch based on the results
-      switch (result) {
+    // Switch based on the results
+    switch (result) {
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to target
         creep.moveTo(transferStructure);
@@ -82,141 +56,229 @@ const transfer = (creep) => {
         break;
       default:
         break;
-      }
+    }
+  }
+};
+
+const spawnerJob = (creep) => {
+  // Make shortcut to memory
+  const creepMemory = creep.memory;
+  const flagMemory = Memory.flags[creepMemory.targetRoom];
+
+  // Return empty if current creep's storage is empty
+  if (creep.store.getUsedCapacity() === 0) return "empty";
+
+  // If Target is already full of energy
+  if (
+    creepMemory.targetId &&
+    Game.getObjectById(creepMemory.targetId) !== null &&
+    Game.getObjectById(creepMemory.targetId).store.getFreeCapacity(
+      RESOURCE_ENERGY
+    ) === 0
+  )
+    return "full";
+
+  if (
+    flagMemory.commonMemory.spawnEnergyStructures.length === 0 &&
+    !creepMemory.targetId
+  ) {
+    return "empty";
+  }
+
+  // If creep is missing targetId
+  if (creepMemory.targetId === undefined) {
+    // Find and shift the first energy structure in the spawner array
+    const freeCapacityCreep = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+
+    if (flagMemory.commonMemory.spawnEnergyStructures[0].needed < 0) {
+      flagMemory.commonMemory.spawnEnergyStructures.shift();
+      return;
+    }
+
+    if (
+      flagMemory.commonMemory.spawnEnergyStructures[0].needed <
+      freeCapacityCreep
+    ) {
+      creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures.shift().id;
+    } else {
+      creep.memory.targetId =
+        flagMemory.commonMemory.spawnEnergyStructures[0].id;
+      flagMemory.commonMemory.spawnEnergyStructures[0].needed -= freeCapacityCreep;
     }
   } else {
-    // If creep is not a harvester
+    // Get the saved structure from memory
+    const transferStructure = Game.getObjectById(creepMemory.targetId);
 
-    // If there is a need of energy in the spawning structures
-    if (flagMemory.commonMemory.spawnEnergyStructures.length > 0 || creep.memory.miniJob === 'spawner') {
-      // If creep is missing targetId
-      if (creepMemory.targetId === undefined) {
-        // Find and shift the first energy structure in the spawner array
-        const freeCapacityCreep = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+    // Run the transfer function
+    const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
 
-        if (flagMemory.commonMemory.spawnEnergyStructures[0].needed < 0) {
-          flagMemory.commonMemory.spawnEnergyStructures.shift();
-          return;
-        }
-
-        if (flagMemory.commonMemory.spawnEnergyStructures[0].needed < freeCapacityCreep) {
-          creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures.shift().id;
-        } else {
-          creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures[0].id;
-          flagMemory.commonMemory.spawnEnergyStructures[0].needed -= freeCapacityCreep;
-        }
-        creep.memory.miniJob = 'spawner';
-      } else {
-        // Get the saved structure from memory
-        const transferStructure = Game.getObjectById(creepMemory.targetId);
-
-        // Run the transfer function
-        const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
-
-        // Switch based on the results
-        switch (result) {
-        case OK:
-          if (transferStructure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-            flagMemory.commonMemory.spawnEnergyStructures.push(transferStructure.id);
-          }
-          break;
-        case ERR_INVALID_TARGET:
-        case ERR_FULL:
-          // Delete targetId
-          delete creep.memory.targetId;
-          return;
-        case ERR_NOT_IN_RANGE:
-          // If creep is not in range, move to target
-          creep.moveTo(transferStructure);
-          return;
-        default:
-          break;
-        }
-      }
-    } else if (
-      (flagMemory.commonMemory.capacity > 10000 &&
-      flagMemory.commonMemory.capacity / 10 < flagMemory.commonMemory.usable) || creep.memory.miniJob === 'storage'
-    ) {
-      // If room is in need of more energy in the storage/terminal
-      if (creepMemory.targetId === undefined) {
-        creep.memory.miniJob = 'storage';
-
-        // If there is enough space in storage
-        if (
-          creep.room.storage &&
-          creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 400 * 1000
-        ) {
-          creepMemory.targetId = creep.room.storage.id;
-          // If there is enough space in terminal
-        } else if (
-          creep.room.terminal &&
-          creep.room.terminal.getUsedCapacity(RESOURCE_ENERGY) < 100 * 1000
-        ) {
-          creepMemory.targetId = creep.room.terminal.id;
-        }
-      } else {
-        // Get the saved structure from memory
-        const transferStructure = Game.getObjectById(creepMemory.targetId);
-
-        // Run the transfer function
-        const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
-
-        // Switch based on the results
-        switch (result) {
-        case OK:
-        case ERR_INVALID_TARGET:
-        case ERR_FULL:
-          // Delete targetId
-          delete creep.memory.targetId;
-          return;
-        case ERR_NOT_IN_RANGE:
-          // If creep is not in range, move to target
-          creep.moveTo(transferStructure);
-          return;
-        default:
-          break;
-        }
-      }
-    } else if (
-      (flagMemory.commonMemory.controllerStorage.usable < 1500 &&
-      flagMemory.commonMemory.controllerStorage.structureType ===
-        STRUCTURE_CONTAINER) || creep.memory.miniJob === 'controller'
-    ) {
-      creep.memory.miniJob = 'controller';
-
-      // If controller storage has an energy need
-
-      // Get the saved structure from memory
-      const transferStructure = Game.getObjectById(flagMemory.commonMemory.controllerStorage.id);
-
-      // Run the transfer function
-      const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
-
-      // Switch based on the results
-      switch (result) {
+    // Switch based on the results
+    switch (result) {
       case OK:
+        if (transferStructure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+          flagMemory.commonMemory.spawnEnergyStructures.push({
+            id: transferStructure.id,
+            needed: transferStructure.store.getFreeCapacity(RESOURCE_ENERGY),
+          });
+        }
+        break;
       case ERR_INVALID_TARGET:
       case ERR_FULL:
         // Delete targetId
         delete creep.memory.targetId;
-        if (result === ERR_INVALID_TARGET) {
-          flagMemory.commonMemory.controllerStorage.id = undefined;
-        }
-        break;
+        return;
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to target
         creep.moveTo(transferStructure);
         return;
       default:
         break;
-      }
     }
+  }
+};
+
+const storageJob = (creep) => {
+  // Make shortcut to memory
+  const creepMemory = creep.memory;
+  const flagMemory = Memory.flags[creepMemory.targetRoom];
+
+  // Return empty if current creep's storage is empty
+  if (creep.store.getUsedCapacity() === 0) return "empty";
+
+  if (
+    flagMemory.commonMemory.capacity > 10000 &&
+    flagMemory.commonMemory.capacity / 10 > flagMemory.commonMemory.usable &&
+    !creep.memory.targetId
+  ) {
+    delete creep.memory.miniJob;
+    return "empty";
+  }
+
+  // If room is in need of more energy in the storage/terminal
+  if (creepMemory.targetId === undefined) {
+    // If there is enough space in storage
+    if (
+      creep.room.storage &&
+      creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 400 * 1000
+    ) {
+      creepMemory.targetId = creep.room.storage.id;
+      // If there is enough space in terminal
+    } else if (
+      creep.room.terminal &&
+      creep.room.terminal.getUsedCapacity(RESOURCE_ENERGY) < 100 * 1000
+    ) {
+      creepMemory.targetId = creep.room.terminal.id;
+    }
+  } else {
+    // Get the saved structure from memory
+    const transferStructure = Game.getObjectById(creepMemory.targetId);
+
+    // Run the transfer function
+    const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
+
+    // Switch based on the results
+    switch (result) {
+      case OK:
+      case ERR_INVALID_TARGET:
+      case ERR_FULL:
+        // Delete targetId
+        delete creep.memory.targetId;
+        return;
+      case ERR_NOT_IN_RANGE:
+        // If creep is not in range, move to target
+        creep.moveTo(transferStructure);
+        return;
+      default:
+        break;
+    }
+  }
+};
+
+const controllerJob = (creep) => {
+  // Make shortcut to memory
+  const creepMemory = creep.memory;
+  const flagMemory = Memory.flags[creepMemory.targetRoom];
+
+  if (
+    (flagMemory.commonMemory.controllerStorage.usable > 1500 ||
+      flagMemory.commonMemory.controllerStorage.structureType !==
+        STRUCTURE_CONTAINER) &&
+    !creep.memory.targetId
+  ) {
+    return "empty";
+  }
+
+  // If controller storage has an energy need
+
+  // Get the saved structure from memory
+  const transferStructure = Game.getObjectById(
+    flagMemory.commonMemory.controllerStorage.id
+  );
+
+  // Run the transfer function
+  const result = creep.transfer(transferStructure, RESOURCE_ENERGY);
+
+  // Switch based on the results
+  switch (result) {
+    case OK:
+    case ERR_INVALID_TARGET:
+    case ERR_FULL:
+      // Delete targetId
+      delete creep.memory.targetId;
+      if (result === ERR_INVALID_TARGET) {
+        flagMemory.commonMemory.controllerStorage.id = undefined;
+      }
+      break;
+    case ERR_NOT_IN_RANGE:
+      // If creep is not in range, move to target
+      creep.moveTo(transferStructure);
+      return;
+    default:
+      break;
   }
 };
 
 module.exports = {
   execute: (creep) => {
-    const result = transfer(creep);
+    let result;
+
+    // Make shortcut to memory
+    const creepMemory = creep.memory;
+    const flagMemory = Memory.flags[creepMemory.targetRoom];
+
+    switch (creep.memory.miniJob) {
+      case "harvest":
+        result = harvestJob(creep);
+        break;
+      case "spawner":
+        result = spawnerJob(creep);
+        break;
+      case "storage":
+        result = storageJob(creep);
+        break;
+      case "controller":
+        result = controllerJob(creep);
+        break;
+      default:
+        if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
+          creep.memory.miniJob = "spawner";
+          break;
+        } else if (
+          flagMemory.commonMemory.capacity > 10000 &&
+          flagMemory.commonMemory.capacity / 10 < flagMemory.commonMemory.usable
+        ) {
+          creep.memory.miniJob = "storage";
+          break;
+        } else if (
+          flagMemory.commonMemory.controllerStorage.usable < 1500 &&
+          flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER
+        ) {
+          creep.memory.miniJob = "controller";
+          break;
+        }
+
+        return "full";
+    }
     return result;
   },
 };
