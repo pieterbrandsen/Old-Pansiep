@@ -206,12 +206,13 @@ const controllerJob = (creep) => {
   // If controller structure has enough energy
   if (
     (flagMemory.commonMemory.controllerStorage.usable > 1500 ||
-      flagMemory.commonMemory.controllerStorage.structureType !==
+      flagMemory.commonMemory.controllerStorage.type !==
         STRUCTURE_CONTAINER) &&
     !creep.memory.targetId
   ) {
     return 'empty';
   }
+
 
   // Get the saved structure from memory
   const transferStructure = Game.getObjectById(

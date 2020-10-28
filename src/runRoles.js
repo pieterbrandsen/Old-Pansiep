@@ -57,7 +57,7 @@ const pioneer = (creep) => {
       creep.memory.job = 'transfer';
     } else if (
       flagMemory.commonMemory.controllerStorage.usable < 1500 &&
-        flagMemory.commonMemory.controllerStorage.structureType ===
+        flagMemory.commonMemory.controllerStorage.type ===
           STRUCTURE_CONTAINER
     ) {
       creep.memory.job = 'transfer';

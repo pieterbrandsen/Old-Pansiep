@@ -302,8 +302,7 @@ const memoryHandler = (goal, data) => {
       }
       if (!flagMemory.commonMemory.controllerStorage) {
         flagMemory.commonMemory.controllerStorage = {
-          type: 'undefined',
-          id: 'undefined',
+          usable: 0,
         };
       }
 
@@ -428,9 +427,11 @@ const timersHandler = (goal, data) => {
         Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !==
         null
       ) {
-        flagMemory.commonMemory.controllerStorage.usable = Game.getObjectById(
+        const controllerStorage = Game.getObjectById(
           flagMemory.commonMemory.controllerStorage.id,
-        ).store.getUsedCapacity();
+        );
+        flagMemory.commonMemory.controllerStorage.usable = controllerStorage.store.getUsedCapacity();
+        flagMemory.commonMemory.controllerStorage.type = controllerStorage.type;
       }
     }
 

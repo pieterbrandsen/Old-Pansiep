@@ -5,18 +5,18 @@ const repair = (creep, data) => {
 
   // Return empty if current creep's storage is empty or no targets left to repair
   if (
-    creep.store.getUsedCapacity() === 0 ||
-    flagMemory.repair.targets.length === 0
+    creep.store.getUsedCapacity() === 0
   ) {
     return 'empty';
   }
 
   // If there are no construction sites left and no target, return full to get another goal if possible
   if (
-    !flagMemory.commonMemory.constructionSites.length === 0 &&
+    !flagMemory.repair.targets.length === 0 &&
     !creepMemory.targetId &&
     !data.id
   ) {
+    if (!creep.pos.inRangeTo(creep.room.controller, 5)) creep.moveTo(creep.room.controller);
     return 'full';
   }
 
