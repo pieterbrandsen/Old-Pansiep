@@ -1,5 +1,5 @@
 // #region Require
-require("./config");
+require('./config');
 // #endregion
 
 // #region Functions
@@ -23,56 +23,56 @@ const getBaseLayoutType = (room) => {
     const bunkerPositions = [
       // Left to right
       {
-        top: { x: position.x - 5, y: position.y - 2 },
-        bottom: { x: position.x - 5, y: position.y + 1 },
+        top: {x: position.x - 5, y: position.y - 2},
+        bottom: {x: position.x - 5, y: position.y + 1},
       },
       {
-        top: { x: position.x - 4, y: position.y - 3 },
-        bottom: { x: position.x - 4, y: position.y + 3 },
+        top: {x: position.x - 4, y: position.y - 3},
+        bottom: {x: position.x - 4, y: position.y + 3},
       },
       {
-        top: { x: position.x - 3, y: position.y - 4 },
-        bottom: { x: position.x - 3, y: position.y + 4 },
+        top: {x: position.x - 3, y: position.y - 4},
+        bottom: {x: position.x - 3, y: position.y + 4},
       },
       {
-        top: { x: position.x - 2, y: position.y - 4 },
-        bottom: { x: position.x - 2, y: position.y + 5 },
+        top: {x: position.x - 2, y: position.y - 4},
+        bottom: {x: position.x - 2, y: position.y + 5},
       },
       {
-        top: { x: position.x - 1, y: position.y - 5 },
-        bottom: { x: position.x - 1, y: position.y + 7 },
+        top: {x: position.x - 1, y: position.y - 5},
+        bottom: {x: position.x - 1, y: position.y + 7},
       },
       {
-        top: { x: position.x - 0, y: position.y - 5 },
-        bottom: { x: position.x - 0, y: position.y + 7 },
+        top: {x: position.x - 0, y: position.y - 5},
+        bottom: {x: position.x - 0, y: position.y + 7},
       },
       {
-        top: { x: position.x + 1, y: position.y - 5 },
-        bottom: { x: position.x + 1, y: position.y + 7 },
+        top: {x: position.x + 1, y: position.y - 5},
+        bottom: {x: position.x + 1, y: position.y + 7},
       },
       {
-        top: { x: position.x + 2, y: position.y - 5 },
-        bottom: { x: position.x + 2, y: position.y + 7 },
+        top: {x: position.x + 2, y: position.y - 5},
+        bottom: {x: position.x + 2, y: position.y + 7},
       },
       {
-        top: { x: position.x + 3, y: position.y - 4 },
-        bottom: { x: position.x + 3, y: position.y + 6 },
+        top: {x: position.x + 3, y: position.y - 4},
+        bottom: {x: position.x + 3, y: position.y + 6},
       },
       {
-        top: { x: position.x + 4, y: position.y - 3 },
-        bottom: { x: position.x + 4, y: position.y + 5 },
+        top: {x: position.x + 4, y: position.y - 3},
+        bottom: {x: position.x + 4, y: position.y + 5},
       },
       {
-        top: { x: position.x + 5, y: position.y - 1 },
-        bottom: { x: position.x + 5, y: position.y + 4 },
+        top: {x: position.x + 5, y: position.y - 1},
+        bottom: {x: position.x + 5, y: position.y + 4},
       },
       {
-        top: { x: position.x + 6, y: position.y - 0 },
-        bottom: { x: position.x + 6, y: position.y + 3 },
+        top: {x: position.x + 6, y: position.y - 0},
+        bottom: {x: position.x + 6, y: position.y + 3},
       },
       {
-        top: { x: position.x + 7, y: position.y - 0 },
-        bottom: { x: position.x + 7, y: position.y + 2 },
+        top: {x: position.x + 7, y: position.y - 0},
+        bottom: {x: position.x + 7, y: position.y + 2},
       },
     ];
 
@@ -83,20 +83,22 @@ const getBaseLayoutType = (room) => {
 
       const topToBottomArray = range(
         currentColumnPosition.top.y,
-        currentColumnPosition.bottom.y
+        currentColumnPosition.bottom.y,
       );
       for (const i in topToBottomArray) {
         if (Object.prototype.hasOwnProperty.call(topToBottomArray, i)) {
           const posY = topToBottomArray[i];
           if (
             terrain.get(currentColumnPosition.top.x, posY) === TERRAIN_MASK_WALL
-          )
+          ) {
             wrongTerrainIsNotFound = false;
+          }
           if (
             currentColumnPosition.top.x <= 5 ||
             currentColumnPosition.top.x >= 45
-          )
+          ) {
             wrongTerrainIsNotFound = false;
+          }
           if (posY <= 5 || posY >= 45) wrongTerrainIsNotFound = false;
         }
       }
@@ -159,17 +161,17 @@ const getBaseLayoutType = (room) => {
     midPos.x += 1;
     midPos.y -= 1;
 
-    if (doesBunkerFitAtPosition(terrain, midPos))
-      flagMemory.roomPlanner.base.type = "bunker";
-    else flagMemory.roomPlanner.base.type = "generated";
+    if (doesBunkerFitAtPosition(terrain, midPos)) {
+      flagMemory.roomPlanner.base.type = 'bunker';
+    } else flagMemory.roomPlanner.base.type = 'generated';
   } else {
     let foundPlaceForBunker = false;
     for (let x = 5; x < 45 && !foundPlaceForBunker; x++) {
       for (let y = 5; y < 45 && !foundPlaceForBunker; y++) {
-        if (doesBunkerFitAtPosition(terrain, { x: x, y: y })) {
-          flagMemory.roomPlanner.base.midPos = { x: x, y: y };
+        if (doesBunkerFitAtPosition(terrain, {x: x, y: y})) {
+          flagMemory.roomPlanner.base.midPos = {x: x, y: y};
           foundPlaceForBunker = true;
-          flagMemory.roomPlanner.base.type = "bunker";
+          flagMemory.roomPlanner.base.type = 'bunker';
         }
       }
     }
@@ -202,9 +204,10 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
 
     // Get middle position of bunker
     // midPos = {x: headSpawn.pos.x+1, y: headSpawn.pos.y-1};
-    midPos = { x: headSpawn.pos.x, y: headSpawn.pos.y };
-  } else if (flagMemory.roomPlanner.base.midPos)
+    midPos = {x: headSpawn.pos.x, y: headSpawn.pos.y};
+  } else if (flagMemory.roomPlanner.base.midPos) {
     midPos = flagMemory.roomPlanner.base.midPos;
+  }
   if (midPos === undefined) return;
 
   // * Create bunker array //
@@ -216,7 +219,7 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         x: midPos.x - 1,
         y: midPos.y + 1,
         type: STRUCTURE_SPAWN,
-        name: "{ roomName }-0",
+        name: '{ roomName }-0',
       },
     ],
     [
@@ -567,7 +570,7 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         x: midPos.x + 5,
         y: midPos.y - 0,
         type: STRUCTURE_SPAWN,
-        name: "{ roomName }-1",
+        name: '{ roomName }-1',
       },
 
       // Tower
@@ -689,7 +692,7 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         x: midPos.x - 5,
         y: midPos.y - 0,
         type: STRUCTURE_SPAWN,
-        name: "{ roomName }-2",
+        name: '{ roomName }-2',
       },
     ],
   ];
@@ -698,40 +701,40 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
   let structureObject = null;
 
   switch (layoutType) {
-    case "generated":
-      // #region Generated layout
+  case 'generated':
+    // #region Generated layout
 
-      break;
+    break;
     // #endregion
-    case "bunker":
-      // #region Bunker layout
-      // * Bunker layout //
-      // Build everything from the controller level and all below //
-      while (i <= room.controller.level) {
-        // Loop through all bunker structures for this level //
-        for (let y = 0; y < bunker[i].length; y++) {
-          // Get structureObject
-          structureObject = null;
-          structureObject = bunker[i][y];
-          if (structureObject !== null) {
-            // Create the construction site
-            createConstructionSite(
-              room,
-              { x: structureObject.x, y: structureObject.y },
-              structureObject.type,
-              structureObject.name
-                ? structureObject.name.replace("{ roomName }", room.name)
-                : undefined
-            );
-          }
+  case 'bunker':
+    // #region Bunker layout
+    // * Bunker layout //
+    // Build everything from the controller level and all below //
+    while (i <= room.controller.level) {
+      // Loop through all bunker structures for this level //
+      for (let y = 0; y < bunker[i].length; y++) {
+        // Get structureObject
+        structureObject = null;
+        structureObject = bunker[i][y];
+        if (structureObject !== null) {
+          // Create the construction site
+          createConstructionSite(
+            room,
+            {x: structureObject.x, y: structureObject.y},
+            structureObject.type,
+            structureObject.name ?
+              structureObject.name.replace('{ roomName }', room.name) :
+              undefined,
+          );
         }
-        // Add a controller level after execution
-        i++;
       }
-      break;
+      // Add a controller level after execution
+      i++;
+    }
+    break;
     // #endregion
-    default:
-      break;
+  default:
+    break;
   }
 };
 // #endregion
@@ -881,7 +884,7 @@ const getBestFreeSpot = (room, startPos, structureType = STRUCTURE_LINK) => {
 
   // Check all possible positions and assign the best one (compare to last best one)
   let bestPosition = {
-    pos: { x: 0, y: 0, roomName: room.name },
+    pos: {x: 0, y: 0, roomName: room.name},
     spotsAround: 0,
   };
   positions.forEach((position) => {
@@ -902,7 +905,7 @@ const getBestFreeSpot = (room, startPos, structureType = STRUCTURE_LINK) => {
 
     // If current position is better then current saved bestPosition, overwrite bestPosition
     if (spotsAround > bestPosition.spotsAround) {
-      bestPosition = { pos: position, spotsAround: spotsAround };
+      bestPosition = {pos: position, spotsAround: spotsAround};
     }
   });
 
@@ -919,49 +922,49 @@ const createConstructionSite = (
   room,
   position,
   structureType,
-  structureName
+  structureName,
 ) => {
   // Create a construction site based on the inputPosition and inputStructureType
   let constructionSite = room.createConstructionSite(
     position.x,
     position.y,
     structureType,
-    structureName
+    structureName,
   );
 
   const placedConstructionSite = room.lookForAt(
     LOOK_CONSTRUCTION_SITES,
     position.x,
-    position.y
+    position.y,
   );
   const foundStructures = room.lookForAt(
     LOOK_STRUCTURES,
     position.x,
     position.y,
-    { filter: (s) => s.structureType === structureType }
+    {filter: (s) => s.structureType === structureType},
   );
   // const flagMemory = Memory.flags[room.name];
 
   // Switch based on return value of createConstructionSite
   switch (constructionSite) {
-    case OK:
-      // TODO THIS doesn't WORK BECAUSE THE CONSTRUCTION site is not yet known at time of calling
-      // // Push constructor to array
-      // if (placedConstructionSite && placedConstructionSite.id) {
-      //   flagMemory.commonMemory.constructionSites.push(
-      //     placedConstructionSite[0].id);
-      // }
-      break;
-    default:
-      if (
-        (placedConstructionSite[0] !== undefined &&
+  case OK:
+    // TODO THIS doesn't WORK BECAUSE THE CONSTRUCTION site is not yet known at time of calling
+    // // Push constructor to array
+    // if (placedConstructionSite && placedConstructionSite.id) {
+    //   flagMemory.commonMemory.constructionSites.push(
+    //     placedConstructionSite[0].id);
+    // }
+    break;
+  default:
+    if (
+      (placedConstructionSite[0] !== undefined &&
           placedConstructionSite[0].structureType === structureType) ||
         foundStructures[0] !== undefined
-      ) {
-        // Target structureType was found so set construction site to OK (good)
-        constructionSite = OK;
-      }
-      break;
+    ) {
+      // Target structureType was found so set construction site to OK (good)
+      constructionSite = OK;
+    }
+    break;
   }
 
   // Return value of createConstructionSite
@@ -976,7 +979,7 @@ const structureExist = (room, pos, structureType) => {
       return [true, structure.id];
     }
   }
-  return [false, ""];
+  return [false, ''];
 };
 // #endregion
 // #endregion
@@ -991,8 +994,9 @@ const basePlanner = (room) => {
   if (flagMemory.commonMemory.constructionSites.length > 0) return;
 
   if (!flagMemory.roomPlanner.base.type) getBaseLayoutType(room);
-  if (flagMemory.roomPlanner.base.type)
+  if (flagMemory.roomPlanner.base.type) {
     getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
+  }
 };
 // #endregion
 
@@ -1021,8 +1025,9 @@ const roomPlanner = (room) => {
     if (
       flagMemory.roomPlanner.room.sources[i] &&
       flagMemory.roomPlanner.room.sources[i].structureType === structureType
-    )
+    ) {
       return;
+    }
 
     const source = flagMemory.commonMemory.sources[i];
     if (flagMemory.roomPlanner.room.sources[i] !== undefined) {
@@ -1030,7 +1035,7 @@ const roomPlanner = (room) => {
       const structureExistResult = structureExist(
         room,
         bestSource.pos,
-        structureType
+        structureType,
       );
       if (structureExistResult[0]) {
         const structureObject = Game.getObjectById(structureExistResult[1]);
@@ -1039,7 +1044,7 @@ const roomPlanner = (room) => {
         const constructionSite = room.lookForAt(
           LOOK_CONSTRUCTION_SITES,
           bestSource.pos.x,
-          bestSource.pos.y
+          bestSource.pos.y,
         );
         if (constructionSite.length > 0) {
           break;
@@ -1055,7 +1060,7 @@ const roomPlanner = (room) => {
     const returnConstruction = createConstructionSite(
       room,
       bestSourcePosition.pos,
-      structureType
+      structureType,
     );
     // Check if structure is successfully constructed
     if (returnConstruction !== OK) break;
@@ -1069,9 +1074,9 @@ const roomPlanner = (room) => {
         source.pos.x - 1,
         source.pos.y + 1,
         source.pos.x + 1,
-        true
+        true,
       )
-      .filter((t) => t.terrain !== "wall").length;
+      .filter((t) => t.terrain !== 'wall').length;
     if (bestSourcePosition !== null) {
       flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
     } else break;
@@ -1083,9 +1088,9 @@ const roomPlanner = (room) => {
       !config.rooms.visuals.structures
     ) {
       const sourceVisualString = room.visual.circle(bestSourcePosition.pos, {
-        fill: "transparent",
+        fill: 'transparent',
         radius: 0.55,
-        stroke: "red",
+        stroke: 'red',
       });
       if (Object.keys(sourceVisualString).length > 0) {
         // Update visual string in flagMemory //
@@ -1111,8 +1116,9 @@ const roomPlanner = (room) => {
     (flagMemory.roomPlanner.room.controller &&
       flagMemory.roomPlanner.room.controller.structureType === structureType) ||
     (room.controller && !room.controller.my)
-  )
+  ) {
     return;
+  }
 
   const controller = room.controller;
   if (flagMemory.roomPlanner.room.controller !== undefined) {
@@ -1120,7 +1126,7 @@ const roomPlanner = (room) => {
     const structureExistResult = structureExist(
       room,
       bestControllerPosition.pos,
-      structureType
+      structureType,
     );
     if (structureExistResult[0]) {
       const structureObject = Game.getObjectById(structureExistResult[1]);
@@ -1129,7 +1135,7 @@ const roomPlanner = (room) => {
       const constructionSite = room.lookForAt(
         LOOK_CONSTRUCTION_SITES,
         bestControllerPosition.pos.x,
-        bestControllerPosition.pos.y
+        bestControllerPosition.pos.y,
       );
       if (constructionSite.length > 0) {
         return;
@@ -1140,7 +1146,7 @@ const roomPlanner = (room) => {
   const bestControllerPosition = getBestFreeSpot(
     room,
     controller.pos,
-    structureType
+    structureType,
   );
   // Check if best position is found, otherwise return
   if (bestControllerPosition === undefined) return;
@@ -1149,7 +1155,7 @@ const roomPlanner = (room) => {
   const returnConstruction = createConstructionSite(
     room,
     bestControllerPosition.pos,
-    structureType
+    structureType,
   );
 
   // Check if structure is successfully constructed
@@ -1172,7 +1178,7 @@ const roomPlanner = (room) => {
 
   const controllerVisualString = room.visual.circle(
     bestControllerPosition.pos,
-    { fill: "transparent", radius: 0.55, stroke: "red" }
+    {fill: 'transparent', radius: 0.55, stroke: 'red'},
   );
   if (Object.keys(controllerVisualString).length > 0) {
     // Update visual string in flagMemory //

@@ -1,9 +1,9 @@
 // #region Require('/...')
-const handlers = require("./handlers");
+const handlers = require('./handlers');
 
-require("./handlers");
-require("prototype.Room.structures");
-require("traveler");
+require('./handlers');
+require('prototype.Room.structures');
+require('traveler');
 // #endregion
 
 // #region Game loop

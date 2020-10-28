@@ -7,17 +7,17 @@ const isInTargetRoom = (creep, currentRoom, targetRoom) => {
 
 const moveToRoom = (creep, targetRoom) => {
   // Define the way how the creep is going to this room
-  let travelWay = "travelTo";
+  let travelWay = 'travelTo';
   const targetRoomFlag = Game.flags[targetRoom];
 
-  if (targetRoomFlag) travelWay = "flag";
+  if (targetRoomFlag) travelWay = 'flag';
   switch (travelWay) {
-    case "flag":
-      creep.travelTo(targetRoomFlag);
-      break;
-    default:
-      creep.travelTo(new RoomPosition(25, 25, targetRoom));
-      break;
+  case 'flag':
+    creep.travelTo(targetRoomFlag);
+    break;
+  default:
+    creep.travelTo(new RoomPosition(25, 25, targetRoom));
+    break;
   }
 };
 // #endregion
@@ -35,55 +35,55 @@ const pioneer = (creep) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "withdraw";
+    creep.memory.job = 'withdraw';
     return;
   }
 
   const result = creepModule.execute(creep);
   switch (result) {
-    case "full":
-      // Delete targetId and miniJob
-      delete creep.memory.targetId;
-      delete creep.memory.miniJob;
+  case 'full':
+    // Delete targetId and miniJob
+    delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
-      // Switch to one of the jobs that drains energy
-      if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
-        creep.memory.job = "transfer";
-      } else if (
-        flagMemory.commonMemory.energyStorages.capacity > 10000 &&
+    // Switch to one of the jobs that drains energy
+    if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
+      creep.memory.job = 'transfer';
+    } else if (
+      flagMemory.commonMemory.energyStorages.capacity > 10000 &&
         flagMemory.commonMemory.energyStorages.capacity / 10 >
           flagMemory.commonMemory.energyStorages.usable
-      ) {
-        creep.memory.job = "transfer";
-      } else if (
-        flagMemory.commonMemory.controllerStorage.usable < 1500 &&
+    ) {
+      creep.memory.job = 'transfer';
+    } else if (
+      flagMemory.commonMemory.controllerStorage.usable < 1500 &&
         flagMemory.commonMemory.controllerStorage.structureType ===
           STRUCTURE_CONTAINER
-      ) {
-        creep.memory.job = "transfer";
-      } else if (flagMemory.repair.targets.length > 0) {
-        creep.memory.job = "repair";
-      } else if (flagMemory.commonMemory.constructionSites.length > 0) {
-        creep.memory.job = "build";
-      } else {
-        creep.memory.job = "upgrade";
-      }
-      break;
-    case "empty":
-      // Delete targetId and sourceId
-      delete creep.memory.targetId;
-      delete creep.memory.sourceId;
-      delete creep.memory.miniJob;
+    ) {
+      creep.memory.job = 'transfer';
+    } else if (flagMemory.repair.targets.length > 0) {
+      creep.memory.job = 'repair';
+    } else if (flagMemory.commonMemory.constructionSites.length > 0) {
+      creep.memory.job = 'build';
+    } else {
+      creep.memory.job = 'upgrade';
+    }
+    break;
+  case 'empty':
+    // Delete targetId and sourceId
+    delete creep.memory.targetId;
+    delete creep.memory.sourceId;
+    delete creep.memory.miniJob;
 
-      // Switch to one of the roles that gets energy
-      if (flagMemory.commonMemory.usable > 1500) {
-        creep.memory.job = "withdraw";
-      } else {
-        creep.memory.job = "harvest";
-      }
-      break;
-    default:
-      break;
+    // Switch to one of the roles that gets energy
+    if (flagMemory.commonMemory.usable > 1500) {
+      creep.memory.job = 'withdraw';
+    } else {
+      creep.memory.job = 'harvest';
+    }
+    break;
+  default:
+    break;
   }
 };
 
@@ -97,29 +97,29 @@ const harvester = (creep, roleName) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "harvest";
+    creep.memory.job = 'harvest';
     return;
   }
 
   const result = creepModule.execute(creep);
   switch (result) {
-    case "full":
-      // Delete targetId
-      delete creep.memory.targetId;
-      creep.memory.miniJob = "harvest";
+  case 'full':
+    // Delete targetId
+    delete creep.memory.targetId;
+    creep.memory.miniJob = 'harvest';
 
-      // Switch to one of the jobs that drains energy
-      creep.memory.job = "transfer";
-      break;
-    case "empty":
-      // Delete targetId
-      delete creep.memory.targetId;
+    // Switch to one of the jobs that drains energy
+    creep.memory.job = 'transfer';
+    break;
+  case 'empty':
+    // Delete targetId
+    delete creep.memory.targetId;
 
-      // Switch to one of the roles that gets energy
-      creep.memory.job = "harvest";
-      break;
-    default:
-      break;
+    // Switch to one of the roles that gets energy
+    creep.memory.job = 'harvest';
+    break;
+  default:
+    break;
   }
 };
 
@@ -130,40 +130,40 @@ const transferer = (creep, roleName) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "withdraw";
+    creep.memory.job = 'withdraw';
     return;
   }
 
   const result = creepModule.execute(creep);
   switch (result) {
-    case "full":
-      // Delete targetId
-      delete creep.memory.targetId;
-      delete creep.memory.miniJob;
+  case 'full':
+    // Delete targetId
+    delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
-      // Check if creep needs to move to another room
-      if (!isInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
-        return;
-      }
+    // Check if creep needs to move to another room
+    if (!isInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
+      return;
+    }
 
-      // Switch to one of the jobs that drains energy
-      creep.memory.job = "transfer";
-      break;
-    case "empty":
-      // Delete targetId
-      delete creep.memory.targetId;
-      delete creep.memory.miniJob;
+    // Switch to one of the jobs that drains energy
+    creep.memory.job = 'transfer';
+    break;
+  case 'empty':
+    // Delete targetId
+    delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
-      // Check if creep needs to move to another room
-      if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
-        return;
-      }
+    // Check if creep needs to move to another room
+    if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+      return;
+    }
 
-      // Switch to one of the roles that gets energy
-      creep.memory.job = "withdraw";
-      break;
-    default:
-      break;
+    // Switch to one of the roles that gets energy
+    creep.memory.job = 'withdraw';
+    break;
+  default:
+    break;
   }
 };
 
@@ -180,35 +180,35 @@ const upgrader = (creep, roleName) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "withdraw";
+    creep.memory.job = 'withdraw';
     return;
   }
 
   const result = creepModule.execute(creep);
   switch (result) {
-    case "full":
-      // Delete targetId
-      delete creep.memory.targetId;
+  case 'full':
+    // Delete targetId
+    delete creep.memory.targetId;
 
-      // Switch to one of the jobs that drains energy
-      creep.memory.job = "upgrade";
-      break;
-    case "empty":
-      // Delete targetId
-      delete creep.memory.targetId;
+    // Switch to one of the jobs that drains energy
+    creep.memory.job = 'upgrade';
+    break;
+  case 'empty':
+    // Delete targetId
+    delete creep.memory.targetId;
 
-      // Switch to one of the roles that gets energy
-      if (
-        flagMemory.commonMemory.usable >= 10 * 1000 ||
+    // Switch to one of the roles that gets energy
+    if (
+      flagMemory.commonMemory.usable >= 10 * 1000 ||
         flagMemory.commonMemory.controllerStorage.usable >= 1500
-      ) {
-        creep.memory.job = "withdraw";
-      } else {
-        creep.memory.job = "harvest";
-      }
-      break;
-    default:
-      break;
+    ) {
+      creep.memory.job = 'withdraw';
+    } else {
+      creep.memory.job = 'harvest';
+    }
+    break;
+  default:
+    break;
   }
 };
 
@@ -225,32 +225,32 @@ const repairer = (creep, roleName) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "withdraw";
+    creep.memory.job = 'withdraw';
     return;
   }
 
   const result = creepModule.execute(creep);
   switch (result) {
-    case "full":
-      // Delete targetId
-      delete creep.memory.targetId;
+  case 'full':
+    // Delete targetId
+    delete creep.memory.targetId;
 
-      // Switch to one of the jobs that drains energy
-      creep.memory.job = "repair";
-      break;
-    case "empty":
-      // Delete targetId
-      delete creep.memory.targetId;
+    // Switch to one of the jobs that drains energy
+    creep.memory.job = 'repair';
+    break;
+  case 'empty':
+    // Delete targetId
+    delete creep.memory.targetId;
 
-      // Switch to one of the roles that gets energy
-      if (flagMemory.commonMemory.usable >= 2000) {
-        creep.memory.job = "withdraw";
-      } else {
-        creep.memory.job = "harvest";
-      }
-      break;
-    default:
-      break;
+    // Switch to one of the roles that gets energy
+    if (flagMemory.commonMemory.usable >= 2000) {
+      creep.memory.job = 'withdraw';
+    } else {
+      creep.memory.job = 'harvest';
+    }
+    break;
+  default:
+    break;
   }
 };
 
@@ -267,32 +267,32 @@ const builder = (creep, roleName) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "withdraw";
+    creep.memory.job = 'withdraw';
     return;
   }
 
   const result = creepModule.execute(creep);
   switch (result) {
-    case "full":
-      // Delete targetId
-      delete creep.memory.targetId;
+  case 'full':
+    // Delete targetId
+    delete creep.memory.targetId;
 
-      // Switch to one of the jobs that drains energy
-      creep.memory.job = "build";
-      break;
-    case "empty":
-      // Delete targetId
-      delete creep.memory.targetId;
+    // Switch to one of the jobs that drains energy
+    creep.memory.job = 'build';
+    break;
+  case 'empty':
+    // Delete targetId
+    delete creep.memory.targetId;
 
-      // Switch to one of the roles that gets energy
-      if (flagMemory.commonMemory.usable >= 2000) {
-        creep.memory.job = "withdraw";
-      } else {
-        creep.memory.job = "harvest";
-      }
-      break;
-    default:
-      break;
+    // Switch to one of the roles that gets energy
+    if (flagMemory.commonMemory.usable >= 2000) {
+      creep.memory.job = 'withdraw';
+    } else {
+      creep.memory.job = 'harvest';
+    }
+    break;
+  default:
+    break;
   }
 };
 
@@ -306,7 +306,7 @@ const reserver = (creep, roleName) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "reserve";
+    creep.memory.job = 'reserve';
     return;
   }
 
@@ -323,22 +323,22 @@ const claimer = (creep, roleName) => {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
   } catch (error) {
-    creep.memory.job = "claim";
+    creep.memory.job = 'claim';
     return;
   }
 
   const result = creepModule.execute(creep);
   // TODO LOGIC FOR CLAIMER
   switch (result) {
-    case OK:
-      // Switch to one of the jobs that drains energy
-      creep.memory.job = "claim";
-      break;
-    case ERR_GCL_NOT_ENOUGH:
-      creep.memory.job = "claim";
-      break;
-    default:
-      break;
+  case OK:
+    // Switch to one of the jobs that drains energy
+    creep.memory.job = 'claim';
+    break;
+  case ERR_GCL_NOT_ENOUGH:
+    creep.memory.job = 'claim';
+    break;
+  default:
+    break;
   }
 };
 

@@ -82,7 +82,7 @@ Room.prototype._checkRoomCache = function _checkRoomCache() {
     roomStructuresExpiration[this.name] = Game.time + getCacheExpiration();
     roomStructures[this.name] = _.groupBy(
       this.find(FIND_STRUCTURES),
-      (s) => s.structureType
+      (s) => s.structureType,
     );
     let i;
     const allRoomStructures = roomStructures[this.name];
@@ -90,7 +90,7 @@ Room.prototype._checkRoomCache = function _checkRoomCache() {
       if (Object.prototype.hasOwnProperty.call(allRoomStructures, i)) {
         roomStructures[this.name][i] = _.map(
           roomStructures[this.name][i],
-          (s) => s.id
+          (s) => s.id,
         );
       }
     }
@@ -98,26 +98,26 @@ Room.prototype._checkRoomCache = function _checkRoomCache() {
 };
 
 multipleList.forEach((type) => {
-  Object.defineProperty(Room.prototype, type + "s", {
-    get: function () {
-      if (this["_" + type + "s"] && this["_" + type + "s_ts"] === Game.time) {
-        return this["_" + type + "s"];
+  Object.defineProperty(Room.prototype, type + 's', {
+    get: function() {
+      if (this['_' + type + 's'] && this['_' + type + 's_ts'] === Game.time) {
+        return this['_' + type + 's'];
       } else {
         this._checkRoomCache();
         if (roomStructures[this.name][type]) {
-          this["_" + type + "s_ts"] = Game.time;
-          this["_" + type + "s"] = roomStructures[this.name][type].map(
-            Game.getObjectById
+          this['_' + type + 's_ts'] = Game.time;
+          this['_' + type + 's'] = roomStructures[this.name][type].map(
+            Game.getObjectById,
           );
-          return this["_" + type + "s"];
+          return this['_' + type + 's'];
         } else {
-          this["_" + type + "s_ts"] = Game.time;
-          this["_" + type + "s"] = [];
-          return this["_" + type + "s"];
+          this['_' + type + 's_ts'] = Game.time;
+          this['_' + type + 's'] = [];
+          return this['_' + type + 's'];
         }
       }
     },
-    set: function () {},
+    set: function() {},
     enumerable: false,
     configurable: true,
   });
@@ -125,25 +125,25 @@ multipleList.forEach((type) => {
 
 singleList.forEach((type) => {
   Object.defineProperty(Room.prototype, type, {
-    get: function () {
-      if (this["_" + type] && this["_" + type + "_ts"] === Game.time) {
-        return this["_" + type];
+    get: function() {
+      if (this['_' + type] && this['_' + type + '_ts'] === Game.time) {
+        return this['_' + type];
       } else {
         this._checkRoomCache();
         if (roomStructures[this.name][type]) {
-          this["_" + type + "_ts"] = Game.time;
-          this["_" + type] = Game.getObjectById(
-            roomStructures[this.name][type][0]
+          this['_' + type + '_ts'] = Game.time;
+          this['_' + type] = Game.getObjectById(
+            roomStructures[this.name][type][0],
           );
-          return this["_" + type];
+          return this['_' + type];
         } else {
-          this["_" + type + "_ts"] = Game.time;
-          this["_" + type] = undefined;
-          return this["_" + type];
+          this['_' + type + '_ts'] = Game.time;
+          this['_' + type] = undefined;
+          return this['_' + type];
         }
       }
     },
-    set: function () {},
+    set: function() {},
     enumerable: false,
     configurable: true,
   });

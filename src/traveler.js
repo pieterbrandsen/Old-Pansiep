@@ -2,8 +2,8 @@
  * To start using Traveler, require it in main.js:
  * Example: var Traveler = require('Traveler.js');
  */
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+Object.defineProperty(exports, '__esModule', {value: true});
 class Traveler {
   /**
    * move creep to destination
@@ -19,7 +19,7 @@ class Traveler {
       return ERR_INVALID_ARGS;
     }
     if (creep.fatigue > 0) {
-      Traveler.circle(creep.pos, "aqua", 0.3);
+      Traveler.circle(creep.pos, 'aqua', 0.3);
       return ERR_TIRED;
     }
     destination = this.normalizePos(destination);
@@ -50,7 +50,7 @@ class Traveler {
     // check if creep is stuck
     if (this.isStuck(creep, state)) {
       state.stuckCount++;
-      Traveler.circle(creep.pos, "magenta", state.stuckCount * 0.2);
+      Traveler.circle(creep.pos, 'magenta', state.stuckCount * 0.2);
     } else {
       state.stuckCount = 0;
     }
@@ -92,14 +92,14 @@ class Traveler {
       if (state.cpu > REPORT_CPU_THRESHOLD) {
         // see note at end of file for more info on this
         console.log(
-          `TRAVELER: heavy cpu use: ${creep.name}, cpu: ${state.cpu} origin: ${creep.pos}, dest: ${destination}`
+          `TRAVELER: heavy cpu use: ${creep.name}, cpu: ${state.cpu} origin: ${creep.pos}, dest: ${destination}`,
         );
       }
-      let color = "orange";
+      let color = 'orange';
       if (ret.incomplete) {
         // uncommenting this is a great way to diagnose creep behavior issues
         // console.log(`TRAVELER: incomplete path for ${creep.name}`);
-        color = "red";
+        color = 'red';
       }
       if (options.returnData) {
         options.returnData.pathfinderReturn = ret;
@@ -184,7 +184,7 @@ class Traveler {
   static circle(pos, color, opacity) {
     new RoomVisual(pos.roomName).circle(pos, {
       radius: 0.45,
-      fill: "transparent",
+      fill: 'transparent',
       stroke: color,
       strokeWidth: 0.15,
       opacity: opacity,
@@ -229,7 +229,7 @@ class Traveler {
     // check to see whether findRoute should be used
     const roomDistance = Game.map.getRoomLinearDistance(
       origin.roomName,
-      destination.roomName
+      destination.roomName,
     );
     let allowedRooms = options.route;
     if (
@@ -240,7 +240,7 @@ class Traveler {
       const route = this.findRoute(
         origin.roomName,
         destination.roomName,
-        options
+        options,
       );
       if (route) {
         allowedRooms = route;
@@ -295,14 +295,14 @@ class Traveler {
     };
     let ret = PathFinder.search(
       origin,
-      { pos: destination, range: options.range },
+      {pos: destination, range: options.range},
       {
         maxOps: options.maxOps,
         maxRooms: options.maxRooms,
         plainCost: options.offRoad ? 1 : options.ignoreRoads ? 1 : 2,
         swampCost: options.offRoad ? 1 : options.ignoreRoads ? 5 : 10,
         roomCallback: callback,
-      }
+      },
     );
     if (ret.incomplete && options.ensurePath) {
       if (options.useFindRoute === undefined) {
@@ -311,15 +311,15 @@ class Traveler {
         // options.allowedRooms and options.routeCallback can also be used to handle this situation
         if (roomDistance <= 2) {
           console.log(
-            `TRAVELER: path failed without findroute, trying with options.useFindRoute = true`
+            `TRAVELER: path failed without findroute, trying with options.useFindRoute = true`,
           );
           console.log(`from: ${origin}, destination: ${destination}`);
           options.useFindRoute = true;
           ret = this.findTravelPath(origin, destination, options);
           console.log(
             `TRAVELER: second attempt was ${
-              ret.incomplete ? "not " : ""
-            }successful`
+              ret.incomplete ? 'not ' : ''
+            }successful`,
           );
           return ret;
         }
@@ -339,7 +339,7 @@ class Traveler {
     const restrictDistance =
       options.restrictDistance ||
       Game.map.getRoomLinearDistance(origin, destination) + 10;
-    const allowedRooms = { [origin]: true, [destination]: true };
+    const allowedRooms = {[origin]: true, [destination]: true};
     let highwayBias = 1;
     if (options.preferHighway) {
       highwayBias = 2.5;
@@ -438,7 +438,7 @@ class Traveler {
       this.structureMatrixCache[room.name] = Traveler.addStructuresToMatrix(
         room,
         matrix,
-        1
+        1,
       );
     }
     return this.structureMatrixCache[room.name];
@@ -456,7 +456,7 @@ class Traveler {
       this.creepMatrixTick = Game.time;
       this.creepMatrixCache[room.name] = Traveler.addCreepsToMatrix(
         room,
-        this.getStructureMatrix(room, true).clone()
+        this.getStructureMatrix(room, true).clone(),
       );
     }
     return this.creepMatrixCache[room.name];
@@ -517,15 +517,15 @@ class Traveler {
    * @param {string} color
    * @return {string}
    */
-  static serializePath(startPos, path, color = "orange") {
-    let serializedPath = "";
+  static serializePath(startPos, path, color = 'orange') {
+    let serializedPath = '';
     let lastPosition = startPos;
     this.circle(startPos, color);
     for (const position of path) {
       if (position.roomName === lastPosition.roomName) {
         new RoomVisual(position.roomName).line(position, lastPosition, {
           color: color,
-          lineStyle: "dashed",
+          lineStyle: 'dashed',
         });
         serializedPath += lastPosition.getDirectionTo(position);
       }
@@ -593,7 +593,7 @@ class Traveler {
       state.destination = new RoomPosition(
         travelData.state[STATE_DEST_X],
         travelData.state[STATE_DEST_Y],
-        travelData.state[STATE_DEST_ROOMNAME]
+        travelData.state[STATE_DEST_ROOMNAME],
       );
     } else {
       state.cpu = 0;
@@ -642,6 +642,6 @@ const STATE_DEST_X = 4;
 const STATE_DEST_Y = 5;
 const STATE_DEST_ROOMNAME = 6;
 // assigns a function to Creep.prototype: creep.travelTo(destination)
-Creep.prototype.travelTo = function (destination, options) {
+Creep.prototype.travelTo = function(destination, options) {
   return Traveler.travelTo(this, destination, options);
 };

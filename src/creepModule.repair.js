@@ -8,7 +8,7 @@ const repair = (creep, data) => {
     creep.store.getUsedCapacity() === 0 ||
     flagMemory.repair.targets.length === 0
   ) {
-    return "empty";
+    return 'empty';
   }
 
   // If there are no construction sites left and no target, return full to get another goal if possible
@@ -17,7 +17,7 @@ const repair = (creep, data) => {
     !creepMemory.targetId &&
     !data.id
   ) {
-    return "full";
+    return 'full';
   }
 
   // Set targetId to saved in memory if no id was passed into using the data object
@@ -34,30 +34,30 @@ const repair = (creep, data) => {
     const result = creep.repair(repairTarget, RESOURCE_ENERGY);
     // Switch based on the results
     switch (result) {
-      case OK:
-        // If the hits of the repairTarget are high enough, remove structure
-        if (
-          repairTarget.hits === repairTarget.hitsMax ||
+    case OK:
+      // If the hits of the repairTarget are high enough, remove structure
+      if (
+        repairTarget.hits === repairTarget.hitsMax ||
           repairTarget.hits > flagMemory.repair.hitTarget
-        ) {
-          // Check if target that's going to be lost is still on the construction list, if so shift it.
-          if (flagMemory.repair.targets.indexOf(creep.memory.targetId) === 0) {
-            flagMemory.repair.targets.shift();
-          }
-
-          delete creep.memory.targetId;
+      ) {
+        // Check if target that's going to be lost is still on the construction list, if so shift it.
+        if (flagMemory.repair.targets.indexOf(creep.memory.targetId) === 0) {
+          flagMemory.repair.targets.shift();
         }
-        break;
-      case ERR_INVALID_TARGET:
-        // Delete target from the memory
+
         delete creep.memory.targetId;
-        break;
-      case ERR_NOT_IN_RANGE:
-        // If creep is not in range, move to target
-        creep.moveTo(repairTarget);
-        return;
-      default:
-        break;
+      }
+      break;
+    case ERR_INVALID_TARGET:
+      // Delete target from the memory
+      delete creep.memory.targetId;
+      break;
+    case ERR_NOT_IN_RANGE:
+      // If creep is not in range, move to target
+      creep.moveTo(repairTarget);
+      return;
+    default:
+      break;
     }
   }
 };
