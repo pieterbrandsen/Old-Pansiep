@@ -4,23 +4,23 @@ const harvestJob = (creep) => {
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty
-  if (creep.store.getUsedCapacity() === 0) return 'empty';
+  if (creep.store.getUsedCapacity() === 0) return "empty";
 
   // If creep memory is missing a targetId, find one
   if (!creepMemory.targetId) {
     // Set the storage pos as found in memory
     const storagePos = flagMemory.roomPlanner.room.sources[
       creepMemory.sourceNumber
-    ] ?
-      flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber].pos :
-      null;
+    ]
+      ? flagMemory.roomPlanner.room.sources[creepMemory.sourceNumber].pos
+      : null;
     if (storagePos === null) return;
 
     // Find all structures that are at the storagePos
     const foundStructures = creep.room.lookForAt(
       LOOK_STRUCTURES,
       storagePos.x,
-      storagePos.y,
+      storagePos.y
     );
 
     // Loop through all structures that are found at storagePos and try to find a container or link
@@ -30,7 +30,7 @@ const harvestJob = (creep) => {
         structure.structureType === STRUCTURE_CONTAINER ||
         structure.structureType === STRUCTURE_LINK
       ) {
-        sourceStructure = {type: structure.structureType, id: structure.id};
+        sourceStructure = { type: structure.structureType, id: structure.id };
       }
     });
 
@@ -45,17 +45,17 @@ const harvestJob = (creep) => {
 
     // Switch based on the results
     switch (result) {
-    case ERR_NOT_IN_RANGE:
-      // If creep is not in range, move to target
-      creep.moveTo(transferStructure);
-      break;
-    case ERR_INVALID_TARGET:
-      // Delete targetId
-      delete creep.memory.targetId;
-      delete flagMemory.roomPlanner.room.sources[creep.memory.sourceNumber];
-      break;
-    default:
-      break;
+      case ERR_NOT_IN_RANGE:
+        // If creep is not in range, move to target
+        creep.moveTo(transferStructure);
+        break;
+      case ERR_INVALID_TARGET:
+        // Delete targetId
+        delete creep.memory.targetId;
+        delete flagMemory.roomPlanner.room.sources[creep.memory.sourceNumber];
+        break;
+      default:
+        break;
     }
   }
 };
@@ -66,24 +66,24 @@ const spawnerJob = (creep) => {
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty
-  if (creep.store.getUsedCapacity() === 0) return 'empty';
+  if (creep.store.getUsedCapacity() === 0) return "empty";
 
   // If Target is already full of energy
   if (
     creepMemory.targetId &&
     Game.getObjectById(creepMemory.targetId) !== null &&
     Game.getObjectById(creepMemory.targetId).store.getFreeCapacity(
-      RESOURCE_ENERGY,
+      RESOURCE_ENERGY
     ) === 0
   ) {
-    return 'full';
+    return "full";
   }
 
   if (
     flagMemory.commonMemory.spawnEnergyStructures.length === 0 &&
     !creepMemory.targetId
   ) {
-    return 'empty';
+    return "empty";
   }
 
   // If creep is missing targetId
@@ -117,25 +117,25 @@ const spawnerJob = (creep) => {
 
     // Switch based on the results
     switch (result) {
-    case OK:
-      if (transferStructure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-        flagMemory.commonMemory.spawnEnergyStructures.push({
-          id: transferStructure.id,
-          needed: transferStructure.store.getFreeCapacity(RESOURCE_ENERGY),
-        });
-      }
-      break;
-    case ERR_INVALID_TARGET:
-    case ERR_FULL:
-      // Delete targetId
-      delete creep.memory.targetId;
-      return;
-    case ERR_NOT_IN_RANGE:
-      // If creep is not in range, move to target
-      creep.moveTo(transferStructure);
-      return;
-    default:
-      break;
+      case OK:
+        if (transferStructure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+          flagMemory.commonMemory.spawnEnergyStructures.push({
+            id: transferStructure.id,
+            needed: transferStructure.store.getFreeCapacity(RESOURCE_ENERGY),
+          });
+        }
+        break;
+      case ERR_INVALID_TARGET:
+      case ERR_FULL:
+        // Delete targetId
+        delete creep.memory.targetId;
+        return;
+      case ERR_NOT_IN_RANGE:
+        // If creep is not in range, move to target
+        creep.moveTo(transferStructure);
+        return;
+      default:
+        break;
     }
   }
 };
@@ -146,7 +146,7 @@ const storageJob = (creep) => {
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty
-  if (creep.store.getUsedCapacity() === 0) return 'empty';
+  if (creep.store.getUsedCapacity() === 0) return "empty";
 
   // If there is enough energy in storage
   if (
@@ -154,7 +154,7 @@ const storageJob = (creep) => {
     flagMemory.commonMemory.capacity / 10 > flagMemory.commonMemory.usable &&
     !creep.memory.targetId
   ) {
-    return 'empty';
+    return "empty";
   }
 
   // If room is in need of more energy in the storage/terminal
@@ -181,18 +181,18 @@ const storageJob = (creep) => {
 
     // Switch based on the results
     switch (result) {
-    case OK:
-    case ERR_INVALID_TARGET:
-    case ERR_FULL:
-      // Delete targetId
-      delete creep.memory.targetId;
-      return;
-    case ERR_NOT_IN_RANGE:
-      // If creep is not in range, move to target
-      creep.moveTo(transferStructure);
-      return;
-    default:
-      break;
+      case OK:
+      case ERR_INVALID_TARGET:
+      case ERR_FULL:
+        // Delete targetId
+        delete creep.memory.targetId;
+        return;
+      case ERR_NOT_IN_RANGE:
+        // If creep is not in range, move to target
+        creep.moveTo(transferStructure);
+        return;
+      default:
+        break;
     }
   }
 };
@@ -209,12 +209,12 @@ const controllerJob = (creep) => {
         STRUCTURE_CONTAINER) &&
     !creep.memory.targetId
   ) {
-    return 'empty';
+    return "empty";
   }
 
   // Get the saved structure from memory
   const transferStructure = Game.getObjectById(
-    flagMemory.commonMemory.controllerStorage.id,
+    flagMemory.commonMemory.controllerStorage.id
   );
 
   // Run the transfer function
@@ -222,21 +222,21 @@ const controllerJob = (creep) => {
 
   // Switch based on the results
   switch (result) {
-  case OK:
-  case ERR_INVALID_TARGET:
-  case ERR_FULL:
-    // Delete targetId
-    delete creep.memory.targetId;
-    if (result === ERR_INVALID_TARGET) {
-      flagMemory.commonMemory.controllerStorage.id = undefined;
-    }
-    break;
-  case ERR_NOT_IN_RANGE:
-    // If creep is not in range, move to target
-    creep.moveTo(transferStructure);
-    return;
-  default:
-    break;
+    case OK:
+    case ERR_INVALID_TARGET:
+    case ERR_FULL:
+      // Delete targetId
+      delete creep.memory.targetId;
+      if (result === ERR_INVALID_TARGET) {
+        flagMemory.commonMemory.controllerStorage.id = undefined;
+      }
+      break;
+    case ERR_NOT_IN_RANGE:
+      // If creep is not in range, move to target
+      creep.moveTo(transferStructure);
+      return;
+    default:
+      break;
   }
 };
 
@@ -249,38 +249,41 @@ module.exports = {
     const flagMemory = Memory.flags[creepMemory.targetRoom];
 
     switch (creep.memory.miniJob) {
-    case 'harvest':
-      result = harvestJob(creep);
-      break;
-    case 'spawner':
-      result = spawnerJob(creep);
-      break;
-    case 'storage':
-      result = storageJob(creep);
-      break;
-    case 'controller':
-      result = controllerJob(creep);
-      break;
-    default:
-      if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
-        creep.memory.miniJob = 'spawner';
+      case "harvest":
+        result = harvestJob(creep);
         break;
-      } else if (
-        flagMemory.commonMemory.capacity > 10000 &&
+      case "spawner":
+        result = spawnerJob(creep);
+        break;
+      case "storage":
+        result = storageJob(creep);
+        break;
+      case "controller":
+        result = controllerJob(creep);
+        break;
+      default:
+        if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
+          creep.memory.miniJob = "spawner";
+          break;
+        } else if (
+          flagMemory.commonMemory.capacity > 10000 &&
           flagMemory.commonMemory.capacity / 10 < flagMemory.commonMemory.usable
-      ) {
-        creep.memory.miniJob = 'storage';
-        break;
-      } else if (
-        flagMemory.commonMemory.controllerStorage.usable < 1500 &&
+        ) {
+          creep.memory.miniJob = "storage";
+          break;
+        } else if (
+          flagMemory.commonMemory.controllerStorage.usable < 1500 &&
           flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER
-      ) {
-        creep.memory.miniJob = 'controller';
-        break;
-      }
+        ) {
+          creep.memory.miniJob = "controller";
+          break;
+        }
 
-      return 'full';
+        // Return full if no condition hit
+        return "full";
     }
+
+    // Return result
     return result;
   },
 };

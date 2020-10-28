@@ -5,13 +5,13 @@ const harvest = (creep) => {
 
   // Return full if current creep's storage is full
   if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
-    return 'full';
+    return "full";
   }
 
   // If creep has no sourceId saved
   if (!creepMemory.sourceId) {
     const closestActiveSource = creep.pos.findClosestByRange(
-      FIND_SOURCES_ACTIVE,
+      FIND_SOURCES_ACTIVE
     );
     if (closestActiveSource !== null) {
       creep.memory.sourceId = closestActiveSource.id;
@@ -43,10 +43,10 @@ const harvest = (creep) => {
     if (sourceNumber === undefined) {
       // If sourceNumber is in creep's role
       if (
-        creep.memory.role.split('-').length > 0 &&
-        !isNaN(creep.memory.role.split('-')[1])
+        creep.memory.role.split("-").length > 0 &&
+        !isNaN(creep.memory.role.split("-")[1])
       ) {
-        creepMemory.sourceNumber = creep.memory.role.split('-')[1];
+        creepMemory.sourceNumber = creep.memory.role.split("-")[1];
       } else {
         // Else loop until assigned source's id is found
         let i = 0;
@@ -66,13 +66,16 @@ const harvest = (creep) => {
         source.pos.x - 1,
         source.pos.y + 1,
         source.pos.x + 1,
-        true,
+        true
       ).length;
       const roomPlannerTargetSource =
         flagMemory.roomPlanner.room.sources[sourceNumber];
       if (roomPlannerTargetSource === undefined) return;
-      if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround || creepMemory.role.includes('harvester')) {
-        if (creepMemory.role.includes('harvester')) {
+      if (
+        creepsAroundTargetSource < roomPlannerTargetSource.spotsAround ||
+        creepMemory.role.includes("harvester")
+      ) {
+        if (creepMemory.role.includes("harvester")) {
           sourcePos = roomPlannerTargetSource.pos;
         }
       } else {
@@ -87,12 +90,12 @@ const harvest = (creep) => {
               newSource.pos.x - 1,
               newSource.pos.y + 1,
               newSource.pos.x + 1,
-              true,
+              true
             ).length;
 
             if (
               newSource.id !== source.id &&
-                creepsAroundNewSource < roomPlannerNewSource.spotsAround
+              creepsAroundNewSource < roomPlannerNewSource.spotsAround
             ) {
               creep.memory.sourceId = newSource.id;
               creep.memory.sourceNumber = i;
@@ -110,10 +113,12 @@ const harvest = (creep) => {
 
     // Move to source
     if (sourcePos.x !== source.pos.x || sourcePos.y !== source.pos.y) {
-      if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 0)) creep.memory.onPosition = true;
+      if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 0))
+        creep.memory.onPosition = true;
       else creep.moveTo(sourcePos.x, sourcePos.y);
     } else {
-      if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 1)) creep.memory.onPosition = true;
+      if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 1))
+        creep.memory.onPosition = true;
       else creep.moveTo(sourcePos.x, sourcePos.y);
     }
 
@@ -121,15 +126,15 @@ const harvest = (creep) => {
   } else {
     const result = creep.harvest(source);
     switch (result) {
-    case OK:
-      return;
-    case ERR_NOT_ENOUGH_RESOURCES:
-    case ERR_INVALID_TARGET:
-      if (creep.memory.role.includes('-')) break;
-      delete creep.memory.sourceId;
-      break;
-    default:
-      break;
+      case OK:
+        return;
+      case ERR_NOT_ENOUGH_RESOURCES:
+      case ERR_INVALID_TARGET:
+        if (creep.memory.role.includes("-")) break;
+        delete creep.memory.sourceId;
+        break;
+      default:
+        break;
     }
   }
 };

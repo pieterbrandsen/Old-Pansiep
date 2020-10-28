@@ -1,5 +1,5 @@
 // #region Require
-require('./config');
+require("./config");
 // #endregion
 
 // #region functions
@@ -20,14 +20,17 @@ const initCreepMemory = (room, role, data) => {
   if (!newMemory.targetId) newMemory.targetId = undefined;
 
   const flagMemory = Memory.flags[newMemory.targetRoom];
-  if (role.includes('harvester') && !newMemory.sourceId) {
-    if (typeof flagMemory.commonMemory.sources[role.split('-')[1]] === 'object') {
-      newMemory.sourceId = flagMemory.commonMemory.sources[role.split('-')[1]].id;
+  if (role.includes("harvester") && !newMemory.sourceId) {
+    if (
+      typeof flagMemory.commonMemory.sources[role.split("-")[1]] === "object"
+    ) {
+      newMemory.sourceId =
+        flagMemory.commonMemory.sources[role.split("-")[1]].id;
     }
   }
 
   if (room.controller.level >= 6 && room.terminal) {
-    if (role === 'transfererLiTe') newMemory.directions = [TOP_RIGHT];
+    if (role === "transfererLiTe") newMemory.directions = [TOP_RIGHT];
     else {
       newMemory.directions = [
         TOP,
@@ -68,119 +71,132 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
   let rolesNeededInRoom = [];
   switch (roomType) {
-  case 'owned':
-    rolesNeededInRoom = [
-      'pioneer',
-      'transferer',
-      'harvester-0',
-      'harvester-1',
-      'builder',
-      'repairer',
-      'upgrader',
-      'end',
-    ];
-    break;
-  case 'remote':
-    rolesNeededInRoom = [
-      'transfererLD',
-      'reserverLD',
-      'harvesterLD-0',
-      'harvesterLD-1',
-      'builderLD',
-      'repairerLD',
-      'end',
-    ];
-    break;
-  case 'external':
-    // TODO For automatic claims, search a room manually and place a claim flag
-    break;
-  default:
-    break;
+    case "owned":
+      rolesNeededInRoom = [
+        "pioneer",
+        "transferer",
+        "harvester-0",
+        "harvester-1",
+        "builder",
+        "repairer",
+        "upgrader",
+        "end",
+      ];
+      break;
+    case "remote":
+      rolesNeededInRoom = [
+        "transfererLD",
+        "reserverLD",
+        "harvesterLD-0",
+        "harvesterLD-1",
+        "builderLD",
+        "repairerLD",
+        "end",
+      ];
+      break;
+    case "external":
+      // TODO For automatic claims, search a room manually and place a claim flag
+      break;
+    default:
+      break;
   }
 
   const checkIfRoleCanBeSpawned = (role, room, memory) => {
-    const shortRoleName = role.split('-')[0].replace('LD', '');
+    const shortRoleName = role.split("-")[0].replace("LD", "");
     const targetRoom = Game.rooms[memory.targetRoom];
     const targetFlagMemory = Memory.flags[memory.targetRoom];
     let result = false;
 
     switch (role) {
-    // Owned room roles
-    case 'pioneer':
-      // Check if input role is less then max creeps allowed //
-      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
-
-      // If energy capacity is more then 1200 (6 work harvester && rcl 4)
-      if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300) break;
-
-      if (room.energyAvailable === 300) {
-        result = true;
-      }
-      break;
-    case 'transferer':
-    case 'transfererLD':
-      // Check if input role is less then max creeps allowed //
-      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
-
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
-      if (room.energyCapacityAvailable <= 300) break;
-
-      if (targetRoom === undefined) break;
-
-      if (targetFlagMemory === undefined || targetFlagMemory.commonMemory.energyStorages.usable < 1000) break;
-
-      result = true;
-      break;
-    case 'upgrader':
-      if (room.controller.ticksToDowngrade <= 5*1000) {
-        // Check if input role is less then max creeps allowed //
-        if (roleCount[role] >= 1) break;
-      } else {
+      // Owned room roles
+      case "pioneer":
         // Check if input role is less then max creeps allowed //
         if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
-      }
 
-      if (targetRoom === undefined) break;
+        // If energy capacity is more then 1200 (6 work harvester && rcl 4)
+        if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300)
+          break;
 
-      if (targetFlagMemory === undefined && targetFlagMemory.commonMemory.energyStorages.usable < 2000) break;
+        if (room.energyAvailable === 300) {
+          result = true;
+        }
+        break;
+      case "transferer":
+      case "transfererLD":
+        // Check if input role is less then max creeps allowed //
+        if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      result = true;
-      break;
-    case 'builder':
-    case 'repairer':
-    case 'reserverLD':
-    case 'builderLD':
-    case 'repairerLD':
-      // Check if input role is less then max creeps allowed //
-      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+        // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+        if (room.energyCapacityAvailable <= 300) break;
 
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
-      if (room.energyCapacityAvailable <= 300) break;
+        if (targetRoom === undefined) break;
 
-      if (targetRoom === undefined) break;
+        if (
+          targetFlagMemory === undefined ||
+          targetFlagMemory.commonMemory.energyStorages.usable < 1000
+        )
+          break;
 
-      if (targetFlagMemory === undefined && targetFlagMemory.commonMemory.energyStorages.usable < 1500) break;
+        result = true;
+        break;
+      case "upgrader":
+        if (room.controller.ticksToDowngrade <= 5 * 1000) {
+          // Check if input role is less then max creeps allowed //
+          if (roleCount[role] >= 1) break;
+        } else {
+          // Check if input role is less then max creeps allowed //
+          if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+        }
 
-      result = true;
-      break;
-    case 'harvester-0':
-    case 'harvester-1':
-    case 'harvesterLD-0':
-    case 'harvesterLD-1':
-      // Check if input role is less then max creeps allowed //
-      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+        if (targetRoom === undefined) break;
 
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
-      if (room.energyCapacityAvailable <= 300) break;
+        if (
+          targetFlagMemory === undefined &&
+          targetFlagMemory.commonMemory.energyStorages.usable < 2000
+        )
+          break;
 
-      if (targetRoom === undefined) break;
+        result = true;
+        break;
+      case "builder":
+      case "repairer":
+      case "reserverLD":
+      case "builderLD":
+      case "repairerLD":
+        // Check if input role is less then max creeps allowed //
+        if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      if (targetFlagMemory === undefined) break;
+        // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+        if (room.energyCapacityAvailable <= 300) break;
 
-      result = true;
-      break;
-    default:
-      break;
+        if (targetRoom === undefined) break;
+
+        if (
+          targetFlagMemory === undefined &&
+          targetFlagMemory.commonMemory.energyStorages.usable < 1500
+        )
+          break;
+
+        result = true;
+        break;
+      case "harvester-0":
+      case "harvester-1":
+      case "harvesterLD-0":
+      case "harvesterLD-1":
+        // Check if input role is less then max creeps allowed //
+        if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+
+        // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+        if (room.energyCapacityAvailable <= 300) break;
+
+        if (targetRoom === undefined) break;
+
+        if (targetFlagMemory === undefined) break;
+
+        result = true;
+        break;
+      default:
+        break;
     }
     return result;
   };
@@ -212,54 +228,59 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     };
 
     switch (role) {
-    case 'pioneer':
-      returnBody([CARRY, MOVE], [WORK]);
-      break;
-    case 'transferer':
-    case 'transfererLD':
-      returnBody([CARRY, CARRY, MOVE], [CARRY, CARRY, MOVE]);
-      break;
-    case 'harvester-0':
-    case 'harvester-1':
-      if (typeof flagMemory.commonMemory.sources[role.split('-')[1]] === 'object') {
-        const sourceStructureType = flagMemory.roomPlanner.room.sources[role.split('-')[1]].structureType;
-        switch (sourceStructureType) {
-        case 'container':
-          returnBody([MOVE], [WORK], 7);
-          break;
-        case 'link':
-          returnBody([MOVE, CARRY], [WORK], 7);
-          break;
-        default:
-          break;
+      case "pioneer":
+        returnBody([CARRY, MOVE], [WORK]);
+        break;
+      case "transferer":
+      case "transfererLD":
+        returnBody([CARRY, CARRY, MOVE], [CARRY, CARRY, MOVE]);
+        break;
+      case "harvester-0":
+      case "harvester-1":
+        if (
+          typeof flagMemory.commonMemory.sources[role.split("-")[1]] ===
+          "object"
+        ) {
+          const sourceStructureType =
+            flagMemory.roomPlanner.room.sources[role.split("-")[1]]
+              .structureType;
+          switch (sourceStructureType) {
+            case "container":
+              returnBody([MOVE], [WORK], 7);
+              break;
+            case "link":
+              returnBody([MOVE, CARRY], [WORK], 7);
+              break;
+            default:
+              break;
+          }
         }
-      }
-      break;
-    case 'harvesterLD-0':
-    case 'harvesterLD-1':
-      returnBody([], [WORK, MOVE], 7);
-      break;
-    case 'builder':
-    case 'builderLD':
-    case 'repairer':
-    case 'repairerLD':
-      returnBody([], [WORK, MOVE, CARRY]);
-      break;
-    case 'upgrader':
-      returnBody([CARRY, MOVE, CARRY, MOVE], [WORK]);
-      break;
-    case 'reserverLD':
-      returnBody([], [CLAIM, MOVE]);
-      break;
-    default:
-      break;
+        break;
+      case "harvesterLD-0":
+      case "harvesterLD-1":
+        returnBody([], [WORK, MOVE], 7);
+        break;
+      case "builder":
+      case "builderLD":
+      case "repairer":
+      case "repairerLD":
+        returnBody([], [WORK, MOVE, CARRY]);
+        break;
+      case "upgrader":
+        returnBody([CARRY, MOVE, CARRY, MOVE], [WORK]);
+        break;
+      case "reserverLD":
+        returnBody([], [CLAIM, MOVE]);
+        break;
+      default:
+        break;
     }
 
     // Return body
     return body;
   };
 
-  const aCreepHasBeenSpawned = [false, 'none'];
+  const aCreepHasBeenSpawned = [false, "none"];
   rolesNeededInRoom.forEach((role) => {
     aCreepHasBeenSpawned[1] = role;
 
@@ -279,7 +300,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     // Check if body is filled
     if (body.length === 0) aCreepHasBeenSpawned[0] = true;
 
-    if (role === 'transfererLiTe') spawn = headSpawn;
+    if (role === "transfererLiTe") spawn = headSpawn;
 
     // Get return value on spawnCreep
     const spawnCreep = spawn.spawnCreep(body, name, {

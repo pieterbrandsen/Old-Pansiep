@@ -1,14 +1,14 @@
 // #region require
-const roomPlanner = require('./roomPlanner');
-const spawnCreep = require('./spawnCreep');
-const runRoles = require('./runRoles');
+const roomPlanner = require("./roomPlanner");
+const spawnCreep = require("./spawnCreep");
+const runRoles = require("./runRoles");
 
-require('./config');
+require("./config");
 // #endregion
 
 // #region global variables
 let roleCountByRoomByRole = {};
-roleCountByRoomByRole = {1: 1};
+roleCountByRoomByRole = { 1: 1 };
 // #endregion
 
 // #region functions
@@ -36,7 +36,7 @@ function getRandomFreePos(startPos, distance) {
 const globalHandler = () => {
   roleCountByRoomByRole = {};
 
-  if (!Memory.isFilled) memoryHandler('global');
+  if (!Memory.isFilled) memoryHandler("global");
   else {
     // Creep handler //
     // Handles all creeps and runs their role
@@ -48,7 +48,7 @@ const globalHandler = () => {
 
     // Timers handler //
     // Handles all game timers and runs their code
-    timersHandler('global');
+    timersHandler("global");
   }
 };
 // #endregion
@@ -89,21 +89,21 @@ const ownedRoomHandler = (room) => {
   // If no flag, make a new one and init the memory //
   if (!flag) {
     room.createFlag(
-      room.controller ?
-        room.controller.pos :
-        getRandomFreePos({x: 0, y: 0, roomName: room.name}),
+      room.controller
+        ? room.controller.pos
+        : getRandomFreePos({ x: 0, y: 0, roomName: room.name }),
       room.name,
       COLOR_RED,
-      COLOR_WHITE,
+      COLOR_WHITE
     );
     Memory.flags[room.name] = {};
-    memoryHandler('ownedRoom', {room: room});
+    memoryHandler("ownedRoom", { room: room });
   } else {
     // Run room visuals for ownedRooms  //
     roomVisualHandler(room);
 
     // Run all timers for ownedRooms //
-    timersHandler('ownedRoom', {room: room});
+    timersHandler("ownedRoom", { room: room });
   }
 };
 // #endregion
@@ -119,21 +119,21 @@ const remoteRoomHandler = (room) => {
   // If no flag, make a new one and init the memory //
   if (!flag) {
     room.createFlag(
-      room.controller ?
-        room.controller.pos :
-        getRandomFreePos({x: 0, y: 0, roomName: room.name}),
+      room.controller
+        ? room.controller.pos
+        : getRandomFreePos({ x: 0, y: 0, roomName: room.name }),
       room.name,
       COLOR_RED,
-      COLOR_WHITE,
+      COLOR_WHITE
     );
     Memory.flags[room.name] = {};
-    memoryHandler('remoteRoom', {room: room});
+    memoryHandler("remoteRoom", { room: room });
   } else {
     // Run room visuals for remoteRoom  //
     roomVisualHandler(room);
 
     // Run all timers for remoteRoom //
-    timersHandler('remoteRoom', {room: room});
+    timersHandler("remoteRoom", { room: room });
   }
 };
 // #endregion
@@ -151,7 +151,7 @@ const creepHandler = () => {
       // Else run the creep //
       const creepMemory = Memory.creeps[creepName];
       const flagMemory = Memory.flags[creep.memory.targetRoom];
-      const creepRoleName = creepMemory.role.split('-')[0];
+      const creepRoleName = creepMemory.role.split("-")[0];
 
       // if no role is found, return
       if (!creepRoleName) return;
@@ -177,7 +177,7 @@ const creepHandler = () => {
 
 // #region Role handler
 const roleHandler = (creep, roleName) => {
-  const shortRoleName = roleName.replace('LD', '');
+  const shortRoleName = roleName.replace("LD", "");
 
   runRoles[shortRoleName](creep, shortRoleName);
 };
@@ -216,7 +216,7 @@ const memoryHandler = (goal, data) => {
     const sources = [];
     room.find(FIND_SOURCES).forEach((source) => {
       // Push the id and position to the memory //
-      sources.push({id: source.id, pos: source.pos});
+      sources.push({ id: source.id, pos: source.pos });
     });
 
     // Timers until the memory Length is the same as last time //
@@ -228,15 +228,15 @@ const memoryHandler = (goal, data) => {
         flagMemory.commonMemory = {
           sourceCount: room.find(FIND_SOURCES).length,
           mineral: {
-            id: room.find(FIND_MINERALS)[0] ?
-              room.find(FIND_MINERALS)[0].id :
-              undefined,
-            type: room.find(FIND_MINERALS)[0] ?
-              room.find(FIND_MINERALS)[0].mineralType :
-              undefined,
-            amount: room.find(FIND_MINERALS)[0] ?
-              room.find(FIND_MINERALS)[0].mineralAmount :
-              undefined,
+            id: room.find(FIND_MINERALS)[0]
+              ? room.find(FIND_MINERALS)[0].id
+              : undefined,
+            type: room.find(FIND_MINERALS)[0]
+              ? room.find(FIND_MINERALS)[0].mineralType
+              : undefined,
+            amount: room.find(FIND_MINERALS)[0]
+              ? room.find(FIND_MINERALS)[0].mineralAmount
+              : undefined,
           },
           sources: sources,
           constructionSites: [],
@@ -244,9 +244,9 @@ const memoryHandler = (goal, data) => {
         };
       }
       if (!flagMemory.roomPlanner) {
-        flagMemory.roomPlanner = {room: {sources: []}};
+        flagMemory.roomPlanner = { room: { sources: [] } };
       }
-      if (!flagMemory.visuals) flagMemory.visuals = {string: '', objects: {}};
+      if (!flagMemory.visuals) flagMemory.visuals = { string: "", objects: {} };
       if (!flagMemory.repair) {
         flagMemory.repair = {
           targets: [],
@@ -272,40 +272,41 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
-      if (!flagMemory.commonMemory.controllerLevel) flagMemory.commonMemory.controllerLevel = 1;
+      if (!flagMemory.commonMemory.controllerLevel)
+        flagMemory.commonMemory.controllerLevel = 1;
       if (!flagMemory.roomPlanner.base) flagMemory.roomPlanner.base = {};
       if (!flagMemory.commonMemory.headSpawnId) {
-        flagMemory.commonMemory.headSpawnId = room.terminal ?
-          room.terminal.findInRange(room.spawns, 2)[0] ?
-            room.terminal.findInRange(room.spawns, 2)[0].id :
-            room.spawns[0].id :
-          room.spawns[0] ?
-            room.spawns[0].id :
-            room.find(FIND_STRUCTURES, {
+        flagMemory.commonMemory.headSpawnId = room.terminal
+          ? room.terminal.findInRange(room.spawns, 2)[0]
+            ? room.terminal.findInRange(room.spawns, 2)[0].id
+            : room.spawns[0].id
+          : room.spawns[0]
+          ? room.spawns[0].id
+          : room.find(FIND_STRUCTURES, {
               filter: (s) => s.structureType === STRUCTURE_SPAWN,
-            }).length > 0 ?
-              room.find(FIND_STRUCTURES, {
-                filter: (s) => s.structureType === STRUCTURE_SPAWN,
-              })[0].id :
-              null;
+            }).length > 0
+          ? room.find(FIND_STRUCTURES, {
+              filter: (s) => s.structureType === STRUCTURE_SPAWN,
+            })[0].id
+          : null;
       }
       if (!flagMemory.remotes) {
-        flagMemory.remotes = {totalSourceCount: 0, rooms: []};
+        flagMemory.remotes = { totalSourceCount: 0, rooms: [] };
       }
       if (!flagMemory.commonMemory.spawnEnergyStructures) {
         flagMemory.commonMemory.spawnEnergyStructures = [];
       }
       if (!flagMemory.commonMemory.energyStorages) {
-        flagMemory.commonMemory.energyStorages = {usable: 0, capacity: 0};
+        flagMemory.commonMemory.energyStorages = { usable: 0, capacity: 0 };
       }
       if (!flagMemory.commonMemory.controllerStorage) {
         flagMemory.commonMemory.controllerStorage = {
-          type: 'undefined',
-          id: 'undefined',
+          type: "undefined",
+          id: "undefined",
         };
       }
 
-      timersHandler('ownedRoom', {room: room});
+      timersHandler("ownedRoom", { room: room });
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -326,7 +327,7 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
-      timersHandler('remoteRoom', {room: room});
+      timersHandler("remoteRoom", { room: room });
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -340,20 +341,20 @@ const memoryHandler = (goal, data) => {
 
   // Switch between te possible goals and get the memory for that goal //
   switch (goal) {
-  case 'global':
-    globalMemory();
-    break;
-  case 'ownedRoom':
-    globalRoomMemory(data.room);
-    ownedRoomMemory(data.room);
-    break;
-  case 'remoteRoom':
-    globalRoomMemory(data.room);
-    remoteRoomMemory(data.room);
-    break;
-  default:
-    Game.notify(`Unknown goal: ${goal}, check MemoryHandler.`);
-    break;
+    case "global":
+      globalMemory();
+      break;
+    case "ownedRoom":
+      globalRoomMemory(data.room);
+      ownedRoomMemory(data.room);
+      break;
+    case "remoteRoom":
+      globalRoomMemory(data.room);
+      remoteRoomMemory(data.room);
+      break;
+    default:
+      Game.notify(`Unknown goal: ${goal}, check MemoryHandler.`);
+      break;
   }
 };
 
@@ -403,9 +404,13 @@ const timersHandler = (goal, data) => {
 
       // Loop through all structures that were found
       energyStructures.forEach((storageStructure) => {
-        if (flagMemory.commonMemory.controllerStorage.id !== storageStructure.id) {
+        if (
+          flagMemory.commonMemory.controllerStorage.id !== storageStructure.id
+        ) {
           // Add the total energy available and capacity
-          energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
+          energyUsable += storageStructure.store.getUsedCapacity(
+            RESOURCE_ENERGY
+          );
           energyCapacity += storageStructure.store.getCapacity(RESOURCE_ENERGY);
 
           // Push energy available and id to energyStructures array
@@ -423,7 +428,7 @@ const timersHandler = (goal, data) => {
         null
       ) {
         flagMemory.commonMemory.controllerStorage.usable = Game.getObjectById(
-          flagMemory.commonMemory.controllerStorage.id,
+          flagMemory.commonMemory.controllerStorage.id
         ).store.getUsedCapacity();
       }
     }
@@ -448,9 +453,9 @@ const timersHandler = (goal, data) => {
           filter: (s) =>
             s.hits < s.hitsMax &&
             s.hits <
-              (flagMemory.repair.hitTarget ?
-                flagMemory.repair.hitTarget :
-                250 * 1000),
+              (flagMemory.repair.hitTarget
+                ? flagMemory.repair.hitTarget
+                : 250 * 1000),
         })
         .map((c) => c.id);
     }
@@ -465,7 +470,8 @@ const timersHandler = (goal, data) => {
     // Run base layout planner each ... ticks //
     if (
       Game.time % config.rooms.loops.roomPlanner.base === 0 ||
-      !flagMemory.isFilled || flagMemory.commonMemory.controllerLevel < room.controller.level
+      !flagMemory.isFilled ||
+      flagMemory.commonMemory.controllerLevel < room.controller.level
     ) {
       flagMemory.commonMemory.controllerLevel = room.controller.level;
       roomPlanner.base(room);
@@ -478,13 +484,13 @@ const timersHandler = (goal, data) => {
     ) {
       const lastRole = spawnCreep.execute(
         room,
-        'owned',
+        "owned",
         {},
-        roleCountByRoomByRole[room.name],
+        roleCountByRoomByRole[room.name]
       );
 
       // If role is remote, this means that nothing spawned
-      if (lastRole === 'end') {
+      if (lastRole === "end") {
         if (flagMemory.remotes.rooms.length > 0) {
           let continueLoop = true;
           flagMemory.remotes.rooms.forEach((remoteRoomName) => {
@@ -494,11 +500,11 @@ const timersHandler = (goal, data) => {
             if (remoteRoom !== null && continueLoop) {
               const remoteLastRole = spawnCreep.execute(
                 room,
-                'remote',
-                {target: remoteRoom.name},
-                roleCountByRoomByRole[remoteRoom.name],
+                "remote",
+                { target: remoteRoom.name },
+                roleCountByRoomByRole[remoteRoom.name]
               );
-              if (remoteLastRole === 'end') continueLoop = false;
+              if (remoteLastRole === "end") continueLoop = false;
             }
           });
         }
@@ -513,14 +519,18 @@ const timersHandler = (goal, data) => {
       flagMemory.commonMemory.spawnEnergyStructures = room
         .find(FIND_MY_STRUCTURES, {
           filter: (s) =>
-            ([
+            [
               STRUCTURE_LAB,
               STRUCTURE_SPAWN,
               STRUCTURE_EXTENSION,
               STRUCTURE_TOWER,
-            ].indexOf(s.structureType) !== -1 && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0),
+            ].indexOf(s.structureType) !== -1 &&
+            s.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
         })
-        .map((s) => ({id: s.id, needed: s.store.getFreeCapacity(RESOURCE_ENERGY)}));
+        .map((s) => ({
+          id: s.id,
+          needed: s.store.getFreeCapacity(RESOURCE_ENERGY),
+        }));
     }
 
     // Check all structures saved in memory if they still alive each ... ticks //
@@ -529,11 +539,11 @@ const timersHandler = (goal, data) => {
       !flagMemory.isFilled
     ) {
       if (Game.getObjectById(flagMemory.commonMemory.headSpawnId) === null) {
-        flagMemory.commonMemory.headSpawnId = room.terminal ?
-          room.terminal.findInRange(room.spawns, 2)[0] ?
-            room.terminal.findInRange(room.spawns, 2)[0].id :
-            room.spawns[0].id :
-          room.spawns[0].id;
+        flagMemory.commonMemory.headSpawnId = room.terminal
+          ? room.terminal.findInRange(room.spawns, 2)[0]
+            ? room.terminal.findInRange(room.spawns, 2)[0].id
+            : room.spawns[0].id
+          : room.spawns[0].id;
       }
       if (
         Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) ===
@@ -544,7 +554,7 @@ const timersHandler = (goal, data) => {
           const foundStructures = room.lookForAt(
             LOOK_STRUCTURES,
             controllerPos.x,
-            controllerPos.y,
+            controllerPos.y
           );
 
           let controllerStorage;
@@ -576,20 +586,20 @@ const timersHandler = (goal, data) => {
 
   // Switch between te possible goals and get the timers for that goal //
   switch (goal) {
-  case 'global':
-    globalTimers();
-    break;
-  case 'ownedRoom':
-    globalRoomTimers(data.room);
-    ownedRoomTimers(data.room);
-    break;
-  case 'remoteRoom':
-    globalRoomTimers(data.room);
-    remoteRoomTimers(data.room);
-    break;
-  default:
-    Game.notify(`Unknown goal: ${goal}, check TimersHandler.`);
-    break;
+    case "global":
+      globalTimers();
+      break;
+    case "ownedRoom":
+      globalRoomTimers(data.room);
+      ownedRoomTimers(data.room);
+      break;
+    case "remoteRoom":
+      globalRoomTimers(data.room);
+      remoteRoomTimers(data.room);
+      break;
+    default:
+      Game.notify(`Unknown goal: ${goal}, check TimersHandler.`);
+      break;
   }
 };
 // #endregion
