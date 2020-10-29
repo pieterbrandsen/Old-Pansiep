@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "screeps_bot": true,
   "dependencies": {
-    "jquery.terminal": "^1.21.0",
+    "jquery.terminal": "^1.23.2",
     "mem": "^4.0.0"
   },
   "devDependencies": {
