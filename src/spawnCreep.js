@@ -145,6 +145,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       if (room.controller.ticksToDowngrade <= 5 * 1000) {
         // Check if input role is less then max creeps allowed //
         if (roleCount[role] >= 1) break;
+        else result = true;
       } else {
         // Check if input role is less then max creeps allowed //
         if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
@@ -154,7 +155,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (
         targetFlagMemory === undefined &&
-          targetFlagMemory.commonMemory.energyStorages.usable < 2000
+          targetFlagMemory.commonMemory.energyStorages.usable < targetFlagMemory.commonMemory.energyStorages.capacity / 20
       ) {
         break;
       }
