@@ -254,7 +254,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
     switch (role) {
     case 'pioneer':
-      returnBody([CARRY, MOVE], [WORK]);
+      returnBody([CARRY, MOVE, WORK], [CARRY, MOVE]);
       break;
     case 'transferer':
     case 'transfererLD':

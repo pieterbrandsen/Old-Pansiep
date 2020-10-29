@@ -20,6 +20,7 @@ const harvest = (creep) => {
       const closestSource = creep.pos.findClosestByRange(FIND_SOURCES);
       if (closestSource !== null && !creep.pos.inRangeTo(closestSource, 3)) {
         creep.moveTo(closestSource);
+        return;
       } else return;
     }
   }
@@ -46,14 +47,14 @@ const harvest = (creep) => {
         creep.memory.role.split('-').length > 0 &&
         !isNaN(creep.memory.role.split('-')[1])
       ) {
-        creepMemory.sourceNumber = creep.memory.role.split('-')[1];
+        creep.memory.sourceNumber = creep.memory.role.split('-')[1];
       } else {
         // Else loop until assigned source's id is found
         let i = 0;
         while (i < flagMemory.commonMemory.sources.length) {
           const newSource = flagMemory.commonMemory.sources[i];
           if (newSource.id === source.id) {
-            creepMemory.sourceNumber = i;
+            creep.memory.sourceNumber = i;
           }
           i++;
         }
@@ -71,6 +72,7 @@ const harvest = (creep) => {
       const roomPlannerTargetSource =
         flagMemory.roomPlanner.room.sources[sourceNumber];
       if (roomPlannerTargetSource === undefined) return;
+
       if (
         creepsAroundTargetSource < roomPlannerTargetSource.spotsAround ||
         creepMemory.role.includes('harvester')

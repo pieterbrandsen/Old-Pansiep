@@ -45,6 +45,8 @@ const pioneer = (creep) => {
     // Delete targetId and miniJob
     delete creep.memory.targetId;
     delete creep.memory.miniJob;
+    delete creep.memory.sourceId;
+    delete creep.memory.sourceNumber;
 
     // Switch to one of the jobs that drains energy
     if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
@@ -73,6 +75,7 @@ const pioneer = (creep) => {
     // Delete targetId and sourceId
     delete creep.memory.targetId;
     delete creep.memory.sourceId;
+    delete creep.memory.sourceNumber;
     delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
