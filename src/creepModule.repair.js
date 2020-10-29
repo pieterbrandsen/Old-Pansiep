@@ -12,7 +12,7 @@ const repair = (creep, data) => {
 
   // If there are no construction sites left and no target, return full to get another goal if possible
   if (
-    !flagMemory.repair.targets.length === 0 &&
+    flagMemory.repair.targets.length === 0 &&
     !creepMemory.targetId &&
     !data.id
   ) {
