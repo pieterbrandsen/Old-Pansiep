@@ -206,8 +206,6 @@ const upgrader = (creep, roleName) => {
     delete creep.memory.targetId;
 
     // Switch to one of the roles that gets energy
-    console.log(flagMemory.commonMemory.usable >= 10 * 1000 ||
-      flagMemory.commonMemory.controllerStorage.usable >= 250);
     if (
       flagMemory.commonMemory.usable >= 10 * 1000 ||
         flagMemory.commonMemory.controllerStorage.usable >= 250

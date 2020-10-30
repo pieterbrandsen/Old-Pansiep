@@ -2,7 +2,7 @@ module.exports.cliPort = 21026;
 
 module.exports.verbose = false;
 
-module.exports.tickDuration = 100;
+module.exports.tickDuration = 10;
 
 module.exports.playerRoom = 'W8N1';
 players = {
