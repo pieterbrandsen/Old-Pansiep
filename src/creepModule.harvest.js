@@ -36,7 +36,7 @@ const harvest = (creep) => {
   }
 
   // If not in range, move to source and then return
-  if (!creep.pos.inRangeTo(source, 1) || !creepMemory.onPosition) {
+  if (!creep.pos.inRangeTo(source, 1) || (!creepMemory.onPosition && creepMemory.role.includes('harvester'))) {
     let sourcePos = source.pos;
     const sourceNumber = creepMemory.sourceNumber;
 
