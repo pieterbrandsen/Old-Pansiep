@@ -1,5 +1,6 @@
 global.config = {
   username: 'PandaMaster',
+  whitelist: ['Rivaryn', 'Fiskmans'],
   rooms: {
     minBucket: 1000,
 
@@ -21,6 +22,8 @@ global.config = {
       getAllEnergyStructures: 50,
       getConstructionStructures: 100,
       getDamagedStructures: 50,
+      getDamagedCreeps: 10,
+      getHostileCreeps: 10,
     },
   },
   allRoles: [

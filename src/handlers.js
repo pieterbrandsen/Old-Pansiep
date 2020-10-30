@@ -6,12 +6,12 @@ const runRoles = require('./runRoles');
 require('./config');
 // #endregion
 
-// #region global variables
+// #region Global variables
 let roleCountByRoomByRole = {};
 roleCountByRoomByRole = {1: 1};
 // #endregion
 
-// #region functions
+// #region Functions
 function getRandomFreePos(startPos, distance) {
   // Get the terrain of the Room //
   const terrain = Game.map.getRoomTerrain(startPos.roomName);
@@ -104,6 +104,9 @@ const ownedRoomHandler = (room) => {
 
     // Run all timers for ownedRooms //
     timersHandler('ownedRoom', {room: room});
+
+    // Run all towers for ownedRooms //
+    towerHandler(room);
   }
 };
 // #endregion
@@ -250,9 +253,16 @@ const memoryHandler = (goal, data) => {
       if (!flagMemory.repair) {
         flagMemory.repair = {
           targets: [],
-          hitTarget: 250 * 1000,
+          hitsTarget: 250 * 1000,
         };
       }
+      if (!flagMemory.enemies) {
+        flagMemory.enemies = {
+          parts: {ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0},
+          creeps: [],
+        };
+      }
+      if (!flagMemory.damagedCreeps) flagMemory.damagedCreeps = [];
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(flagMemory).length) {
@@ -450,16 +460,135 @@ const timersHandler = (goal, data) => {
       Game.time % config.rooms.loops.getDamagedStructures === 0 ||
       !flagMemory.isFilled
     ) {
+      // Get all structures that are not on max hits and under hitsTarget
       flagMemory.repair.targets = room
         .find(FIND_STRUCTURES, {
           filter: (s) =>
             s.hits < s.hitsMax &&
             s.hits <
-              (flagMemory.repair.hitTarget ?
-                flagMemory.repair.hitTarget :
+              (flagMemory.repair.hitsTarget ?
+                flagMemory.repair.hitsTarget :
                 250 * 1000),
         })
         .map((c) => c.id);
+    }
+
+    // Get all damaged owned creeps each ... ticks //
+    if (
+      Game.time % config.rooms.loops.getDamagedCreeps === 0 ||
+      !flagMemory.isFilled
+    ) {
+      // Find all creeps that are damaged and is mine
+      flagMemory.damagedCreeps = room
+        .find(FIND_MY_CREEPS, {
+          filter: (c) => c.hits < c.hitsMax,
+        })
+        .map((c) => c.id);
+    }
+
+    // Get all hostile creeps each ... ticks //
+    if (
+      Game.time % config.rooms.loops.getHostileCreeps === 0 ||
+      !flagMemory.isFilled
+    ) {
+      flagMemory.enemies = {
+        parts: {WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0},
+        creeps: [],
+      };
+
+      const allHostileCreeps = room.find(FIND_HOSTILE_CREEPS);
+
+      for (let i = 0; i < allHostileCreeps.length; i++) {
+        const creep = allHostileCreeps[i];
+        // Check if current owner is on whitelist. If so break
+        if (config.whitelist.indexOf(creep) >= 0) break;
+
+        // Create variables for creep
+        let netToughCount = 0;
+        let netAttackCount = 0;
+        let netRangedAttackCount = 0;
+        let netHealCount = 0;
+
+        // Loop though all the parts in the body to check for boost.
+        creep.body.forEach((part) => {
+          if (part.boost !== undefined) {
+            switch (part.boost) {
+            case RESOURCE_UTRIUM_HYDRIDE:
+              netAttackCount += 2;
+              break;
+            case RESOURCE_KEANIUM_OXIDE:
+              netRangedAttackCount += 2;
+              break;
+            case RESOURCE_LEMERGIUM_OXIDE:
+              netHealCount += 2;
+              break;
+              // case RESOURCE_GHODIUM_OXIDE:
+              // netToughCount+=2;
+              // break;
+            case RESOURCE_UTRIUM_ACID:
+              netAttackCount += 3;
+              break;
+            case RESOURCE_KEANIUM_ALKALIDE:
+              netRangedAttackCount += 3;
+              break;
+            case RESOURCE_LEMERGIUM_ALKALIDE:
+              netHealCount += 3;
+              break;
+              // case RESOURCE_GHODIUM_ALKALIDE:
+              // netToughCount+=3;
+              // break;
+            case RESOURCE_CATALYZED_UTRIUM_ACID:
+              netAttackCount += 4;
+              break;
+            case RESOURCE_CATALYZED_KEANIUM_ACID:
+              netRangedAttackCount += 4;
+              break;
+            case RESOURCE_CATALYZED_LEMERGIUM_ALKALIDE:
+              netHealCount += 4;
+              break;
+            case RESOURCE_CATALYZED_GHODIUM_ALKALIDE:
+              netToughCount += 4;
+              break;
+            default:
+              break;
+            }
+          } else {
+            switch (part.type) {
+            case 'tough':
+              netToughCount += 1;
+              break;
+            case 'attack':
+              netAttackCount += 1;
+              break;
+            case 'ranged_attack':
+              netRangedAttackCount += 1;
+              break;
+            case 'heal':
+              netHealCount += 1;
+              break;
+            default:
+              break;
+            }
+          }
+        });
+
+        // Add all found parts to total memory
+        flagMemory.enemies.parts.ATTACK += netAttackCount;
+        flagMemory.enemies.parts.RANGED_ATTACK += netRangedAttackCount;
+        flagMemory.enemies.parts.HEAL += netHealCount;
+        flagMemory.enemies.parts.TOUGH += netToughCount;
+
+        // Add creep parts and id to array
+        flagMemory.enemies.creeps.push({
+          id: creep.id,
+          parts: {
+            ATTACK: netAttackCount,
+            RANGED_ATTACK: netRangedAttackCount,
+            TOUGH: netToughCount,
+            HEAL: netHealCount,
+          },
+        });
+      }
     }
   };
   // #endregion
@@ -602,6 +731,62 @@ const timersHandler = (goal, data) => {
   default:
     Game.notify(`Unknown goal: ${goal}, check TimersHandler.`);
     break;
+  }
+};
+// #endregion
+
+// #region Tower handler
+const towerHandler = (room) => {
+  // Get flag memory for room
+  const flagMemory = Memory.flags[room.name];
+
+  // Return if there are no towers yet to use
+  if (room.towers.length === 0) return;
+
+  if (flagMemory.enemies.creeps.length > 0) {
+    // TODO JUST ATTACK THE FIRST CREEP IN LINE FOR THE TIME.
+    // TODO UPDATE THIS
+
+    const firstAttackTarget = Game.getObjectById(flagMemory.enemies.creeps[0].id);
+
+    // Return if target is null or target hit points is equal to target
+    if (firstAttackTarget === null) {
+      flagMemory.enemies.creeps.shift();
+      return;
+    }
+
+    // Let each tower heal the target
+    room.towers.forEach((tower) => {
+      tower.attack(firstAttackTarget);
+    });
+  } else if (flagMemory.damagedCreeps.length > 0) {
+    const firstHealTarget = Game.getObjectById(flagMemory.repair.targets[0]);
+
+    // Return if target is null or target hit points is equal to target
+    if (firstHealTarget === null || firstHealTarget.hits === firstHealTarget.hitsMax) {
+      flagMemory.damagedCreeps.shift();
+      return;
+    }
+
+    // Let each tower heal the target
+    room.towers.forEach((tower) => {
+      tower.heal(firstHealTarget);
+    });
+  } else if (flagMemory.repair.targets.length > 0) {
+    // Else if there is something to repair
+    const hitsTarget = flagMemory.repair.hitsTarget;
+    const firstRepairTarget = Game.getObjectById(flagMemory.repair.targets[0]);
+
+    // Return if target is null or target hit points is higher or at max of target
+    if (firstRepairTarget === null || firstRepairTarget.hits > hitsTarget || firstRepairTarget.hits === firstRepairTarget.hitsMax) {
+      flagMemory.repair.targets.shift();
+      return;
+    }
+
+    // Let each tower repair the target
+    room.towers.forEach((tower) => {
+      tower.repair(firstRepairTarget);
+    });
   }
 };
 // #endregion
