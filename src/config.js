@@ -39,7 +39,7 @@ global.config = {
     'repairerLD',
   ],
   creepsCountMax: {
-    pioneer: 6,
+    pioneer: 4,
     transferer: 5,
     harvester: 1,
     builder: 3,

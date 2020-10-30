@@ -111,7 +111,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     // Owned room roles
     case 'pioneer':
       // Check if input role is less then max creeps allowed //
-      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+      if (roleCount[role] >= config.creepsCountMax[shortRoleName] * flagMemory.commonMemory.sources.length) break;
 
       // If energy capacity is more then 1200 (6 work harvester && rcl 4)
       if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300) {

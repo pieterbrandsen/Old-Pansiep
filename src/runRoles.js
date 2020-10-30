@@ -2,12 +2,12 @@
 const isInTargetRoom = (creep, currentRoom, targetRoom) => {
   // Check if current room is target room, return true if not false
   if (currentRoom === targetRoom) return true;
-  else moveToRoom(creep, targetRoom);
+  else return moveToRoom(creep, targetRoom);
 };
 
 const moveToRoom = (creep, targetRoom) => {
   // Define the way how the creep is going to this room
-  let travelWay = 'travelTo';
+  let travelWay = 'unknown';
   const targetRoomFlag = Game.flags[targetRoom];
 
   if (targetRoomFlag) travelWay = 'flag';
@@ -18,6 +18,11 @@ const moveToRoom = (creep, targetRoom) => {
   default:
     creep.travelTo(new RoomPosition(25, 25, targetRoom));
     break;
+  }
+
+  // Return true if creep is in targetRoom after moving
+  if (creep.room.name === targetRoom) {
+    return true;
   }
 };
 // #endregion
