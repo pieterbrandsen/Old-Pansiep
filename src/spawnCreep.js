@@ -179,7 +179,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
         break;
       }
 
-      if (targetFlagMemory.repair.targets.length === 0) break;
+      if (targetFlagMemory.commonMemory.constructionSites.length === 0) break;
 
       result = true;
       break;
@@ -200,7 +200,11 @@ const spawnCreep = (room, roomType, data, roleCount) => {
         break;
       }
 
-      if (targetFlagMemory.commonMemory.constructionSites.length === 0) break;
+      // Break if there is a tower to repair from
+      if (room.towers.length > 0) break;
+
+      // Break if there are no targets left
+      if (targetFlagMemory.repair.targets.length === 0) break;
 
       result = true;
       break;

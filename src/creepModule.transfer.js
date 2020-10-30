@@ -203,9 +203,12 @@ const controllerJob = (creep) => {
   const creepMemory = creep.memory;
   const flagMemory = Memory.flags[creepMemory.targetRoom];
 
+  // Return empty if current creep's storage is empty
+  if (creep.store.getUsedCapacity() === 0) return 'empty';
+
   // If controller structure has enough energy
   if (
-    (flagMemory.commonMemory.controllerStorage.usable > 1500 ||
+    (flagMemory.commonMemory.controllerStorage.usable === 2000 ||
       flagMemory.commonMemory.controllerStorage.type !==
         STRUCTURE_CONTAINER) &&
     !creep.memory.targetId

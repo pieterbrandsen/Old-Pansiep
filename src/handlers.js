@@ -441,7 +441,6 @@ const timersHandler = (goal, data) => {
           flagMemory.commonMemory.controllerStorage.id,
         );
         flagMemory.commonMemory.controllerStorage.usable = controllerStorage.store.getUsedCapacity();
-        flagMemory.commonMemory.controllerStorage.type = controllerStorage.type;
       }
     }
 
@@ -703,6 +702,7 @@ const timersHandler = (goal, data) => {
 
           if (controllerStorage) {
             flagMemory.commonMemory.controllerStorage.id = controllerStorage.id;
+            flagMemory.commonMemory.controllerStorage.type = controllerStorage.type;
           }
         }
       }

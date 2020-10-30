@@ -15,6 +15,7 @@ const harvest = (creep) => {
     );
     if (closestActiveSource !== null) {
       creep.memory.sourceId = closestActiveSource.id;
+      delete creep.memory.sourceNumber;
     } else {
       // If no active source available, move to another one and wait there.
       const closestSource = creep.pos.findClosestByRange(FIND_SOURCES);
@@ -32,6 +33,7 @@ const harvest = (creep) => {
   if (source === null) {
     // Remove source from memory and return
     delete creep.memory.sourceId;
+    delete creep.memory.sourceNumber;
     return;
   }
 
@@ -134,6 +136,7 @@ const harvest = (creep) => {
     case ERR_INVALID_TARGET:
       if (creep.memory.role.includes('-')) break;
       delete creep.memory.sourceId;
+      delete creep.memory.sourceNumber;
       break;
     default:
       break;

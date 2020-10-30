@@ -61,6 +61,7 @@ const upgradeJob = (creep) => {
       creep.moveTo(withdrawStructure);
       break;
     case ERR_INVALID_TARGET:
+    case ERR_NOT_ENOUGH_RESOURCES:
       // Delete targetId
       delete creep.memory.targetId;
       break;
@@ -121,6 +122,7 @@ const normalJob = (creep) => {
       creep.moveTo(withdrawStructure);
       break;
     case ERR_INVALID_TARGET:
+    case ERR_NOT_ENOUGH_RESOURCES:
       // Delete targetId
       delete creep.memory.targetId;
       break;
