@@ -11,7 +11,7 @@ const upgradeJob = (creep) => {
   // If there is not enough to withdraw from, return empty to get another goal if possible
   if (
     flagMemory.commonMemory.controllerStorage.usable === 0 &&
-    creep.memory.targetId === undefined
+    creep.memory.targetId === undefined && Game.time % 100 === 0
   ) {
     return 'empty';
   }

@@ -142,7 +142,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       result = true;
       break;
     case 'upgrader':
-      if (room.controller.ticksToDowngrade <= 5 * 1000) {
+      if (room.controller.ticksToDowngrade <= 1 * 1000) {
         // Check if input role is less then max creeps allowed //
         if (roleCount[role] >= 1) break;
         else result = true;
