@@ -41,6 +41,7 @@ global.config = {
     'harvesterLD-1',
     'builderLD',
     'repairerLD',
+    'claimerLD',
   ],
   creepsCountMax: {
     pioneer: 4,

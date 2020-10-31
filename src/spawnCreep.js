@@ -2,62 +2,6 @@
 require('./config');
 // #endregion
 
-// #region functions
-const initCreepMemory = (room, role, data) => {
-  const newMemory = {};
-  for (const key in data) {
-    if (data[key]) {
-      const element = data[key];
-      newMemory[element] = data[element];
-    }
-  }
-
-  // Init all undefined memory variables
-  if (!newMemory.targetRoom) newMemory.targetRoom = room.name;
-  if (!newMemory.spawnRoom) newMemory.spawnRoom = room.name;
-  if (!newMemory.role) newMemory.role = role;
-  if (!newMemory.job) newMemory.job = undefined;
-  if (!newMemory.targetId) newMemory.targetId = undefined;
-
-  const flagMemory = Memory.flags[newMemory.targetRoom];
-  if (role.includes('harvester') && !newMemory.sourceId) {
-    if (
-      typeof flagMemory.commonMemory.sources[role.split('-')[1]] === 'object'
-    ) {
-      newMemory.sourceId =
-        flagMemory.commonMemory.sources[role.split('-')[1]].id;
-    }
-  }
-
-  if (room.controller.level >= 6 && room.terminal) {
-    if (role === 'transfererLiTe') newMemory.directions = [TOP_RIGHT];
-    else {
-      newMemory.directions = [
-        TOP,
-        RIGHT,
-        BOTTOM_RIGHT,
-        BOTTOM,
-        BOTTOM_LEFT,
-        LEFT,
-        TOP_LEFT,
-      ];
-    }
-  } else {
-    newMemory.directions = [
-      TOP,
-      TOP_RIGHT,
-      RIGHT,
-      BOTTOM_RIGHT,
-      BOTTOM,
-      BOTTOM_LEFT,
-      LEFT,
-      TOP_LEFT,
-    ];
-  }
-
-  return newMemory;
-};
-// #endregion
 
 // #region
 const spawnCreep = (room, roomType, data, roleCount) => {
@@ -80,17 +24,18 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       'builder',
       'repairer',
       'upgrader',
+      'claimerLD',
+      'builderLD',
       'end',
     ];
     break;
   case 'remote':
     rolesNeededInRoom = [
       'transfererLD',
-      // 'reserverLD',
+      'reserverLD',
+      'repairerLD',
       'harvesterLD-0',
       'harvesterLD-1',
-      'builderLD',
-      'repairerLD',
       'end',
     ];
     break;
@@ -100,6 +45,61 @@ const spawnCreep = (room, roomType, data, roleCount) => {
   default:
     break;
   }
+
+  const initCreepMemory = (room, role, data) => {
+    const newMemory = {};
+    for (const key in data) {
+      if (data[key]) {
+        const element = data[key];
+        newMemory[element] = data[element];
+      }
+    }
+
+    // Init all undefined memory variables
+    if (!newMemory.targetRoom) newMemory.targetRoom = room.name;
+    if (!newMemory.spawnRoom) newMemory.spawnRoom = room.name;
+    if (!newMemory.role) newMemory.role = role;
+    if (!newMemory.job) newMemory.job = undefined;
+    if (!newMemory.targetId) newMemory.targetId = undefined;
+
+    const flagMemory = Memory.flags[newMemory.targetRoom];
+    if (role.includes('harvester') && !newMemory.sourceId) {
+      if (
+        typeof flagMemory.commonMemory.sources[role.split('-')[1]] === 'object'
+      ) {
+        newMemory.sourceId =
+          flagMemory.commonMemory.sources[role.split('-')[1]].id;
+      }
+    }
+
+    if (room.controller.level >= 6 && room.terminal) {
+      if (role === 'transfererLiTe') newMemory.directions = [TOP_RIGHT];
+      else {
+        newMemory.directions = [
+          TOP,
+          RIGHT,
+          BOTTOM_RIGHT,
+          BOTTOM,
+          BOTTOM_LEFT,
+          LEFT,
+          TOP_LEFT,
+        ];
+      }
+    } else {
+      newMemory.directions = [
+        TOP,
+        TOP_RIGHT,
+        RIGHT,
+        BOTTOM_RIGHT,
+        BOTTOM,
+        BOTTOM_LEFT,
+        LEFT,
+        TOP_LEFT,
+      ];
+    }
+
+    return newMemory;
+  };
 
   const checkIfRoleCanBeSpawned = (role, room, memory) => {
     const shortRoleName = role.split('-')[0].replace('LD', '');
@@ -113,7 +113,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName] * flagMemory.commonMemory.sources.length) break;
 
-      // If energy capacity is more then 1200 (6 work harvester && rcl 4)
+      // If energy capacity is more then 1200
       if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300) {
         break;
       }
@@ -127,7 +127,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+      // If energy capacity is less then 300
       if (room.energyCapacityAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
@@ -167,10 +167,13 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+      // If energy capacity is less then 300
       if (room.energyCapacityAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
+
+      if (role.includes('LD') && !Game.flags[`builderLD${room.name}`]) break;
+      else if (role.includes('LD') && Memory.flags[`builderLD${room.name}`]) memory.targetRoom = Memory.flags[`builderLD${room.name}`].room;
 
       if (
         targetFlagMemory === undefined ||
@@ -188,7 +191,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+      // If energy capacity is less then 300
       if (room.energyCapacityAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
@@ -215,7 +218,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 1200 (6 work harvester && rcl 4)
+      // If energy capacity is less then 300
       if (room.energyCapacityAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
@@ -223,6 +226,41 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       if (targetFlagMemory === undefined) break;
 
       result = true;
+      break;
+    case 'reserverLD':
+      // Check if input role is less then max creeps allowed //
+      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+
+      // If energy capacity is less then 300
+      if (room.energyCapacityAvailable <= 300) break;
+
+      if (targetRoom === undefined) break;
+
+      if (targetFlagMemory === undefined) break;
+
+      // If reservation is defined, the username is mine and the ticksToEnd is higher then 2500 ticks
+      if (typeof targetRoom.controller.reservation !== 'object' || (targetRoom.controller.reservation.username !== config.username || targetRoom.controller.reservation.ticksToEnd > 2500)) break;
+
+      result = true;
+      break;
+    case 'claimerLD':
+      // Check if input role is less then max creeps allowed //
+      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+
+      // If flag is removed, delete the memory
+      if (!Game.flags['claim']) {
+        delete Memory.flags['claim'];
+        break;
+      }
+
+      // If room is missing claim flagMemory, assign it
+      if (!Memory.flags['claim']) {
+        Memory.flags['claim'] = {spawnRoom: '', room: ''};
+        break;
+      } else if (Memory.flags['claim'].spawnRoom === room.name && Memory.flags['claim'].room !== undefined) {
+        memory.targetRoom = Memory.flags['claim'].room;
+        result = true;
+      }
       break;
     default:
       break;
@@ -299,6 +337,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       returnBody([CARRY, MOVE, CARRY, MOVE], [WORK]);
       break;
     case 'reserverLD':
+    case 'claimerLD':
       returnBody([], [CLAIM, MOVE]);
       break;
     default:

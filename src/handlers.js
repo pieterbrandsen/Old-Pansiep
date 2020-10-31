@@ -160,7 +160,7 @@ const creepHandler = () => {
       if (!creepRoleName) return;
 
       // If flagMemory is not yet ready, return
-      if (!flagMemory.isFilled) return;
+      if (flagMemory && !flagMemory.isFilled) return;
 
       // Run the role for the creep
       roleHandler(creep, creepRoleName);
@@ -712,34 +712,35 @@ const timersHandler = (goal, data) => {
 
       // Check all links to see if its still there //
       // Check each source for a link
-      for (let i = 0; i < flagMemory.commonMemory.sources.length; i++) {
-        // Get the source
-        const source = flagMemory.commonMemory.sources[i];
+      if (room.links.length >= 2) {
+        for (let i = 0; i < flagMemory.commonMemory.sources.length; i++) {
+          // Get the source
+          const source = Game.getObjectById(flagMemory.commonMemory.sources[i].id);
 
-        // Find a link
-        const sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
+          // Find a link
+          const sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
 
-        // If a link is found, set it to the memory
-        if (sourceLink !== undefined) flagMemory.commonMemory.links[`source${i}`] = sourceLink.id;
-      }
+          // If a link is found, set it to the memory
+          if (sourceLink !== undefined) flagMemory.commonMemory.links[`source${i}`] = sourceLink.id;
+        }
 
-      // Check if there is a link at the headSpawn
-      const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
-      if (headSpawn !== null) {
-        // Find a link
-        const spawnLink = headSpawn.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
+        // Check if there is a link at the headSpawn
+        const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
+        if (headSpawn !== null) {
+          // Find a link
+          const spawnLink = headSpawn.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
 
-        // If a link is found, set it to the memory
-        if (spawnLink !== undefined) flagMemory.commonMemory.links['head'] = spawnLink.id;
-      }
+          // If a link is found, set it to the memory
+          if (spawnLink !== undefined) flagMemory.commonMemory.links['head'] = spawnLink.id;
+        }
 
-      // Check if there is a link at the controller
+        // Check if there is a link at the controller
         // Find a link
         const controllerLink = room.controller.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
 
         // If a link is found, set it to the memory
         if (controllerLink !== undefined) flagMemory.commonMemory.links['controller'] = controllerLink.id;
-
+      }
     }
 
     // Send energy from one link to the other each ... ticks //
