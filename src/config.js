@@ -24,6 +24,7 @@ global.config = {
       getDamagedStructures: 50,
       getDamagedCreeps: 50,
       getHostileCreeps: 50,
+      sendEnergyInLinks: 10,
     },
   },
   allRoles: [

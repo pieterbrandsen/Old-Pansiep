@@ -315,6 +315,9 @@ const memoryHandler = (goal, data) => {
           usable: 0,
         };
       }
+      if (!flagMemory.commonMemory.links) {
+        flagMemory.commonMemory.links = {source0: '', source1: '', head: '', controller: ''};
+      }
 
       timersHandler('ownedRoom', {room: room});
 
@@ -706,6 +709,43 @@ const timersHandler = (goal, data) => {
           }
         }
       }
+
+      // Check all links to see if its still there //
+      // Check each source for a link
+      for (let i = 0; i < flagMemory.commonMemory.sources.length; i++) {
+        // Get the source
+        const source = flagMemory.commonMemory.sources[i];
+
+        // Find a link
+        const sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
+
+        // If a link is found, set it to the memory
+        if (sourceLink !== undefined) flagMemory.commonMemory.links[`source${i}`] = sourceLink.id;
+      }
+
+      // Check if there is a link at the headSpawn
+      const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
+      if (headSpawn !== null) {
+        // Find a link
+        const spawnLink = headSpawn.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
+
+        // If a link is found, set it to the memory
+        if (spawnLink !== undefined) flagMemory.commonMemory.links['head'] = spawnLink.id;
+      }
+
+      // Check if there is a link at the controller
+        // Find a link
+        const controllerLink = room.controller.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: {structureType: STRUCTURE_LINK}})[0];
+
+        // If a link is found, set it to the memory
+        if (controllerLink !== undefined) flagMemory.commonMemory.links['controller'] = controllerLink.id;
+
+    }
+
+    // Send energy from one link to the other each ... ticks //
+    if (Game.time % config.rooms.loops.sendEnergyInLinks === 0 || !flagMemory.isFilled) {
+      // Handle all the links in the room
+      linkHandler(room);
     }
   };
   // #endregion
@@ -787,6 +827,48 @@ const towerHandler = (room) => {
     room.towers.forEach((tower) => {
       tower.repair(firstRepairTarget);
     });
+  }
+};
+// #endregion
+
+// #region Link handler
+const linkHandler = (room) => {
+  // Get flag memory for room
+  const flagMemory = Memory.flags[room.name];
+
+  // Return if there are no links yet to use
+  if (room.links.length < 2) return;
+
+  // Define all possible sources
+  const source0 = Game.getObjectById(flagMemory.commonMemory.links.source0);
+  const source1 = Game.getObjectById(flagMemory.commonMemory.links.source1);
+  const head = Game.getObjectById(flagMemory.commonMemory.links.head);
+  const controller = Game.getObjectById(flagMemory.commonMemory.links.controller);
+
+  // Define function to check if there is space in target link
+  const sendEnergy = (fromLink, toLink) => {
+    // If there is low space in target
+    if (toLink.store.getFreeCapacity(RESOURCE_ENERGY) < 5) return;
+
+    // If there is enough energy in the sending link to send to target
+    if (fromLink.store.getUsedCapacity(RESOURCE_ENERGY) < 100) return;
+
+    // Send energy from fromLink to targetLink
+    fromLink.transferEnergy(toLink);
+  };
+
+
+  if (source0 !== null && head !== null) {
+    // Send energy from source0 link to head link
+    sendEnergy(source0, head);
+  }
+  if (source1 !== null && head !== null) {
+    // Send energy from source1 link to head link
+    sendEnergy(source1, head);
+  }
+  if (head !== null && controller !== null) {
+    // Send energy from head link to controller link
+    sendEnergy(head, controller);
   }
 };
 // #endregion
