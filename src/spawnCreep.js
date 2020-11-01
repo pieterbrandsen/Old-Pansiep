@@ -173,7 +173,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       if (targetRoom === undefined) break;
 
       if (role.includes('LD') && !Game.flags[`builderLD${room.name}`]) break;
-      else if (role.includes('LD') && Memory.flags[`builderLD${room.name}`]) memory.targetRoom = Memory.flags[`builderLD${room.name}`].room;
+      else if (role.includes('LD') && Memory.flags[`builderLD${room.name}`] && Memory.flags[`builderLD${room.name}`].spawnRoom === room.name) memory.targetRoom = Memory.flags[`builderLD${room.name}`].room;
 
       if (
         targetFlagMemory === undefined ||

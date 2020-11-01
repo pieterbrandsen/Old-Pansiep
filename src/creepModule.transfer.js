@@ -89,7 +89,7 @@ const spawnerJob = (creep) => {
   // If creep is missing targetId
   if (creepMemory.targetId === undefined) {
     // Find and shift the first energy structure in the spawner array
-    const freeCapacityCreep = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+    const getCapacityCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
 
     // If current spawnEnergyStructure needs less then zero energy, shift it.
     if (flagMemory.commonMemory.spawnEnergyStructures[0].needed < 0) {
@@ -100,13 +100,13 @@ const spawnerJob = (creep) => {
     // Get first id from array, shift only if creep can fill the whole target.
     if (
       flagMemory.commonMemory.spawnEnergyStructures[0].needed <
-      freeCapacityCreep
+      getCapacityCreep
     ) {
       creep.memory.targetId = flagMemory.commonMemory.spawnEnergyStructures.shift().id;
     } else {
       creep.memory.targetId =
         flagMemory.commonMemory.spawnEnergyStructures[0].id;
-      flagMemory.commonMemory.spawnEnergyStructures[0].needed -= freeCapacityCreep;
+      flagMemory.commonMemory.spawnEnergyStructures[0].needed -= getCapacityCreep;
     }
   } else {
     // Get the saved structure from memory

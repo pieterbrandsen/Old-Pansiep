@@ -335,19 +335,7 @@ const claimer = (creep, roleName) => {
     return;
   }
 
-  const result = creepModule.execute(creep);
-  // TODO LOGIC FOR CLAIMER
-  switch (result) {
-  case OK:
-    // Switch to one of the jobs that drains energy
-    creep.memory.job = 'claim';
-    break;
-  case ERR_GCL_NOT_ENOUGH:
-    creep.memory.job = 'claim';
-    break;
-  default:
-    break;
-  }
+  creepModule.execute(creep);
 };
 
 module.exports = {
