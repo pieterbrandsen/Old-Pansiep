@@ -42,6 +42,7 @@ global.config = {
     'builderLD',
     'repairerLD',
     'claimerLD',
+    'mineral',
   ],
   creepsCountMax: {
     pioneer: 4,
@@ -52,5 +53,6 @@ global.config = {
     upgrader: 2,
     reserver: 1,
     claimer: 1,
+    mineral: 1,
   },
 };

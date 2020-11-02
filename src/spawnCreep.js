@@ -2,7 +2,6 @@
 require('./config');
 // #endregion
 
-
 // #region
 const spawnCreep = (room, roomType, data, roleCount) => {
   // Get flagMemory from spawnRoom
@@ -24,6 +23,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       'builder',
       'repairer',
       'upgrader',
+      'mineral',
       'claimerLD',
       'builderLD',
       'end',
@@ -111,7 +111,13 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     // Owned room roles
     case 'pioneer':
       // Check if input role is less then max creeps allowed //
-      if (roleCount[role] >= config.creepsCountMax[shortRoleName] * flagMemory.commonMemory.sources.length) break;
+      if (
+        roleCount[role] >=
+          config.creepsCountMax[shortRoleName] *
+            flagMemory.commonMemory.sources.length
+      ) {
+        break;
+      }
 
       // If energy capacity is more then 1200
       if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300) {
@@ -155,7 +161,8 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (
         targetFlagMemory === undefined &&
-          targetFlagMemory.commonMemory.energyStorages.usable < targetFlagMemory.commonMemory.energyStorages.capacity / 20
+          targetFlagMemory.commonMemory.energyStorages.usable <
+            targetFlagMemory.commonMemory.energyStorages.capacity / 20
       ) {
         break;
       }
@@ -173,7 +180,13 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       if (targetRoom === undefined) break;
 
       if (role.includes('LD') && !Game.flags[`builderLD${room.name}`]) break;
-      else if (role.includes('LD') && Memory.flags[`builderLD${room.name}`] && Memory.flags[`builderLD${room.name}`].spawnRoom === room.name) memory.targetRoom = Memory.flags[`builderLD${room.name}`].room;
+      else if (
+        role.includes('LD') &&
+          Memory.flags[`builderLD${room.name}`] &&
+          Memory.flags[`builderLD${room.name}`].spawnRoom === room.name
+      ) {
+        memory.targetRoom = Memory.flags[`builderLD${room.name}`].room;
+      }
 
       if (
         targetFlagMemory === undefined ||
@@ -239,7 +252,13 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       if (targetFlagMemory === undefined) break;
 
       // If reservation is defined, the username is mine and the ticksToEnd is higher then 2500 ticks
-      if (typeof targetRoom.controller.reservation !== 'object' || (targetRoom.controller.reservation.username !== config.username || targetRoom.controller.reservation.ticksToEnd > 2500)) break;
+      if (
+        typeof targetRoom.controller.reservation !== 'object' ||
+          targetRoom.controller.reservation.username !== config.username ||
+          targetRoom.controller.reservation.ticksToEnd > 2500
+      ) {
+        break;
+      }
 
       result = true;
       break;
@@ -257,10 +276,19 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       if (!Memory.flags['claim']) {
         Memory.flags['claim'] = {spawnRoom: '', room: ''};
         break;
-      } else if (Memory.flags['claim'].spawnRoom === room.name && Memory.flags['claim'].room !== undefined) {
+      } else if (
+        Memory.flags['claim'].spawnRoom === room.name &&
+          Memory.flags['claim'].room !== undefined
+      ) {
         memory.targetRoom = Memory.flags['claim'].room;
         result = true;
       }
+      break;
+    case 'mineral':
+      // Check if input role is less then max creeps allowed //
+      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+
+      if (flagMemory.commonMemory.mineral.amount > 0) result = true;
       break;
     default:
       break;
