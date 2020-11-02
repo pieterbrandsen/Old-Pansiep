@@ -238,7 +238,7 @@ const memoryHandler = (goal, data) => {
               room.find(FIND_MINERALS)[0].mineralType :
               undefined,
             amount: room.find(FIND_MINERALS)[0] ?
-              room.find(FIND_MINERALS)[0].mineralAmount :
+              Math.round(room.find(FIND_MINERALS)[0].mineralAmount) :
               undefined,
           },
           sources: sources,
@@ -741,6 +741,11 @@ const timersHandler = (goal, data) => {
         // If a link is found, set it to the memory
         if (controllerLink !== undefined) flagMemory.commonMemory.links['controller'] = controllerLink.id;
       }
+
+      // Set amount of mineral
+      flagMemory.commonMemory.mineral.amount = room.find(FIND_MINERALS)[0] ?
+        Math.round(room.find(FIND_MINERALS)[0].mineralAmount) :
+        undefined;
     }
 
     // Send energy from one link to the other each ... ticks //
