@@ -288,7 +288,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      if (flagMemory.commonMemory.mineral.amount > 0) result = true;
+      if (flagMemory.commonMemory.mineral.amount > 0 && room.controller.level >= 6 && room.storage && room.storage.store.getUsedCapacity(flagMemory.commonMemory.mineral.type) < 200*1000) result = true;
       break;
     default:
       break;
@@ -359,6 +359,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     case 'builderLD':
     case 'repairer':
     case 'repairerLD':
+    case 'mineral':
       returnBody([], [WORK, MOVE, CARRY]);
       break;
     case 'upgrader':

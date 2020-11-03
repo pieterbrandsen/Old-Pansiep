@@ -1,4 +1,27 @@
-const harvest = (creep) => {
+const mineralJob = (creep) => {
+  // Make shortcut to memory
+  const creepMemory = creep.memory;
+  const flagMemory = Memory.flags[creepMemory.targetRoom];
+
+  // Return full if current creep's storage is full
+  if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
+    return 'full';
+  }
+
+  const mineral = Game.getObjectById(flagMemory.commonMemory.mineral.id);
+
+  const result = creep.harvest(mineral);
+  switch (result) {
+  case ERR_NOT_IN_RANGE:
+    // Move to mineral
+    creep.moveTo(mineral);
+    break;
+  default:
+    break;
+  }
+};
+
+const sourceJob = (creep) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
   const flagMemory = Memory.flags[creepMemory.targetRoom];
@@ -146,7 +169,28 @@ const harvest = (creep) => {
 
 module.exports = {
   execute: (creep) => {
-    const result = harvest(creep);
+    let result;
+
+    // Make shortcut to memory
+    const creepMemory = creep.memory;
+
+    switch (creep.memory.miniJob) {
+    case 'source':
+      result = sourceJob(creep);
+      break;
+    case 'mineral':
+      result = mineralJob(creep);
+      break;
+    default:
+    // If creep is a mineral harvester, harvest the mineral instead of source
+      if (creepMemory.role === 'mineral') {
+        creep.memory.miniJob = 'mineral';
+        break;
+      } else {
+        creep.memory.miniJob = 'source';
+      }
+    }
+    // Return result
     return result;
   },
 };

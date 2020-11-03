@@ -1,3 +1,30 @@
+
+
+const mineralJob = (creep) => {
+  // Make shortcut to memory
+  const creepMemory = creep.memory;
+  const flagMemory = Memory.flags[creepMemory.targetRoom];
+
+  // Return empty if current creep's storage is empty
+  if (creep.store.getUsedCapacity() === 0) return 'empty';
+
+  // Get the storage
+  const target = creep.room.storage;
+
+  // Run the transfer function
+  const result = creep.transfer(target, flagMemory.commonMemory.mineral.type);
+
+  // Switch based on the results
+  switch (result) {
+  case ERR_NOT_IN_RANGE:
+    // If creep is not in range, move to target
+    creep.moveTo(target);
+    break;
+  default:
+    break;
+  }
+};
+
 const harvestJob = (creep) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
@@ -266,7 +293,16 @@ module.exports = {
     case 'controller':
       result = controllerJob(creep);
       break;
+    case 'mineral':
+      result = mineralJob(creep);
+      break;
     default:
+    // If creep is a mineral harvester, only transfer to storage
+      if (creepMemory.role === 'mineral') {
+        creep.memory.miniJob = 'mineral';
+        break;
+      }
+
       if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
         creep.memory.miniJob = 'spawner';
         break;
