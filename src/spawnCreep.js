@@ -225,23 +225,23 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       result = true;
       break;
     case 'harvester-0':
-      case 'harvesterLD-0':
-        // Check if input role is less then max creeps allowed //
-            if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+    case 'harvesterLD-0':
+      // Check if input role is less then max creeps allowed //
+      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-            // If energy capacity is less then 300
-            if (room.energyCapacityAvailable <= 300) break;
-      
-            if (targetRoom === undefined) break;
-      
-            if (targetFlagMemory === undefined) break;
+      // If energy capacity is less then 300
+      if (room.energyCapacityAvailable <= 300) break;
 
-            if (Game.getObjectById(targetFlagMemory.roomPlanner.room.sources[0].id) === null) break;
-      
-            result = true;
-            break;
+      if (targetRoom === undefined) break;
+
+      if (targetFlagMemory === undefined) break;
+
+      if (Game.getObjectById(targetFlagMemory.roomPlanner.room.sources[0].id) === null) break;
+
+      result = true;
+      break;
     case 'harvester-1':
-      case 'harvesterLD-1':
+    case 'harvesterLD-1':
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
