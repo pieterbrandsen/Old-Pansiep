@@ -632,7 +632,37 @@ const timersHandler = (goal, data) => {
           // Save the id back to memory
           flagMemory.roomPlanner.room.sources[i].id = structureObject.id;
         }
+        else {
+// Remove id from memory
+          flagMemory.roomPlanner.room.sources[i].id = undefined;
+        }
       }
+
+              // Get controller
+              const controller = flagMemory.roomPlanner.room.controller;
+
+              // Break if there is still a live structure
+              if (Game.getObjectById(controller.id) !== null) break;
+      
+              // Get all structures at saved pos
+              const structureExistResult = structureExist(
+                room,
+                controller.pos,
+                controller.structureType,
+              );
+      
+              // If structure was found
+              if (structureExistResult[0]) {
+                // Get structureObject
+                const structureObject = Game.getObjectById(structureExistResult[1]);
+      
+                // Save the id back to memory
+                flagMemory.roomPlanner.room.controller.id = structureObject.id;
+              }
+              else {
+      // Remove id from memory
+                flagMemory.roomPlanner.room.controller.id = undefined;
+              }
     }
   };
   // #endregion
