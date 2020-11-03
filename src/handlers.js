@@ -592,6 +592,48 @@ const timersHandler = (goal, data) => {
         });
       }
     }
+
+    // Check all structures saved in memory if they still alive each ... ticks //
+    if (
+      Game.time % config.rooms.loops.structureNullChecker === 0 ||
+      !flagMemory.isFilled
+    ) {
+      const structureExist = (room, pos, structureType) => {
+        const structures = room.lookForAt(LOOK_STRUCTURES, pos.x, pos.y);
+
+        for (const structure of structures) {
+          if (structure.structureType === structureType) {
+            return [true, structure.id];
+          }
+        }
+        return [false, ''];
+      };
+
+      // Check all source structures
+      for (let i = 0; i < flagMemory.roomPlanner.room.sources.length; i++) {
+        // Get source
+        const source = flagMemory.roomPlanner.room.sources[i];
+
+        // Break if there is still a live structure
+        if (Game.getObjectById(source.id) !== null) break;
+
+        // Get all structures at saved pos
+        const structureExistResult = structureExist(
+          room,
+          source.pos,
+          source.structureType,
+        );
+
+        // If structure was found
+        if (structureExistResult[0]) {
+          // Get structureObject
+          const structureObject = Game.getObjectById(structureExistResult[1]);
+
+          // Save the id back to memory
+          flagMemory.roomPlanner.room.sources[i].id = structureObject.id;
+        }
+      }
+    }
   };
   // #endregion
 

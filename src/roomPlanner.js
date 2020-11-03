@@ -973,7 +973,7 @@ const createConstructionSite = (
 // #endregion
 // #region StructureExist
 const structureExist = (room, pos, structureType) => {
-  const structures = room.lookForAt(LOOK_STRUCTURES, pos);
+  const structures = room.lookForAt(LOOK_STRUCTURES, pos.x, pos.y);
   for (const structure of structures) {
     if (structure.structureType === structureType) {
       return [true, structure.id];
@@ -1024,7 +1024,7 @@ const roomPlanner = (room) => {
     // Check if room already has this source planned
     if (
       flagMemory.roomPlanner.room.sources[i] &&
-      flagMemory.roomPlanner.room.sources[i].structureType === structureType
+      flagMemory.roomPlanner.room.sources[i].structureType === structureType && Game.getObjectById(flagMemory.roomPlanner.room.sources[i].id) !== null
     ) {
       return;
     }
@@ -1077,6 +1077,7 @@ const roomPlanner = (room) => {
         true,
       )
       .filter((t) => t.terrain !== 'wall').length;
+    bestSourcePosition.id = '';
     if (bestSourcePosition !== null) {
       flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
     } else break;
@@ -1114,7 +1115,7 @@ const roomPlanner = (room) => {
   // Check if room already has the controller planned
   if (
     (flagMemory.roomPlanner.room.controller &&
-      flagMemory.roomPlanner.room.controller.structureType === structureType) ||
+      flagMemory.roomPlanner.room.controller.structureType === structureType && Game.getObjectById(flagMemory.roomPlanner.room.controller.id) !== null) ||
     (room.controller && !room.controller.my)
   ) {
     return;
@@ -1163,6 +1164,7 @@ const roomPlanner = (room) => {
 
   // Set best position to room planner memory for this source
   bestControllerPosition.structureType = structureType;
+  bestControllerPosition.id = '';
   if (bestControllerPosition !== null) {
     flagMemory.roomPlanner.room.controller = bestControllerPosition;
   } else return;
