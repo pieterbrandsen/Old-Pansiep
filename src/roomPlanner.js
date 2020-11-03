@@ -1030,7 +1030,7 @@ const roomPlanner = (room) => {
     }
 
     const source = flagMemory.commonMemory.sources[i];
-    if (flagMemory.roomPlanner.room.sources[i] !== undefined) {
+    if (flagMemory.roomPlanner.room.sources[i] !== undefined && flagMemory.roomPlanner.room.sources[i].structureType !== structureType) {
       const bestSource = flagMemory.roomPlanner.room.sources[i];
       const structureExistResult = structureExist(
         room,
@@ -1040,6 +1040,7 @@ const roomPlanner = (room) => {
       if (structureExistResult[0]) {
         const structureObject = Game.getObjectById(structureExistResult[1]);
         structureObject.destroy();
+        flagMemory.roomPlanner.room.sources[i].id = undefined;
       } else {
         const constructionSite = room.lookForAt(
           LOOK_CONSTRUCTION_SITES,
@@ -1115,14 +1116,14 @@ const roomPlanner = (room) => {
   // Check if room already has the controller planned
   if (
     (flagMemory.roomPlanner.room.controller &&
-      flagMemory.roomPlanner.room.controller.structureType === structureType && Game.getObjectById(flagMemory.roomPlanner.room.controller.id) !== null) ||
+      flagMemory.roomPlanner.room.controller.structureType === structureType && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null) ||
     (room.controller && !room.controller.my)
   ) {
     return;
   }
 
   const controller = room.controller;
-  if (flagMemory.roomPlanner.room.controller !== undefined) {
+  if (flagMemory.roomPlanner.room.controller !== undefined && flagMemory.roomPlanner.room.controller.structureType !== structureType) {
     const bestControllerPosition = flagMemory.roomPlanner.room.controller;
     const structureExistResult = structureExist(
       room,
@@ -1132,6 +1133,7 @@ const roomPlanner = (room) => {
     if (structureExistResult[0]) {
       const structureObject = Game.getObjectById(structureExistResult[1]);
       structureObject.destroy();
+      flagMemory.commonMemory.controllerStorage.id = undefined;
     } else {
       const constructionSite = room.lookForAt(
         LOOK_CONSTRUCTION_SITES,

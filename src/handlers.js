@@ -436,15 +436,6 @@ const timersHandler = (goal, data) => {
 
       flagMemory.commonMemory.energyStorages.usable = energyUsable;
       flagMemory.commonMemory.energyStorages.capacity = energyCapacity;
-      if (
-        Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !==
-        null
-      ) {
-        const controllerStorage = Game.getObjectById(
-          flagMemory.commonMemory.controllerStorage.id,
-        );
-        flagMemory.commonMemory.controllerStorage.usable = controllerStorage.store.getUsedCapacity();
-      }
     }
 
     // Get all construction sites each ... ticks //
@@ -655,10 +646,10 @@ const timersHandler = (goal, data) => {
           const structureObject = Game.getObjectById(structureExistResult[1]);
 
           // Save the id back to memory
-          flagMemory.roomPlanner.room.controller.id = structureObject.id;
+          flagMemory.commonMemory.controllerStorage.id = structureObject.id;
         } else {
           // Remove id from memory
-          flagMemory.roomPlanner.room.controller.id = undefined;
+          flagMemory.commonMemory.controllerStorage.id = undefined;
         }
       }
     }

@@ -314,7 +314,7 @@ module.exports = {
         break;
       } else if (
         flagMemory.commonMemory.controllerStorage.usable < 1500 &&
-          flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER
+          flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null
       ) {
         creep.memory.miniJob = 'controller';
         break;
