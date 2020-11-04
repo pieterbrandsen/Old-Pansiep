@@ -42,9 +42,11 @@ const upgradeJob = (creep) => {
         };
       }
     });
+    creep.say(controllerStructure);
 
     // If a source structure was found, set the target Id to that structure
-    if (controllerStructure) creep.memory.targetId = controllerStructure.id;
+    if (controllerStructure !== undefined) creep.memory.targetId = controllerStructure.id;
+    else return 'empty';
   } else {
     // Get the saved structure from memory
     const withdrawStructure = Game.getObjectById(creepMemory.targetId);
@@ -138,6 +140,7 @@ module.exports = {
 
     // Make shortcut to memory
     const creepMemory = creep.memory;
+    const flagMemory = Memory.flags[creepMemory.targetRoom];
 
     switch (creepMemory.miniJob) {
     case 'upgrade':
@@ -147,7 +150,7 @@ module.exports = {
       result = normalJob(creep);
       break;
     default:
-      if (creepMemory.role.includes('upgrade')) {
+      if (creepMemory.role.includes('upgrade') && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null && flagMemory.commonMemory.controllerStorage.usable > 0) {
         creep.memory.miniJob = 'upgrade';
       } else {
         creep.memory.miniJob = 'normal';

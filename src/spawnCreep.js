@@ -159,14 +159,6 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (targetRoom === undefined) break;
 
-      if (
-        targetFlagMemory === undefined &&
-          targetFlagMemory.commonMemory.energyStorages.usable <
-            targetFlagMemory.commonMemory.energyStorages.capacity / 20
-      ) {
-        break;
-      }
-
       result = true;
       break;
     case 'builder':
@@ -242,6 +234,9 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       break;
     case 'harvester-1':
     case 'harvesterLD-1':
+      // If there is more then 1 source
+      if (targetFlagMemory.commonMemory.sources.length >= 1) break;
+
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 

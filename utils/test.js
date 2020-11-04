@@ -172,6 +172,7 @@ const printCurrentStatus = function(gameTime) {
 const statusUpdater = (event) => {
   if (event.data.gameTime !== lastTick) {
     lastTick = event.data.gameTime;
+
     if (event.data.gameTime % 300 === 0) {
       printCurrentStatus(event.data.gameTime);
     }

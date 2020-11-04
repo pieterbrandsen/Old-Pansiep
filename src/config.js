@@ -50,7 +50,7 @@ global.config = {
     harvester: 1,
     builder: 2,
     repairer: 2,
-    upgrader: 2,
+    upgrader: 4,
     reserver: 1,
     claimer: 1,
     mineral: 1,

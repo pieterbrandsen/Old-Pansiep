@@ -377,7 +377,9 @@ const memoryHandler = (goal, data) => {
 const timersHandler = (goal, data) => {
   // #region Global timers
   // Get a object back with all the universal timers for a owned and remote room //
-  const globalTimers = () => {};
+  const globalTimers = () => {
+
+  };
   // #endregion
 
   // #region Room timers
@@ -431,6 +433,8 @@ const timersHandler = (goal, data) => {
             id: storageStructure.id,
             usable: storageStructure.store.getUsedCapacity(RESOURCE_ENERGY),
           });
+        } else {
+          flagMemory.commonMemory.controllerStorage.usable = storageStructure.store.getCapacity(RESOURCE_ENERGY);
         }
       });
 
@@ -606,50 +610,25 @@ const timersHandler = (goal, data) => {
         const source = flagMemory.roomPlanner.room.sources[i];
 
         // Break if there is still a live structure
-        if (Game.getObjectById(source.id) !== null) break;
-
+        if (Game.getObjectById(source.id) === null) {
         // Get all structures at saved pos
-        const structureExistResult = structureExist(
-          room,
-          source.pos,
-          source.structureType,
-        );
+          const structureExistResult = structureExist(
+            room,
+            source.pos,
+            source.structureType,
+          );
 
-        // If structure was found
-        if (structureExistResult[0]) {
+          // If structure was found
+          if (structureExistResult[0]) {
           // Get structureObject
-          const structureObject = Game.getObjectById(structureExistResult[1]);
+            const structureObject = Game.getObjectById(structureExistResult[1]);
 
-          // Save the id back to memory
-          flagMemory.roomPlanner.room.sources[i].id = structureObject.id;
-        } else {
+            // Save the id back to memory
+            flagMemory.roomPlanner.room.sources[i].id = structureObject.id;
+          } else {
           // Remove id from memory
-          flagMemory.roomPlanner.room.sources[i].id = undefined;
-        }
-      }
-
-      // Get controller
-      const controller = flagMemory.roomPlanner.room.controller;
-
-      // if there is not a live structure
-      if (Game.getObjectById(controller.id) === null) {
-        // Get all structures at saved pos
-        const structureExistResult = structureExist(
-          room,
-          controller.pos,
-          controller.structureType,
-        );
-
-        // If structure was found
-        if (structureExistResult[0]) {
-          // Get structureObject
-          const structureObject = Game.getObjectById(structureExistResult[1]);
-
-          // Save the id back to memory
-          flagMemory.commonMemory.controllerStorage.id = structureObject.id;
-        } else {
-          // Remove id from memory
-          flagMemory.commonMemory.controllerStorage.id = undefined;
+            flagMemory.roomPlanner.room.sources[i].id = undefined;
+          }
         }
       }
     }
@@ -767,7 +746,7 @@ const timersHandler = (goal, data) => {
           if (controllerStorage) {
             flagMemory.commonMemory.controllerStorage.id = controllerStorage.id;
             flagMemory.commonMemory.controllerStorage.type = controllerStorage.type;
-          }
+          } else flagMemory.commonMemory.controllerStorage.usable = 0;
         }
       }
 

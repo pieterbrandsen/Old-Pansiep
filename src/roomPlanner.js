@@ -740,10 +740,10 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
 // #endregion
 
 // #region GetBestFreeSpot
-const getBestFreeSpot = (room, startPos, structureType = STRUCTURE_LINK) => {
+const getBestFreeSpot = (room, startPos, structureType = STRUCTURE_LINK, inputRange = 0) => {
   const terrain = new Room.Terrain(room.name);
   // Get range based on structure type (container is 1, link is 2)
-  const range = structureType === STRUCTURE_LINK ? 2 : 1;
+  const range = (inputRange > 0) ? (inputRange) : ((structureType === STRUCTURE_LINK) ? (2) : (1));
 
   // getAllPositions function
   // Returns a position array based on inputPosition and inputRange
@@ -1149,7 +1149,7 @@ const roomPlanner = (room) => {
   const bestControllerPosition = getBestFreeSpot(
     room,
     controller.pos,
-    structureType,
+    structureType, 2,
   );
   // Check if best position is found, otherwise return
   if (bestControllerPosition === undefined) return;
@@ -1166,7 +1166,6 @@ const roomPlanner = (room) => {
 
   // Set best position to room planner memory for this source
   bestControllerPosition.structureType = structureType;
-  bestControllerPosition.id = '';
   if (bestControllerPosition !== null) {
     flagMemory.roomPlanner.room.controller = bestControllerPosition;
   } else return;
