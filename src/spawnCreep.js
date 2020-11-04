@@ -119,8 +119,8 @@ const spawnCreep = (room, roomType, data, roleCount) => {
         break;
       }
 
-      // If energy capacity is more then 1200
-      if (room.energyCapacityAvailable > 300 || room.energyAvailable > 300) {
+      // If energy capacity is more then 300
+      if (room.energyAvailable > 300) {
         break;
       }
 
@@ -133,8 +133,8 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 300
-      if (room.energyCapacityAvailable <= 300) break;
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
 
@@ -148,13 +148,17 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       result = true;
       break;
     case 'upgrader':
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
+
       if (room.controller.ticksToDowngrade <= 1 * 1000) {
         // Check if input role is less then max creeps allowed //
         if (roleCount[role] >= 1) break;
         else result = true;
       } else {
         // Check if input role is less then max creeps allowed //
-        if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+        if (roleCount[role] >= config.creepsCountMax[shortRoleName] && targetFlagMemory.commonMemory.constructionSites.length === 0) break;
+        else if (roleCount[role] >= config.creepsCountMax[shortRoleName]/2 && targetFlagMemory.commonMemory.constructionSites.length > 0) break;
       }
 
       if (targetRoom === undefined) break;
@@ -166,8 +170,8 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 300
-      if (room.energyCapacityAvailable <= 300) break;
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
 
@@ -180,13 +184,6 @@ const spawnCreep = (room, roomType, data, roleCount) => {
         memory.targetRoom = Memory.flags[`builderLD${room.name}`].room;
       }
 
-      if (
-        targetFlagMemory === undefined ||
-          targetFlagMemory.commonMemory.energyStorages.usable < 1500
-      ) {
-        break;
-      }
-
       if (targetFlagMemory.commonMemory.constructionSites.length === 0) break;
 
       result = true;
@@ -196,8 +193,8 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 300
-      if (room.energyCapacityAvailable <= 300) break;
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
 
@@ -221,8 +218,8 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 300
-      if (room.energyCapacityAvailable <= 300) break;
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
 
@@ -235,13 +232,13 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     case 'harvester-1':
     case 'harvesterLD-1':
       // If there is more then 1 source
-      if (targetFlagMemory.commonMemory.sources.length >= 1) break;
+      if (targetFlagMemory.commonMemory.sources.length === 1) break;
 
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 300
-      if (room.energyCapacityAvailable <= 300) break;
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
 
@@ -255,8 +252,8 @@ const spawnCreep = (room, roomType, data, roleCount) => {
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
 
-      // If energy capacity is less then 300
-      if (room.energyCapacityAvailable <= 300) break;
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
 
       if (targetRoom === undefined) break;
 
@@ -298,6 +295,9 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     case 'mineral':
       // Check if input role is less then max creeps allowed //
       if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+
+      // If energy is less then 300
+      if (room.energyAvailable <= 300) break;
 
       if (flagMemory.commonMemory.mineral.amount > 0 && room.controller.level >= 6 && room.storage && room.storage.store.getUsedCapacity(flagMemory.commonMemory.mineral.type) < 200*1000) result = true;
       break;

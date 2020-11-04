@@ -1083,23 +1083,23 @@ const roomPlanner = (room) => {
       flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
     } else break;
 
-    // * Handle visual to show target //
-    // If visual is already in memory, return
-    if (
-      flagMemory.visuals.objects.sources[i] === true ||
-      !config.rooms.visuals.structures
-    ) {
-      const sourceVisualString = room.visual.circle(bestSourcePosition.pos, {
-        fill: 'transparent',
-        radius: 0.55,
-        stroke: 'red',
-      });
-      if (Object.keys(sourceVisualString).length > 0) {
-        // Update visual string in flagMemory //
-        flagMemory.visuals.string = room.visual.export();
-        flagMemory.visuals.objects.sources[i] = true;
-      }
-    }
+    // // * Handle visual to show target //
+    // // If visual is already in memory, return
+    // if (
+    //   flagMemory.visuals.objects.sources[i] === true ||
+    //   !config.rooms.visuals.structures
+    // ) {
+    //   const sourceVisualString = room.visual.circle(bestSourcePosition.pos, {
+    //     fill: 'transparent',
+    //     radius: 0.55,
+    //     stroke: 'red',
+    //   });
+    //   if (Object.keys(sourceVisualString).length > 0) {
+    //     // Update visual string in flagMemory //
+    //     flagMemory.visuals.string = room.visual.export();
+    //     flagMemory.visuals.objects.sources[i] = true;
+    //   }
+    // }
   }
   // #endregion
 
@@ -1179,15 +1179,15 @@ const roomPlanner = (room) => {
     return;
   }
 
-  const controllerVisualString = room.visual.circle(
-    bestControllerPosition.pos,
-    {fill: 'transparent', radius: 0.55, stroke: 'red'},
-  );
-  if (Object.keys(controllerVisualString).length > 0) {
-    // Update visual string in flagMemory //
-    flagMemory.visuals.string = room.visual.export();
-    flagMemory.visuals.objects.controller = true;
-  }
+  // const controllerVisualString = room.visual.circle(
+  //   bestControllerPosition.pos,
+  //   {fill: 'transparent', radius: 0.55, stroke: 'red'},
+  // );
+  // if (Object.keys(controllerVisualString).length > 0) {
+  //   // Update visual string in flagMemory //
+  //   flagMemory.visuals.string = room.visual.export();
+  //   flagMemory.visuals.objects.controller = true;
+  // }
   // #endregion
 };
 // #endregion

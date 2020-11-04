@@ -8,68 +8,26 @@ const upgradeJob = (creep) => {
     return 'full';
   }
 
-  // If there is not enough to withdraw from, return empty to get another goal if possible
-  if (
-    flagMemory.commonMemory.controllerStorage.usable === 0 &&
-    creep.memory.targetId === undefined && Game.time % 100 === 0
-  ) {
+  // Get the saved structure from memory
+  const withdrawStructure = Game.getObjectById(flagMemory.commonMemory.controllerStorage.id);
+
+  // Run the withdraw function
+  const result = creep.withdraw(withdrawStructure, RESOURCE_ENERGY);
+
+  // Switch based on the results
+  switch (result) {
+  case OK:
+    break;
+  case ERR_NOT_IN_RANGE:
+    // If creep is not in range, move to target
+    creep.moveTo(withdrawStructure);
+    break;
+  case ERR_INVALID_TARGET:
+  case ERR_NOT_ENOUGH_RESOURCES:
+    // Return
     return 'empty';
-  }
-
-  // If creep memory is missing a targetId, find one
-  if (!creep.memory.targetId) {
-    // Set the storage pos as found in memory
-    if (!flagMemory.roomPlanner.room.controller) return;
-    const storagePos = flagMemory.roomPlanner.room.controller.pos;
-
-    // Find all structures that are at the storagePos
-    const foundStructures = creep.room.lookForAt(
-      LOOK_STRUCTURES,
-      storagePos.x,
-      storagePos.y,
-    );
-
-    // Loop through all structures that are found at storagePos and try to find a container or link
-    let controllerStructure;
-    foundStructures.forEach((structure) => {
-      if (
-        structure.structureType === STRUCTURE_CONTAINER ||
-        structure.structureType === STRUCTURE_LINK
-      ) {
-        controllerStructure = {
-          type: structure.structureType,
-          id: structure.id,
-        };
-      }
-    });
-    creep.say(controllerStructure);
-
-    // If a source structure was found, set the target Id to that structure
-    if (controllerStructure !== undefined) creep.memory.targetId = controllerStructure.id;
-    else return 'empty';
-  } else {
-    // Get the saved structure from memory
-    const withdrawStructure = Game.getObjectById(creepMemory.targetId);
-
-    // Run the withdraw function
-    const result = creep.withdraw(withdrawStructure, RESOURCE_ENERGY);
-
-    // Switch based on the results
-    switch (result) {
-    case OK:
-      break;
-    case ERR_NOT_IN_RANGE:
-      // If creep is not in range, move to target
-      creep.moveTo(withdrawStructure);
-      break;
-    case ERR_INVALID_TARGET:
-    case ERR_NOT_ENOUGH_RESOURCES:
-      // Delete targetId
-      delete creep.memory.targetId;
-      break;
-    default:
-      break;
-    }
+  default:
+    break;
   }
 };
 

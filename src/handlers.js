@@ -433,8 +433,8 @@ const timersHandler = (goal, data) => {
             id: storageStructure.id,
             usable: storageStructure.store.getUsedCapacity(RESOURCE_ENERGY),
           });
-        } else {
-          flagMemory.commonMemory.controllerStorage.usable = storageStructure.store.getCapacity(RESOURCE_ENERGY);
+        } else if (flagMemory.commonMemory.controllerStorage.id !== undefined && flagMemory.commonMemory.controllerStorage.id === storageStructure.id) {
+          flagMemory.commonMemory.controllerStorage.usable = storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
         }
       });
 
