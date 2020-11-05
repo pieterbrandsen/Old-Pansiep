@@ -1,4 +1,4 @@
-const withdraw = (creep) => {
+const upgrade = (creep) => {
   // Return full if current creep's storage is full
   if (creep.store.getUsedCapacity() === 0) return 'empty';
 
@@ -18,7 +18,7 @@ const withdraw = (creep) => {
 
 module.exports = {
   execute: (creep) => {
-    const result = withdraw(creep);
+    const result = upgrade(creep);
     return result;
   },
 };
