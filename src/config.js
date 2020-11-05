@@ -1,9 +1,13 @@
 global.config = {
   username: 'PandaMaster',
   whitelist: ['Rivaryn', 'Fiskmans'],
+  tracking: {
+    rooms: true,
+    intents: true,
+    cpu: true,
+  },
   rooms: {
     minBucket: 1000,
-
     visuals: {
       debug: false,
       structures: true,
