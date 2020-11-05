@@ -242,13 +242,16 @@ const repairer = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the jobs that drains energy
-    creep.memory.job = 'repair';
+    if (flagMemory.repair.targets.length > 0) creep.memory.job = 'repair';
+    else creep.memory.job = 'upgrade';
     break;
   case 'empty':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable >= 2000) {
@@ -284,13 +287,16 @@ const builder = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the jobs that drains energy
-    creep.memory.job = 'build';
+    if (flagMemory.commonMemory.constructionSites.length > 0) creep.memory.job = 'build';
+    else creep.memory.job = 'upgrade';
     break;
   case 'empty':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable >= 2000) {
