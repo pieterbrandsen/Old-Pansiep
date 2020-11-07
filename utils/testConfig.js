@@ -15,7 +15,7 @@ module.exports.players = players;
 module.exports.rooms = Object.keys(players);
 
 module.exports.milestones = [
-  {tick: 10050, check: {level: 2}},
+  {tick: 10500, check: {level: 2}},
   {tick: 50000, check: {level: 3}},
   {tick: 70000, check: {level: 4}},
   // {tick: 1700, check: {structures: 2}},
