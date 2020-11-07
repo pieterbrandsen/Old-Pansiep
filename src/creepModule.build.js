@@ -13,6 +13,7 @@ const build = (creep) => {
     flagMemory.commonMemory.constructionSites.length === 0 &&
     !creepMemory.targetId
   ) {
+    if (!creep.pos.inRangeTo(creep.room.controller, 5)) creep.moveTo(creep.room.controller);
     return 'full';
   }
 

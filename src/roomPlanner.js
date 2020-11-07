@@ -8,32 +8,72 @@ const getBaseLayoutType = (room) => {
   // Acces flagMemory
   const flagMemory = Memory.flags[room.name];
 
-
   const doesBunkerFitAtPosition = (terrain, position) => {
     // If terrain is wall, return
     if (terrain.get(position.x, position.y) === TERRAIN_MASK_WALL) return;
 
     // Get all numbers from top to bottom //
     function range(start, end) {
-      return Array(end - start + 1).fill().map((_, idx) => start + idx);
+      return Array(end - start + 1)
+        .fill()
+        .map((_, idx) => start + idx);
     }
 
     // Define all bunker positions from top to bottom
     const bunkerPositions = [
       // Left to right
-      {top: {x: position.x-5, y: position.y-2}, bottom: {x: position.x-5, y: position.y+1}},
-      {top: {x: position.x-4, y: position.y-3}, bottom: {x: position.x-4, y: position.y+3}},
-      {top: {x: position.x-3, y: position.y-4}, bottom: {x: position.x-3, y: position.y+4}},
-      {top: {x: position.x-2, y: position.y-4}, bottom: {x: position.x-2, y: position.y+5}},
-      {top: {x: position.x-1, y: position.y-5}, bottom: {x: position.x-1, y: position.y+7}},
-      {top: {x: position.x-0, y: position.y-5}, bottom: {x: position.x-0, y: position.y+7}},
-      {top: {x: position.x+1, y: position.y-5}, bottom: {x: position.x+1, y: position.y+7}},
-      {top: {x: position.x+2, y: position.y-5}, bottom: {x: position.x+2, y: position.y+7}},
-      {top: {x: position.x+3, y: position.y-4}, bottom: {x: position.x+3, y: position.y+6}},
-      {top: {x: position.x+4, y: position.y-3}, bottom: {x: position.x+4, y: position.y+5}},
-      {top: {x: position.x+5, y: position.y-1}, bottom: {x: position.x+5, y: position.y+4}},
-      {top: {x: position.x+6, y: position.y-0}, bottom: {x: position.x+6, y: position.y+3}},
-      {top: {x: position.x+7, y: position.y-0}, bottom: {x: position.x+7, y: position.y+2}},
+      {
+        top: {x: position.x - 5, y: position.y - 2},
+        bottom: {x: position.x - 5, y: position.y + 1},
+      },
+      {
+        top: {x: position.x - 4, y: position.y - 3},
+        bottom: {x: position.x - 4, y: position.y + 3},
+      },
+      {
+        top: {x: position.x - 3, y: position.y - 4},
+        bottom: {x: position.x - 3, y: position.y + 4},
+      },
+      {
+        top: {x: position.x - 2, y: position.y - 4},
+        bottom: {x: position.x - 2, y: position.y + 5},
+      },
+      {
+        top: {x: position.x - 1, y: position.y - 5},
+        bottom: {x: position.x - 1, y: position.y + 7},
+      },
+      {
+        top: {x: position.x - 0, y: position.y - 5},
+        bottom: {x: position.x - 0, y: position.y + 7},
+      },
+      {
+        top: {x: position.x + 1, y: position.y - 5},
+        bottom: {x: position.x + 1, y: position.y + 7},
+      },
+      {
+        top: {x: position.x + 2, y: position.y - 5},
+        bottom: {x: position.x + 2, y: position.y + 7},
+      },
+      {
+        top: {x: position.x + 3, y: position.y - 4},
+        bottom: {x: position.x + 3, y: position.y + 6},
+      },
+      {
+        top: {x: position.x + 4, y: position.y - 3},
+        bottom: {x: position.x + 4, y: position.y + 5},
+      },
+      {
+        top: {x: position.x + 5, y: position.y - 1},
+        bottom: {x: position.x + 5, y: position.y + 4},
+      },
+      {
+        top: {x: position.x + 6, y: position.y - 0},
+        bottom: {x: position.x + 6, y: position.y + 3},
+      },
+      {
+        top: {x: position.x + 7, y: position.y - 0},
+        bottom: {x: position.x + 7, y: position.y + 2},
+      },
     ];
 
     // Stop loop when position is not good //
@@ -41,12 +81,24 @@ const getBaseLayoutType = (room) => {
     for (let i = 0; i < bunkerPositions.length && wrongTerrainIsNotFound; i++) {
       const currentColumnPosition = bunkerPositions[i];
 
-      const topToBottomArray = range(currentColumnPosition.top.y, currentColumnPosition.bottom.y);
+      const topToBottomArray = range(
+        currentColumnPosition.top.y,
+        currentColumnPosition.bottom.y,
+      );
       for (const i in topToBottomArray) {
         if (Object.prototype.hasOwnProperty.call(topToBottomArray, i)) {
           const posY = topToBottomArray[i];
-          if (terrain.get(currentColumnPosition.top.x, posY) === TERRAIN_MASK_WALL) wrongTerrainIsNotFound = false;
-          if (currentColumnPosition.top.x <= 5 || currentColumnPosition.top.x >= 45) wrongTerrainIsNotFound = false;
+          if (
+            terrain.get(currentColumnPosition.top.x, posY) === TERRAIN_MASK_WALL
+          ) {
+            wrongTerrainIsNotFound = false;
+          }
+          if (
+            currentColumnPosition.top.x <= 5 ||
+            currentColumnPosition.top.x >= 45
+          ) {
+            wrongTerrainIsNotFound = false;
+          }
           if (posY <= 5 || posY >= 45) wrongTerrainIsNotFound = false;
         }
       }
@@ -96,7 +148,10 @@ const getBaseLayoutType = (room) => {
   const terrain = new Room.Terrain(room.name);
 
   // Check if there is already a spawn
-  if (flagMemory.commonMemory.headSpawnId !== undefined && flagMemory.roomPlanner.base.type === undefined) {
+  if (
+    flagMemory.commonMemory.headSpawnId !== undefined &&
+    flagMemory.roomPlanner.base.type === undefined
+  ) {
     // Make a base based on current already placed layout
     const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
     if (headSpawn === null) return;
@@ -106,8 +161,9 @@ const getBaseLayoutType = (room) => {
     midPos.x += 1;
     midPos.y -= 1;
 
-    if (doesBunkerFitAtPosition(terrain, midPos)) flagMemory.roomPlanner.base.type = 'bunker';
-    else flagMemory.roomPlanner.base.type = 'generated';
+    if (doesBunkerFitAtPosition(terrain, midPos)) {
+      flagMemory.roomPlanner.base.type = 'bunker';
+    } else flagMemory.roomPlanner.base.type = 'generated';
   } else {
     let foundPlaceForBunker = false;
     for (let x = 5; x < 45 && !foundPlaceForBunker; x++) {
@@ -141,18 +197,18 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
   // Acces flagMemory
   const flagMemory = Memory.flags[room.name];
   let midPos;
+
   if (flagMemory.commonMemory.headSpawnId) {
     const headSpawn = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
     if (headSpawn === null) return;
 
     // Get middle position of bunker
-    midPos = headSpawn.pos;
-    midPos.x += 1;
-    midPos.y -= 1;
-  } else if (flagMemory.roomPlanner.base.midPos) midPos = flagMemory.roomPlanner.base.midPos;
-
+    // midPos = {x: headSpawn.pos.x+1, y: headSpawn.pos.y-1};
+    midPos = {x: headSpawn.pos.x, y: headSpawn.pos.y};
+  } else if (flagMemory.roomPlanner.base.midPos) {
+    midPos = flagMemory.roomPlanner.base.midPos;
+  }
   if (midPos === undefined) return;
-
 
   // * Create bunker array //
   const bunker = [
@@ -684,10 +740,10 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
 // #endregion
 
 // #region GetBestFreeSpot
-const getBestFreeSpot = (room, startPos, structureType = STRUCTURE_LINK) => {
+const getBestFreeSpot = (room, startPos, structureType = STRUCTURE_LINK, inputRange = 0) => {
   const terrain = new Room.Terrain(room.name);
   // Get range based on structure type (container is 1, link is 2)
-  const range = structureType === STRUCTURE_LINK ? 2 : 1;
+  const range = (inputRange > 0) ? (inputRange) : ((structureType === STRUCTURE_LINK) ? (2) : (1));
 
   // getAllPositions function
   // Returns a position array based on inputPosition and inputRange
@@ -876,7 +932,17 @@ const createConstructionSite = (
     structureName,
   );
 
-  const placedConstructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, position.x, position.y);
+  const placedConstructionSite = room.lookForAt(
+    LOOK_CONSTRUCTION_SITES,
+    position.x,
+    position.y,
+  );
+  const foundStructures = room.lookForAt(
+    LOOK_STRUCTURES,
+    position.x,
+    position.y,
+    {filter: (s) => s.structureType === structureType},
+  );
   // const flagMemory = Memory.flags[room.name];
 
   // Switch based on return value of createConstructionSite
@@ -890,7 +956,11 @@ const createConstructionSite = (
     // }
     break;
   default:
-    if (placedConstructionSite[0] !== undefined && placedConstructionSite[0].structureType === structureType) {
+    if (
+      (placedConstructionSite[0] !== undefined &&
+          placedConstructionSite[0].structureType === structureType) ||
+        foundStructures[0] !== undefined
+    ) {
       // Target structureType was found so set construction site to OK (good)
       constructionSite = OK;
     }
@@ -903,7 +973,7 @@ const createConstructionSite = (
 // #endregion
 // #region StructureExist
 const structureExist = (room, pos, structureType) => {
-  const structures = room.lookForAt(LOOK_STRUCTURES, pos);
+  const structures = room.lookForAt(LOOK_STRUCTURES, pos.x, pos.y);
   for (const structure of structures) {
     if (structure.structureType === structureType) {
       return [true, structure.id];
@@ -924,7 +994,9 @@ const basePlanner = (room) => {
   if (flagMemory.commonMemory.constructionSites.length > 0) return;
 
   if (!flagMemory.roomPlanner.base.type) getBaseLayoutType(room);
-  else getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
+  if (flagMemory.roomPlanner.base.type) {
+    getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
+  }
 };
 // #endregion
 
@@ -945,22 +1017,36 @@ const roomPlanner = (room) => {
 
     if (flagMemory.commonMemory.sources.length === 0) break;
     // Is 7 (3 links needed) and 6 otherwise (2 links needed)
-    if (room.controller.level >= 5+flagMemory.commonMemory.sources.length) {
+    if (room.controller.level >= 5 + flagMemory.commonMemory.sources.length) {
       structureType = STRUCTURE_LINK;
     }
 
     // Check if room already has this source planned
-    if (flagMemory.roomPlanner.room.sources[i] && flagMemory.roomPlanner.room.sources[i].structureType === structureType) return;
+    if (
+      flagMemory.roomPlanner.room.sources[i] &&
+      flagMemory.roomPlanner.room.sources[i].structureType === structureType && Game.getObjectById(flagMemory.roomPlanner.room.sources[i].id) !== null
+    ) {
+      return;
+    }
 
     const source = flagMemory.commonMemory.sources[i];
-    if (flagMemory.roomPlanner.room.sources[i] !== undefined) {
+    if (flagMemory.roomPlanner.room.sources[i] !== undefined && flagMemory.roomPlanner.room.sources[i].structureType !== structureType) {
       const bestSource = flagMemory.roomPlanner.room.sources[i];
-      const structureExistResult = structureExist(room, bestSource.pos, structureType);
+      const structureExistResult = structureExist(
+        room,
+        bestSource.pos,
+        structureType,
+      );
       if (structureExistResult[0]) {
         const structureObject = Game.getObjectById(structureExistResult[1]);
         structureObject.destroy();
+        flagMemory.roomPlanner.room.sources[i].id = undefined;
       } else {
-        const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSource.pos.x, bestSource.pos.y);
+        const constructionSite = room.lookForAt(
+          LOOK_CONSTRUCTION_SITES,
+          bestSource.pos.x,
+          bestSource.pos.y,
+        );
         if (constructionSite.length > 0) {
           break;
         }
@@ -982,28 +1068,38 @@ const roomPlanner = (room) => {
 
     // Set best position to room planner memory for this source
     bestSourcePosition.structureType = structureType;
-    bestSourcePosition.spotsAround = room.lookForAtArea(LOOK_TERRAIN, source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true).filter((t) => t.terrain !== 'wall').length;
+    bestSourcePosition.spotsAround = room
+      .lookForAtArea(
+        LOOK_TERRAIN,
+        source.pos.y - 1,
+        source.pos.x - 1,
+        source.pos.y + 1,
+        source.pos.x + 1,
+        true,
+      )
+      .filter((t) => t.terrain !== 'wall').length;
+    bestSourcePosition.id = '';
     if (bestSourcePosition !== null) {
       flagMemory.roomPlanner.room.sources[i] = bestSourcePosition;
     } else break;
 
-    // * Handle visual to show target //
-    // If visual is already in memory, return
-    if (
-      flagMemory.visuals.objects.sources[i] === true ||
-      !config.rooms.visuals.structures
-    ) {
-      const sourceVisualString = room.visual.circle(bestSourcePosition.pos, {
-        fill: 'transparent',
-        radius: 0.55,
-        stroke: 'red',
-      });
-      if (Object.keys(sourceVisualString).length > 0) {
-        // Update visual string in flagMemory //
-        flagMemory.visuals.string = room.visual.export();
-        flagMemory.visuals.objects.sources[i] = true;
-      }
-    }
+    // // * Handle visual to show target //
+    // // If visual is already in memory, return
+    // if (
+    //   flagMemory.visuals.objects.sources[i] === true ||
+    //   !config.rooms.visuals.structures
+    // ) {
+    //   const sourceVisualString = room.visual.circle(bestSourcePosition.pos, {
+    //     fill: 'transparent',
+    //     radius: 0.55,
+    //     stroke: 'red',
+    //   });
+    //   if (Object.keys(sourceVisualString).length > 0) {
+    //     // Update visual string in flagMemory //
+    //     flagMemory.visuals.string = room.visual.export();
+    //     flagMemory.visuals.objects.sources[i] = true;
+    //   }
+    // }
   }
   // #endregion
 
@@ -1012,24 +1108,38 @@ const roomPlanner = (room) => {
   // Default is container
   let structureType = STRUCTURE_CONTAINER;
 
-
   // Is 7 (3 links needed) and 6 otherwise (2 links needed)
   if (room.controller.level >= 6) {
     structureType = STRUCTURE_LINK;
   }
 
   // Check if room already has the controller planned
-  if ((flagMemory.roomPlanner.room.controller && flagMemory.roomPlanner.room.controller.structureType === structureType) || (room.controller && !room.controller.my)) return;
+  if (
+    (flagMemory.roomPlanner.room.controller &&
+      flagMemory.roomPlanner.room.controller.structureType === structureType && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null) ||
+    (room.controller && !room.controller.my)
+  ) {
+    return;
+  }
 
   const controller = room.controller;
-  if (flagMemory.roomPlanner.room.controller !== undefined) {
+  if (flagMemory.roomPlanner.room.controller !== undefined && flagMemory.roomPlanner.room.controller.structureType !== structureType) {
     const bestControllerPosition = flagMemory.roomPlanner.room.controller;
-    const structureExistResult = structureExist(room, bestControllerPosition.pos, structureType);
+    const structureExistResult = structureExist(
+      room,
+      bestControllerPosition.pos,
+      structureType,
+    );
     if (structureExistResult[0]) {
       const structureObject = Game.getObjectById(structureExistResult[1]);
       structureObject.destroy();
+      flagMemory.commonMemory.controllerStorage.id = undefined;
     } else {
-      const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestControllerPosition.pos.x, bestControllerPosition.pos.y);
+      const constructionSite = room.lookForAt(
+        LOOK_CONSTRUCTION_SITES,
+        bestControllerPosition.pos.x,
+        bestControllerPosition.pos.y,
+      );
       if (constructionSite.length > 0) {
         return;
       }
@@ -1039,7 +1149,7 @@ const roomPlanner = (room) => {
   const bestControllerPosition = getBestFreeSpot(
     room,
     controller.pos,
-    structureType,
+    structureType, 2,
   );
   // Check if best position is found, otherwise return
   if (bestControllerPosition === undefined) return;
@@ -1050,6 +1160,7 @@ const roomPlanner = (room) => {
     bestControllerPosition.pos,
     structureType,
   );
+
   // Check if structure is successfully constructed
   if (returnConstruction !== OK) return;
 
@@ -1068,15 +1179,15 @@ const roomPlanner = (room) => {
     return;
   }
 
-  const controllerVisualString = room.visual.circle(
-    bestControllerPosition.pos,
-    {fill: 'transparent', radius: 0.55, stroke: 'red'},
-  );
-  if (Object.keys(controllerVisualString).length > 0) {
-    // Update visual string in flagMemory //
-    flagMemory.visuals.string = room.visual.export();
-    flagMemory.visuals.objects.controller = true;
-  }
+  // const controllerVisualString = room.visual.circle(
+  //   bestControllerPosition.pos,
+  //   {fill: 'transparent', radius: 0.55, stroke: 'red'},
+  // );
+  // if (Object.keys(controllerVisualString).length > 0) {
+  //   // Update visual string in flagMemory //
+  //   flagMemory.visuals.string = room.visual.export();
+  //   flagMemory.visuals.objects.controller = true;
+  // }
   // #endregion
 };
 // #endregion

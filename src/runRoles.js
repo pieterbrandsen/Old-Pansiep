@@ -2,12 +2,12 @@
 const isInTargetRoom = (creep, currentRoom, targetRoom) => {
   // Check if current room is target room, return true if not false
   if (currentRoom === targetRoom) return true;
-  else moveToRoom(creep, targetRoom);
+  else return moveToRoom(creep, targetRoom);
 };
 
 const moveToRoom = (creep, targetRoom) => {
   // Define the way how the creep is going to this room
-  let travelWay = 'travelTo';
+  let travelWay = 'unknown';
   const targetRoomFlag = Game.flags[targetRoom];
 
   if (targetRoomFlag) travelWay = 'flag';
@@ -18,6 +18,11 @@ const moveToRoom = (creep, targetRoom) => {
   default:
     creep.travelTo(new RoomPosition(25, 25, targetRoom));
     break;
+  }
+
+  // Return true if creep is in targetRoom after moving
+  if (creep.room.name === targetRoom) {
+    return true;
   }
 };
 // #endregion
@@ -45,6 +50,8 @@ const pioneer = (creep) => {
     // Delete targetId and miniJob
     delete creep.memory.targetId;
     delete creep.memory.miniJob;
+    delete creep.memory.sourceId;
+    delete creep.memory.sourceNumber;
 
     // Switch to one of the jobs that drains energy
     if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
@@ -57,7 +64,7 @@ const pioneer = (creep) => {
       creep.memory.job = 'transfer';
     } else if (
       flagMemory.commonMemory.controllerStorage.usable < 1500 &&
-        flagMemory.commonMemory.controllerStorage.structureType ===
+        flagMemory.commonMemory.controllerStorage.type ===
           STRUCTURE_CONTAINER
     ) {
       creep.memory.job = 'transfer';
@@ -73,6 +80,8 @@ const pioneer = (creep) => {
     // Delete targetId and sourceId
     delete creep.memory.targetId;
     delete creep.memory.sourceId;
+    delete creep.memory.sourceNumber;
+    delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable > 1500) {
@@ -105,6 +114,7 @@ const harvester = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    creep.memory.miniJob = 'harvest';
 
     // Switch to one of the jobs that drains energy
     creep.memory.job = 'transfer';
@@ -137,6 +147,7 @@ const transferer = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Check if creep needs to move to another room
     if (!isInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
@@ -149,6 +160,7 @@ const transferer = (creep, roleName) => {
   case 'empty':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Check if creep needs to move to another room
     if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
@@ -196,7 +208,7 @@ const upgrader = (creep, roleName) => {
     // Switch to one of the roles that gets energy
     if (
       flagMemory.commonMemory.usable >= 10 * 1000 ||
-        flagMemory.commonMemory.controllerStorage.usable >= 1500
+        (flagMemory.commonMemory.controllerStorage.usable >= 250 && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null)
     ) {
       creep.memory.job = 'withdraw';
     } else {
@@ -230,13 +242,16 @@ const repairer = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the jobs that drains energy
-    creep.memory.job = 'repair';
+    if (flagMemory.repair.targets.length > 0) creep.memory.job = 'repair';
+    else creep.memory.job = 'upgrade';
     break;
   case 'empty':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable >= 2000) {
@@ -272,13 +287,16 @@ const builder = (creep, roleName) => {
   case 'full':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the jobs that drains energy
-    creep.memory.job = 'build';
+    if (flagMemory.commonMemory.constructionSites.length > 0) creep.memory.job = 'build';
+    else creep.memory.job = 'upgrade';
     break;
   case 'empty':
     // Delete targetId
     delete creep.memory.targetId;
+    delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
     if (flagMemory.commonMemory.usable >= 2000) {
@@ -323,19 +341,7 @@ const claimer = (creep, roleName) => {
     return;
   }
 
-  const result = creepModule.execute(creep);
-  // TODO LOGIC FOR CLAIMER
-  switch (result) {
-  case OK:
-    // Switch to one of the jobs that drains energy
-    creep.memory.job = 'claim';
-    break;
-  case ERR_GCL_NOT_ENOUGH:
-    creep.memory.job = 'claim';
-    break;
-  default:
-    break;
-  }
+  creepModule.execute(creep);
 };
 
 module.exports = {

@@ -40,7 +40,7 @@ async function followLog(rooms, logConsole, statusUpdater, restrictToRoom) {
       port: port,
       path: '/',
     });
-
+    
     await api.auth();
 
     api.socket.connect();
@@ -53,7 +53,7 @@ async function followLog(rooms, logConsole, statusUpdater, restrictToRoom) {
 module.exports.followLog = followLog;
 
 /**
- * sets password for TooAngel user
+ * sets password for Pansiep user
  *
  * @param {string} line
  * @param {object} socket
@@ -176,7 +176,7 @@ const logConsole = function(room) {
 module.exports.logConsole = logConsole;
 
 /**
- * spawns TooAngel Bot
+ * spawns Pansiep Bot
  *
  * @param {string} line
  * @param {object} socket
