@@ -9,6 +9,8 @@ require('./config');
 // #region Global variables
 let roleCountByRoomByRole = {};
 roleCountByRoomByRole = {1: 1};
+let cpuUsedByRoomByRole = {};
+cpuUsedByRoomByRole = {1: 1};
 // #endregion
 
 // #region Functions
@@ -35,6 +37,7 @@ function getRandomFreePos(startPos, distance) {
 // #region Global handler
 const globalHandler = () => {
   roleCountByRoomByRole = {};
+  cpuUsedByRoomByRole = {};
 
   if (!Memory.isFilled) memoryHandler('global');
   else {
@@ -103,6 +106,9 @@ const ownedRoomHandler = (room) => {
     Memory.flags[room.name] = {};
     memoryHandler('ownedRoom', {room: room});
   } else {
+    // Get used cpu
+    const cpuUsed = Game.cpu.getUsed();
+
     // Run room visuals for ownedRooms  //
     roomVisualHandler(room);
 
@@ -113,7 +119,7 @@ const ownedRoomHandler = (room) => {
     towerHandler(room);
 
     // Run all stats collector for ownedRooms //
-    statsHandler('ownedRoom', {room: room});
+    statsHandler('ownedRoom', {room: room, cpu: cpuUsed - Game.cpu.getUsed()});
   }
 };
 // #endregion
@@ -139,17 +145,26 @@ const remoteRoomHandler = (room) => {
     Memory.flags[room.name] = {};
     memoryHandler('remoteRoom', {room: room});
   } else {
+    // Get used cpu
+    const cpuUsed = Game.cpu.getUsed();
+
     // Run room visuals for remoteRoom  //
     roomVisualHandler(room);
 
     // Run all timers for remoteRoom //
     timersHandler('remoteRoom', {room: room});
+
+    // Run all stats collector for ownedRooms //
+    statsHandler('remoteRoom', {room: room, cpu: Game.cpu.getUsed()- cpuUsed});
   }
 };
 // #endregion
 
 // #region Creep handler
 const creepHandler = () => {
+  // Get used cpu
+  const cpuUsed = Game.cpu.getUsed();
+
   _.forEach(Object.keys(Memory.creeps), (creepName) => {
     // Acces Creep object
     const creep = Game.creeps[creepName];
@@ -169,6 +184,10 @@ const creepHandler = () => {
       // If flagMemory is not yet ready, return
       if (flagMemory && !flagMemory.isFilled) return;
 
+      // * Set the cpu used for this creep to the memory
+      // Get used cpu
+      const cpuUsed = Game.cpu.getUsed();
+
       // Run the role for the creep
       roleHandler(creep, creepRoleName);
 
@@ -180,8 +199,20 @@ const creepHandler = () => {
         roleCountByRoomByRole[creep.room.name][creepMemory.role] = 0;
       }
       roleCountByRoomByRole[creep.room.name][creepMemory.role]++;
+
+      // Cpu setter //
+      if (!cpuUsedByRoomByRole[creep.room.name]) {
+        cpuUsedByRoomByRole[creep.room.name] = {};
+      }
+      if (!cpuUsedByRoomByRole[creep.room.name][creepMemory.role]) {
+        cpuUsedByRoomByRole[creep.room.name][creepMemory.role] = 0;
+      }
+      cpuUsedByRoomByRole[creep.room.name][creepMemory.role]+= Game.cpu.getUsed() - cpuUsed;
     }
   });
+
+  // Set the cpu used for this module to the memory
+  Memory.stats[Game.shard.name].cpu.modules['creeps'] = Game.cpu.getUsed() - cpuUsed;
 };
 // #endregion
 
@@ -195,6 +226,9 @@ const roleHandler = (creep, roleName) => {
 
 // #region Memory handler
 const memoryHandler = (goal, data) => {
+  // Get used cpu
+  const cpuUsed = Game.cpu.getUsed();
+
   // #region Global memory
   // Get a object back with all the universal memory for a owned and remote room //
   const globalMemory = () => {
@@ -205,11 +239,12 @@ const memoryHandler = (goal, data) => {
       // Init undefined memory
       if (!Memory.creeps) Memory.creeps = {};
       if (!Memory.flags) Memory.flags = {};
-      if (!Memory.stats) {
-        Memory.stats = {
+      if (!Memory.stats) Memory.stats = {};
+      if (!Memory.stats[Game.shard.name]) {
+        Memory.stats[Game.shard.name] = {
           gcl: {},
           rooms: {},
-          cpu: {},
+          cpu: {modules: {}},
         };
       }
 
@@ -240,6 +275,14 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
+      if (!Memory.stats[Game.shard.name].rooms[room.name]) {
+        Memory.stats[Game.shard.name].rooms[room.name] = {
+          energyStored: {},
+          commonMemory: {},
+          cpu: {modules: {}},
+        };
+      }
+
       if (!flagMemory.commonMemory) {
         flagMemory.commonMemory = {
           sourceCount: room.find(FIND_SOURCES).length,
@@ -295,14 +338,8 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
-      if (!Memory.stats.rooms[room.name]) {
-        Memory.stats.rooms[room.name] = {
-          controller: {},
-          spawnerEnergy: {},
-          energyStored: {},
-          commonMemory: {},
-        };
-      }
+      if (!Memory.stats[Game.shard.name].rooms[room.name].spawnerEnergy) Memory.stats[Game.shard.name].rooms[room.name].spawnerEnergy = {};
+      if (!Memory.stats[Game.shard.name].rooms[room.name].controller) Memory.stats[Game.shard.name].rooms[room.name].controller = {};
 
       if (!flagMemory.commonMemory.controllerLevel) flagMemory.commonMemory.controllerLevel = 1;
       if (!flagMemory.roomPlanner.base) flagMemory.roomPlanner.base = {};
@@ -363,13 +400,22 @@ const memoryHandler = (goal, data) => {
   // Switch between te possible goals and get the memory for that goal //
   switch (goal) {
   case 'global':
+  // Set the cpu used for this module to the memory
+    Memory.stats[Game.shard.name].cpu.modules['memory'] = Game.cpu.getUsed() - cpuUsed;
+
     globalMemory();
     break;
   case 'ownedRoom':
+  // Set the cpu used for this module to the memory
+    Memory.stats[Game.shard.name].rooms[data.room.name].cpu.modules['memory'] = Game.cpu.getUsed() - cpuUsed;
+
     globalRoomMemory(data.room);
     ownedRoomMemory(data.room);
     break;
   case 'remoteRoom':
+  // Set the cpu used for this module to the memory
+    Memory.stats[Game.shard.name].rooms[data.room.name].cpu.modules['memory'] = Game.cpu.getUsed() - cpuUsed;
+
     globalRoomMemory(data.room);
     remoteRoomMemory(data.room);
     break;
@@ -383,6 +429,9 @@ const memoryHandler = (goal, data) => {
 
 // #region Timers handler
 const timersHandler = (goal, data) => {
+  // Get used cpu
+  const cpuUsed = Game.cpu.getUsed();
+
   // #region Global timers
   // Get a object back with all the universal timers for a owned and remote room //
   const globalTimers = () => {
@@ -812,13 +861,22 @@ const timersHandler = (goal, data) => {
   // Switch between te possible goals and get the timers for that goal //
   switch (goal) {
   case 'global':
+  // Set the cpu used for this module to the memory
+    Memory.stats[Game.shard.name].cpu.modules['timers'] = Game.cpu.getUsed() - cpuUsed;
+
     globalTimers();
     break;
   case 'ownedRoom':
+  // Set the cpu used for this module to the memory
+    Memory.stats[Game.shard.name].rooms[data.room.name].cpu.modules['timers'] = Game.cpu.getUsed() - cpuUsed;
+
     globalRoomTimers(data.room);
     ownedRoomTimers(data.room);
     break;
   case 'remoteRoom':
+  // Set the cpu used for this module to the memory
+    Memory.stats[Game.shard.name].rooms[data.room.name].cpu.modules['timers'] = Game.cpu.getUsed() - cpuUsed;
+
     globalRoomTimers(data.room);
     remoteRoomTimers(data.room);
     break;
@@ -831,6 +889,9 @@ const timersHandler = (goal, data) => {
 
 // #region Tower handler
 const towerHandler = (room) => {
+  // Get used cpu
+  const cpuUsed = Game.cpu.getUsed();
+
   // Get flag memory for room
   const flagMemory = Memory.flags[room.name];
 
@@ -882,11 +943,17 @@ const towerHandler = (room) => {
       tower.repair(firstRepairTarget);
     });
   }
+
+  // Set the cpu used for this module to the memory
+  Memory.stats[Game.shard.name].rooms[room.name].cpu.modules['towers'] = Game.cpu.getUsed() - cpuUsed;
 };
 // #endregion
 
 // #region Link handler
 const linkHandler = (room) => {
+  // Get used cpu
+  const cpuUsed = Game.cpu.getUsed();
+
   // Get flag memory for room
   const flagMemory = Memory.flags[room.name];
 
@@ -924,15 +991,25 @@ const linkHandler = (room) => {
     // Send energy from head link to controller link
     sendEnergy(head, controller);
   }
+
+  // Set the cpu used for this module to the memory
+  Memory.stats[Game.shard.name].rooms[room.name].cpu.modules['links'] = Game.cpu.getUsed() - cpuUsed;
 };
 // #endregion
 
 // #region Room visuals handler
 const roomVisualHandler = (room) => {
+  // Get used cpu
+  const cpuUsed = Game.cpu.getUsed();
+
+  // Get flag memory for room
   const flagMemory = Memory.flags[room.name];
   if (flagMemory !== undefined && room.visuals !== undefined) {
     room.visual.import(flagMemory.visuals.string);
   }
+
+  // Set the cpu used for this module to the memory
+  Memory.stats[Game.shard.name].rooms[room.name].cpu.modules['visuals'] = Game.cpu.getUsed() - cpuUsed;
 };
 // #endregion
 
@@ -942,7 +1019,7 @@ const statsHandler = (goal, data) => {
   // Get a object back with all the universal timers for a owned and remote room //
   const globalStats = () => {
     // Define stats memory link
-    const statsMemory = Memory.stats;
+    const statsMemory = Memory.stats[Game.shard.name];
 
     // Set all gcl related memory
     const gclMemory = statsMemory['gcl'];
@@ -965,21 +1042,21 @@ const statsHandler = (goal, data) => {
   // #region Room timers
   // #region Global room timers
   const globalRoomStats = (room) => {
-    // // Create a acces point to the flagMemory //
-    // const flagMemory = Memory.flags[room.name];
-  };
-  // #endregion
-
-  // #region Owned room timers
-  const ownedRoomStats = (room) => {
     // Define stats memory link
-    const statsMemory = Memory.stats;
+    const statsMemory = Memory.stats[Game.shard.name];
 
     if (typeof statsMemory.rooms === 'object') {
       // Get room stats from memory
       const roomStats = statsMemory.rooms[room.name];
       // Create a acces point to the flagMemory //
       const flagMemory = Memory.flags[room.name];
+
+      // Set all commonMemory related memory
+      const commonMemory = roomStats['commonMemory'];
+      if (typeof commonMemory === 'object') {
+        commonMemory.constructionSitesCount = flagMemory.commonMemory.constructionSites.length;
+        commonMemory.creepCountByRole = roleCountByRoomByRole[room.name];
+      }
 
       // Set all energy stored related memory
       const energyMemory = roomStats['energyStored'];
@@ -993,6 +1070,27 @@ const statsHandler = (goal, data) => {
         energyMemory.capacity = flagMemory.commonMemory.energyStored.capacity;
         energyMemory.total = flagMemory.commonMemory.energyStored.usable;
       }
+
+      // Set all cpu related memory
+      const cpuMemory = roomStats['cpu'];
+      if (typeof cpuMemory === 'object') {
+        cpuMemory.used = data.cpu;
+        cpuMemory.modules['creeps'] = cpuUsedByRoomByRole[room.name];
+      }
+    }
+  };
+  // #endregion
+
+  // #region Owned room timers
+  const ownedRoomStats = (room) => {
+    // Define stats memory link
+    const statsMemory = Memory.stats[Game.shard.name];
+
+    if (typeof statsMemory.rooms === 'object') {
+      // Get room stats from memory
+      const roomStats = statsMemory.rooms[room.name];
+      // // Create a acces point to the flagMemory //
+      // const flagMemory = Memory.flags[room.name];
 
       // Set all spawner energy related memory
       const spawnerEnergy = roomStats['spawnerEnergy'];
@@ -1008,12 +1106,6 @@ const statsHandler = (goal, data) => {
         controller.progress = room.controller.progress;
         controller.progressTotal = room.controller.progressTotal;
       }
-
-      // Set all commonMemory related memory
-      const commonMemory = roomStats['commonMemory'];
-      if (typeof commonMemory === 'object') {
-        commonMemory.constructionSitesCount = flagMemory.commonMemory.constructionSitesCount.length;
-      }
     }
   };
   // #endregion
@@ -1024,21 +1116,23 @@ const statsHandler = (goal, data) => {
   // #endregion
 
   // Switch between te possible goals and get the timers for that goal //
-  switch (goal) {
-  case 'global':
-    globalStats();
-    break;
-  case 'ownedRoom':
-    globalRoomStats(data.room);
-    ownedRoomStats(data.room);
-    break;
-  case 'remoteRoom':
-    globalRoomStats(data.room);
-    remoteRoomStats(data.room);
-    break;
-  default:
-    Game.notify(`Unknown goal: ${goal}, check StatsHandler.`);
-    break;
+  if (typeof Memory.stats === 'object' && typeof Memory.stats[Game.shard.name] === 'object') {
+    switch (goal) {
+    case 'global':
+      globalStats();
+      break;
+    case 'ownedRoom':
+      globalRoomStats(data.room);
+      ownedRoomStats(data.room);
+      break;
+    case 'remoteRoom':
+      globalRoomStats(data.room);
+      remoteRoomStats(data.room);
+      break;
+    default:
+      Game.notify(`Unknown goal: ${goal}, check StatsHandler.`);
+      break;
+    }
   }
 };
 // #endregion
