@@ -140,7 +140,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (
         targetFlagMemory === undefined ||
-          targetFlagMemory.commonMemory.energyStorages.usable < 1000
+          targetFlagMemory.commonMemory.energyStored.usable < 1000
       ) {
         break;
       }
@@ -157,7 +157,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
         else result = true;
       } else {
         // Check if input role is less then max creeps allowed //
-        if (roleCount[role] >= config.creepsCountMax[shortRoleName] && targetFlagMemory.commonMemory.constructionSites.length === 0) break;
+        if ((roleCount[role] >= config.creepsCountMax[shortRoleName] || flagMemory.commonMemory.controllerStorage.usable >= 1500) && targetFlagMemory.commonMemory.constructionSites.length === 0) break;
         else if (roleCount[role] >= config.creepsCountMax[shortRoleName]/2 && targetFlagMemory.commonMemory.constructionSites.length > 0) break;
       }
 
@@ -200,7 +200,7 @@ const spawnCreep = (room, roomType, data, roleCount) => {
 
       if (
         targetFlagMemory === undefined ||
-          targetFlagMemory.commonMemory.energyStorages.usable < 1500
+          targetFlagMemory.commonMemory.energyStored.usable < 1500
       ) {
         break;
       }

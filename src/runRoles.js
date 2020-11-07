@@ -57,9 +57,9 @@ const pioneer = (creep) => {
     if (flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
       creep.memory.job = 'transfer';
     } else if (
-      flagMemory.commonMemory.energyStorages.capacity > 10000 &&
-        flagMemory.commonMemory.energyStorages.capacity / 10 >
-          flagMemory.commonMemory.energyStorages.usable
+      flagMemory.commonMemory.energyStored.capacity > 10000 &&
+        flagMemory.commonMemory.energyStored.capacity / 10 >
+          flagMemory.commonMemory.energyStored.usable
     ) {
       creep.memory.job = 'transfer';
     } else if (

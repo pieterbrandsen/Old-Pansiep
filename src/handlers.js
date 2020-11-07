@@ -49,6 +49,10 @@ const globalHandler = () => {
     // Timers handler //
     // Handles all game timers and runs their code
     timersHandler('global');
+
+    // Stats handler //
+    // Handles all stats related memory
+    statsHandler('global');
   }
 };
 // #endregion
@@ -107,6 +111,9 @@ const ownedRoomHandler = (room) => {
 
     // Run all towers for ownedRooms //
     towerHandler(room);
+
+    // Run all stats collector for ownedRooms //
+    statsHandler('ownedRoom', {room: room});
   }
 };
 // #endregion
@@ -198,7 +205,13 @@ const memoryHandler = (goal, data) => {
       // Init undefined memory
       if (!Memory.creeps) Memory.creeps = {};
       if (!Memory.flags) Memory.flags = {};
-      if (!Memory.stats) Memory.stats = {};
+      if (!Memory.stats) {
+        Memory.stats = {
+          gcl: {},
+          rooms: {},
+          cpu: {},
+        };
+      }
 
       // Check if current memory size is the same as last loop
       if (memoryLength === Object.keys(Memory).length) {
@@ -282,9 +295,16 @@ const memoryHandler = (goal, data) => {
     let endLoop = false;
     while (!endLoop) {
       // Init undefined memory
-      if (!flagMemory.commonMemory.controllerLevel) {
-        flagMemory.commonMemory.controllerLevel = 1;
+      if (!Memory.stats.rooms[room.name]) {
+        Memory.stats.rooms[room.name] = {
+          controller: {},
+          spawnerEnergy: {},
+          energyStored: {},
+          commonMemory: {},
+        };
       }
+
+      if (!flagMemory.commonMemory.controllerLevel) flagMemory.commonMemory.controllerLevel = 1;
       if (!flagMemory.roomPlanner.base) flagMemory.roomPlanner.base = {};
       if (!flagMemory.commonMemory.headSpawnId) {
         flagMemory.commonMemory.headSpawnId = room.terminal ?
@@ -301,23 +321,11 @@ const memoryHandler = (goal, data) => {
               })[0].id :
               null;
       }
-      if (!flagMemory.remotes) {
-        flagMemory.remotes = {totalSourceCount: 0, rooms: []};
-      }
-      if (!flagMemory.commonMemory.spawnEnergyStructures) {
-        flagMemory.commonMemory.spawnEnergyStructures = [];
-      }
-      if (!flagMemory.commonMemory.energyStorages) {
-        flagMemory.commonMemory.energyStorages = {usable: 0, capacity: 0};
-      }
-      if (!flagMemory.commonMemory.controllerStorage) {
-        flagMemory.commonMemory.controllerStorage = {
-          usable: 0,
-        };
-      }
-      if (!flagMemory.commonMemory.links) {
-        flagMemory.commonMemory.links = {source0: '', source1: '', head: '', controller: ''};
-      }
+      if (!flagMemory.remotes) flagMemory.remotes = {totalSourceCount: 0, rooms: []};
+      if (!flagMemory.commonMemory.spawnEnergyStructures) flagMemory.commonMemory.spawnEnergyStructures = [];
+      if (!flagMemory.commonMemory.energyStored) flagMemory.commonMemory.energyStored = {usable: 0, capacity: 0};
+      if (!flagMemory.commonMemory.controllerStorage) flagMemory.commonMemory.controllerStorage = {usable: 0};
+      if (!flagMemory.commonMemory.links) flagMemory.commonMemory.links = {source0: '', source1: '', head: '', controller: ''};
 
       timersHandler('ownedRoom', {room: room});
 
@@ -438,8 +446,8 @@ const timersHandler = (goal, data) => {
         }
       });
 
-      flagMemory.commonMemory.energyStorages.usable = energyUsable;
-      flagMemory.commonMemory.energyStorages.capacity = energyCapacity;
+      flagMemory.commonMemory.energyStored.usable = energyUsable;
+      flagMemory.commonMemory.energyStored.capacity = energyCapacity;
     }
 
     // Get all construction sites each ... ticks //
@@ -924,6 +932,113 @@ const roomVisualHandler = (room) => {
   const flagMemory = Memory.flags[room.name];
   if (flagMemory !== undefined && room.visuals !== undefined) {
     room.visual.import(flagMemory.visuals.string);
+  }
+};
+// #endregion
+
+// #region Stats handler
+const statsHandler = (goal, data) => {
+  // #region Global timers
+  // Get a object back with all the universal timers for a owned and remote room //
+  const globalStats = () => {
+    // Define stats memory link
+    const statsMemory = Memory.stats;
+
+    // Set all gcl related memory
+    const gclMemory = statsMemory['gcl'];
+    if (typeof gclMemory === 'object') {
+      gclMemory.level = Game.gcl.level;
+      gclMemory.progress = Game.gcl.progress;
+      gclMemory.progressTotal = Game.gcl.progressTotal;
+    }
+
+    // Set all cpu related memory
+    const cpuMemory = statsMemory['cpu'];
+    if (typeof cpuMemory === 'object') {
+      cpuMemory.bucket = Game.cpu.bucket;
+      cpuMemory.limit = Game.cpu.limit;
+      cpuMemory.used = Game.cpu.getUsed();
+    }
+  };
+  // #endregion
+
+  // #region Room timers
+  // #region Global room timers
+  const globalRoomStats = (room) => {
+    // // Create a acces point to the flagMemory //
+    // const flagMemory = Memory.flags[room.name];
+  };
+  // #endregion
+
+  // #region Owned room timers
+  const ownedRoomStats = (room) => {
+    // Define stats memory link
+    const statsMemory = Memory.stats;
+
+    if (typeof statsMemory.rooms === 'object') {
+      // Get room stats from memory
+      const roomStats = statsMemory.rooms[room.name];
+      // Create a acces point to the flagMemory //
+      const flagMemory = Memory.flags[room.name];
+
+      // Set all energy stored related memory
+      const energyMemory = roomStats['energyStored'];
+      if (typeof energyMemory === 'object') {
+        energyMemory.storage = room.storage ?
+          room.storage.store.getUsedCapacity(RESOURCE_ENERGY) :
+          0;
+        energyMemory.terminal = room.storage ?
+          room.storage.store.getUsedCapacity(RESOURCE_ENERGY) :
+          0;
+        energyMemory.capacity = flagMemory.commonMemory.energyStored.capacity;
+        energyMemory.total = flagMemory.commonMemory.energyStored.usable;
+      }
+
+      // Set all spawner energy related memory
+      const spawnerEnergy = roomStats['spawnerEnergy'];
+      if (typeof spawnerEnergy === 'object') {
+        spawnerEnergy.available = room.energyAvailable;
+        spawnerEnergy.capacityAvailable = room.energyCapacityAvailable;
+      }
+
+      // Set all controller related memory
+      const controller = roomStats['controller'];
+      if (typeof controller === 'object') {
+        controller.level = room.controller.level;
+        controller.progress = room.controller.progress;
+        controller.progressTotal = room.controller.progressTotal;
+      }
+
+      // Set all commonMemory related memory
+      const commonMemory = roomStats['commonMemory'];
+      if (typeof commonMemory === 'object') {
+        commonMemory.constructionSitesCount = flagMemory.commonMemory.constructionSitesCount.length;
+      }
+    }
+  };
+  // #endregion
+
+  // #region Remote room timers
+  const remoteRoomStats = (room) => {};
+  // #endregion
+  // #endregion
+
+  // Switch between te possible goals and get the timers for that goal //
+  switch (goal) {
+  case 'global':
+    globalStats();
+    break;
+  case 'ownedRoom':
+    globalRoomStats(data.room);
+    ownedRoomStats(data.room);
+    break;
+  case 'remoteRoom':
+    globalRoomStats(data.room);
+    remoteRoomStats(data.room);
+    break;
+  default:
+    Game.notify(`Unknown goal: ${goal}, check StatsHandler.`);
+    break;
   }
 };
 // #endregion

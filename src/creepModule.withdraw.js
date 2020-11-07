@@ -43,7 +43,7 @@ const normalJob = (creep) => {
 
   // If there is not enough to withdraw from, return empty to get another goal if possible
   if (
-    flagMemory.commonMemory.energyStorages.usable <= 500 &&
+    flagMemory.commonMemory.energyStored.usable <= 500 &&
     creep.memory.targetId === undefined
   ) {
     return 'empty';
@@ -57,7 +57,7 @@ const normalJob = (creep) => {
     flagMemory.commonMemory.energyStructures.forEach((structure) => {
       if (structure.id === highestEnergyStructure.id) {
         structure.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
-        flagMemory.commonMemory.energyStorages.usable -= creep.store.getFreeCapacity(
+        flagMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(
           RESOURCE_ENERGY,
         );
       }
