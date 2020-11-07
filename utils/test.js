@@ -110,6 +110,8 @@ class Tester {
           await sleep(5);
           console.log(`> system.resumeSimulation()`);
           socket.write(`system.resumeSimulation()\r\n`);
+          console.log(`> utils.setShardName("server")`);
+          socket.write(`utils.setShardName("server")\r\n`);
         }
         return;
       }
