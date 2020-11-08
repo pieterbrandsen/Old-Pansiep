@@ -131,17 +131,14 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     case 'transferer':
     case 'transfererLD':
       // Check if input role is less then max creeps allowed //
-      if (role === "transfererLD") {
+      if (role === 'transfererLD') {
         if (roleCount[role] >= targetFlagMemory.commonMemory.sources.length) break;
-      }
-      else {
+      } else {
         if ((room.controller.level >= 6 && room.links.length >= 3) || (room.controller.level >= 7 && room.links.length >= 4)) {
           if (roleCount[role] >= 1) break;
-        }
-        else {
+        } else {
           if (roleCount[role] >= config.creepsCountMax[shortRoleName] * targetFlagMemory.commonMemory.sources.length) break;
         }
-
       }
 
       // If energy is less then 300
@@ -167,8 +164,11 @@ const spawnCreep = (room, roomType, data, roleCount) => {
         if (roleCount[role] >= 1) break;
         else result = true;
       } else {
+        if (targetFlagMemory.commonMemory.energyStored.capacity > 10000 &&
+          targetFlagMemory.commonMemory.energyStored.capacity / 10 > targetFlagMemory.commonMemory.energyStored.usable) break;
+
         // Check if input role is less then max creeps allowed //
-        if ((roleCount[role] >= config.creepsCountMax[shortRoleName] || flagMemory.commonMemory.controllerStorage.usable < 1500) && targetFlagMemory.commonMemory.constructionSites.length === 0) break;
+        if ((roleCount[role] >= config.creepsCountMax[shortRoleName] && targetFlagMemory.commonMemory.controllerStorage.usable < 1500) && targetFlagMemory.commonMemory.constructionSites.length === 0) break;
         else if (roleCount[role] >= config.creepsCountMax[shortRoleName]/2 && targetFlagMemory.commonMemory.constructionSites.length > 0) break;
       }
 

@@ -61,9 +61,11 @@ const normalJob = (creep) => {
     let structure;
     if (creepMemory.role === 'transferer' && flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
       structure = highestEnergyStructure;
-    } else if (creepMemory.role === 'transferer' && flagMemory.commonMemory.spawnEnergyStructures.length === 0 && (flagMemory.commonMemory.controllerStorage.usable > 1500 && flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER)) {
+      // eslint-disable-next-line max-len
+    // } else if (creepMemory.role === 'transferer' && flagMemory.commonMemory.spawnEnergyStructures.length === 0 && (flagMemory.commonMemory.controllerStorage.usable > 1500 && flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER)) {
+    } else if ((creepMemory.role === 'transferer'||creepMemory.role === 'pioneer') && flagMemory.commonMemory.spawnEnergyStructures.length === 0) {
       const structureObj = Game.getObjectById(lowestEnergyStructure.id);
-      if (structureObj.structureType === STRUCTURE_STORAGE && structureObj.structureType === STRUCTURE_TERMINAL) return;
+      if (structureObj.structureType === STRUCTURE_STORAGE || structureObj.structureType === STRUCTURE_TERMINAL) return;
       structure = lowestEnergyStructure;
     } else {
       structure = highestEnergyStructure;
@@ -92,7 +94,7 @@ const normalJob = (creep) => {
     // Switch based on the results
     switch (result) {
     case OK:
-      break;
+      return 'full';
     case ERR_NOT_IN_RANGE:
       // If creep is not in range, move to target
       creep.moveTo(withdrawStructure);
@@ -124,11 +126,12 @@ module.exports = {
       result = normalJob(creep);
       break;
     default:
-      if (creepMemory.role.includes('upgrade') && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null && flagMemory.commonMemory.controllerStorage.usable > 0) {
+      if (creepMemory.role.includes('upgrade') && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null && flagMemory.commonMemory.controllerStorage.usable > 250) {
         creep.memory.miniJob = 'upgrade';
-      } else {
+      } else if (flagMemory.commonMemory.energyStored.usable > 500) {
         creep.memory.miniJob = 'normal';
-      }
+      } else if (!creep.pos.inRangeTo(creep.room.controller, 5)) creep.moveTo(creep.room.controller);
+      else return 'empty';
       break;
     }
 

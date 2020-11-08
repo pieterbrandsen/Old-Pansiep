@@ -307,18 +307,21 @@ module.exports = {
         creep.memory.miniJob = 'spawner';
         break;
       } else if (
-        flagMemory.commonMemory.controllerStorage.usable < 1500 &&
-          flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null
-      ) {
-        creep.memory.miniJob = 'controller';
-        break;
-      } else if (
         flagMemory.commonMemory.energyStored.capacity > 10000 &&
         flagMemory.commonMemory.energyStored.capacity / 10 > flagMemory.commonMemory.energyStored.usable
       ) {
         creep.memory.miniJob = 'storage';
         break;
+      } else if (
+        flagMemory.commonMemory.controllerStorage.usable < 1500 &&
+          flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null
+      ) {
+        creep.memory.miniJob = 'controller';
+        break;
+      } else {
+        creep.memory.miniJob = 'storage';
       }
+
 
       // Return full if no condition hit
       return 'full';

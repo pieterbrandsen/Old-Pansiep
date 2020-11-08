@@ -50,7 +50,7 @@ global.config = {
   ],
   creepsCountMax: {
     pioneer: 4,
-    transferer: 5,
+    transferer: 3,
     harvester: 1,
     builder: 4,
     repairer: 2,
