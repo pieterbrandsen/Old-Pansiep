@@ -54,17 +54,33 @@ const normalJob = (creep) => {
     const highestEnergyStructure = flagMemory.commonMemory.energyStructures.sort(
       (a, b) => b.usable - a.usable,
     )[0];
-    flagMemory.commonMemory.energyStructures.forEach((structure) => {
-      if (structure.id === highestEnergyStructure.id) {
-        structure.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+    const lowestEnergyStructure = flagMemory.commonMemory.energyStructures.sort(
+      (a, b) => a.usable - b.usable,
+    )[0];
+
+    let structure;
+    if (creepMemory.role === 'transferer' && flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
+      structure = highestEnergyStructure;
+    } else if (creepMemory.role === 'transferer' && flagMemory.commonMemory.spawnEnergyStructures.length === 0 && (flagMemory.commonMemory.controllerStorage.usable > 1500 && flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER)) {
+      const structureObj = Game.getObjectById(lowestEnergyStructure.id);
+      if (structureObj.structureType === STRUCTURE_STORAGE && structureObj.structureType === STRUCTURE_TERMINAL) return;
+      structure = lowestEnergyStructure;
+    } else {
+      structure = highestEnergyStructure;
+    }
+
+    if (structure === undefined) return;
+    flagMemory.commonMemory.energyStructures.forEach((structureInMem) => {
+      if (structureInMem.id === structure.id) {
+        structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
         flagMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(
           RESOURCE_ENERGY,
         );
       }
     });
 
-    if (highestEnergyStructure.usable > 0) {
-      creep.memory.targetId = highestEnergyStructure.id;
+    if (structure.usable > 0) {
+      creep.memory.targetId = structure.id;
     }
   } else {
     // Get the saved structure from memory

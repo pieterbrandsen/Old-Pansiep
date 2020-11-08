@@ -219,7 +219,7 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         x: midPos.x - 1,
         y: midPos.y + 1,
         type: STRUCTURE_SPAWN,
-        name: '{ roomName }-0',
+        name: `${room.name }-0`,
       },
     ],
     [
@@ -253,42 +253,49 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
     ],
     [
       // * Controller level 3 //
-      // Extensions
-      {
-        x: midPos.x - 4,
-        y: midPos.y + 2,
-        type: STRUCTURE_EXTENSION,
-      },
-      {
-        x: midPos.x - 4,
-        y: midPos.y + 3,
-        type: STRUCTURE_EXTENSION,
-      },
-      {
-        x: midPos.x - 3,
-        y: midPos.y + 3,
-        type: STRUCTURE_EXTENSION,
-      },
-      {
-        x: midPos.x - 3,
-        y: midPos.y + 4,
-        type: STRUCTURE_EXTENSION,
-      },
-      {
-        x: midPos.x - 2,
-        y: midPos.y + 4,
-        type: STRUCTURE_EXTENSION,
-      },
-
       // Towers
       {
         x: midPos.x - 0,
         y: midPos.y + 1,
         type: STRUCTURE_TOWER,
       },
+
+      // Extensions
+      {
+        x: midPos.x - 4,
+        y: midPos.y + 2,
+        type: STRUCTURE_EXTENSION,
+      },
+      {
+        x: midPos.x - 4,
+        y: midPos.y + 3,
+        type: STRUCTURE_EXTENSION,
+      },
+      {
+        x: midPos.x - 3,
+        y: midPos.y + 3,
+        type: STRUCTURE_EXTENSION,
+      },
+      {
+        x: midPos.x - 3,
+        y: midPos.y + 4,
+        type: STRUCTURE_EXTENSION,
+      },
+      {
+        x: midPos.x - 2,
+        y: midPos.y + 4,
+        type: STRUCTURE_EXTENSION,
+      },
     ],
     [
       // * Controller level 4 //
+      // Storage
+      {
+        x: midPos.x - 1,
+        y: midPos.y + 0,
+        type: STRUCTURE_STORAGE,
+      },
+
       // Extensions
       {
         x: midPos.x - 2,
@@ -340,14 +347,16 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         y: midPos.y + 4,
         type: STRUCTURE_EXTENSION,
       },
-      {
-        x: midPos.x - 1,
-        y: midPos.y + 0,
-        type: STRUCTURE_STORAGE,
-      },
     ],
     [
       // * Controller level 5 //
+      // Tower
+      {
+        x: midPos.x - 0,
+        y: midPos.y - 1,
+        type: STRUCTURE_TOWER,
+      },
+
       // Extensions
       {
         x: midPos.x + 3,
@@ -399,16 +408,23 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         y: midPos.y + 2,
         type: STRUCTURE_EXTENSION,
       },
-
-      // Tower
-      {
-        x: midPos.x - 0,
-        y: midPos.y - 1,
-        type: STRUCTURE_TOWER,
-      },
     ],
     [
       // * Controller level 6 //
+      // Terminal
+      {
+        x: midPos.x + 1,
+        y: midPos.y + 0,
+        type: STRUCTURE_TERMINAL,
+      },
+
+      // Link
+      {
+        x: midPos.x + 1,
+        y: midPos.y + 1,
+        type: STRUCTURE_LINK,
+      },
+
       // Extensions
       {
         x: midPos.x + 5,
@@ -456,20 +472,6 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         type: STRUCTURE_EXTENSION,
       },
 
-      // Terminal
-      {
-        x: midPos.x + 1,
-        y: midPos.y + 0,
-        type: STRUCTURE_TERMINAL,
-      },
-
-      // Link
-      {
-        x: midPos.x + 1,
-        y: midPos.y + 1,
-        type: STRUCTURE_LINK,
-      },
-
       // Labs
       {
         x: midPos.x - 2,
@@ -489,6 +491,21 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
     ],
     [
       // * Controller level 7 //
+      // Spawn
+      {
+        x: midPos.x + 5,
+        y: midPos.y - 0,
+        type: STRUCTURE_SPAWN,
+        name: `${room.name}-1`,
+      },
+
+      // Tower
+      {
+        x: midPos.x + 0,
+        y: midPos.y - 2,
+        type: STRUCTURE_TOWER,
+      },
+
       // Extension
       {
         x: midPos.x + 4,
@@ -563,21 +580,6 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         x: midPos.x + 1,
         y: midPos.y - 1,
         type: STRUCTURE_FACTORY,
-      },
-
-      // Spawn
-      {
-        x: midPos.x + 5,
-        y: midPos.y - 0,
-        type: STRUCTURE_SPAWN,
-        name: '{ roomName }-1',
-      },
-
-      // Tower
-      {
-        x: midPos.x + 0,
-        y: midPos.y - 2,
-        type: STRUCTURE_TOWER,
       },
     ],
     [
@@ -692,7 +694,7 @@ const getBaseLayoutBasedOnType = (room, layoutType) => {
         x: midPos.x - 5,
         y: midPos.y - 0,
         type: STRUCTURE_SPAWN,
-        name: '{ roomName }-2',
+        name: `${room.name}-2`,
       },
     ],
   ];
@@ -991,12 +993,14 @@ const basePlanner = (room) => {
   const flagMemory = Memory.flags[roomName];
 
   // Wait until all other construction sites are build
-  if (flagMemory.commonMemory.constructionSites.length > 0) return;
+  if (flagMemory.commonMemory.constructionSites.length > 0) return Game.cpu.getUsed();
 
   if (!flagMemory.roomPlanner.base.type) getBaseLayoutType(room);
   if (flagMemory.roomPlanner.base.type) {
     getBaseLayoutBasedOnType(room, flagMemory.roomPlanner.base.type);
   }
+
+  return Game.cpu.getUsed();
 };
 // #endregion
 
@@ -1026,7 +1030,7 @@ const roomPlanner = (room) => {
       flagMemory.roomPlanner.room.sources[i] &&
       flagMemory.roomPlanner.room.sources[i].structureType === structureType && Game.getObjectById(flagMemory.roomPlanner.room.sources[i].id) !== null
     ) {
-      return;
+      return Game.cpu.getUsed();
     }
 
     const source = flagMemory.commonMemory.sources[i];
@@ -1119,7 +1123,7 @@ const roomPlanner = (room) => {
       flagMemory.roomPlanner.room.controller.structureType === structureType && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null) ||
     (room.controller && !room.controller.my)
   ) {
-    return;
+    return Game.cpu.getUsed();
   }
 
   const controller = room.controller;
@@ -1141,7 +1145,7 @@ const roomPlanner = (room) => {
         bestControllerPosition.pos.y,
       );
       if (constructionSite.length > 0) {
-        return;
+        return Game.cpu.getUsed();
       }
     }
   }
@@ -1152,7 +1156,7 @@ const roomPlanner = (room) => {
     structureType, 2,
   );
   // Check if best position is found, otherwise return
-  if (bestControllerPosition === undefined) return;
+  if (bestControllerPosition === undefined) return Game.cpu.getUsed();
 
   // Build a structure there //
   const returnConstruction = createConstructionSite(
@@ -1168,7 +1172,7 @@ const roomPlanner = (room) => {
   bestControllerPosition.structureType = structureType;
   if (bestControllerPosition !== null) {
     flagMemory.roomPlanner.room.controller = bestControllerPosition;
-  } else return;
+  } else return Game.cpu.getUsed();
 
   // * Handle visual to show target //
   // If visual is already in memory, return
@@ -1176,7 +1180,7 @@ const roomPlanner = (room) => {
     flagMemory.visuals.objects.controller === true ||
     !config.rooms.visuals.structures
   ) {
-    return;
+    return Game.cpu.getUsed();
   }
 
   // const controllerVisualString = room.visual.circle(
@@ -1189,18 +1193,20 @@ const roomPlanner = (room) => {
   //   flagMemory.visuals.objects.controller = true;
   // }
   // #endregion
+
+  return Game.cpu.getUsed();
 };
 // #endregion
 
 module.exports = {
   // Run base planner //
   base: (room) => {
-    basePlanner(room);
+    return basePlanner(room);
   },
 
   // Room planner //
   // Structures like controller storage, source storage and roads
   room: (room) => {
-    roomPlanner(room);
+    return roomPlanner(room);
   },
 };

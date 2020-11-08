@@ -178,8 +178,8 @@ const storageJob = (creep) => {
 
   // If there is enough energy in storage
   if (
-    flagMemory.commonMemory.capacity > 10000 &&
-    flagMemory.commonMemory.capacity / 10 > flagMemory.commonMemory.usable &&
+    flagMemory.commonMemory.energyStored.capacity > 10000 &&
+    flagMemory.commonMemory.energyStored.capacity / 10 < flagMemory.commonMemory.energyStored.usable &&
     !creep.memory.targetId
   ) {
     return 'empty';
@@ -235,7 +235,7 @@ const controllerJob = (creep) => {
 
   // If controller structure has enough energy
   if (
-    (flagMemory.commonMemory.controllerStorage.usable === 2000 ||
+    (flagMemory.commonMemory.controllerStorage.usable > 2000 ||
       flagMemory.commonMemory.controllerStorage.type !==
         STRUCTURE_CONTAINER) &&
     !creep.memory.targetId
@@ -307,16 +307,16 @@ module.exports = {
         creep.memory.miniJob = 'spawner';
         break;
       } else if (
-        flagMemory.commonMemory.capacity > 10000 &&
-          flagMemory.commonMemory.capacity / 10 < flagMemory.commonMemory.usable
-      ) {
-        creep.memory.miniJob = 'storage';
-        break;
-      } else if (
         flagMemory.commonMemory.controllerStorage.usable < 1500 &&
           flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null
       ) {
         creep.memory.miniJob = 'controller';
+        break;
+      } else if (
+        flagMemory.commonMemory.energyStored.capacity > 10000 &&
+        flagMemory.commonMemory.energyStored.capacity / 10 > flagMemory.commonMemory.energyStored.usable
+      ) {
+        creep.memory.miniJob = 'storage';
         break;
       }
 

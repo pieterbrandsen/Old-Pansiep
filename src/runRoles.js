@@ -84,7 +84,7 @@ const pioneer = (creep) => {
     delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
-    if (flagMemory.commonMemory.usable > 1500) {
+    if (flagMemory.commonMemory.energyStored.usable > 1500) {
       creep.memory.job = 'withdraw';
     } else {
       creep.memory.job = 'harvest';
@@ -207,7 +207,7 @@ const upgrader = (creep, roleName) => {
 
     // Switch to one of the roles that gets energy
     if (
-      flagMemory.commonMemory.usable >= 10 * 1000 ||
+      flagMemory.commonMemory.energyStored.usable >= 10 * 1000 ||
         (flagMemory.commonMemory.controllerStorage.usable >= 250 && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) !== null)
     ) {
       creep.memory.job = 'withdraw';
@@ -254,7 +254,7 @@ const repairer = (creep, roleName) => {
     delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
-    if (flagMemory.commonMemory.usable >= 2000) {
+    if (flagMemory.commonMemory.energyStored.usable >= 2000) {
       creep.memory.job = 'withdraw';
     } else {
       creep.memory.job = 'harvest';
@@ -299,7 +299,7 @@ const builder = (creep, roleName) => {
     delete creep.memory.miniJob;
 
     // Switch to one of the roles that gets energy
-    if (flagMemory.commonMemory.usable >= 2000) {
+    if (flagMemory.commonMemory.energyStored.usable >= 2000) {
       creep.memory.job = 'withdraw';
     } else {
       creep.memory.job = 'harvest';
