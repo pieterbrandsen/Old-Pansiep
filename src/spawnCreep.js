@@ -131,7 +131,18 @@ const spawnCreep = (room, roomType, data, roleCount) => {
     case 'transferer':
     case 'transfererLD':
       // Check if input role is less then max creeps allowed //
-      if (roleCount[role] >= config.creepsCountMax[shortRoleName]) break;
+      if (role === "transfererLD") {
+        if (roleCount[role] >= targetFlagMemory.commonMemory.sources.length) break;
+      }
+      else {
+        if ((room.controller.level >= 6 && room.links.length >= 3) || (room.controller.level >= 7 && room.links.length >= 4)) {
+          if (roleCount[role] >= 1) break;
+        }
+        else {
+          if (roleCount[role] >= config.creepsCountMax[shortRoleName] * targetFlagMemory.commonMemory.sources.length) break;
+        }
+
+      }
 
       // If energy is less then 300
       if (room.energyAvailable <= 300) break;
