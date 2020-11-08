@@ -84,6 +84,8 @@ const globalHandler = () => {
       cpuUsedEnd - cpuUsedStart;
     cpuUsedStart = cpuUsedEnd;
   }
+
+  Memory.stats['ticksAlive']++;
 };
 // #endregion
 
@@ -292,7 +294,7 @@ const memoryHandler = (goal, data) => {
       // Init undefined memory
       if (!Memory.creeps) Memory.creeps = {};
       if (!Memory.flags) Memory.flags = {};
-      if (!Memory.stats) Memory.stats = {};
+      if (!Memory.stats) Memory.stats = {ticksAlive: 0};
       if (!Memory.stats[Game.shard.name]) {
         Memory.stats[Game.shard.name] = {
           gcl: {},
@@ -496,6 +498,7 @@ const memoryHandler = (goal, data) => {
 
 // #region Timers handler
 const timersHandler = (goal, data) => {
+  const smallModulesUsage = {basePlanner: 0, roomPlanner: 0};
   // #region Global timers
   // Get a object back with all the universal timers for a owned and remote room //
   const globalTimers = () => {};
@@ -517,7 +520,7 @@ const timersHandler = (goal, data) => {
       !flagMemory.isFilled
     ) {
       cpuUsedEnd = roomPlanner.room(room);
-      Memory.stats[shardName].rooms[room.name].cpu.smallModules['roomPlanner'] =
+      smallModulesUsage['roomPlanner'] =
         cpuUsedEnd - cpuUsedStart;
       cpuUsedStart = cpuUsedEnd;
     }
@@ -783,7 +786,7 @@ const timersHandler = (goal, data) => {
     ) {
       flagMemory.commonMemory.controllerLevel = room.controller.level;
       cpuUsedEnd = roomPlanner.base(room);
-      Memory.stats[shardName].rooms[room.name].cpu.smallModules['basePlanner'] =
+      smallModulesUsage['basePlanner'] =
         cpuUsedEnd - cpuUsedStart;
       cpuUsedStart = cpuUsedEnd;
     }
@@ -969,10 +972,13 @@ const timersHandler = (goal, data) => {
   case 'ownedRoom':
     globalRoomTimers(data.room);
     ownedRoomTimers(data.room);
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['basePlanner'] = smallModulesUsage['basePlanner'];
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'] = smallModulesUsage['roomPlanner'];
     break;
   case 'remoteRoom':
     globalRoomTimers(data.room);
     remoteRoomTimers(data.room);
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'] = smallModulesUsage['roomPlanner'];
     break;
   default:
     Game.notify(`Unknown goal: ${goal}, check TimersHandler.`);

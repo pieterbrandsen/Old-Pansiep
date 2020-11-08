@@ -235,7 +235,7 @@ const controllerJob = (creep) => {
 
   // If controller structure has enough energy
   if (
-    (flagMemory.commonMemory.controllerStorage.usable > 2000 ||
+    (flagMemory.commonMemory.controllerStorage.usable > 1750 ||
       flagMemory.commonMemory.controllerStorage.type !==
         STRUCTURE_CONTAINER) &&
     !creep.memory.targetId
