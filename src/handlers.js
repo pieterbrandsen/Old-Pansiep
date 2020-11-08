@@ -244,7 +244,7 @@ const memoryHandler = (goal, data) => {
         Memory.stats[Game.shard.name] = {
           gcl: {},
           rooms: {},
-          cpu: {modules: {}},
+          cpu: {modules: {},smallModules = {}},
         };
       }
 
@@ -279,7 +279,7 @@ const memoryHandler = (goal, data) => {
         Memory.stats[Game.shard.name].rooms[room.name] = {
           energyStored: {},
           commonMemory: {},
-          cpu: {modules: {}},
+          cpu: {headModules: {},smallModules = {},creepModules: {}},
         };
       }
 
