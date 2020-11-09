@@ -54,19 +54,17 @@ const normalJob = (creep) => {
     const highestEnergyStructure = flagMemory.commonMemory.energyStructures.sort(
       (a, b) => b.usable - a.usable,
     )[0];
-    const lowestEnergyStructure = flagMemory.commonMemory.energyStructures.sort(
-      (a, b) => a.usable - b.usable,
+    const highestSourceStructure = flagMemory.commonMemory.energyStructures.filter((s) => s.usable <= 2000).sort(
+      (a, b) => b.usable - a.usable,
     )[0];
 
     let structure;
     if (creepMemory.role === 'transferer' && flagMemory.commonMemory.spawnEnergyStructures.length > 0) {
       structure = highestEnergyStructure;
-      // eslint-disable-next-line max-len
-    // } else if (creepMemory.role === 'transferer' && flagMemory.commonMemory.spawnEnergyStructures.length === 0 && (flagMemory.commonMemory.controllerStorage.usable > 1500 && flagMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER)) {
     } else if ((creepMemory.role === 'transferer'||creepMemory.role === 'pioneer') && flagMemory.commonMemory.spawnEnergyStructures.length === 0) {
-      const structureObj = Game.getObjectById(lowestEnergyStructure.id);
+      const structureObj = Game.getObjectById(highestSourceStructure.id);
       if (structureObj.structureType === STRUCTURE_STORAGE || structureObj.structureType === STRUCTURE_TERMINAL) return;
-      structure = lowestEnergyStructure;
+      structure = highestSourceStructure;
     } else {
       structure = highestEnergyStructure;
     }
@@ -130,8 +128,7 @@ module.exports = {
         creep.memory.miniJob = 'upgrade';
       } else if (flagMemory.commonMemory.energyStored.usable > 500) {
         creep.memory.miniJob = 'normal';
-      } else if (!creep.pos.inRangeTo(creep.room.controller, 5)) creep.moveTo(creep.room.controller);
-      else return 'empty';
+      } else return 'empty';
       break;
     }
 

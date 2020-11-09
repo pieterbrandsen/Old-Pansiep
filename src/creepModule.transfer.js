@@ -171,19 +171,19 @@ const spawnerJob = (creep) => {
 const storageJob = (creep) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
-  const flagMemory = Memory.flags[creepMemory.targetRoom];
+  // const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty
   if (creep.store.getUsedCapacity() === 0) return 'empty';
 
-  // If there is enough energy in storage
-  if (
-    flagMemory.commonMemory.energyStored.capacity > 10000 &&
-    flagMemory.commonMemory.energyStored.capacity / 10 < flagMemory.commonMemory.energyStored.usable &&
-    !creep.memory.targetId
-  ) {
-    return 'empty';
-  }
+  // // If there is enough energy in storage
+  // if (
+  //   flagMemory.commonMemory.energyStored.capacity > 10000 &&
+  //   flagMemory.commonMemory.energyStored.capacity / 10 < flagMemory.commonMemory.energyStored.usable &&
+  //   !creep.memory.targetId
+  // ) {
+  //   return 'empty';
+  // }
 
   // If room is in need of more energy in the storage/terminal
   if (creepMemory.targetId === undefined) {

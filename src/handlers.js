@@ -1,6 +1,7 @@
 // #region require
 const roomPlanner = require('./roomPlanner');
 const spawnCreep = require('./spawnCreep');
+const functions = require('./functions');
 const runRoles = require('./runRoles');
 
 require('./config');
@@ -59,29 +60,25 @@ const globalHandler = () => {
     // Creep handler //
     // Handles all creeps and runs their role
     cpuUsedEnd = creepHandler();
-    Memory.stats[shardName].cpu.headModules['creeps'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].cpu.headModules['creeps'] = functions.memoryAverager(Memory.stats[shardName].cpu.headModules['creeps'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Rooms handler //
     // Handles ALL global room related code
     cpuUsedEnd = allRoomsHandler();
-    Memory.stats[shardName].cpu.headModules['rooms'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].cpu.headModules['rooms'] = functions.memoryAverager(Memory.stats[shardName].cpu.headModules['rooms'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Timers handler //
     // Handles all game timers and runs their code
     cpuUsedEnd = timersHandler('global');
-    Memory.stats[shardName].cpu.headModules['timers'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].cpu.headModules['timers'] = functions.memoryAverager(Memory.stats[shardName].cpu.headModules['timers'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Stats handler //
     // Handles all stats related memory
     cpuUsedEnd = statsHandler('global');
-    Memory.stats[shardName].cpu.headModules['stats'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].cpu.headModules['stats'] = functions.memoryAverager(Memory.stats[shardName].cpu.headModules['stats'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
   }
 
@@ -117,8 +114,7 @@ const allRoomsHandler = () => {
       remoteRoomHandler(room);
     }
 
-    Memory.stats[shardName].rooms[room.name].cpu.used =
-      Game.cpu.getUsed() - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.used = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.used, Game.cpu.getUsed() - cpuUsedStart);
   });
 
   return Game.cpu.getUsed();
@@ -149,26 +145,22 @@ const ownedRoomHandler = (room) => {
 
     // Run room visuals for ownedRooms  //
     cpuUsedEnd = roomVisualHandler(room);
-    Memory.stats[shardName].rooms[room.name].cpu.headModules['visuals'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.headModules['visuals'] = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.headModules['visuals'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Run all timers for ownedRooms //
     cpuUsedEnd = timersHandler('ownedRoom', {room: room});
-    Memory.stats[shardName].rooms[room.name].cpu.headModules['timers'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.headModules['timers'] = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.headModules['timers'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Run all towers for ownedRooms //
     cpuUsedEnd = towerHandler(room);
-    Memory.stats[shardName].rooms[room.name].cpu.headModules['towers'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.headModules['towers'] = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.headModules['towers'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Run all stats collector for ownedRooms //
     cpuUsedEnd = statsHandler('ownedRoom', {room: room});
-    Memory.stats[shardName].rooms[room.name].cpu.headModules['stats'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.headModules['stats'] = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.headModules['stats'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
   }
 };
@@ -201,20 +193,17 @@ const remoteRoomHandler = (room) => {
 
     // Run room visuals for ownedRooms  //
     cpuUsedEnd = roomVisualHandler(room);
-    Memory.stats[shardName].rooms[room.name].cpu.headModules['visuals'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.headModules['visuals'] = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.headModules['visuals'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Run all timers for ownedRooms //
     cpuUsedEnd = timersHandler('remoteRoom', {room: room});
-    Memory.stats[shardName].rooms[room.name].cpu.headModules['timers'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.headModules['timers'] = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.headModules['timers'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
 
     // Run all stats collector for ownedRooms //
     cpuUsedEnd = statsHandler('remoteRoom', {room: room});
-    Memory.stats[shardName].rooms[room.name].cpu.headModules['stats'] =
-      cpuUsedEnd - cpuUsedStart;
+    Memory.stats[shardName].rooms[room.name].cpu.headModules['stats'] = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.headModules['stats'], cpuUsedEnd - cpuUsedStart);
     cpuUsedStart = cpuUsedEnd;
   }
 };
@@ -222,6 +211,18 @@ const remoteRoomHandler = (room) => {
 
 // #region Creep handler
 const creepHandler = () => {
+  _.forEach(Object.keys(Game.rooms), (roomName) => {
+    const room = Game.rooms[roomName];
+
+    // Reset all creepModules
+    if (Memory.stats[shardName].rooms[room.name] !== undefined) {
+      // Reset first all known cpu usage for the modules
+      // eslint-disable-next-line guard-for-in
+      for (const module in Memory.stats[shardName].rooms[room.name].cpu.creepModules) {
+        Memory.stats[shardName].rooms[room.name].cpu.creepModules[module] = 0;
+      }
+    }
+  });
   _.forEach(Object.keys(Memory.creeps), (creepName) => {
     // * Set the cpu used for this creep to the memory
     // Get used cpu
@@ -523,6 +524,8 @@ const timersHandler = (goal, data) => {
       smallModulesUsage['roomPlanner'] =
         cpuUsedEnd - cpuUsedStart;
       cpuUsedStart = cpuUsedEnd;
+    } else {
+      smallModulesUsage['roomPlanner'] = 0;
     }
 
     // Get total energy capacity and usage each ... ticks //
@@ -784,11 +787,13 @@ const timersHandler = (goal, data) => {
       !flagMemory.isFilled ||
       flagMemory.commonMemory.controllerLevel < room.controller.level
     ) {
+      cpuUsedStart = Game.cpu.getUsed();
       flagMemory.commonMemory.controllerLevel = room.controller.level;
       cpuUsedEnd = roomPlanner.base(room);
       smallModulesUsage['basePlanner'] =
         cpuUsedEnd - cpuUsedStart;
-      cpuUsedStart = cpuUsedEnd;
+    } else {
+      smallModulesUsage['basePlanner'] = 0;
     }
 
     // Run spawn creep each ... ticks //
@@ -796,12 +801,16 @@ const timersHandler = (goal, data) => {
       Game.time % config.rooms.loops.spawnCreep === 0 ||
       !flagMemory.isFilled
     ) {
+      cpuUsedStart = Game.cpu.getUsed();
       const lastRole = spawnCreep.execute(
         room,
         'owned',
-        {},
-        roleCountByRoomByRole[room.name],
+        {roleCount: roleCountByRoomByRole[room.name]},
       );
+      cpuUsedEnd = Game.cpu.getUsed();
+      smallModulesUsage['mainSpawner'] =
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
 
       // If role is remote, this means that nothing spawned
       if (lastRole === 'end') {
@@ -812,17 +821,27 @@ const timersHandler = (goal, data) => {
 
             // TODO doesn't do anything when remoteRoom is null
             if (remoteRoom !== null && continueLoop) {
+              cpuUsedStart = Game.cpu.getUsed();
               const remoteLastRole = spawnCreep.execute(
                 room,
                 'remote',
                 {target: remoteRoom.name},
                 roleCountByRoomByRole[remoteRoom.name],
               );
+              cpuUsedEnd = Game.cpu.getUsed();
+              smallModulesUsage['remoteSpawner'] =
+              cpuUsedEnd - cpuUsedStart;
+              cpuUsedStart = cpuUsedEnd;
               if (remoteLastRole === 'end') continueLoop = false;
             }
           });
         }
+      } else {
+        smallModulesUsage['remoteSpawner'] = 0;
       }
+    } else {
+      smallModulesUsage['mainSpawner'] = 0;
+      smallModulesUsage['remoteSpawner'] = 0;
     }
 
     // Get all structures that need's energy each ... ticks //
@@ -972,13 +991,15 @@ const timersHandler = (goal, data) => {
   case 'ownedRoom':
     globalRoomTimers(data.room);
     ownedRoomTimers(data.room);
-    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['basePlanner'] = smallModulesUsage['basePlanner'];
-    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'] = smallModulesUsage['roomPlanner'];
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['basePlanner'] = functions.memoryAverager(Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['basePlanner'], smallModulesUsage['basePlanner']);
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'] = functions.memoryAverager(Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'], smallModulesUsage['roomPlanner']);
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['mainSpawner'] = functions.memoryAverager(Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['mainSpawner'], smallModulesUsage['mainSpawner']);
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['remoteSpawner'] = functions.memoryAverager(Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['remoteSpawner'], smallModulesUsage['remoteSpawner']);
     break;
   case 'remoteRoom':
     globalRoomTimers(data.room);
     remoteRoomTimers(data.room);
-    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'] = smallModulesUsage['roomPlanner'];
+    Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'] = functions.memoryAverager(Memory.stats[shardName].rooms[data.room.name].cpu.smallModules['roomPlanner'], smallModulesUsage['roomPlanner']);
     break;
   default:
     Game.notify(`Unknown goal: ${goal}, check TimersHandler.`);
@@ -1134,7 +1155,7 @@ const statsHandler = (goal, data) => {
     if (typeof cpuMemory === 'object') {
       cpuMemory.bucket = Game.cpu.bucket;
       cpuMemory.limit = Game.cpu.limit;
-      cpuMemory.used = Game.cpu.getUsed();
+      cpuMemory.used = functions.memoryAverager(cpuMemory.used, Game.cpu.getUsed());
     }
   };
   // #endregion
@@ -1176,7 +1197,11 @@ const statsHandler = (goal, data) => {
       // Set all cpu related memory
       const cpuMemory = roomStats['cpu'];
       if (typeof cpuMemory === 'object') {
-        cpuMemory.headModules['creeps'] = cpuUsedByRoomByRole[room.name];
+        // eslint-disable-next-line guard-for-in
+        for (const role in cpuUsedByRoomByRole[room.name]) {
+          cpuMemory.headModules['creeps'] = cpuUsedByRoomByRole[room.name];
+          cpuMemory.headModules['creeps'][role] = functions.memoryAverager(cpuMemory.headModules['creeps'][role], cpuUsedByRoomByRole[room.name][role]);
+        }
       }
     }
   };

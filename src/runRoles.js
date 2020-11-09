@@ -28,6 +28,9 @@ const moveToRoom = (creep, targetRoom) => {
 // #endregion
 
 const pioneer = (creep) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Acces flagMemory
   const flagMemory = Memory.flags[creep.memory.spawnRoom];
 
@@ -39,6 +42,12 @@ const pioneer = (creep) => {
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'withdraw';
     return;
@@ -96,6 +105,9 @@ const pioneer = (creep) => {
 };
 
 const harvester = (creep, roleName) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Check if creep needs to move to another room
   if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
 
@@ -104,6 +116,12 @@ const harvester = (creep, roleName) => {
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'harvest';
     return;
@@ -132,11 +150,20 @@ const harvester = (creep, roleName) => {
 };
 
 const transferer = (creep, roleName) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Get creep module
   let creepModule;
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'withdraw';
     return;
@@ -176,6 +203,9 @@ const transferer = (creep, roleName) => {
 };
 
 const upgrader = (creep, roleName) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Check if creep needs to move to another room
   if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
 
@@ -187,6 +217,12 @@ const upgrader = (creep, roleName) => {
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'withdraw';
     return;
@@ -221,6 +257,9 @@ const upgrader = (creep, roleName) => {
 };
 
 const repairer = (creep, roleName) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Check if creep needs to move to another room
   if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
 
@@ -232,6 +271,12 @@ const repairer = (creep, roleName) => {
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'withdraw';
     return;
@@ -266,6 +311,9 @@ const repairer = (creep, roleName) => {
 };
 
 const builder = (creep, roleName) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Check if creep needs to move to another room
   if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
 
@@ -277,6 +325,12 @@ const builder = (creep, roleName) => {
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'withdraw';
     return;
@@ -311,6 +365,9 @@ const builder = (creep, roleName) => {
 };
 
 const reserver = (creep, roleName) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Check if creep needs to move to another room
   if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
 
@@ -319,6 +376,12 @@ const reserver = (creep, roleName) => {
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'reserve';
     return;
@@ -328,6 +391,9 @@ const reserver = (creep, roleName) => {
 };
 
 const claimer = (creep, roleName) => {
+  // Set cpuUsed to zero
+  let cpuUsedStart = Game.cpu.getUsed();
+
   // Check if creep needs to move to another room
   if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
 
@@ -336,6 +402,12 @@ const claimer = (creep, roleName) => {
   try {
     // eslint-disable-next-line global-require
     creepModule = require(`./creepModule.${creep.memory.job}`);
+    if (Memory.stats[Game.shard.name].rooms[creep.room.name] !== undefined) {
+      const cpuUsedEnd = Game.cpu.getUsed();
+      Memory.stats[Game.shard.name].rooms[creep.room.name].cpu.creepModules[creep.memory.job] +=
+      cpuUsedEnd - cpuUsedStart;
+      cpuUsedStart = cpuUsedEnd;
+    }
   } catch (error) {
     creep.memory.job = 'claim';
     return;

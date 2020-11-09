@@ -183,11 +183,13 @@ const statusUpdater = (event) => {
       if (typeof milestone.success === 'undefined' || milestone.success === null) {
         let success = Object.keys(status).length === Object.keys(players).length;
         for (const room of Object.keys(status)) {
-          for (const key of Object.keys(milestone.check)) {
-            if (status[room][key] < milestone.check[key]) {
-              success = false;
-              failedRooms.push(room);
-              break;
+          if (room === playerRoom) {
+            for (const key of Object.keys(milestone.check)) {
+              if (status[room][key] < milestone.check[key]) {
+                success = false;
+                failedRooms.push(room);
+                break;
+              }
             }
           }
         }

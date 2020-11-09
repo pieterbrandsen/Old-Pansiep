@@ -1153,7 +1153,7 @@ const roomPlanner = (room) => {
   const bestControllerPosition = getBestFreeSpot(
     room,
     controller.pos,
-    structureType, 2,
+    structureType, 3,
   );
   // Check if best position is found, otherwise return
   if (bestControllerPosition === undefined) return Game.cpu.getUsed();
