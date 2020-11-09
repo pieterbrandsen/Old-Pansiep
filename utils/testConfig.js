@@ -8,7 +8,7 @@ module.exports.playerRoom = 'W3N7';
 players = {
   'W3N7': {x: 34, y: 18},
   'W6N1': {x: 33, y: 21},
-  'W6N2': {x: 23, y: 26},
+  'W7N4': {x: 34, y: 29},
   'W8N3': {x: 12, y: 32},
 };
 module.exports.players = players;

@@ -168,8 +168,9 @@ const spawnCreep = (room, roomType, data, roleCount) => {
           targetFlagMemory.commonMemory.energyStored.capacity / 10 > targetFlagMemory.commonMemory.energyStored.usable) break;
 
         // Check if input role is less then max creeps allowed //
-        if ((roleCount[role] >= config.creepsCountMax[shortRoleName] && targetFlagMemory.commonMemory.controllerStorage.usable < 1500) && targetFlagMemory.commonMemory.constructionSites.length === 0) break;
-        else if (roleCount[role] >= config.creepsCountMax[shortRoleName]/2 && targetFlagMemory.commonMemory.constructionSites.length > 0) break;
+        if (roleCount[role] >= config.creepsCountMax[shortRoleName] && targetFlagMemory.commonMemory.constructionSites.length === 0) {
+          if (Game.getObjectById(flagMemory.commonMemory.controllerStorage.id) === null && Game.getObjectById(flagMemory.commonMemory.controllerStorage.id).store.getFreeCapacity(RESOURCE_ENERGY) < 500) break;
+        } else if (roleCount[role] >= config.creepsCountMax[shortRoleName]/2 && targetFlagMemory.commonMemory.constructionSites.length > 0) break;
       }
 
       if (targetRoom === undefined) break;
