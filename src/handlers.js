@@ -335,7 +335,7 @@ const memoryHandler = (goal, data) => {
         Memory.stats[Game.shard.name].rooms[room.name] = {
           energyStored: {},
           commonMemory: {},
-          cpu: {headModules: {}, smallModules: {}, creepModules: {}},
+          cpu: {headModules: {creeps: {}}, smallModules: {}, creepModules: {}},
         };
       }
 
