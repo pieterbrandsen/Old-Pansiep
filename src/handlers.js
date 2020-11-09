@@ -1177,7 +1177,11 @@ const statsHandler = (goal, data) => {
       if (typeof commonMemory === 'object') {
         commonMemory.constructionSitesCount =
           flagMemory.commonMemory.constructionSites.length;
-        commonMemory.creepCountByRole = roleCountByRoomByRole[room.name];
+        // eslint-disable-next-line guard-for-in
+        for (const role in commonMemory.creepCountByRole) {
+          commonMemory.creepCountByRole[role] = functions.memoryAverager(commonMemory.creepCountByRole[role], roleCountByRoomByRole[room.name][role]);
+        }
+        // commonMemory.creepCountByRole = roleCountByRoomByRole[room.name];
         commonMemory.sourceCount = flagMemory.commonMemory.sources.length;
       }
 
@@ -1199,7 +1203,6 @@ const statsHandler = (goal, data) => {
       if (typeof cpuMemory === 'object') {
         // eslint-disable-next-line guard-for-in
         for (const role in cpuUsedByRoomByRole[room.name]) {
-          cpuMemory.headModules['creeps'] = cpuUsedByRoomByRole[room.name];
           cpuMemory.headModules['creeps'][role] = functions.memoryAverager(cpuMemory.headModules['creeps'][role], cpuUsedByRoomByRole[room.name][role]);
         }
       }
