@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1604865557194,
+  "iteration": 1605010215707,
   "links": [],
   "panels": [
     {
@@ -1213,7 +1213,7 @@
         "name": "room",
         "options": [],
         "query": "stats.gauges.*.rooms.*",
-        "refresh": 2,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
@@ -1233,5 +1233,5 @@
   "timezone": "",
   "title": "CPU",
   "uid": "KIFw1B2Mz",
-  "version": 16
+  "version": 2
 }
