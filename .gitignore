@@ -1,5 +1,6 @@
 .env
 node_modules/
+.VSCodeCounter/
 dist/
 
 ## used for some private servers, dist/**.js concated into build

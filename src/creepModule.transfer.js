@@ -171,19 +171,19 @@ const spawnerJob = (creep) => {
 const storageJob = (creep) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
-  const flagMemory = Memory.flags[creepMemory.targetRoom];
+  // const flagMemory = Memory.flags[creepMemory.targetRoom];
 
   // Return empty if current creep's storage is empty
   if (creep.store.getUsedCapacity() === 0) return 'empty';
 
-  // If there is enough energy in storage
-  if (
-    flagMemory.commonMemory.capacity > 10000 &&
-    flagMemory.commonMemory.capacity / 10 > flagMemory.commonMemory.usable &&
-    !creep.memory.targetId
-  ) {
-    return 'empty';
-  }
+  // // If there is enough energy in storage
+  // if (
+  //   flagMemory.commonMemory.energyStored.capacity > 10000 &&
+  //   flagMemory.commonMemory.energyStored.capacity / 10 < flagMemory.commonMemory.energyStored.usable &&
+  //   !creep.memory.targetId
+  // ) {
+  //   return 'empty';
+  // }
 
   // If room is in need of more energy in the storage/terminal
   if (creepMemory.targetId === undefined) {
@@ -235,7 +235,7 @@ const controllerJob = (creep) => {
 
   // If controller structure has enough energy
   if (
-    (flagMemory.commonMemory.controllerStorage.usable === 2000 ||
+    (flagMemory.commonMemory.controllerStorage.usable > 1750 ||
       flagMemory.commonMemory.controllerStorage.type !==
         STRUCTURE_CONTAINER) &&
     !creep.memory.targetId
@@ -307,8 +307,8 @@ module.exports = {
         creep.memory.miniJob = 'spawner';
         break;
       } else if (
-        flagMemory.commonMemory.capacity > 10000 &&
-          flagMemory.commonMemory.capacity / 10 < flagMemory.commonMemory.usable
+        flagMemory.commonMemory.energyStored.capacity > 10000 &&
+        flagMemory.commonMemory.energyStored.capacity / 10 > flagMemory.commonMemory.energyStored.usable
       ) {
         creep.memory.miniJob = 'storage';
         break;
@@ -318,7 +318,10 @@ module.exports = {
       ) {
         creep.memory.miniJob = 'controller';
         break;
+      } else {
+        creep.memory.miniJob = 'storage';
       }
+
 
       // Return full if no condition hit
       return 'full';

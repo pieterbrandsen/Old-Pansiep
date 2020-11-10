@@ -1,4 +1,7 @@
 // const repair = require('./creepModule.repair');
+// #region Require
+require('./config');
+// #endregion
 
 const build = (creep) => {
   // Make shortcut to memory
@@ -30,6 +33,9 @@ const build = (creep) => {
     const result = creep.build(constructionSite, RESOURCE_ENERGY);
     // Switch based on the results
     switch (result) {
+    case OK:
+      config.expenses.building[creep.room.name] += creep.memory.parts.work * 5;
+      break;
     case ERR_INVALID_TARGET:
       // TODO SAVE THE TARGET POS BECAUSE ATM THE CONSTRUCTION IS ALREADY LOST
       // // If the structure is a rampart, heal it until 5K hits

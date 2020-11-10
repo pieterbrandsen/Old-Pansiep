@@ -1,3 +1,7 @@
+// #region Require
+require('./config');
+// #endregion
+
 const repair = (creep, data) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
@@ -35,6 +39,8 @@ const repair = (creep, data) => {
     // Switch based on the results
     switch (result) {
     case OK:
+      config.expenses.repairing[creep.room.name] += creep.memory.parts.work;
+
       // If the hits of the repairTarget are high enough, remove structure
       if (
         repairTarget.hits === repairTarget.hitsMax ||

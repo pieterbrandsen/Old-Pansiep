@@ -1,3 +1,7 @@
+// #region Require
+require('./config');
+// #endregion
+
 const mineralJob = (creep) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
@@ -12,6 +16,9 @@ const mineralJob = (creep) => {
 
   const result = creep.harvest(mineral);
   switch (result) {
+  case OK:
+    // TODO ADD HARVESTED MINERAL AMOUNT
+    break;
   case ERR_NOT_IN_RANGE:
     // Move to mineral
     creep.moveTo(mineral);
@@ -61,7 +68,10 @@ const sourceJob = (creep) => {
   }
 
   // If not in range, move to source and then return
-  if (!creep.pos.inRangeTo(source, 1) || (!creepMemory.onPosition && creepMemory.role.includes('harvester'))) {
+  if (
+    !creep.pos.inRangeTo(source, 1) ||
+    (!creepMemory.onPosition && creepMemory.role.includes('harvester'))
+  ) {
     let sourcePos = source.pos;
     const sourceNumber = creepMemory.sourceNumber;
 
@@ -154,7 +164,12 @@ const sourceJob = (creep) => {
     const result = creep.harvest(source);
     switch (result) {
     case OK:
-      return;
+      if (creepMemory.role.includes('LD')) {
+        config.income.remoteHarvesting[creep.room.name] += creep.memory.parts.work * 2;
+      } else {
+        config.income.ownedHarvesting[creep.room.name] += creep.memory.parts.work * 2;
+      }
+      break;
     case ERR_NOT_ENOUGH_RESOURCES:
     case ERR_INVALID_TARGET:
       if (creep.memory.role.includes('-')) break;
@@ -182,7 +197,7 @@ module.exports = {
       result = mineralJob(creep);
       break;
     default:
-    // If creep is a mineral harvester, harvest the mineral instead of source
+      // If creep is a mineral harvester, harvest the mineral instead of source
       if (creepMemory.role === 'mineral') {
         creep.memory.miniJob = 'mineral';
         break;

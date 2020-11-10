@@ -104,7 +104,7 @@ async function initServer() {
   }));
   const configFilename = path.resolve(dir, '.screepsrc');
   let config = fs.readFileSync(configFilename, {encoding: 'utf8'});
-  config = config.replace(/{{STEAM_KEY}}/, process.env.STEAM_API_KEY);
+  config = config.replace(/{{STEAM_KEY}}/, process.env.STEAM_API_KEY).replace(/processors_cnt = 2/, "processors_cnt = 4");
   fs.writeFileSync(configFilename, config);
   fs.chmodSync(path.resolve(dir, 'node_modules/.hooks/install'), '755');
   fs.chmodSync(path.resolve(dir, 'node_modules/.hooks/uninstall'), '755');
