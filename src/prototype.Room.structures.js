@@ -33,20 +33,34 @@ const CACHE_TIMEOUT = 50;
 const CACHE_OFFSET = 4;
 
 const multipleList = [
-  STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_ROAD, STRUCTURE_WALL,
-  STRUCTURE_RAMPART, STRUCTURE_KEEPER_LAIR, STRUCTURE_PORTAL, STRUCTURE_LINK,
-  STRUCTURE_TOWER, STRUCTURE_LAB, STRUCTURE_CONTAINER, STRUCTURE_POWER_BANK,
+  STRUCTURE_SPAWN,
+  STRUCTURE_EXTENSION,
+  STRUCTURE_ROAD,
+  STRUCTURE_WALL,
+  STRUCTURE_RAMPART,
+  STRUCTURE_KEEPER_LAIR,
+  STRUCTURE_PORTAL,
+  STRUCTURE_LINK,
+  STRUCTURE_TOWER,
+  STRUCTURE_LAB,
+  STRUCTURE_CONTAINER,
+  STRUCTURE_POWER_BANK,
 ];
 
 const singleList = [
-  STRUCTURE_OBSERVER, STRUCTURE_POWER_SPAWN, STRUCTURE_EXTRACTOR, STRUCTURE_NUKER,
+  STRUCTURE_OBSERVER,
+  STRUCTURE_POWER_SPAWN,
+  STRUCTURE_EXTRACTOR,
+  STRUCTURE_NUKER,
   // STRUCTURE_TERMINAL,   STRUCTURE_CONTROLLER,   STRUCTURE_STORAGE,
 ];
 
 if (global.STRUCTURE_FACTORY !== undefined) singleList.push(STRUCTURE_FACTORY);
 
 function getCacheExpiration() {
-  return CACHE_TIMEOUT + Math.round((Math.random()*CACHE_OFFSET*2)-CACHE_OFFSET);
+  return (
+    CACHE_TIMEOUT + Math.round(Math.random() * CACHE_OFFSET * 2 - CACHE_OFFSET)
+  );
 }
 
 /** ******* CPU Profiling stats for Room.prototype._checkRoomCache **********
@@ -60,34 +74,46 @@ avg without reset:      0.003262
 ****************************************************************************/
 Room.prototype._checkRoomCache = function _checkRoomCache() {
   // if cache is expired or doesn't exist
-  if (!roomStructuresExpiration[this.name] || !roomStructures[this.name] || roomStructuresExpiration[this.name] < Game.time) {
+  if (
+    !roomStructuresExpiration[this.name] ||
+    !roomStructures[this.name] ||
+    roomStructuresExpiration[this.name] < Game.time
+  ) {
     roomStructuresExpiration[this.name] = Game.time + getCacheExpiration();
-    roomStructures[this.name] = _.groupBy(this.find(FIND_STRUCTURES), (s)=>s.structureType);
+    roomStructures[this.name] = _.groupBy(
+      this.find(FIND_STRUCTURES),
+      (s) => s.structureType,
+    );
     let i;
     const allRoomStructures = roomStructures[this.name];
     for (i in allRoomStructures) {
       if (Object.prototype.hasOwnProperty.call(allRoomStructures, i)) {
-        roomStructures[this.name][i] = _.map(roomStructures[this.name][i], (s)=>s.id);
+        roomStructures[this.name][i] = _.map(
+          roomStructures[this.name][i],
+          (s) => s.id,
+        );
       }
     }
   }
 };
 
-multipleList.forEach((type)=> {
-  Object.defineProperty(Room.prototype, type+'s', {
+multipleList.forEach((type) => {
+  Object.defineProperty(Room.prototype, type + 's', {
     get: function() {
-      if (this['_'+type+'s'] && this['_'+type+'s_ts'] === Game.time) {
-        return this['_'+type+'s'];
+      if (this['_' + type + 's'] && this['_' + type + 's_ts'] === Game.time) {
+        return this['_' + type + 's'];
       } else {
         this._checkRoomCache();
         if (roomStructures[this.name][type]) {
-          this['_'+type+'s_ts'] = Game.time;
-          this['_'+type+'s'] = roomStructures[this.name][type].map(Game.getObjectById);
-          return this['_'+type+'s'];
+          this['_' + type + 's_ts'] = Game.time;
+          this['_' + type + 's'] = roomStructures[this.name][type].map(
+            Game.getObjectById,
+          );
+          return this['_' + type + 's'];
         } else {
-          this['_'+type+'s_ts'] = Game.time;
-          this['_'+type+'s'] = [];
-          return this['_'+type+'s'];
+          this['_' + type + 's_ts'] = Game.time;
+          this['_' + type + 's'] = [];
+          return this['_' + type + 's'];
         }
       }
     },
@@ -97,21 +123,23 @@ multipleList.forEach((type)=> {
   });
 });
 
-singleList.forEach((type)=> {
+singleList.forEach((type) => {
   Object.defineProperty(Room.prototype, type, {
     get: function() {
-      if (this['_'+type] && this['_'+type+'_ts'] === Game.time) {
-        return this['_'+type];
+      if (this['_' + type] && this['_' + type + '_ts'] === Game.time) {
+        return this['_' + type];
       } else {
         this._checkRoomCache();
         if (roomStructures[this.name][type]) {
-          this['_'+type+'_ts'] = Game.time;
-          this['_'+type] = Game.getObjectById(roomStructures[this.name][type][0]);
-          return this['_'+type];
+          this['_' + type + '_ts'] = Game.time;
+          this['_' + type] = Game.getObjectById(
+            roomStructures[this.name][type][0],
+          );
+          return this['_' + type];
         } else {
-          this['_'+type+'_ts'] = Game.time;
-          this['_'+type] = undefined;
-          return this['_'+type];
+          this['_' + type + '_ts'] = Game.time;
+          this['_' + type] = undefined;
+          return this['_' + type];
         }
       }
     },

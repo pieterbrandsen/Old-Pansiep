@@ -2,20 +2,22 @@ module.exports.cliPort = 21026;
 
 module.exports.verbose = false;
 
-module.exports.tickDuration = 100;
+module.exports.tickDuration = 10;
 
-module.exports.playerRoom = 'W8N1';
+module.exports.playerRoom = 'W3N7';
 players = {
-  'W8N1': {x: 33, y: 12},
+  'W3N7': {x: 34, y: 18},
   'W6N1': {x: 33, y: 21},
-  'W6N2': {x: 23, y: 26},
+  'W7N4': {x: 34, y: 29},
   'W8N3': {x: 12, y: 32},
 };
 module.exports.players = players;
 module.exports.rooms = Object.keys(players);
 
 module.exports.milestones = [
-  {tick: 10000, check: {level: 2}, required: true},
+  {tick: 10500, check: {level: 2}},
+  {tick: 50000, check: {level: 3}},
+  {tick: 70000, check: {level: 4}},
   // {tick: 1700, check: {structures: 2}},
   // {tick: 2800, check: {structures: 3}},
   // {tick: 3300, check: {structures: 4}},

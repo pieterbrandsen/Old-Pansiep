@@ -1,3 +1,7 @@
+// #region Require
+require('./config');
+// #endregion
+
 const repair = (creep, data) => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
@@ -5,18 +9,18 @@ const repair = (creep, data) => {
 
   // Return empty if current creep's storage is empty or no targets left to repair
   if (
-    creep.store.getUsedCapacity() === 0 ||
-    flagMemory.repair.targets.length === 0
+    creep.store.getUsedCapacity() === 0
   ) {
     return 'empty';
   }
 
   // If there are no construction sites left and no target, return full to get another goal if possible
   if (
-    !flagMemory.commonMemory.constructionSites.length === 0 &&
+    flagMemory.repair.targets.length === 0 &&
     !creepMemory.targetId &&
     !data.id
   ) {
+    if (!creep.pos.inRangeTo(creep.room.controller, 5)) creep.moveTo(creep.room.controller);
     return 'full';
   }
 
@@ -35,6 +39,8 @@ const repair = (creep, data) => {
     // Switch based on the results
     switch (result) {
     case OK:
+      config.expenses.repairing[creep.room.name] += creep.memory.parts.work;
+
       // If the hits of the repairTarget are high enough, remove structure
       if (
         repairTarget.hits === repairTarget.hitsMax ||

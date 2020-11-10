@@ -1,4 +1,8 @@
-const withdraw = (creep) => {
+// #region Require
+require('./config');
+// #endregion
+
+const upgrade = (creep) => {
   // Return full if current creep's storage is full
   if (creep.store.getUsedCapacity() === 0) return 'empty';
 
@@ -7,6 +11,9 @@ const withdraw = (creep) => {
 
   // Switch based on the results of the upgrade function
   switch (result) {
+  case OK:
+    config.expenses.upgrading[creep.room.name] += creep.memory.parts.work * 2;
+    break;
   case ERR_NOT_IN_RANGE:
     // If creep is not in range, move to controller
     creep.moveTo(creep.room.controller);
@@ -18,7 +25,7 @@ const withdraw = (creep) => {
 
 module.exports = {
   execute: (creep) => {
-    const result = withdraw(creep);
+    const result = upgrade(creep);
     return result;
   },
 };
