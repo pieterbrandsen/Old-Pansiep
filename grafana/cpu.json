@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1605010215707,
+  "iteration": 1605030321181,
   "links": [],
   "panels": [
     {
@@ -77,8 +77,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -97,7 +98,7 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "alias(movingAverage(currentAbove(stats.gauges.*.cpu.used, 0), 50), 'Average (50)')"
+          "target": "alias(movingAverage(currentAbove(stats.gauges.*.cpu.used, 0), 5000), 'Average (5000)')"
         }
       ],
       "thresholds": [],
@@ -189,8 +190,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -209,7 +211,7 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.cpu.headModules.*, 0), 50), 'Average (50)'), 0, 'sum')"
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.cpu.headModules.*, 0), 5000), 'Average (5000)'), 0, 'sum')"
         }
       ],
       "thresholds": [],
@@ -297,8 +299,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -310,14 +313,16 @@
       "steppedLine": false,
       "targets": [
         {
+          "hide": false,
           "refCount": 0,
           "refId": "A",
           "target": "aliasByNode(currentAbove(stats.gauges.*.cpu.smallModules, 0), 5)"
         },
         {
+          "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.cpu.smallModules, 0), 50), 'Average (50)'), 0, 'sum')"
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.cpu.smallModules, 0), 5000), 'Average (5000)'), 0, 'sum')"
         }
       ],
       "thresholds": [],
@@ -423,8 +428,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -443,7 +449,7 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.used, 0), 50), 'Average (50)'), 0, 'sum')"
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.used, 0), 5000), 'Average (5000)'), 0, 'sum')"
         }
       ],
       "thresholds": [],
@@ -535,8 +541,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -555,8 +562,8 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.*, 0), 50), 'Average (50)'), 0, 'sum')",
-          "textEditor": true
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.*, 0), 5000), 'Average (5000)'), 0, 'sum')",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -648,8 +655,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -668,7 +676,7 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.smallModules.*, 0), 50), 'Average (50)'), 0, 'sum')",
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.smallModules.*, 0), 5000), 'Average (5000)'), 0, 'sum')",
           "textEditor": false
         }
       ],
@@ -761,8 +769,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -776,12 +785,12 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "groupByNode(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.creepModules, 0), 7), 0, 'sum')"
+          "target": "groupByNode(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.creepModules.*, 0), 7), 0, 'sum')"
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.creepModules.*, 0), 50), 'Average (50)'), 0, 'sum')",
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.creepModules.*, 0), 5000), 'Average (5000)'), 0, 'sum')",
           "textEditor": false
         }
       ],
@@ -874,8 +883,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -894,7 +904,7 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 50), 'Average (50)'), 0, 'sum')",
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 5000), 'Average (5000)'), 0, 'sum')",
           "textEditor": false
         }
       ],
@@ -987,7 +997,7 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
           "legend": false,
           "lines": true,
@@ -1007,7 +1017,7 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 50), 'Average (50)'), 0, 'sum')",
+          "target": "groupByNode(alias(movingAverage(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 5000), 'Average (5000)'), 0, 'sum')",
           "textEditor": false
         }
       ],
@@ -1100,8 +1110,9 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Average (50)",
+          "alias": "Average (5000)",
           "bars": false,
+          "fill": 0,
           "legend": false,
           "lines": true,
           "linewidth": 10,
@@ -1130,22 +1141,22 @@
           "hide": true,
           "refCount": 1,
           "refId": "D",
-          "target": "movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 6, 'sum'), 50)"
+          "target": "movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 6, 'sum'), 5000)"
         },
         {
           "hide": true,
           "refCount": 0,
           "refId": "E",
-          "target": "aliasByMetric(divideSeries(movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 8, 'sum'), 50), #D))",
-          "targetFull": "aliasByMetric(divideSeries(movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 8, 'sum'), 50), movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 6, 'sum'), 50)))",
+          "target": "aliasByMetric(divideSeries(movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 8, 'sum'), 5000), #D))",
+          "targetFull": "aliasByMetric(divideSeries(movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 8, 'sum'), 5000), movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 6, 'sum'), 5000)))",
           "textEditor": false
         },
         {
           "hide": false,
-          "refCount": 1,
+          "refCount": 2,
           "refId": "C",
-          "target": "groupByNode(alias(#E, 'Average (50)'), 0, 'sum')",
-          "targetFull": "groupByNode(alias(aliasByMetric(divideSeries(movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 8, 'sum'), 50), movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 6, 'sum'), 50))), 'Average (50)'), 0, 'sum')"
+          "target": "groupByNode(alias(#E, 'Average (5000)'), 0, 'sum')",
+          "targetFull": "groupByNode(alias(aliasByMetric(divideSeries(movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.cpu.headModules.creeps.*, 0), 8, 'sum'), 5000), movingAverage(groupByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0), 6, 'sum'), 5000))), 'Average (5000)'), 0, 'sum')"
         }
       ],
       "thresholds": [],
@@ -1213,7 +1224,7 @@
         "name": "room",
         "options": [],
         "query": "stats.gauges.*.rooms.*",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
@@ -1233,5 +1244,5 @@
   "timezone": "",
   "title": "CPU",
   "uid": "KIFw1B2Mz",
-  "version": 2
+  "version": 19
 }

@@ -316,6 +316,7 @@ const memoryHandler = (goal, data) => {
         Memory.stats[Game.shard.name] = {
           gcl: {},
           rooms: {},
+          common: {},
           cpu: {headModules: {}, smallModules: {}},
         };
       }
@@ -1174,6 +1175,12 @@ const statsHandler = (goal, data) => {
       cpuMemory.limit = Game.cpu.limit;
       cpuMemory.used = functions.memoryAverager(cpuMemory.used, Game.cpu.getUsed());
     }
+
+    // Set all commonMemory related memory
+    const commonMemory = statsMemory['common'];
+    if (typeof commonMemory === 'object') {
+      commonMemory.energyEachTickPerSource = 10;
+    }
   };
   // #endregion
 
@@ -1224,8 +1231,8 @@ const statsHandler = (goal, data) => {
         energyMemory.storage = room.storage ?
           room.storage.store.getUsedCapacity(RESOURCE_ENERGY) :
           0;
-        energyMemory.terminal = room.storage ?
-          room.storage.store.getUsedCapacity(RESOURCE_ENERGY) :
+        energyMemory.terminal = room.terminal ?
+          room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) :
           0;
         energyMemory.capacity = flagMemory.commonMemory.energyStored.capacity;
         energyMemory.total = flagMemory.commonMemory.energyStored.usable;
