@@ -399,8 +399,8 @@ const spawnCreep = (room, roomType, data = {}) => {
       break;
     }
 
-    // Return body
-    return body;
+    // Return body and body cost
+    return {body: body, bodyCost: calcBodyCost(body)};
   };
 
   const aCreepHasBeenSpawned = [false, 'none'];
@@ -421,17 +421,20 @@ const spawnCreep = (room, roomType, data = {}) => {
     delete memory.directions;
 
     // Check if body is filled
-    if (body.length === 0) aCreepHasBeenSpawned[0] = true;
+    if (body.body.length === 0) aCreepHasBeenSpawned[0] = true;
 
     if (role === 'transfererLiTe') spawn = headSpawn;
 
     // Get return value on spawnCreep
-    const spawnCreep = spawn.spawnCreep(body, name, {
+    const spawnCreep = spawn.spawnCreep(body.body, name, {
       memory: memory,
       directions: directions,
     });
 
-    if (spawnCreep === OK) aCreepHasBeenSpawned[0] = true;
+    if (spawnCreep === OK) {
+      aCreepHasBeenSpawned[0] = true;
+      config.expenses.spawnExpenses[room.name][role] += body.bodyCost;
+    }
   });
 
   return aCreepHasBeenSpawned[1];

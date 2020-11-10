@@ -48,6 +48,7 @@ global.config = {
     'claimerLD',
     'mineral',
   ],
+  allCreepModules: ['harvest', 'build', 'claim', 'repair', 'reserve', 'transfer', 'upgrade', 'withdraw'],
   creepsCountMax: {
     pioneer: 4,
     transferer: 3,
@@ -59,4 +60,7 @@ global.config = {
     claimer: 1,
     mineral: 1,
   },
+  creepModuleCpuCost: {},
+  expenses: {spawnExpenses: {}, building: {}, repairing: {}, upgrading: {}},
+  income: {ownedHarvesting: {}, remoteHarvesting: {}},
 };

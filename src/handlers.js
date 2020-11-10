@@ -97,11 +97,9 @@ const allRoomsHandler = () => {
     const cpuUsedStart = Game.cpu.getUsed();
 
     const room = Game.rooms[roomName];
-    if (!roleCountByRoomByRole[roomName]) roleCountByRoomByRole[roomName] = {};
+    if (!config.expenses.spawnExpenses[roomName]) config.expenses.spawnExpenses[roomName] = {};
     config.allRoles.forEach((role) => {
-      if (!roleCountByRoomByRole[roomName][role]) {
-        roleCountByRoomByRole[roomName][role] = 0;
-      }
+      config.expenses.spawnExpenses[roomName][role] = 0;
     });
 
     // Run room handlers //
@@ -211,18 +209,34 @@ const remoteRoomHandler = (room) => {
 
 // #region Creep handler
 const creepHandler = () => {
+  config.creepModuleCpuCost = {};
+  roleCountByRoomByRole = {};
+
+  config.expenses.building = {};
+  config.expenses.repairing = {};
+  config.expenses.upgrading = {};
+  config.income.ownedHarvesting = {};
+  config.income.remoteHarvesting = {};
   _.forEach(Object.keys(Game.rooms), (roomName) => {
     const room = Game.rooms[roomName];
 
     // Reset all creepModules
-    if (Memory.stats[shardName].rooms[room.name] !== undefined) {
-      // Reset first all known cpu usage for the modules
-      // eslint-disable-next-line guard-for-in
-      for (const module in Memory.stats[shardName].rooms[room.name].cpu.creepModules) {
-        Memory.stats[shardName].rooms[room.name].cpu.creepModules[module] = 0;
-      }
-    }
+    if (!config.creepModuleCpuCost[room.name]) config.creepModuleCpuCost[room.name] = {};
+    config.allCreepModules.forEach((module) => {
+      config.creepModuleCpuCost[room.name][module] = 0;
+    });
+    if (!roleCountByRoomByRole[roomName]) roleCountByRoomByRole[roomName] = {};
+    config.allRoles.forEach((role) => {
+      roleCountByRoomByRole[roomName][role] = 0;
+    });
+
+    if (!config.expenses.building[roomName]) config.expenses.building[roomName] = 0;
+    if (!config.expenses.repairing[roomName]) config.expenses.repairing[roomName] = 0;
+    if (!config.expenses.upgrading[roomName]) config.expenses.upgrading[roomName] = 0;
+    if (!config.income.ownedHarvesting[roomName]) config.income.ownedHarvesting[roomName] = 0;
+    if (!config.income.remoteHarvesting[roomName]) config.income.remoteHarvesting[roomName] = 0;
   });
+
   _.forEach(Object.keys(Memory.creeps), (creepName) => {
     // * Set the cpu used for this creep to the memory
     // Get used cpu
@@ -335,6 +349,7 @@ const memoryHandler = (goal, data) => {
         Memory.stats[Game.shard.name].rooms[room.name] = {
           energyStored: {},
           commonMemory: {},
+          performance: {expenses: {}, income: {}},
           cpu: {headModules: {creeps: {}}, smallModules: {}, creepModules: {}},
         };
       }
@@ -1177,12 +1192,28 @@ const statsHandler = (goal, data) => {
       if (typeof commonMemory === 'object') {
         commonMemory.constructionSitesCount =
           flagMemory.commonMemory.constructionSites.length;
+        if (!commonMemory.creepCountByRole) commonMemory.creepCountByRole = {};
         // eslint-disable-next-line guard-for-in
-        for (const role in commonMemory.creepCountByRole) {
+        for (const role in roleCountByRoomByRole[room.name]) {
           commonMemory.creepCountByRole[role] = functions.memoryAverager(commonMemory.creepCountByRole[role], roleCountByRoomByRole[room.name][role]);
         }
-        // commonMemory.creepCountByRole = roleCountByRoomByRole[room.name];
         commonMemory.sourceCount = flagMemory.commonMemory.sources.length;
+      }
+
+      // Set all performance related memory
+      const performanceMemory = roomStats['performance'];
+      if (typeof performanceMemory === 'object') {
+        if (!performanceMemory.expenses.spawnExpenses) performanceMemory.expenses.spawnExpenses = {};
+        // eslint-disable-next-line guard-for-in
+        for (const role in config.expenses.spawnExpenses[room.name]) {
+          performanceMemory.expenses.spawnExpenses[role] = functions.memoryAverager(performanceMemory.expenses.spawnExpenses[role], config.expenses.spawnExpenses[room.name][role]);
+        }
+
+        performanceMemory.expenses.building = functions.memoryAverager(performanceMemory.expenses.building, config.expenses.building[room.name]);
+        performanceMemory.expenses.repairing = functions.memoryAverager(performanceMemory.expenses.repairing, config.expenses.repairing[room.name]);
+        performanceMemory.expenses.upgrading = functions.memoryAverager(performanceMemory.expenses.upgrading, config.expenses.upgrading[room.name]);
+        performanceMemory.income.ownedHarvesting = functions.memoryAverager(performanceMemory.income.ownedHarvesting, config.income.ownedHarvesting[room.name]);
+        performanceMemory.income.remoteHarvesting = functions.memoryAverager(performanceMemory.income.remoteHarvesting, config.income.remoteHarvesting[room.name]);
       }
 
       // Set all energy stored related memory
@@ -1204,6 +1235,10 @@ const statsHandler = (goal, data) => {
         // eslint-disable-next-line guard-for-in
         for (const role in cpuUsedByRoomByRole[room.name]) {
           cpuMemory.headModules['creeps'][role] = functions.memoryAverager(cpuMemory.headModules['creeps'][role], cpuUsedByRoomByRole[room.name][role]);
+        }
+        // eslint-disable-next-line guard-for-in
+        for (const role in config.creepModuleCpuCost[room.name]) {
+          cpuMemory.creepModules[role] = functions.memoryAverager(cpuMemory.headModules[role], config.creepModuleCpuCost[room.name][role]);
         }
       }
     }
