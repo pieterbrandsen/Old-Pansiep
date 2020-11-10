@@ -112,7 +112,9 @@ const allRoomsHandler = () => {
       remoteRoomHandler(room);
     }
 
-    Memory.stats[shardName].rooms[room.name].cpu.used = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.used, Game.cpu.getUsed() - cpuUsedStart);
+    if (Memory.stats[shardName].rooms[room.name]) {
+      Memory.stats[shardName].rooms[room.name].cpu.used = functions.memoryAverager(Memory.stats[shardName].rooms[room.name].cpu.used, Game.cpu.getUsed() - cpuUsedStart);
+    }
   });
 
   return Game.cpu.getUsed();
