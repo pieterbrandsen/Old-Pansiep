@@ -1,0 +1,9 @@
+[display]
+fullscreen=true
+
+[gource]
+camera-mode=overview
+hide=filenames,mouse
+stop-at-end=true
+title=Screeps
+
