@@ -1,6 +1,9 @@
+//#region Require('./)
 import { SourceMapConsumer } from "source-map";
+//#endregion
 
-export class ErrorMapper {
+//#region Functions()
+const errorMapper = class ErrorMapper {
   // Cache consumer
   private static _consumer?: SourceMapConsumer;
 
@@ -91,3 +94,9 @@ export class ErrorMapper {
     };
   }
 }
+//#endregion
+
+//#region Export functions
+export {errorMapper as ErrorMapper};
+//#endregion
+
