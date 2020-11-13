@@ -3,7 +3,7 @@ import { SourceMapConsumer } from "source-map";
 //#endregion
 
 //#region Functions()
-const errorMapper = class ErrorMapper {
+class ErrorMapper {
   // Cache consumer
   private static _consumer?: SourceMapConsumer;
 
@@ -97,6 +97,6 @@ const errorMapper = class ErrorMapper {
 //#endregion
 
 //#region Export functions
-export {errorMapper as ErrorMapper};
+export {ErrorMapper};
 //#endregion
 
