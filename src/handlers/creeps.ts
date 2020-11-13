@@ -16,7 +16,7 @@ const creepsHandler = () => {
     const room = Game.rooms[roomName];
 
     // Reset all creepModules
-   Config.creepModuleCpuCost[room.name] = {};
+    Config.creepModuleCpuCost[room.name] = {};
     Config.allCreepModules.forEach(module => {
       Config.creepModuleCpuCost[room.name][module] = 0;
     });
@@ -40,19 +40,19 @@ const creepsHandler = () => {
   // Loop through each creep known in the memory
   _.forEach(Object.keys(Memory.creeps), creepName => {
     // Acces Creep object
-    const creep:Creep = Game.creeps[creepName];
+    const creep: Creep = Game.creeps[creepName];
 
     // Check if creep is dead (undefined)
     if (creep === undefined) {
       delete Memory.creeps[creepName];
     } else {
-      // Else execute creep 
+      // Else execute creep
       creepHandler(creep);
     }
   });
 };
 
-const creepHandler = (creep: Creep):void => {
+const creepHandler = (creep: Creep): void => {
   // Get the creepMemory
   const creepMemory: CreepMemory = Memory.creeps[creep.name];
   // Get the flagMemory for the targetRoom of the creep
@@ -74,16 +74,15 @@ const creepHandler = (creep: Creep):void => {
   Config.cpuUsedByRoomByRole[creep.room.name][creepMemory.role] += Game.cpu.getUsed();
 };
 
-const roleHandler = (creep: Creep, roleName:string):void => {
+const roleHandler = (creep: Creep, roleName: string): void => {
   // Remove the reference to the long distance part
-  const shortRoleName:string = roleName.replace("LD", "");
-  
+  const shortRoleName: string = roleName.replace("LD", "");
+
   // Run the role with the shorter role name and the liveCreep object
   // runRoles[shortRoleName](creep, shortRoleName);
 };
 // #endregion
 
 //#region Export functions
-export {creepsHandler as GlobalCreepsHandler};
+export { creepsHandler as GlobalCreepsHandler };
 //#endregion
-
