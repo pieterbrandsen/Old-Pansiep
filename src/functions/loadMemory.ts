@@ -1,15 +1,15 @@
-// import {PreCpuGetter, EndCpuGetter} from '../functions/cpuGetter';
+//#region Require('./)
+import { IsMemoryPathDefined } from "./isMemoryPathDefined";
+import { PreCpuGetter, EndCpuGetter } from "./cpuGetter";
+//#endregion
 
-//   // Set cpuUsed to zero
-//   let cpuUsedStart = PreCpuGetter();
+//#region Functions()
+const memoryLoader = (): void => {
+  Memory;
+};
+//#endregion
 
-//   // Memory load cost
-//   // eslint-disable-next-line no-unused-expressions
-//   Memory;
-//   let cpuUsedEnd = Game.cpu.getUsed();
-//   // If Memory is defined, save the cpu used for this part. Otherwise it will return errors
-//   if (Memory.stats && Memory.stats[shardName]) {
-//     Memory.stats[shardName].cpu.headModules['loadMemory'] =
-//       cpuUsedEnd - cpuUsedStart;
-//     cpuUsedStart = cpuUsedEnd;
-//   }
+//#region Export functions
+export {memoryLoader as MemoryLoader};
+//#endregion
+

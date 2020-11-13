@@ -1,6 +1,8 @@
-import {IsMemoryPathDefined} from './isMemoryPathDefined';
-import {PreCpuGetter, EndCpuGetter} from './cpuGetter';
+//#region Require('./)
+import {IsMemoryPathDefined, PreCpuGetter, EndCpuGetter} from "../importer";
+//#endregion
 
+//#region Functions()
 const functionRunner = (liveFunction: any, ...args: any[]): void => {
   // Run the inputted function with the args inputted
   liveFunction(...args);
@@ -8,7 +10,7 @@ const functionRunner = (liveFunction: any, ...args: any[]): void => {
 
 const functionRunnerWithCpu = (liveFunction: any, liveMemoryObject: object|any, memoryName: string, ...args: any[]): void => {
   // If memory object is not defined, return
-  if (!IsMemoryPathDefined(liveMemoryObject.toString())) return;
+  if (!IsMemoryPathDefined(liveMemoryObject.toString())) return functionRunner(liveFunction, ...args);
 
   // Get the cpu before executing the function
   const preCpu: number = PreCpuGetter();
@@ -25,6 +27,7 @@ const functionRunnerWithCpu = (liveFunction: any, liveMemoryObject: object|any, 
   // Set the totalCpuUsed to the memoryObject path inputted
   liveMemoryObject[memoryName] = totalCpuUsed;
 }
+//#endregion
 
 //#region Export functions
 export {functionRunner as FunctionRunnerWithoutCpu, functionRunnerWithCpu as FunctionRunnerWithCpu};

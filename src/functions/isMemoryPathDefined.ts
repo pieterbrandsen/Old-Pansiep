@@ -1,3 +1,4 @@
+//#region Functions()
 const isMemoryPathDefined = (memoryPath: string): boolean => {
   // Get all the smaller pieces of the full memoryPath
   const memoryPathArray: string[] = memoryPath.split('.');
@@ -23,6 +24,7 @@ const isMemoryPathDefined = (memoryPath: string): boolean => {
   // Return true if there is only one piece of memoryPath
   else return true;
 };
+//#endregion
 
 //#region Export functions
 export {isMemoryPathDefined as IsMemoryPathDefined};
