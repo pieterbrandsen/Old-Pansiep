@@ -1,11 +1,12 @@
 interface MyRoom {
   spawns: Array;
+  containers: Array;
+  links: Array;
 }
 
 interface CreepMemory {
   role: string;
-  room: string;
-  working: boolean;
+  targetRoom: string;
 }
 
 interface FlagMemory {
@@ -20,7 +21,7 @@ interface FlagMemory {
     headSpawnId?: string | undefined;
     spawnEnergyStructures?: Array[string] | emptyArray;
     energyStored: { usable: number; capacity: number };
-    controllerStorage?: { usable: number };
+    controllerStorage?: { usable: number, id?: string | undefined };
     links?: {
       source0: string | undefined;
       source1: string | undefined;
@@ -54,6 +55,42 @@ interface Stats {
   };
   common: object;
   cpu: { headModules: object; smallModules: object };
+}
+
+interface Config {
+  username: string;
+  whitelist: string[];
+  tracking: boolean;
+  rooms: {
+    [key: string]: object[number];
+    minBucket: number;
+    remoteMinBucket: number;
+    loops: {
+      roomPlanner: { base: number; room: number };
+      structureNullChecker: number;
+      spawnCreep: number;
+      getSpawnerEnergy: number;
+      getAllEnergyStructures: number;
+      getConstructionStructures: number;
+      getDamagedStructures: number;
+      getDamagedCreeps: number;
+      getHostileCreeps: number;
+      sendEnergyInLinks: number;
+    };
+  };
+  allRoles: string[];
+  allCreepModules: string[];
+  creepsCountMax: object[number];
+  roleCountByRoomByRole: { [key: string]: { [key: string]: number;} };
+  cpuUsedByRoomByRole: { [key: string]: { [key: string]: number;} };
+  creepModuleCpuCost: { [key: string]: { [key: string]: number;} };
+  expenses: {
+    spawnExpenses: { [key: string]: number };
+    building: { [key: string]: number };
+    repairing: { [key: string]: number };
+    upgrading: { [key: string]: number };
+  };
+  income: { ownedHarvesting: { [key: string]: number }; remoteHarvesting: { [key: string]: number } };
 }
 
 // `global` extension samples

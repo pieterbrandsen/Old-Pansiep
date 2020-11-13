@@ -1,20 +1,15 @@
-const config = {
+const config: Config = {
   username: 'PandaMaster',
   whitelist: ['Rivaryn', 'Fiskmans'],
-  tracking: {
-    rooms: true,
-    intents: true,
-    cpu: true,
-  },
+  tracking: true,
+  // tracking: {
+  //   rooms: true,
+  //   intents: true,
+  //   cpu: true,
+  // },
   rooms: {
     minBucket: 1000,
-    visuals: {
-      debug: false,
-      structures: true,
-    },
-    remote: {
-      minBucket: 3000,
-    },
+    remoteMinBucket: 3000,
     loops: {
       roomPlanner: {
         base: 2500,
