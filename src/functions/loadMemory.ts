@@ -10,6 +10,5 @@ const memoryLoader = (): void => {
 //#endregion
 
 //#region Export functions
-export {memoryLoader as MemoryLoader};
+export { memoryLoader as MemoryLoader };
 //#endregion
-
