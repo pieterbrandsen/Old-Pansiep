@@ -1,18 +1,18 @@
-const isMemoryPathDefined = (memoryPath: string) => {
+const isMemoryPathDefined = (memoryPath: string): boolean => {
   // Get all the smaller pieces of the full memoryPath
   const memoryPathArray: string[] = memoryPath.split('.');
 
   if (memoryPathArray.length >= 0) {
     // Set the new memoryPath object to use in the loop
-    let testedMemoryObject: any = Memory;
+    let testedMemoryObject: object|any = Memory;
 
     // Loop through all the smaller pieces of the memoryPath expect "Memory"
     for (let i = 1; i < memoryPathArray.length; i++) {
       // Get the current string of the element
       const currentMemoryPart:string =  memoryPathArray[i];
 
-      // If the testMemoryPath + new part is not a object, return false
-      if (typeof testedMemoryObject[currentMemoryPart] !== "object") return false;
+      // If the testMemoryPath + new part is undefined, return false
+      if (testedMemoryObject[currentMemoryPart] === undefined) return false;
       // If it is still a object, set it to the testedMemoryObject
       else testedMemoryObject = testedMemoryObject[currentMemoryPart];
     }
