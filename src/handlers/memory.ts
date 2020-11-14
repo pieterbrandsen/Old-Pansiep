@@ -1,3 +1,7 @@
+//#region Require('./)
+import { OwnedRoomTimers, RemoteRoomTimers } from "../Utils/importer";
+//#endregion
+
 //#region Functions()
 const globalMemory = (): void => {
   // Set all memory paths to empty objects
@@ -12,7 +16,7 @@ const globalMemory = (): void => {
   };
 
   // If there are 4 keys (all paths), set the memory to filled
-  if (Object.keys(Memory).length === 4) Memory.isFilled = true;
+  if (Object.keys(Memory).length === 3) Memory.isFilled = true;
 };
 
 const globalRoomMemory = (room: Room): void => {
@@ -111,19 +115,19 @@ const ownedRoomMemory = (room: Room & MyRoom): void => {
   // Create a empty array for storing spawnEnergyStructures
   flagMemory.commonMemory.spawnEnergyStructures = [];
   // Set the storage in the controller storage to 0
-  flagMemory.commonMemory.controllerStorage = { usable: 0 };
+  flagMemory.commonMemory.controllerStorage = { usable: 0, type: undefined, id: "" };
   // Set all links to undefined
   flagMemory.commonMemory.links = {
-    source0: undefined,
-    source1: undefined,
-    head: undefined,
-    controller: undefined
+    source0: "",
+    source1: "",
+    head: "",
+    controller: ""
   };
   // Set the remotes object to default template
   // flagMemory.remotes = { totalSourceCount: 0, rooms: [] };
 
   // Run all timers for this room
-  // timersHandler("ownedRoom", { room: room });
+  OwnedRoomTimers(room);
 
   // Check if Game.time is dividable by 10, if so set the isFilled to true
   // By the time this is true it should be filled
@@ -138,7 +142,7 @@ const remoteRoomMemory = (room: Room & MyRoom): void => {
   const flagMemory: FlagMemory = Memory.flags[room.name];
 
   // Run all timers for this room
-  // timersHandler("remoteRoom", { room: room });
+  RemoteRoomTimers(room);
 
   // Check if Game.time is dividable by 10, if so set the isFilled to true
   // By the time this is true it should be filled

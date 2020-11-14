@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config, FunctionRunnerWithCpu } from "../utils/importer";
+import { Config, IsMemoryPathDefined, FunctionRunnerWithCpu, RunCreepRoles } from "../Utils/importer";
 //#endregion
 
 // #region Functions()
@@ -67,11 +67,10 @@ const creepHandler = (creep: Creep): void => {
   if (flagMemory && !flagMemory.isFilled) return;
 
   // Run the role
-  roleHandler(creep, creepRoleName);
+  FunctionRunnerWithCpu(roleHandler, IsMemoryPathDefined(`${Config.cpuUsedByRoomByRole}.${creep.room.name}`),creepMemory.role,creep, creepRoleName);
 
-  // Handle the tracking
+  // Handle the counting
   Config.roleCountByRoomByRole[creep.room.name][creepMemory.role]++;
-  Config.cpuUsedByRoomByRole[creep.room.name][creepMemory.role] += Game.cpu.getUsed();
 };
 
 const roleHandler = (creep: Creep, roleName: string): void => {
@@ -79,7 +78,7 @@ const roleHandler = (creep: Creep, roleName: string): void => {
   const shortRoleName: string = roleName.replace("LD", "");
 
   // Run the role with the shorter role name and the liveCreep object
-  // runRoles[shortRoleName](creep, shortRoleName);
+  RunCreepRoles(creep, shortRoleName);
 };
 // #endregion
 
