@@ -17,10 +17,12 @@ const claim = (creep: Creep) => {
       delete Memory.flags["claim"];
 
       // Create a builderLD flag and give it memory
+      // @ts-ignore
       creep.room.createFlag(creep.pos, `builderLD${creepMemory.spawnRoom}`);
       //@ts-ignore
       Memory.flags[`builderLD${creepMemory.spawnRoom}`] = {
-        spawnRoom: creepMemory.spawnRoom,
+      // @ts-ignore
+      spawnRoom: creepMemory.spawnRoom,
         room: creep.room.name
       };
       break;
