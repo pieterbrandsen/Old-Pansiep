@@ -11,12 +11,12 @@ const functionRunner = (liveFunction: any, ...args: any[]): void => {
 
 const functionRunnerWithCpu = (
   liveFunction: any,
-  liveMemoryObject: object | any,
+  liveMemoryObject: { [key: string]: number } | undefined,
   memoryName: string,
   ...args: any[]
 ): void => {
   // If memory object is not defined, return
-  if (!IsMemoryPathDefined(liveMemoryObject.toString())) return functionRunner(liveFunction, ...args);
+  if (liveMemoryObject === undefined) return functionRunner(liveFunction, ...args);
 
   // Get the cpu before executing the function
   const preCpu: number = PreCpuGetter();
