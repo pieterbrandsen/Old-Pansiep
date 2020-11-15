@@ -9,7 +9,7 @@ const getAllEnergyStructures = (room: Room & MyRoom): void => {
 
   const isStructureTheControllerStructure = (id: string): boolean => {
     // Check if the memory path is completely defined
-    if (IsMemoryPathDefined("flagMemory.commonMemory.controllerStorage.id")) {
+    if (IsMemoryPathDefined(`Memory.flags.${room.name}.commonMemory.controllerStorage.id`)) {
       //@ts-ignore: Above is checked if the path is defined
       // If the known controller storage id is the id inputted
       if (flagMemory.commonMemory.controllerStorage.id == id) return true;
