@@ -32,7 +32,7 @@ const repair = (creep: Creep, data?: any | undefined): string | undefined => {
 
     if (repairTarget === null) {
       flagMemory.commonMemory.repair.targets.shift();
-      return;
+      return "empty";
     }
 
     // Run the repair function

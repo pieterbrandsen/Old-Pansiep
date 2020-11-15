@@ -3,7 +3,7 @@ import { Config } from "../../Utils/importer";
 //#endregion
 
 //#region Functions()
-const build = (creep: Creep): string | void=> {
+const build = (creep: Creep): string | void => {
   // Make shortcut to memory
   const creepMemory: CreepMemory = creep.memory;
   const flagMemory: FlagMemory = Memory.flags[creepMemory.targetRoom];
@@ -27,7 +27,10 @@ const build = (creep: Creep): string | void=> {
     const constructionSite: ConstructionSite | null = Game.getObjectById(creepMemory.targetId);
 
     // If construction site doesn't exist, remove it
-    if (constructionSite === null) return "empty";
+    if (constructionSite === null) {
+      flagMemory.commonMemory.constructionSites.shift();
+      return "empty";
+    }
 
     // Run the build function
     const result = creep.build(constructionSite);
