@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"mocha.subdirectory": "..\\..\\..\\..\\..\\C:\\Users\\piete\\source\\repos\\Pansiep\\src",
+		"cSpell.words": [
+			"active",
+			"bodyparts",
+			"get",
+			"get active bodyparts",
+			"nocheck"
+		]
+	}
+}
