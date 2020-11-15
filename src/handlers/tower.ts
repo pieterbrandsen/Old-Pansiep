@@ -1,4 +1,5 @@
 //#region Require('./)
+import { Config } from "Utils/importer";
 //#endregion
 
 //#region Functions()
@@ -55,7 +56,7 @@ const towerHandler = (room: Room & MyRoom) => {
 
     // Let each tower repair the target
     room.towers.forEach((tower: StructureTower) => {
-      tower.repair(firstRepairTarget);
+      if (tower.repair(firstRepairTarget) === OK) Config.expenses.repairing[room.name] += 10;
     });
   }
 };
