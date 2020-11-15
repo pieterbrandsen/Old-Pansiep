@@ -59,7 +59,7 @@ const creepHandler = (creep: Creep): void => {
   const flagMemory: FlagMemory = Memory.flags[creepMemory.targetRoom];
   // Get the roleName without what is after the "-"
   const creepRoleName: string = creepMemory.role.split("-")[0];
-
+  
   // If there is no role name, return
   if (!creepRoleName) return;
 

@@ -45,9 +45,9 @@ const globalRoomMemory = (room: Room): void => {
     sourceCount: sources.length,
     // Get the id, type and amount from the mineral in this room
     mineral: {
-      id: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].id : undefined,
-      type: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined,
-      amount: room.find(FIND_MINERALS)[0] ? Math.round(room.find(FIND_MINERALS)[0].mineralAmount) : undefined
+      id: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].id : "",
+      type: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : "",
+      amount: room.find(FIND_MINERALS)[0] ? Math.round(room.find(FIND_MINERALS)[0].mineralAmount) : 0
     },
     // Set the id and pos of all sources to the memory of the room
     sources: sources,

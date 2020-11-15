@@ -5,6 +5,7 @@ import {
   FunctionRunnerWithCpu,
   FunctionRunnerWithoutCpu,
   IsMemoryPathDefined,
+  GlobalAllRoomsHandler,
   GlobalMemory,
   GlobalStats,
   GlobalCreepsHandler,
@@ -25,9 +26,9 @@ const globalHandler = () => {
     // Handles all creeps and runs their role
     FunctionRunnerWithCpu(GlobalCreepsHandler, IsMemoryPathDefined("Memory.stats.cpu.headModules"), "creeps");
 
-    // // Rooms handler //
-    // // Handles ALL global room related code
-    // FunctionRunnerWithCpu(GlobalAllRoomsHandler,Memory.stats.cpu.headModules,"rooms");
+    // Rooms handler //
+    // Handles ALL global room related code
+    FunctionRunnerWithCpu(GlobalAllRoomsHandler, IsMemoryPathDefined("Memory.stats.cpu.headModules"),"rooms");
 
     // Timers handler //
     // Handles all game timers and runs their code
