@@ -21,16 +21,19 @@ const remoteRoomHandler = (room: Room & MyRoom): void => {
   const flag = Game.flags[room.name];
 
   // If no flag, make a new one and init the memory //
-  if (!flag || Memory.flags[room.name] === undefined) {
-    room.createFlag(
-      room.controller ? room.controller.pos : GetRandomFreePos({ x: 0, y: 0, roomName: room.name }),
-      room.name,
-      COLOR_RED,
-      COLOR_WHITE
-    );
-    //@ts-ignore
-    Memory.flags[room.name] = {};
-    RemoteRoomMemory(room);
+  if (!flag || Memory.flags[room.name] === undefined || !Memory.flags[room.name].isFilled) {
+    if (!flag) {
+      room.createFlag(
+        room.controller ? room.controller.pos : GetRandomFreePos({ x: 0, y: 0, roomName: room.name }),
+        room.name,
+        COLOR_RED,
+        COLOR_WHITE
+      );
+      //@ts-ignore
+      Memory.flags[room.name] = {};
+      //@ts-ignore
+    } else if (Memory.flags[room.name] === undefined) Memory.flags[room.name] = {};
+    else RemoteRoomTimers(room);
   } else {
     // Run room visuals for remoteRooms  //
     // FunctionRunnerWithCpu(, IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.headModules`), "visuals", room);

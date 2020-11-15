@@ -26,6 +26,8 @@ const ownedRoomHandler = (room: Room & MyRoom): void => {
         COLOR_WHITE
       );
       //@ts-ignore
+      Memory.flags[room.name] = {};
+      //@ts-ignore
     } else if (Memory.flags[room.name] === undefined) Memory.flags[room.name] = {};
     else OwnedRoomMemory(room);
   } else {

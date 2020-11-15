@@ -20,56 +20,56 @@ const getBaseLayoutType = (room: Room) => {
     const bunkerPositions = [
       // Left to right
       {
-        top: { x: position.x - 5, y: position.y - 2 },
-        bottom: { x: position.x - 5, y: position.y + 1 }
+        top: { x: position.x - 5, y: position.y - 3 },
+        bottom: { x: position.x - 5, y: position.y + 2 }
       },
       {
-        top: { x: position.x - 4, y: position.y - 3 },
-        bottom: { x: position.x - 4, y: position.y + 3 }
+        top: { x: position.x - 4, y: position.y - 4 },
+        bottom: { x: position.x - 4, y: position.y + 4 }
       },
       {
-        top: { x: position.x - 3, y: position.y - 4 },
-        bottom: { x: position.x - 3, y: position.y + 4 }
+        top: { x: position.x - 3, y: position.y - 5 },
+        bottom: { x: position.x - 3, y: position.y + 5 }
       },
       {
-        top: { x: position.x - 2, y: position.y - 4 },
-        bottom: { x: position.x - 2, y: position.y + 5 }
+        top: { x: position.x - 2, y: position.y - 5 },
+        bottom: { x: position.x - 2, y: position.y + 6 }
       },
       {
-        top: { x: position.x - 1, y: position.y - 5 },
-        bottom: { x: position.x - 1, y: position.y + 7 }
+        top: { x: position.x - 1, y: position.y - 6 },
+        bottom: { x: position.x - 1, y: position.y + 8 }
       },
       {
-        top: { x: position.x - 0, y: position.y - 5 },
-        bottom: { x: position.x - 0, y: position.y + 7 }
+        top: { x: position.x - 0, y: position.y - 6 },
+        bottom: { x: position.x - 0, y: position.y + 8 }
       },
       {
-        top: { x: position.x + 1, y: position.y - 5 },
-        bottom: { x: position.x + 1, y: position.y + 7 }
+        top: { x: position.x + 1, y: position.y - 6 },
+        bottom: { x: position.x + 1, y: position.y + 8 }
       },
       {
-        top: { x: position.x + 2, y: position.y - 5 },
-        bottom: { x: position.x + 2, y: position.y + 7 }
+        top: { x: position.x + 2, y: position.y - 6 },
+        bottom: { x: position.x + 2, y: position.y + 8 }
       },
       {
-        top: { x: position.x + 3, y: position.y - 4 },
-        bottom: { x: position.x + 3, y: position.y + 6 }
+        top: { x: position.x + 3, y: position.y - 5 },
+        bottom: { x: position.x + 3, y: position.y + 7 }
       },
       {
-        top: { x: position.x + 4, y: position.y - 3 },
-        bottom: { x: position.x + 4, y: position.y + 5 }
+        top: { x: position.x + 4, y: position.y - 4 },
+        bottom: { x: position.x + 4, y: position.y + 6 }
       },
       {
-        top: { x: position.x + 5, y: position.y - 1 },
-        bottom: { x: position.x + 5, y: position.y + 4 }
+        top: { x: position.x + 5, y: position.y - 2 },
+        bottom: { x: position.x + 5, y: position.y + 5 }
       },
       {
-        top: { x: position.x + 6, y: position.y - 0 },
-        bottom: { x: position.x + 6, y: position.y + 3 }
+        top: { x: position.x + 6, y: position.y - 1 },
+        bottom: { x: position.x + 6, y: position.y + 4 }
       },
       {
-        top: { x: position.x + 7, y: position.y - 0 },
-        bottom: { x: position.x + 7, y: position.y + 2 }
+        top: { x: position.x + 7, y: position.y - 1 },
+        bottom: { x: position.x + 7, y: position.y + 3 }
       }
     ];
 
@@ -150,7 +150,7 @@ const getBaseLayoutType = (room: Room) => {
     if (headSpawn === null) return;
 
     // Get middle position of bunker
-    const midPos = headSpawn.pos;
+    const midPos:any = {x:headSpawn.pos.x, y:headSpawn.pos.y};
     midPos.x += 1;
     midPos.y -= 1;
 
@@ -189,18 +189,20 @@ const getBaseLayoutType = (room: Room) => {
 const getBaseLayoutBasedOnType = (room: Room, layoutType: string) => {
   // Acces flagMemory
   const flagMemory = Memory.flags[room.name];
-  let midPos;
+  let midPos:any = {};
 
   if (flagMemory.commonMemory.headSpawnId) {
     const headSpawn: StructureSpawn | null = Game.getObjectById(flagMemory.commonMemory.headSpawnId);
     if (headSpawn === null) return;
 
     // Get middle position of bunker
-    // midPos = {x: headSpawn.pos.x+1, y: headSpawn.pos.y-1};
-    midPos = { x: headSpawn.pos.x, y: headSpawn.pos.y };
+    midPos = {x: headSpawn.pos.x, y: headSpawn.pos.y};
+    midPos.x += 1;
+    midPos.y -= 1;
   } else if (flagMemory.roomPlanner.base !== undefined && flagMemory.roomPlanner.base.midPos) {
     midPos = flagMemory.roomPlanner.base.midPos;
   }
+
   if (midPos === undefined) return;
 
   // * Create bunker array //
