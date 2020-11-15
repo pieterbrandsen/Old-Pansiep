@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 4,
-  "iteration": 1605032724413,
+  "iteration": 1605459587038,
   "links": [],
   "panels": [
     {
@@ -86,21 +86,24 @@
       "targets": [
         {
           "hide": true,
-          "refCount": 1,
+          "refCount": -1,
           "refId": "A",
-          "target": "aliasByNode(sumSeries(stats.gauges.*.rooms.$room.performance.income.*), 6)"
+          "target": "aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.income.*), 5)",
+          "textEditor": false
         },
         {
           "hide": true,
-          "refCount": 1,
+          "refCount": -1,
           "refId": "B",
-          "target": "aliasByNode(sumSeries(stats.gauges.*.rooms.$room.performance.expenses.*.*), 6)"
+          "target": "aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.expenses.*), 6, 5)",
+          "textEditor": false
         },
         {
+          "hide": false,
           "refCount": 0,
           "refId": "C",
           "target": "alias(diffSeries(#A, #B), 'Net')",
-          "targetFull": "alias(diffSeries(aliasByNode(sumSeries(stats.gauges.*.rooms.$room.performance.income.*), 6), aliasByNode(sumSeries(stats.gauges.*.rooms.$room.performance.expenses.*.*), 6)), 'Net')"
+          "targetFull": "alias(diffSeries(aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.income.*), 5), aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.expenses.*), 6, 5)), 'Net')"
         }
       ],
       "thresholds": [],
@@ -199,7 +202,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByMetric(currentAbove(stats.gauges.*.rooms.$room.performance.income.*, 0.01))"
+          "target": "aliasByMetric(averageAbove(stats.gauges.rooms.$room.performance.income.*, 0.01))",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -298,14 +302,15 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.expenses.*, 0.01), 7)",
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.*, 0.01), 6)",
           "textEditor": false
         },
         {
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "alias(sumSeries(currentAbove(stats.gauges.*.rooms.$room.performance.expenses.*.*, 0.01)), 'spawning')"
+          "target": "alias(sumSeries(averageAbove(stats.gauges.rooms.$room.performance.expenses.*.*, 0.01)), 'spawning')",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -416,7 +421,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.ownedHarvesting, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3)",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -517,22 +523,24 @@
           "hide": true,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.ownedHarvesting, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3)",
+          "textEditor": true
         },
         {
           "hide": true,
-          "refCount": -1,
+          "refCount": 1,
           "refId": "B",
-          "target": "divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.sourceCount, 0.01), 4), #A)",
-          "targetFull": "divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.sourceCount, 0.01), 4), aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.ownedHarvesting, 0.01), 4))"
+          "target": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), #A)",
+          "targetFull": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3))",
+          "textEditor": true
         },
         {
           "hide": false,
           "refCount": 0,
           "refId": "D",
-          "target": "aliasByNode(divideSeries(currentAbove(stats.gauges.*.common.energyEachTickPerSource, 0.01), #B), 0)",
-          "targetFull": "aliasByNode(divideSeries(currentAbove(stats.gauges.*.common.energyEachTickPerSource, 0.01), divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.sourceCount, 0.01), 4), aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.ownedHarvesting, 0.01), 4))), 0)",
-          "textEditor": false
+          "target": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), #B), 0)",
+          "targetFull": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3))), 0)",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -630,7 +638,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.remoteHarvesting, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3)",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -731,21 +740,23 @@
           "hide": true,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.remoteHarvesting, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3)",
+          "textEditor": false
         },
         {
           "hide": true,
-          "refCount": -1,
+          "refCount": 1,
           "refId": "B",
-          "target": "divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.sourceCount, 0.01), 4), #A)",
-          "targetFull": "divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.sourceCount, 0.01), 4), aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.remoteHarvesting, 0.01), 4))"
+          "target": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), #A)",
+          "targetFull": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3))",
+          "textEditor": false
         },
         {
           "hide": true,
           "refCount": 0,
           "refId": "D",
-          "target": "aliasByNode(divideSeries(currentAbove(stats.gauges.*.common.energyEachTickPerSource, 0.01), #B), 0)",
-          "targetFull": "aliasByNode(divideSeries(currentAbove(stats.gauges.*.common.energyEachTickPerSource, 0.01), divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.commonMemory.sourceCount, 0.01), 4), aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.income.remoteHarvesting, 0.01), 4))), 0)",
+          "target": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), #B), 0)",
+          "targetFull": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3))), 0)",
           "textEditor": false
         }
       ],
@@ -858,7 +869,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByMetric(currentAbove(stats.gauges.*.rooms.$room.performance.expenses.spawnExpenses.*, 0.01))"
+          "target": "aliasByMetric(averageAbove(stats.gauges.rooms.$room.performance.expenses.spawnExpenses.*, 0.01))",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -955,7 +967,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.expenses.upgrading, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.upgrading, 0.01), 3)",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -1052,7 +1065,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.expenses.building, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.building, 0.01), 3)",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -1149,7 +1163,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.performance.expenses.repairing, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.repairing, 0.01), 3)",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -1260,7 +1275,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "groupByNode(aliasByMetric(currentAbove(stats.gauges.*.rooms.$room.commonMemory.creepCountByRole.*, 0.01)), 0, 'sum')"
+          "target": "groupByNode(aliasByMetric(averageAbove(stats.gauges.rooms.$room.commonMemory.creepCountByRole.*, 0.01)), 0, 'sum')",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -1353,7 +1369,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.*.rooms.$room.commonMemory.constructionSitesCount, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.constructionSitesCount, 0.01), 4)",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -1472,12 +1489,14 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "groupByNode(aliasByMetric(currentAbove(stats.gauges.*.rooms.$room.energyStored.total, 0.01)), 0, 'sum')"
+          "target": "groupByNode(aliasByMetric(averageAbove(stats.gauges.rooms.$room.energyStored.total, 0.01)), 0, 'sum')",
+          "textEditor": true
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(aliasByMetric(currentAbove(stats.gauges.*.rooms.$room.energyStored.capacity, 0.01)), 0, 'sum')"
+          "target": "groupByNode(aliasByMetric(averageAbove(stats.gauges.rooms.$room.energyStored.capacity, 0.01)), 0, 'sum')",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -1576,7 +1595,8 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(currentAbove(currentAbove(stats.gauges.*.rooms.$room.energyStored.storage, 0.01), 0), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.energyStored.storage, 0.01), 3)",
+          "textEditor": false
         }
       ],
       "thresholds": [
@@ -1683,7 +1703,8 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(currentAbove(currentAbove(stats.gauges.*.rooms.$room.energyStored.terminal, 0.01), 0), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.energyStored.terminal, 0.01), 3)",
+          "textEditor": true
         }
       ],
       "thresholds": [
@@ -1802,7 +1823,8 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.controller.level, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.level, 0.01), 3)",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -1905,14 +1927,16 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.controller.progress, 0.01), 4), #B), 0)",
-          "targetFull": "aliasByNode(divideSeries(aliasByNode(currentAbove(stats.gauges.*.rooms.$room.controller.progress, 0.01), 4), aliasByNode(currentAbove(stats.gauges.*.rooms.$room.controller.progressTotal, 0.01), 4)), 0)"
+          "target": "aliasByNode(divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progress, 0.01), 3), #B), 0)",
+          "targetFull": "aliasByNode(divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progress, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progressTotal, 0.01), 3)), 0)",
+          "textEditor": false
         },
         {
           "hide": true,
           "refCount": -1,
           "refId": "B",
-          "target": "aliasByNode(currentAbove(stats.gauges.*.rooms.$room.controller.progressTotal, 0.01), 4)"
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progressTotal, 0.01), 3)",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -1958,7 +1982,7 @@
       }
     }
   ],
-  "refresh": "",
+  "refresh": "1m",
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -1970,10 +1994,10 @@
           "selected": true,
           "tags": [],
           "text": [
-            "W1N8"
+            "W8N3"
           ],
           "value": [
-            "W1N8"
+            "W8N3"
           ]
         },
         "datasource": "localGraphite",
@@ -1999,12 +2023,12 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Performance",
   "uid": "Y68OQXhMk",
-  "version": 9
+  "version": 11
 }
