@@ -32,7 +32,7 @@ const globalStats = (): void => {
 
 const globalRoomStats = (room: Room): void => {
   // Define stats memory link
-  const statsMemory = Memory.stats[Game.shard.name];
+  const statsMemory = Memory.stats
 
   if (typeof statsMemory.rooms === "object") {
     // Get room stats from memory
@@ -118,7 +118,7 @@ const globalRoomStats = (room: Room): void => {
 
 const ownedRoomStats = (room: Room) => {
   // Define stats memory link
-  const statsMemory = Memory.stats[Game.shard.name];
+  const statsMemory = Memory.stats;
 
   if (typeof statsMemory.rooms === "object") {
     // Get room stats from memory
