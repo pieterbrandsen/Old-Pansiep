@@ -39,7 +39,7 @@ const remoteRoomHandler = (room: Room & MyRoom): void => {
     FunctionRunnerWithCpu(
       RemoteRoomTimers,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.headModules`),
-      "timers",
+      "timers","=",
       room
     );
 
@@ -47,7 +47,7 @@ const remoteRoomHandler = (room: Room & MyRoom): void => {
     FunctionRunnerWithCpu(
       RemoteRoomStats,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.headModules`),
-      "stats",
+      "stats", "=",
       room
     );
   }

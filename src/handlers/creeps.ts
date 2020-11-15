@@ -71,7 +71,7 @@ const creepHandler = (creep: Creep): void => {
     roleHandler,
     // Hope it works....
     Config.cpuUsedByRoomByRole[creep.room.name],
-    creepMemory.role,
+    creepMemory.role,"+=",
     creep,
     creepRoleName
   );

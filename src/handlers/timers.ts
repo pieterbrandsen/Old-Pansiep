@@ -32,7 +32,7 @@ const globalRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       RoomPlanner,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "roomPlanner",
+      "roomPlanner","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -43,7 +43,7 @@ const globalRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       GetAllEnergyStructures,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "getAllEnergyStructures",
+      "getAllEnergyStructures","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined) MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getAllEnergyStructures"], 0);
@@ -53,7 +53,7 @@ const globalRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       GetConstructionSites,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "getConstructionSites",
+      "getConstructionSites","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -64,7 +64,7 @@ const globalRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       GetDamagedStructures,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "getDamagedStructures",
+      "getDamagedStructures","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -75,7 +75,7 @@ const globalRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       GetDamagedCreeps,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "getDamagedCreeps",
+      "getDamagedCreeps","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -86,7 +86,7 @@ const globalRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       GetHostileCreeps,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "getHostileCreeps",
+      "getHostileCreeps","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -97,7 +97,7 @@ const globalRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       GlobalRoomStructureNullChecker,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "globalRoomStructureNullChecker",
+      "globalRoomStructureNullChecker","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -116,7 +116,7 @@ const ownedRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       BasePlanner,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "basePlanner",
+      "basePlanner","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -127,7 +127,7 @@ const ownedRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       RunSpawnCreep,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "spawnCreep",
+      "spawnCreep","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -138,7 +138,7 @@ const ownedRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       GetSpawnEnergyStructures,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "getSpawnEnergyStructures",
+      "getSpawnEnergyStructures","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -149,7 +149,7 @@ const ownedRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       OwnedRoomStructureNullChecker,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "ownedRoomStructureNullChecker",
+      "ownedRoomStructureNullChecker","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
@@ -160,7 +160,7 @@ const ownedRoomTimers = (room: Room) => {
     FunctionRunnerWithCpu(
       LinksHandler,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-      "linkHandler",
+      "linkHandler","=",
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)

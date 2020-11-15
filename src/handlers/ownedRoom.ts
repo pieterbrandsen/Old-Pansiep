@@ -36,7 +36,7 @@ const ownedRoomHandler = (room: Room & MyRoom): void => {
     FunctionRunnerWithCpu(
       OwnedRoomTimers,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.headModules`),
-      "timers",
+      "timers","=",
       room
     );
 
@@ -44,7 +44,7 @@ const ownedRoomHandler = (room: Room & MyRoom): void => {
     FunctionRunnerWithCpu(
       TowerHandler,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.headModules`),
-      "towers",
+      "towers","=",
       room
     );
 
@@ -52,7 +52,7 @@ const ownedRoomHandler = (room: Room & MyRoom): void => {
     FunctionRunnerWithCpu(
       OwnedRoomStats,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.headModules`),
-      "stats",
+      "stats","=",
       room
     );
   }

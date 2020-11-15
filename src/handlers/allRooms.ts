@@ -23,7 +23,7 @@ const allRoomsHandler = (): void => {
 
     // Run room handlers //
     if (room.controller && room.controller.my)
-      FunctionRunnerWithCpu(OwnedRoomHandler, IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu`), "used", room);
+      FunctionRunnerWithCpu(OwnedRoomHandler, IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu`), "used","=", room);
     else if (
       room.controller &&
       room.controller.reservation &&
@@ -32,7 +32,7 @@ const allRoomsHandler = (): void => {
       FunctionRunnerWithCpu(
         RemoteRoomHandler,
         IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu`),
-        "used",
+        "used","=",
         room
       );
     }

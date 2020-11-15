@@ -5,23 +5,23 @@ import { Config, FunctionRunnerWithCpu, Build, Claim, Source, Mineral, Repair, R
 const executeCreep = (creep: Creep, job: string): void | string => {
   switch (job) {
     case "build":
-      return FunctionRunnerWithCpu(Build, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Build, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "claim":
-      return FunctionRunnerWithCpu(Claim, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Claim, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "harvest":
-      return FunctionRunnerWithCpu(Source, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Source, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "mineral":
-      return FunctionRunnerWithCpu(Mineral, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Mineral, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "repair":
-      return FunctionRunnerWithCpu(Repair, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Repair, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "reserve":
-      return FunctionRunnerWithCpu(Reserve, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Reserve, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "transfer":
-      return FunctionRunnerWithCpu(Transfer, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Transfer, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "upgrade":
-      return FunctionRunnerWithCpu(Upgrade, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Upgrade, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     case "withdraw":
-      return FunctionRunnerWithCpu(Withdraw, Config.creepModuleCpuCost[creep.room.name],job,creep);
+      return FunctionRunnerWithCpu(Withdraw, Config.creepModuleCpuCost[creep.room.name],job,"+=",creep);
     default:
       break;
   }
