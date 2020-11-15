@@ -39,7 +39,7 @@ const sourceJob = (creep: Creep): string | undefined => {
   // Make shortcut to memory
   const creepMemory = creep.memory;
   const flagMemory = Memory.flags[creepMemory.targetRoom];
-
+  
   // Return full if current creep's storage is full
   if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
     return "full";
