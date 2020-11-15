@@ -139,9 +139,11 @@ const ownedRoomStats = (room: Room) => {
       controller.progressTotal = room.controller?.progressTotal;
     }
   }
+
+  globalRoomStats(room);
 };
 
-const remoteRoomStats = (room: Room) => {};
+const remoteRoomStats = (room: Room) => {globalRoomStats(room)};
 //#endregion
 
 //#region Export functions
