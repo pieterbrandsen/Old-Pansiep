@@ -28,7 +28,7 @@ const globalHandler = () => {
 
     // Rooms handler //
     // Handles ALL global room related code
-    FunctionRunnerWithCpu(GlobalAllRoomsHandler, IsMemoryPathDefined("Memory.stats.cpu.headModules"),"rooms");
+    FunctionRunnerWithCpu(GlobalAllRoomsHandler, IsMemoryPathDefined("Memory.stats.cpu.headModules"), "rooms");
 
     // Timers handler //
     // Handles all game timers and runs their code

@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config, MemoryAverager,  } from "../Utils/importer";
+import { Config, MemoryAverager } from "../Utils/importer";
 //#endregion
 
 //#region Functions()
@@ -32,7 +32,7 @@ const globalStats = (): void => {
 
 const globalRoomStats = (room: Room): void => {
   // Define stats memory link
-  const statsMemory = Memory.stats
+  const statsMemory = Memory.stats;
 
   if (typeof statsMemory.rooms === "object") {
     // Get room stats from memory

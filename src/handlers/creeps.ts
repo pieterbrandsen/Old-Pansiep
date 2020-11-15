@@ -59,7 +59,7 @@ const creepHandler = (creep: Creep): void => {
   const flagMemory: FlagMemory = Memory.flags[creepMemory.targetRoom];
   // Get the roleName without what is after the "-"
   const creepRoleName: string = creepMemory.role.split("-")[0];
-  
+
   // If there is no role name, return
   if (!creepRoleName) return;
 
@@ -67,7 +67,13 @@ const creepHandler = (creep: Creep): void => {
   if (flagMemory && !flagMemory.isFilled) return;
 
   // Run the role
-  FunctionRunnerWithCpu(roleHandler, IsMemoryPathDefined(`${Config.cpuUsedByRoomByRole}.${creep.room.name}`),creepMemory.role,creep, creepRoleName);
+  FunctionRunnerWithCpu(
+    roleHandler,
+    IsMemoryPathDefined(`${Config.cpuUsedByRoomByRole}.${creep.room.name}`),
+    creepMemory.role,
+    creep,
+    creepRoleName
+  );
 
   // Handle the counting
   Config.roleCountByRoomByRole[creep.room.name][creepMemory.role]++;

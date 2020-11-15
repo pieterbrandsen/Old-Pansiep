@@ -2,12 +2,12 @@
 import { Config, Build, Claim, Source, Mineral, Repair, Reserve, Transfer, Upgrade, Withdraw } from "../Utils/importer";
 //#endregion
 
-const executeCreep = (creep: Creep, job: string):void|string => {
+const executeCreep = (creep: Creep, job: string): void | string => {
   switch (job) {
     case "build":
       return Build(creep);
     case "claim":
-        return Claim(creep);
+      return Claim(creep);
     case "harvest":
       return Source(creep);
     case "mineral":
@@ -68,18 +68,18 @@ const moveToRoom = (creep: Creep & MyCreep, targetRoom: string): boolean => {
 const pioneer = (creep: Creep & MyCreep) => {
   // Get missing parts for the memory
   getMissingPartsCount(creep);
-  
+
   // Create a acces point to the flagMemory //
   const flagMemory: FlagMemory = Memory.flags[creep.memory.spawnRoom];
-  
+
   // Check if creep needs to move to another room
   if (!isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) return;
-  
+
   if (creep.memory.job === undefined) {
     creep.memory.job = "withdraw";
     return;
   }
-  
+
   // Run the creep
   const result = executeCreep(creep, creep.memory.job);
 

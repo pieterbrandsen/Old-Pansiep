@@ -15,11 +15,11 @@ interface CreepMemory {
   spawnRoom: string;
   parts: { work: number; carry: number };
   job: string;
-  miniJob?:string;
+  miniJob?: string;
   sourceNumber?: number;
   sourceId?: string;
   targetId?: string;
-  onPosition?:boolean;
+  onPosition?: boolean;
 }
 
 interface FlagMemory {

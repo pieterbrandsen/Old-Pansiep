@@ -97,6 +97,5 @@ class ErrorMapper {
 //#endregion
 
 //#region Export functions
-export {ErrorMapper};
+export { ErrorMapper };
 //#endregion
-
