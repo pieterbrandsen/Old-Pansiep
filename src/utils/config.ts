@@ -1,6 +1,6 @@
 const config: Config = {
-  username: 'PandaMaster',
-  whitelist: ['Rivaryn', 'Fiskmans'],
+  username: "PandaMaster",
+  whitelist: ["Rivaryn", "Fiskmans"],
   tracking: true,
   // tracking: {
   //   rooms: true,
@@ -13,37 +13,37 @@ const config: Config = {
     loops: {
       roomPlanner: {
         base: 2500,
-        room: 500,
+        room: 500
       },
       structureNullChecker: 1000,
       spawnCreep: 10,
-      getSpawnerEnergy: 50,
+      getSpawnEnergyStructures: 50,
       getAllEnergyStructures: 50,
-      getConstructionStructures: 100,
+      getConstructionSites: 100,
       getDamagedStructures: 50,
       getDamagedCreeps: 50,
       getHostileCreeps: 50,
-      sendEnergyInLinks: 10,
-    },
+      linkHandler: 10
+    }
   },
   allRoles: [
-    'pioneer',
-    'transferer',
-    'harvester-0',
-    'harvester-1',
-    'builder',
-    'repairer',
-    'upgrader',
-    'transfererLD',
-    'reserverLD',
-    'harvesterLD-0',
-    'harvesterLD-1',
-    'builderLD',
-    'repairerLD',
-    'claimerLD',
-    'mineral',
+    "pioneer",
+    "transferer",
+    "harvester-0",
+    "harvester-1",
+    "builder",
+    "repairer",
+    "upgrader",
+    "transfererLD",
+    "reserverLD",
+    "harvesterLD-0",
+    "harvesterLD-1",
+    "builderLD",
+    "repairerLD",
+    "claimerLD",
+    "mineral"
   ],
-  allCreepModules: ['harvest', 'build', 'claim', 'repair', 'reserve', 'transfer', 'upgrade', 'withdraw'],
+  allCreepModules: ["harvest", "build", "claim", "repair", "reserve", "transfer", "upgrade", "withdraw"],
   creepsCountMax: {
     pioneer: 4,
     transferer: 3,
@@ -53,14 +53,14 @@ const config: Config = {
     upgrader: 3,
     reserver: 1,
     claimer: 1,
-    mineral: 1,
+    mineral: 1
   },
   roleCountByRoomByRole: {},
   cpuUsedByRoomByRole: {},
 
   creepModuleCpuCost: {},
-  expenses: {spawnExpenses: {}, building: {}, repairing: {}, upgrading: {}},
-  income: {ownedHarvesting: {}, remoteHarvesting: {}},
+  expenses: { spawnExpenses: {}, building: {}, repairing: {}, upgrading: {} },
+  income: { ownedHarvesting: {}, remoteHarvesting: {} }
 };
 
-export {config as Config};
+export { config as Config };
