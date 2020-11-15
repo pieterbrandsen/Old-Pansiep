@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 4,
-  "iteration": 1605459587038,
+  "iteration": 1605470227736,
   "links": [],
   "panels": [
     {
@@ -1963,7 +1963,7 @@
           "format": "percentunit",
           "label": null,
           "logBase": 1,
-          "max": "100",
+          "max": "1",
           "min": "0",
           "show": true
         },
@@ -1994,10 +1994,10 @@
           "selected": true,
           "tags": [],
           "text": [
-            "W8N3"
+            "W6N1"
           ],
           "value": [
-            "W8N3"
+            "W6N1"
           ]
         },
         "datasource": "localGraphite",
@@ -2023,12 +2023,12 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Performance",
   "uid": "Y68OQXhMk",
-  "version": 11
+  "version": 12
 }
