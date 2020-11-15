@@ -15,7 +15,8 @@ import {
   LinksHandler,
   RoomPlanner,
   BasePlanner,
-  IsMemoryPathDefined
+  IsMemoryPathDefined,
+  MemoryAverager
 } from "../Utils/importer";
 //#endregion
 
@@ -35,18 +36,17 @@ const globalRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["roomPlanner"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["roomPlanner"], 0);
 
   // Run GetAllEnergyStructures if the TimerRunner returns true;
-  if (TimerRunner(Config.rooms.loops.roomPlanner.room) || !flagMemory.isFilled)
+  if (TimerRunner(Config.rooms.loops.getAllEnergyStructures) || !flagMemory.isFilled)
     FunctionRunnerWithCpu(
       GetAllEnergyStructures,
       IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
       "getAllEnergyStructures",
       room
     );
-  else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["getAllEnergyStructures"] = 0;
+  else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined) MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getAllEnergyStructures"], 0);
 
   // Run GetConstructionSites if the TimerRunner returns true;
   if (TimerRunner(Config.rooms.loops.getConstructionSites) || !flagMemory.isFilled)
@@ -57,7 +57,7 @@ const globalRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["getConstructionSites"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getConstructionSites"], 0);
 
   // Run GetDamagedStructures if the TimerRunner returns true;
   if (TimerRunner(Config.rooms.loops.getDamagedStructures) || !flagMemory.isFilled)
@@ -79,7 +79,7 @@ const globalRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["getDamagedCreeps"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getDamagedCreeps"], 0);
 
   // Run GetHostileCreeps if the TimerRunner returns true;
   if (TimerRunner(Config.rooms.loops.getHostileCreeps) || !flagMemory.isFilled)
@@ -101,7 +101,7 @@ const globalRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["globalRoomStructureNullChecker"] = 0;
+    MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["globalRoomStructureNullChecker"], 0);
 };
 
 const ownedRoomTimers = (room: Room) => {
@@ -120,7 +120,7 @@ const ownedRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["basePlanner"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["basePlanner"], 0);
 
   // Run SpawnCreep if the TimerRunner returns true;
   if (TimerRunner(Config.rooms.loops.spawnCreep) || !flagMemory.isFilled)
@@ -131,7 +131,7 @@ const ownedRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["spawnCreep"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["spawnCreep"], 0);
 
   // Run GetSpawnEnergyStructures if the TimerRunner returns true;
   if (TimerRunner(Config.rooms.loops.getSpawnEnergyStructures) || !flagMemory.isFilled)
@@ -142,7 +142,7 @@ const ownedRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["getSpawnEnergyStructures"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getSpawnEnergyStructures"], 0);
 
   // Run OwnedRoomStructureNullChecker if the TimerRunner returns true;
   if (TimerRunner(Config.rooms.loops.structureNullChecker) || !flagMemory.isFilled)
@@ -153,7 +153,7 @@ const ownedRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["ownedRoomStructureNullChecker"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["ownedRoomStructureNullChecker"], 0);
 
   // Run GetSpawnEnergyStructures if the TimerRunner returns true;
   if (TimerRunner(Config.rooms.loops.linkHandler) || !flagMemory.isFilled)
@@ -164,7 +164,7 @@ const ownedRoomTimers = (room: Room) => {
       room
     );
   else if (IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined)
-    Memory.stats.rooms[room.name].cpu.smallModules["linkHandler"] = 0;
+  MemoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["linkHandler"], 0);
 };
 
 const remoteRoomTimers = (room: Room) => {
