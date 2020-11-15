@@ -1,12 +1,13 @@
 //#region Require('./)
 import { IsMemoryPathDefined } from "./isMemoryPathDefined";
 import { PreCpuGetter, EndCpuGetter } from "./cpuGetter";
+import { MemoryAverager } from "./memoryAverager";
 //#endregion
 
 //#region Functions()
-const functionRunner = (liveFunction: any, ...args: any[]): void => {
+const functionRunner = (liveFunction: any, ...args: any[]): any => {
   // Run the inputted function with the args inputted
-  liveFunction(...args);
+  return liveFunction(...args);
 };
 
 const functionRunnerWithCpu = (
@@ -14,7 +15,7 @@ const functionRunnerWithCpu = (
   liveMemoryObject: { [key: string]: number } | undefined,
   memoryName: string,
   ...args: any[]
-): void => {
+): any => {
   // If memory object is not defined, return
   if (liveMemoryObject === undefined) return functionRunner(liveFunction, ...args);
 
@@ -22,7 +23,7 @@ const functionRunnerWithCpu = (
   const preCpu: number = PreCpuGetter();
 
   // Run the inputted function with the args inputted
-  functionRunner(liveFunction, ...args);
+  const functionResult = functionRunner(liveFunction, ...args);
 
   // Get the cpu after executing the function
   const endCpu: number = EndCpuGetter();
@@ -31,7 +32,9 @@ const functionRunnerWithCpu = (
   const totalCpuUsed: number = endCpu - preCpu;
 
   // Set the totalCpuUsed to the memoryObject path inputted
-  liveMemoryObject[memoryName] = totalCpuUsed;
+  if (totalCpuUsed > 0) liveMemoryObject[memoryName] = MemoryAverager(liveMemoryObject[memoryName], totalCpuUsed);
+
+  return functionResult;
 };
 //#endregion
 
