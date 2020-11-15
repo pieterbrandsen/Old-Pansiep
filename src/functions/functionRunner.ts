@@ -14,6 +14,7 @@ const functionRunnerWithCpu = (
   liveFunction: any,
   liveMemoryObject: { [key: string]: number } | undefined,
   memoryName: string,
+  calcSymbol: "=" | "+=",
   ...args: any[]
 ): any => {
   // If memory object is not defined, return
@@ -32,7 +33,18 @@ const functionRunnerWithCpu = (
   const totalCpuUsed: number = endCpu - preCpu;
 
   // Set the totalCpuUsed to the memoryObject path inputted
-  if (totalCpuUsed > 0) liveMemoryObject[memoryName] = MemoryAverager(liveMemoryObject[memoryName], totalCpuUsed);
+  if (totalCpuUsed >= 0) {
+    switch (calcSymbol) {
+      case "=":
+        liveMemoryObject[memoryName] = MemoryAverager(liveMemoryObject[memoryName], totalCpuUsed);
+        break;
+      case "+=":
+        liveMemoryObject[memoryName] += totalCpuUsed;
+        break;
+      default:
+        break;
+    }
+  }
 
   return functionResult;
 };
