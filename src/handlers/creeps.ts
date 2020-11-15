@@ -69,7 +69,8 @@ const creepHandler = (creep: Creep): void => {
   // Run the role
   FunctionRunnerWithCpu(
     roleHandler,
-    IsMemoryPathDefined(`${Config.cpuUsedByRoomByRole}.${creep.room.name}`),
+    // Hope it works....
+    Config.cpuUsedByRoomByRole[creep.room.name],
     creepMemory.role,
     creep,
     creepRoleName
