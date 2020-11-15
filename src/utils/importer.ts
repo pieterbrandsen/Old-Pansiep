@@ -12,6 +12,7 @@ export * from "../Creeps/modules/withdraw"
 // * Functions //
 export * from "../Functions/cpuGetter";
 export * from "../Functions/functionRunner";
+export * from "../Functions/getRandomFreePos";
 export * from "../Functions/isMemoryPathDefined";
 export * from "../Functions/loadMemory";
 export * from "../Functions/memoryAverager";
@@ -27,13 +28,17 @@ export * from "../Handlers/timer functions/getHostileCreeps";
 export * from "../Handlers/timer functions/getSpawnEnergyStructures";
 export * from "../Handlers/timer functions/spawnCreep";
 export * from "../Handlers/timer functions/structureNullChecker";
+export * from "../Handlers/allRooms";
 export * from "../Handlers/creeps";
 export * from "../Handlers/global";
 export * from "../Handlers/links";
 export * from "../Handlers/memory";
+export * from "../Handlers/ownedRoom";
+export * from "../Handlers/remoteRoom";
 export * from "../Handlers/runCreepRoles";
 export * from "../Handlers/stats";
 export * from "../Handlers/timers";
+export * from "../Handlers/tower";
 
 // * Room
 export * from '../Rooms/roomPlanner';
