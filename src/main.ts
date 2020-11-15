@@ -1,5 +1,7 @@
 //#region Require('./)
-import { ErrorMapper, GlobalHandler } from "./utils/importer";
+import { ErrorMapper, GlobalHandler } from "./Utils/importer";
+import "./Prototypes/prototype.Room.structures";
+import "./Prototypes/traveler";
 //#endregion
 
 //#region Functions()
