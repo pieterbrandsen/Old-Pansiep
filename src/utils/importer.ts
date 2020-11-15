@@ -34,10 +34,6 @@ export * from "../Handlers/memory";
 export * from "../Handlers/runCreepRoles";
 export * from "../Handlers/stats";
 export * from "../Handlers/timers";
-// import * as OwnedRoomHandlerFile from "./handlers/ownedRoom";
-// import * as RemoteRoomHandlerFile from "./handlers/remoteRoom";
-// import * as RoomHandlerFile from "./handlers/room";
-// import * as CreepHandlerFile from "./handlers/stats";
 
 // * Room
 export * from '../Rooms/roomPlanner';

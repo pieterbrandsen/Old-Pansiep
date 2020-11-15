@@ -1,7 +1,3 @@
-//#region Require('./)
-import { Config } from "../../Utils/importer";
-//#endregion
-
 //#region Functions()
 const globalRoomStructureNullChecker = (room: Room) => {
   // Create a acces point to the flagMemory //
@@ -142,6 +138,7 @@ const ownedRoomStructureNullChecker = (room: Room & MyRoom) => {
   }
 
   // Set amount of mineral to the flagMemory
+  //@ts-ignore
   flagMemory.commonMemory.mineral.amount = room.find(FIND_MINERALS)[0]
     ? Math.round(room.find(FIND_MINERALS)[0].mineralAmount)
     : undefined;

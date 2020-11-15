@@ -1,6 +1,5 @@
 //#region Require('./)
 import { IsMemoryPathDefined } from "./isMemoryPathDefined";
-import { PreCpuGetter, EndCpuGetter } from "./cpuGetter";
 //#endregion
 
 //#region Functions()
