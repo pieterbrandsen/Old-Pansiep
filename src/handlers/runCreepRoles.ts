@@ -1,27 +1,27 @@
 //#region Require('./)
-import { Config, Build, Claim, Source, Mineral, Repair, Reserve, Transfer, Upgrade, Withdraw } from "../Utils/importer";
+import { Config, FunctionRunnerWithCpu, Build, Claim, Source, Mineral, Repair, Reserve, Transfer, Upgrade, Withdraw } from "../Utils/importer";
 //#endregion
 
 const executeCreep = (creep: Creep, job: string): void | string => {
   switch (job) {
     case "build":
-      return Build(creep);
+      return FunctionRunnerWithCpu(Build, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "claim":
-      return Claim(creep);
+      return FunctionRunnerWithCpu(Claim, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "harvest":
-      return Source(creep);
+      return FunctionRunnerWithCpu(Source, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "mineral":
-      return Mineral(creep);
+      return FunctionRunnerWithCpu(Mineral, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "repair":
-      return Repair(creep);
+      return FunctionRunnerWithCpu(Repair, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "reserve":
-      return Reserve(creep);
+      return FunctionRunnerWithCpu(Reserve, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "transfer":
-      return Transfer(creep);
+      return FunctionRunnerWithCpu(Transfer, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "upgrade":
-      return Upgrade(creep);
+      return FunctionRunnerWithCpu(Upgrade, Config.creepModuleCpuCost[creep.room.name],job,creep);
     case "withdraw":
-      return Withdraw(creep);
+      return FunctionRunnerWithCpu(Withdraw, Config.creepModuleCpuCost[creep.room.name],job,creep);
     default:
       break;
   }
