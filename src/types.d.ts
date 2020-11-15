@@ -25,7 +25,7 @@ interface CreepMemory {
 interface FlagMemory {
   commonMemory: {
     sourceCount: number;
-    mineral: { id: string; type: string; amount: number };
+    mineral: { id: string; type: any; amount: number };
     sources: { id: string; pos: RoomPosition } | emptyArray;
     constructionSites: [id: string] | emptyArray;
     energyStructures: [id: string] | emptyArray;

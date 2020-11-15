@@ -3,7 +3,8 @@ import { Config } from "../../Utils/importer";
 //#endregion
 
 //#region Function()
-const repair = (creep: Creep, data?: any): string | undefined => {
+const repair = (creep: Creep, data?: any | undefined): string | undefined => {
+  if (data === undefined) data = {};
   // Make shortcut to memory
   const creepMemory: CreepMemory = creep.memory;
   const flagMemory: FlagMemory = Memory.flags[creepMemory.targetRoom];
