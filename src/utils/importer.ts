@@ -20,14 +20,14 @@ export * from "../Functions/timerRunner";
 
 // * Handlers
 // Timer functions
-export * from "../Handlers/timer functions/getAllEnergyStructures";
-export * from "../Handlers/timer functions/getConstructionSites";
-export * from "../Handlers/timer functions/getDamagedCreeps";
-export * from "../Handlers/timer functions/getDamagedStructures";
-export * from "../Handlers/timer functions/getHostileCreeps";
-export * from "../Handlers/timer functions/getSpawnEnergyStructures";
-export * from "../Handlers/timer functions/spawnCreep";
-export * from "../Handlers/timer functions/structureNullChecker";
+export * from "../Handlers/timerFunctions/getAllEnergyStructures";
+export * from "../Handlers/timerFunctions/getConstructionSites";
+export * from "../Handlers/timerFunctions/getDamagedCreeps";
+export * from "../Handlers/timerFunctions/getDamagedStructures";
+export * from "../Handlers/timerFunctions/getHostileCreeps";
+export * from "../Handlers/timerFunctions/getSpawnEnergyStructures";
+export * from "../Handlers/timerFunctions/spawnCreep";
+export * from "../Handlers/timerFunctions/structureNullChecker";
 export * from "../Handlers/allRooms";
 export * from "../Handlers/creeps";
 export * from "../Handlers/global";
