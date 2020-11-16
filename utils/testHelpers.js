@@ -64,6 +64,7 @@ module.exports.followLog = followLog;
  */
 const setPassword = function(line, socket, rooms, roomsSeen, playerRoom) {
   for (const room of rooms) {
+    console.log(room, line)
     if (line.startsWith(`'User ${room} with bot AI "screeps-bot-pansiep" spawned in ${room}'`)) {
       roomsSeen[room] = true;
       console.log(`> Set password for ${room}`);

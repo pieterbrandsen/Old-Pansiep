@@ -59,6 +59,7 @@ class Tester {
         appendix = ` with runtime ${this.maxRuntime / 60} minutes`
       }
       console.log(`> Start the simulation${appendix}`);
+      console.log(this.maxRuntime)
       if (this.maxRuntime > 0) {
         await sleep(this.maxRuntime);
         console.log(`${lastTick} End of simulation`);

@@ -5,6 +5,7 @@ import "./Prototypes/traveler";
 //#endregion
 
 //#region Functions()
+//@ts-ignore
 export const loop = ErrorMapper.wrapLoop((): void => {
   // Run main handler
   // This will call the rest of the handlers
