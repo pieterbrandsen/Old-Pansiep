@@ -1,6 +1,6 @@
 //#region Require('./)
 // import { Config, SpawnCreep } from "../../utils/importer";
-import { Config, SpawnCreep } from "../../Utils/importer";
+import { Config, SpawnCreep } from "../../Utils/importer/internals";
 //#endregion
 
 //#region Functions()

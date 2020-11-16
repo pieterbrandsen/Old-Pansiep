@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config, FunctionRunnerWithCpu, Build, Claim, Source, Mineral, Repair, Reserve, Transfer, Upgrade, Withdraw } from "../Utils/importer";
+import { Config, FunctionRunnerWithCpu, Build, Claim, Source, Mineral, Repair, Reserve, Transfer, Upgrade, Withdraw } from "../Utils/importer/internals";
 //#endregion
 
 const executeCreep = (creep: Creep, job: string): void | string => {

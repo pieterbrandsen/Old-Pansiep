@@ -1,5 +1,5 @@
 //#region Require('./)
-import { OwnedRoomTimers, RemoteRoomTimers } from "../Utils/importer";
+import { OwnedRoomTimers, RemoteRoomTimers } from "../Utils/importer/internals";
 //#endregion
 
 //#region Functions()

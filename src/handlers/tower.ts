@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer";
+import { Config } from "Utils/importer/internals";
 //#endregion
 
 //#region Functions()

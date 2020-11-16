@@ -9,7 +9,7 @@ import {
   TowerHandler,
   RemoteRoomTimers,
   RemoteRoomStats
-} from "../Utils/importer";
+} from "../Utils/importer/internals";
 //#endregion
 
 //#region Functions()

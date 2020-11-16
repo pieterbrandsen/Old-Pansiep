@@ -5,7 +5,7 @@ import {
   RemoteRoomHandler,
   FunctionRunnerWithCpu,
   IsMemoryPathDefined
-} from "../Utils/importer";
+} from "../Utils/importer/internals";
 //#endregion
 
 //#region Functions()

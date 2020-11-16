@@ -19,7 +19,6 @@ export * from "Functions/memoryAverager";
 export * from "Functions/timerRunner";
 
 // * Handlers
-// Timer functions
 export * from "Handlers/timerFunctions/getAllEnergyStructures";
 export * from "Handlers/timerFunctions/getConstructionSites";
 export * from "Handlers/timerFunctions/getDamagedCreeps";
@@ -30,7 +29,7 @@ export * from "Handlers/timerFunctions/spawnCreep";
 export * from "Handlers/timerFunctions/structureNullChecker";
 export * from "Handlers/allRooms";
 export * from "Handlers/creeps";
-export * from "Handlers/global";
+export * from "ManagerManager";
 export * from "Handlers/links";
 export * from "Handlers/memory";
 export * from "Handlers/ownedRoom";
@@ -45,5 +44,5 @@ export * from "Rooms/roomPlanner";
 export * from "Rooms/spawnCreep";
 
 // * Utils
-export * from "Utils/config";
+export * from "Utils/config/config";
 //#endregion

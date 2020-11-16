@@ -8,7 +8,7 @@ import {
   OwnedRoomStats,
   TowerHandler,
   OwnedRoomTimers
-} from "../Utils/importer";
+} from "../Utils/importer/internals";
 //#endregion
 
 //#region Functions()

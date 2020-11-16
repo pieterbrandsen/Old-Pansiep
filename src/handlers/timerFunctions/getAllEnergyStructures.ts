@@ -1,5 +1,5 @@
 //#region Require('./)
-import { IsMemoryPathDefined } from "../../Utils/importer";
+import { IsMemoryPathDefined } from "../../Utils/importer/internals";
 //#endregion
 
 //#region Functions()

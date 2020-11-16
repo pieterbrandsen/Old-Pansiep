@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config, IsMemoryPathDefined, FunctionRunnerWithCpu, RunCreepRoles } from "../Utils/importer";
+import { Config, IsMemoryPathDefined, FunctionRunnerWithCpu, RunCreepRoles } from "../Utils/importer/internals";
 //#endregion
 
 // #region Functions()

@@ -1,5 +1,5 @@
 //#region Require('./)
-import { GlobalHandler } from "Utils/importer";
+import { ManagerManager } from "Utils/importer/internals";
 import {ErrorMapper} from "Utils/ErrorMapper"
 import "Prototypes/prototype.Room.structures";
 import "Prototypes/traveler";
@@ -10,7 +10,7 @@ import "Prototypes/traveler";
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
   // Run main handler
-  // This will call the rest of the handlers
-  GlobalHandler();
+  // This will call the rest of the managers
+  ManagerManager.runManagerManager();
 });
 //#endregion

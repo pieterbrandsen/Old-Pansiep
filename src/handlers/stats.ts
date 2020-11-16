@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config, MemoryAverager } from "../Utils/importer";
+import { Config, MemoryAverager } from "../Utils/importer/internals";
 //#endregion
 
 //#region Functions()
