@@ -1,8 +1,6 @@
 //#region Require('./)
 import {
   Config,
-  OwnedRoomHandler,
-  RemoteRoomHandler,
   FunctionRunnerWithCpu,
   IsMemoryPathDefined
 } from "../Utils/importer/internals";
