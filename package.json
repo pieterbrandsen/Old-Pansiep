@@ -1,8 +1,8 @@
 {
   "name": "screeps-bot-pansiep",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "A Screeps bot",
-  "main": "dist/main.js",
+  "main": "src/main.ts",
   "screeps_bot": true,
   "devDependencies": {
     "@types/lodash": "^3.10.2",
