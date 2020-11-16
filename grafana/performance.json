@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 4,
-  "iteration": 1605470227736,
+  "iteration": 1605512820632,
   "links": [],
   "panels": [
     {
@@ -86,24 +86,32 @@
       "targets": [
         {
           "hide": true,
-          "refCount": -1,
+          "refCount": 1,
           "refId": "A",
-          "target": "aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.income.*), 5)",
+          "target": "sumSeries(stats.gauges.rooms.$room.performance.income.*)",
           "textEditor": false
         },
         {
           "hide": true,
-          "refCount": -1,
+          "refCount": 1,
           "refId": "B",
-          "target": "aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.expenses.*), 6, 5)",
+          "target": "sumSeries(stats.gauges.rooms.$room.performance.expenses.*.*, #D)",
+          "targetFull": "sumSeries(stats.gauges.rooms.$room.performance.expenses.*.*, sumSeries(stats.gauges.rooms.$room.performance.expenses.*))",
           "textEditor": false
         },
         {
           "hide": false,
-          "refCount": 0,
+          "refCount": 1,
           "refId": "C",
           "target": "alias(diffSeries(#A, #B), 'Net')",
-          "targetFull": "alias(diffSeries(aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.income.*), 5), aliasByNode(sumSeries(stats.gauges.rooms.$room.performance.expenses.*), 6, 5)), 'Net')"
+          "targetFull": "alias(diffSeries(sumSeries(stats.gauges.rooms.$room.performance.income.*), sumSeries(stats.gauges.rooms.$room.performance.expenses.*.*, sumSeries(stats.gauges.rooms.$room.performance.expenses.*))), 'Net')"
+        },
+        {
+          "hide": true,
+          "refCount": 0,
+          "refId": "D",
+          "target": "sumSeries(stats.gauges.rooms.$room.performance.expenses.*)",
+          "textEditor": false
         }
       ],
       "thresholds": [],
@@ -1994,10 +2002,10 @@
           "selected": true,
           "tags": [],
           "text": [
-            "W6N1"
+            "All"
           ],
           "value": [
-            "W6N1"
+            "$__all"
           ]
         },
         "datasource": "localGraphite",
@@ -2023,12 +2031,12 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Performance",
   "uid": "Y68OQXhMk",
-  "version": 12
+  "version": 13
 }
