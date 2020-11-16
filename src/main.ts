@@ -1,11 +1,14 @@
 //#region Require('./)
-import { ErrorMapper, GlobalHandler } from "Utils/importer";
-import "./Prototypes/prototype.Room.structures";
-import "./Prototypes/traveler";
+import { GlobalHandler } from "Utils/importer";
+import {ErrorMapper} from "Utils/ErrorMapper"
+import "Prototypes/prototype.Room.structures";
+import "Prototypes/traveler";
 //#endregion
 
 //#region Functions()
-export const loop = ErrorMapper.wrapLoop((): void => {
+// When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
+// This utility uses source maps to get the line numbers and file names of the original, TS source code
+export const loop = ErrorMapper.wrapLoop(() => {
   // Run main handler
   // This will call the rest of the handlers
   GlobalHandler();

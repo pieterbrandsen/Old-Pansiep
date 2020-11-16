@@ -46,5 +46,4 @@ export * from "Rooms/spawnCreep";
 
 // * Utils
 export * from "Utils/config";
-export * from "Utils/ErrorMapper";
 //#endregion

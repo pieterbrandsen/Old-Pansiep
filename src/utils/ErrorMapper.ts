@@ -1,20 +1,14 @@
-//#region Require('./)
 import { SourceMapConsumer } from "source-map";
-//#endregion
 
-//#region Functions()
-class ErrorMapper {
+export class ErrorMapper {
   // Cache consumer
   private static _consumer?: SourceMapConsumer;
 
   public static get consumer(): SourceMapConsumer {
-    // eslint-disable-next-line no-underscore-dangle
     if (this._consumer == null) {
-      // eslint-disable-next-line no-underscore-dangle
       this._consumer = new SourceMapConsumer(require("main.js.map"));
     }
 
-    // eslint-disable-next-line no-underscore-dangle
     return this._consumer;
   }
 
@@ -94,8 +88,3 @@ class ErrorMapper {
     };
   }
 }
-//#endregion
-
-//#region Export functions
-export { ErrorMapper };
-//#endregion
