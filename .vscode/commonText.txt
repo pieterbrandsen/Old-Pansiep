@@ -5,6 +5,6 @@
 //#endregion
 
 //#region Export functions
-export {errorMapper as ErrorMapper};
+export {ErrorMapper};
 //#endregion
 

@@ -1,8 +1,6 @@
 //#region Require('./)
 import { ManagerManager } from "Utils/importer/internals";
 import {ErrorMapper} from "Utils/ErrorMapper"
-import "Prototypes/prototype.Room.structures";
-import "Prototypes/traveler";
 //#endregion
 
 //#region Functions()
