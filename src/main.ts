@@ -6,8 +6,8 @@ import { ManagerManager, ErrorMapper } from "Utils/importer/internals";
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-    // Run main handler
-    // This will call the rest of the managers
+    // Run main manager
+    // This will call the all the managers
     ManagerManager.runManagerManager();
 });
 //#endregion
