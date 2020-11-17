@@ -1,9 +1,17 @@
 //#region Require('./)
-// * Handlers
 export * from "ManagerManager";
+
+// * Memory
+export * from "Memory/MemoryManager";
+export * from "Memory/Memory.All.Api";
+export * from "Memory/Memory.Empire.Api";
+export * from "Memory/Memory.Room.Api";
 
 // * Room
 export * from "Rooms/RoomManager";
-export * from "Rooms/Room.Main.Api";
 export * from "Rooms/Room.State.Helper";
+
+// * Utils
+export * from "Utils/config/config";
+export * from "Utils/ErrorMapper";
 //#endregion
