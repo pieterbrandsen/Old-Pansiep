@@ -1,5 +1,5 @@
 //#region Require('./)
-import { RoomManager, MemoryManager } from "Utils/importer/internals";
+import { RoomManager, MemoryManager, SpawningManager } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -26,6 +26,17 @@ export class ManagerManager {
             RoomManager.runRoomManager();
         } catch (err) {
             console.log("There was an error in the runRoomManager function");
+            console.log("File: Src/ManagerManager.ts");
+            console.log(`Error: ${err}`);
+        }
+
+        try {
+            // Run the spawningManager
+            // This will run all spawning related management
+            // Like spawning creeps and setting caps for spawning
+            SpawningManager.runSpawningManager();
+        } catch (err) {
+            console.log("There was an error in the runSpawningManager function");
             console.log("File: Src/ManagerManager.ts");
             console.log(`Error: ${err}`);
         }
