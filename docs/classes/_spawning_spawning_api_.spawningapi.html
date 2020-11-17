@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MemoryApi_Empire | screeps-bot-pansiep</title>
+	<title>SpawningApi | screeps-bot-pansiep</title>
 	<meta name="description" content="Documentation for screeps-bot-pansiep">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_memory_memory_empire_api_.html">&quot;Memory/Memory.Empire.Api&quot;</a>
+					<a href="../modules/_spawning_spawning_api_.html">&quot;Spawning/Spawning.Api&quot;</a>
 				</li>
 				<li>
-					<a href="_memory_memory_empire_api_.memoryapi_empire.html">MemoryApi_Empire</a>
+					<a href="_spawning_spawning_api_.spawningapi.html">SpawningApi</a>
 				</li>
 			</ul>
-			<h1>Class MemoryApi_Empire</h1>
+			<h1>Class SpawningApi</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">MemoryApi_Empire</span>
+						<span class="target">SpawningApi</span>
 					</li>
 				</ul>
 			</section>
@@ -84,7 +84,7 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_empire_api_.memoryapi_empire.html#getownedrooms" class="tsd-kind-icon">get<wbr>Owned<wbr>Rooms</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getopenspawn" class="tsd-kind-icon">get<wbr>Open<wbr>Spawn</a></li>
 							</ul>
 						</section>
 					</div>
@@ -93,19 +93,34 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="getownedrooms" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Owned<wbr>Rooms</h3>
+					<a name="getopenspawn" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Open<wbr>Spawn</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Owned<wbr>Rooms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Open<wbr>Spawn<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in Memory/Memory.Empire.Api.ts:8</li>
+									<li>Defined in Spawning/Spawning.Api.ts:13</li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">[]</span></h4>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Try to get a spawn in the inputted room
+									If no spawn is found, return null</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Room to find spawn in</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -123,7 +138,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_memory_memory_all_api_.html">&quot;<wbr>Memory/<wbr>Memory.<wbr>All.<wbr>Api&quot;</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/_memory_memory_empire_api_.html">&quot;<wbr>Memory/<wbr>Memory.<wbr>Empire.<wbr>Api&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -138,7 +153,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_rooms_roommanager_.html">&quot;<wbr>Rooms/<wbr>Room<wbr>Manager&quot;</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/_spawning_spawning_api_.html">&quot;<wbr>Spawning/<wbr>Spawning.<wbr>Api&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -163,10 +178,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_memory_memory_empire_api_.memoryapi_empire.html" class="tsd-kind-icon">Memory<wbr>Api_<wbr><wbr>Empire</a>
+						<a href="_spawning_spawning_api_.spawningapi.html" class="tsd-kind-icon">Spawning<wbr>Api</a>
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_memory_memory_empire_api_.memoryapi_empire.html#getownedrooms" class="tsd-kind-icon">get<wbr>Owned<wbr>Rooms</a>
+								<a href="_spawning_spawning_api_.spawningapi.html#getopenspawn" class="tsd-kind-icon">get<wbr>Open<wbr>Spawn</a>
 							</li>
 						</ul>
 					</li>
