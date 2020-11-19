@@ -11,6 +11,10 @@ export * from "Memory/Memory.Room.Api";
 export * from "Rooms/RoomManager";
 export * from "Rooms/Room.State.Helper";
 
+// * Spawning
+export * from "Spawning/SpawningManager";
+export * from "Spawning/Spawning.Api";
+
 // * Utils
 export * from "Utils/config/config";
 export * from "Utils/ErrorMapper";
