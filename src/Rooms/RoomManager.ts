@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { MemoryApi_Empire } from "Utils/importer/internals";
+import { MemoryApi_Empire, RoomHelper_State, RoomHelper_Structure, TimerManager } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -15,6 +15,24 @@ export class RoomManager {
         _.forEach(ownedRooms, (room: Room) => RoomManager.runSingleRoom(room));
     }
 
-    private static runSingleRoom(room: Room): void {}
+    private static runSingleRoom(room: Room): void {
+        RoomHelper_State.isRoomSetup(room);
+        TimerManager.runTimerForRoom(room);
+        const roomState: string = RoomHelper_State.getRoomState(room);
+
+        if (room.controller!.level >= 3) {
+            if (roomState === 'ATTACK') {
+                RoomHelper_Structure.towerAttacking(room);
+            }
+            else {
+                RoomHelper_Structure.towerRepairing(room);
+                RoomHelper_Structure.towerHealing(room);
+            }
+        }
+
+        if (room.controller!.level >= 5) {
+            RoomHelper_Structure.runLinks(room);
+        }
+    }
 }
 //#endregion
