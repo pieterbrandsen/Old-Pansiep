@@ -5,29 +5,19 @@ import { MemoryApi_All, MemoryApi_Empire, MemoryApi_Room } from "Utils/importer/
 
 //#region Class
 export class MemoryManager {
-    public static runMemoryManager(): void {
-        MemoryApi_All.garbageCollection();
-        this.initMainMemory();
+  public static runMemoryManager(): void {
+    MemoryApi_All.garbageCollection();
+    MemoryApi_All.initMainMemory();
 
-        const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
-        _.forEach(ownedRooms, (room: Room): void => {
-            const isOwnedRoom: boolean = true;
-            MemoryApi_Room.initRoomMemory(room, isOwnedRoom);
-        });
-    }
+    const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
+    _.forEach(ownedRooms, (room: Room): void => {
+      const isOwnedRoom: boolean = true;
+      MemoryApi_Room.initRoomMemory(room, isOwnedRoom);
+      MemoryApi_Room.resetTracking(room);
+    });
 
-    private static initMainMemory(): void {
-        if (!Memory.rooms) {
-            Memory.rooms = {};
-        }
-
-        if (!Memory.flags) {
-            Memory.flags = {};
-        }
-
-        if (!Memory.creeps) {
-            Memory.creeps = {};
-        }
-    }
+    // Set the ticks alive one tick higher
+    Memory.stats["ticksAlive"]++;
+  }
 }
 //#endregion
