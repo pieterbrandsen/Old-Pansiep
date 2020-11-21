@@ -13,7 +13,7 @@ export const Config: Config = {
         loops: {
             roomPlanner: {
                 base: 2500,
-                room: 500
+                room: 1
             },
             structureNullChecker: 1000,
             spawnCreep: 10,
