@@ -1,5 +1,5 @@
 //#region Require('./)
-import {Config} from "Utils/importer/internals";
+import { Config } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -10,11 +10,15 @@ export class CreepRole_Build {
     const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
 
     // Return empty if current creep's storage is empty
-    if (creep.store.getUsedCapacity() === 0) {return "empty";}
+    if (creep.store.getUsedCapacity() === 0) {
+      return "empty";
+    }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
     if (roomMemory.commonMemory.constructionSites.length === 0 && !creepMemory.targetId) {
-      if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {creep.moveTo(creep.room.controller);}
+      if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
+        creep.moveTo(creep.room.controller);
+      }
       return "full";
     }
 

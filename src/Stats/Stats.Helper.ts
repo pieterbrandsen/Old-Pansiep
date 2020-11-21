@@ -45,7 +45,9 @@ export class StatsHelper {
       const commonMemory = roomStats["commonMemory"];
       if (typeof commonMemory === "object") {
         commonMemory.constructionSitesCount = roomMemory.commonMemory.constructionSites.length;
-        if (!commonMemory.creepCountByRole) { commonMemory.creepCountByRole = {}; }
+        if (!commonMemory.creepCountByRole) {
+          commonMemory.creepCountByRole = {};
+        }
         // eslint-disable-next-line guard-for-in
         for (const role in Config.roleCountByRoomByRole[room.name]) {
           commonMemory.creepCountByRole[role] = MemoryApi_All.memoryAverager(
@@ -59,7 +61,9 @@ export class StatsHelper {
       // Set all performance related memory
       const performanceMemory = roomStats["performance"];
       if (typeof performanceMemory === "object") {
-        if (!performanceMemory.expenses.spawnExpenses) { performanceMemory.expenses.spawnExpenses = {}; }
+        if (!performanceMemory.expenses.spawnExpenses) {
+          performanceMemory.expenses.spawnExpenses = {};
+        }
         for (const role in Config.expenses.spawnExpenses[room.name]) {
           performanceMemory.expenses.spawnExpenses[role] = MemoryApi_All.memoryAverager(
             performanceMemory.expenses.spawnExpenses[role],
@@ -119,7 +123,7 @@ export class StatsHelper {
 
   public static ownedRoom = (room: Room) => {
     StatsHelper.globalRoom(room);
-    
+
     // Define stats memory link
     const statsMemory = Memory.stats;
 

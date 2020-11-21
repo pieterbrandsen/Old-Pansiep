@@ -36,7 +36,7 @@ interface RoomMemory {
     room: { sources: BestPosition[]; controller?: BestPosition };
     base?: { type: string | undefined; midPos: RoomPos };
   };
-  enemies: { parts: {[key: string]: number}; creeps: Array<{ id: string, parts: {[key: string]: number}}> };
+  enemies: { parts: { [key: string]: number }; creeps: Array<{ id: string; parts: { [key: string]: number } }> };
   damagedCreeps: string[];
   remotes: { totalSourceCount: number; rooms: string[] };
 
@@ -60,11 +60,11 @@ interface Stats {
       energyStored: any;
       spawnerEnergy: any;
       controller: any;
-      cpu: {headModules: {creeps: any}, smallModules: { [key: string]: number}, creepModules: any};
+      cpu: { headModules: { creeps: any }; smallModules: { [key: string]: number }; creepModules: any };
     };
   };
   common: any;
-  cpu: { bucket: number, limit: number, used: number, headModules: any; smallModules: any };
+  cpu: { bucket: number; limit: number; used: number; headModules: any; smallModules: any };
 }
 
 interface Config {
@@ -90,7 +90,7 @@ interface Config {
   };
   allRoles: string[];
   allCreepModules: string[];
-  creepsCountMax:  { [key: string]: number};
+  creepsCountMax: { [key: string]: number };
   roleCountByRoomByRole: { [key: string]: { [key: string]: number } };
   cpuUsedByRoomByRole: { [key: string]: { [key: string]: number } };
   creepModuleCpuCost: { [key: string]: { [key: string]: number } };

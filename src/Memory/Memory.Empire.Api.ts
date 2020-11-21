@@ -20,7 +20,7 @@ export class MemoryApi_Empire {
 
     Config.creepModuleCpuCost = {};
     Config.roleCountByRoomByRole = {};
-  
+
     Config.expenses.building = {};
     Config.expenses.repairing = {};
     Config.expenses.upgrading = {};

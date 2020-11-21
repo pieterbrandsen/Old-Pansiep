@@ -212,7 +212,7 @@ export class TimerHelper_Functions {
   public static ownedRoomStructureNullChecker(room: Room) {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
-  
+
     // If the headSpawn is null
     if (Game.getObjectById(roomMemory.commonMemory.headSpawnId!) === null) {
       const spawns = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
@@ -242,10 +242,10 @@ export class TimerHelper_Functions {
         const controllerPos = roomMemory.roomPlanner.room.controller.pos;
         // Find all structures at the known controller position
         const foundStructures = room.lookForAt(LOOK_STRUCTURES, controllerPos.x, controllerPos.y);
-  
+
         // Save the found controller storage
         let controllerStorage: any;
-  
+
         // Loop through each of the structures found
         foundStructures.forEach(structure => {
           // If the structure is a container or link
@@ -258,38 +258,38 @@ export class TimerHelper_Functions {
             };
           }
         });
-  
+
         // If the structure was found in the loop, save everything to the roomMemory
         if (roomMemory.commonMemory.controllerStorage !== undefined && controllerStorage) {
           roomMemory.commonMemory.controllerStorage.id = controllerStorage.id;
           roomMemory.commonMemory.controllerStorage.type = controllerStorage.type;
         } else if (roomMemory.commonMemory.controllerStorage !== undefined) {
           roomMemory.commonMemory.controllerStorage.usable = 0;
- }
+        }
       }
     }
-  
+
     // Check all links to see if its still there //
     // Check each source for a link
     if (room.controller!.level >= 5) {
       for (let i = 0; i < roomMemory.commonMemory.sources.length; i++) {
         // Get the source
         const source: Source | null = Game.getObjectById(roomMemory.commonMemory.sources[i].id);
-  
+
         // If source is not null
         if (source !== null) {
           // Find a link
           const sourceLink = source.pos.findInRange(FIND_MY_STRUCTURES, 2, {
             filter: { structureType: STRUCTURE_LINK }
           })[0];
-  
+
           // If a link is found, set it to the memory
           if (roomMemory.commonMemory.links !== undefined && sourceLink !== undefined) {
             roomMemory.commonMemory.links[`source${i}`] = sourceLink.id;
           }
         }
       }
-  
+
       // Check if there is a link at the headSpawn
       const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory.headSpawnId!);
       if (headSpawn !== null) {
@@ -297,34 +297,34 @@ export class TimerHelper_Functions {
         const spawnLink = headSpawn.pos.findInRange(FIND_MY_STRUCTURES, 2, {
           filter: { structureType: STRUCTURE_LINK }
         })[0];
-  
+
         // If a link is found, set it to the memory
         if (roomMemory.commonMemory.links !== undefined && spawnLink !== undefined) {
           roomMemory.commonMemory.links["head"] = spawnLink.id;
         }
       }
-  
+
       // Check if there is a link at the controller
       // Find a link
       const controllerLink = room.controller?.pos.findInRange(FIND_MY_STRUCTURES, 2, {
         filter: { structureType: STRUCTURE_LINK }
       })[0];
-  
+
       // If a link is found, set it to the memory
       if (roomMemory.commonMemory.links !== undefined && controllerLink !== undefined) {
         roomMemory.commonMemory.links["controller"] = controllerLink.id;
       }
     }
-  
+
     // Set amount of mineral to the roomMemory
     // @ts-ignore
     roomMemory.commonMemory.mineral.amount = room.find(FIND_MINERALS)[0]
       ? Math.round(room.find(FIND_MINERALS)[0].mineralAmount)
       : undefined;
-  };
+  }
 
   public static getAllEnergyStructures(room: Room): void {
-// Create a acces point to the roomMemory //
+    // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
 
     const isStructureTheControllerStructure = (id: string): boolean => {

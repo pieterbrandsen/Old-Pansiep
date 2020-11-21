@@ -16,7 +16,7 @@ export class MemoryApi_Room {
       energyStored: {},
       spawnerEnergy: {},
       controller: {},
-      cpu: { headModules: {creeps: {}}, smallModules: {}, creepModules: {} }
+      cpu: { headModules: { creeps: {} }, smallModules: {}, creepModules: {} }
     };
 
     if (isOwnedRoom) {

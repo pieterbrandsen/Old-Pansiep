@@ -140,7 +140,7 @@ export class MemoryApi_All {
         gcl: {},
         rooms: {},
         common: {},
-        cpu: { bucket: 0, limit: 0, used: 0,headModules: {}, smallModules: {} }
+        cpu: { bucket: 0, limit: 0, used: 0, headModules: {}, smallModules: {} }
       };
     }
   }
