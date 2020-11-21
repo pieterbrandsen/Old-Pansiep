@@ -1,51 +1,75 @@
 //#region Require('./)
-import {
-  Config,
-  MemoryLoader,
-  FunctionRunnerWithCpu,
-  FunctionRunnerWithoutCpu,
-  IsMemoryPathDefined,
-  GlobalAllRoomsHandler,
-  GlobalMemory,
-  GlobalStats,
-  GlobalCreepsHandler,
-  GlobalTimers
-} from "Utils/importer/internals";
+import { RoomManager, MemoryManager, SpawningManager, MemoryApi_All, MemoryApi_Empire, CreepsManager, StatsManager } from "Utils/importer/internals";
 //#endregion
 
-//#region Classes()
-class ManagerManager {
-  public static runManagerManager(): void {
-    Config.roleCountByRoomByRole = {};
-    Config.cpuUsedByRoomByRole = {};
+//#region Class
+export class ManagerManager {
+    /**
+     * Run all managers that need to be called by the ManagerManager
+     */
+    public static runManagerManager(): void {
+        // try {
+            MemoryApi_All.functionRunnerWithCpu(MemoryApi_Empire.memoryLoader, MemoryApi_All.isMemoryPathDefined("Memory.stats.cpu.headModules"), "loadMemory", "=");
+        // } catch (err) {
+        //     console.log("There was an error in the memoryLoader function");
+        //     console.log("File: Src/ManagerManager.ts");
+        //     console.log(`Error: ${err.stack}`);
+        // }
 
-    FunctionRunnerWithCpu(MemoryLoader, IsMemoryPathDefined("Memory.stats.cpu.headModules"), "loadMemory", "=");
+        // try {
+            // Run the memoryManager
+            // This will run all memory related management
+            // Like setting up the memory
+            MemoryManager.runMemoryManager();
+        // } catch (err) {
+        //     console.log("There was an error in the runMemoryManager function");
+        //     console.log("File: Src/ManagerManager.ts");
+        //     console.log(`Error: ${err.stack}`);
+        // }
 
-    if (!Memory.isFilled) FunctionRunnerWithoutCpu(GlobalMemory);
-    else {
-      // Creep handler //
-      // Handles all creeps and runs their role
-      FunctionRunnerWithCpu(GlobalCreepsHandler, IsMemoryPathDefined("Memory.stats.cpu.headModules"), "creeps", "=");
+        // try {
+            // Run the roomManager
+            // This will run all room related management
+            // Like the towers and spawningEnergy gathering
+            RoomManager.runRoomManager();
+        // } catch (err) {
+        //     console.log("There was an error in the runRoomManager function");
+        //     console.log("File: Src/ManagerManager.ts");
+        //     console.log(`Error: ${err.stack}`);
+        // }
 
-      // Rooms handler //
-      // Handles ALL global room related code
-      FunctionRunnerWithCpu(GlobalAllRoomsHandler, IsMemoryPathDefined("Memory.stats.cpu.headModules"), "rooms", "=");
+        // try {
+            // Run the spawningManager
+            // This will run all spawning related management
+            // Like spawning creeps and setting caps for spawning
+            SpawningManager.runSpawningManager();
+        // } catch (err) {
+        //     console.log("There was an error in the runSpawningManager function");
+        //     console.log("File: Src/ManagerManager.ts");
+        //     console.log(`Error: ${err.stack}`);
+        // }
 
-      // Timers handler //
-      // Handles all game timers and runs their code
-      FunctionRunnerWithCpu(GlobalTimers, IsMemoryPathDefined("Memory.stats.cpu.headModules"), "timers", "=");
+        // try {
+            // Run the creepsManager
+            // This will run creep related logic
+            // Like running creeps and saving cpu of creeps
+            CreepsManager.runCreepsManager();
+        // } catch (err) {
+        //     console.log("There was an error in the runCreepsManager function");
+        //     console.log("File: Src/ManagerManager.ts");
+        //     console.log(`Error: ${err.stack}`);
+        // }
 
-      // Stats handler //
-      // Handles all stats related memory
-      FunctionRunnerWithCpu(GlobalStats, IsMemoryPathDefined("Memory.stats.cpu.headModules"), "stats", "=");
+        // try {
+            // Run the statsManager
+            // This will run all stats saving related logic
+            // Like saving source count and cpu usage
+            StatsManager.runStatsManager();
+        // } catch (err) {
+        //     console.log("There was an error in the runStatsManager function");
+        //     console.log("File: Src/ManagerManager.ts");
+        //     console.log(`Error: ${err.stack}`);
+        // }
     }
-
-    // Set the ticks alive one tick higher
-    Memory.stats["ticksAlive"]++;
-  }
 }
 // #endregion
-
-//#region Export functions
-export { ManagerManager };
-//#endregion

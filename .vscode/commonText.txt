@@ -1,10 +1,9 @@
 //#region Require('./)
+import {} from "Utils/importer/internals";
 //#endregion
 
-//#region Functions()
-//#endregion
+//#region Class
+export class Name {
 
-//#region Export functions
-export {errorMapper as ErrorMapper};
+}
 //#endregion
-

@@ -1,14 +1,3 @@
-interface MyRoom {
-  spawns: Array;
-  containers: Array;
-  links: Array;
-  towers: Array;
-}
-
-interface MyCreep {
-  travelTo?: travelTo;
-}
-
 interface CreepMemory {
   role: string;
   targetRoom: string;
@@ -22,19 +11,19 @@ interface CreepMemory {
   onPosition?: boolean;
 }
 
-interface FlagMemory {
+interface RoomMemory {
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
-    sources: { id: string; pos: RoomPosition } | emptyArray;
-    constructionSites: [id: string] | emptyArray;
-    energyStructures: [id: string] | emptyArray;
-    repair: { targets: Array[string]; hitsTarget: number };
+    sources: Array<{ id: string; pos: RoomPos }>;
+    constructionSites: string[];
+    energyStructures: Array<{ id: string; usable: number }>;
+    repair: { targets: string[]; hitsTarget: number };
     controllerLevel?: number;
-    headSpawnId?: string | any;
-    spawnEnergyStructures?: Array[Structure_Lab | STRUCTURE_SPAWN | STRUCTURE_EXTENSION | STRUCTURE_TOWER] | emptyArray;
+    headSpawnId?: string;
+    spawnEnergyStructures?: Array<{ needed: number; id: string }>;
     energyStored: { usable: number; capacity: number };
-    controllerStorage?: { usable: number; id: string; type: string | undefined };
+    controllerStorage?: { usable: number; id: string; type: string };
     links?: {
       [key: string]: string;
       source0: string;
@@ -44,13 +33,12 @@ interface FlagMemory {
     };
   };
   roomPlanner: {
-    room: { sources: Array[BestPosition]; controller?: Object<BestPosition> };
-    base?: { type: string; midPos: { x: x; y: y; roomName: room.name } } | EmptyObject;
+    room: { sources: BestPosition[]; controller?: BestPosition };
+    base?: { type: string | undefined; midPos: RoomPos };
   };
-  enemies: { parts: CREEP_PART; creeps: Array[string] };
-  damagedCreeps: Array[string] | emptyArray;
-  remotes: { totalSourceCount: number; rooms: Array[string] | EmptyArray };
-  isFilled: boolean;
+  enemies: { parts: {[key: string]: number}; creeps: Array<{ id: string, parts: {[key: string]: number}}> };
+  damagedCreeps: string[];
+  remotes: { totalSourceCount: number; rooms: string[] };
 
   // BuilderLD
   spawnRoom?: string;
@@ -58,24 +46,25 @@ interface FlagMemory {
 }
 
 interface Memory {
-  stats: stats;
+  stats: Stats;
   isFilled: boolean;
 }
 
 interface Stats {
   ticksAlive: number;
-  gcl: object;
+  gcl: any;
   rooms: {
-    [key: string]: object;
-    energyStored: object;
-    commonMemory: object;
-    performance: { expenses: object; income: object };
-    energyStored: object;
-    spawnerEnergy: object;
-    controller: object;
+    [key: string]: {
+      commonMemory: any;
+      performance: { expenses: any; income: any };
+      energyStored: any;
+      spawnerEnergy: any;
+      controller: any;
+      cpu: {headModules: {creeps: any}, smallModules: { [key: string]: number}, creepModules: any};
+    };
   };
-  common: object;
-  cpu: { headModules: object; smallModules: object };
+  common: any;
+  cpu: { bucket: number, limit: number, used: number, headModules: any; smallModules: any };
 }
 
 interface Config {
@@ -83,7 +72,7 @@ interface Config {
   whitelist: string[];
   tracking: boolean;
   rooms: {
-    [key: string]: object[number];
+    [key: string]: number | object;
     minBucket: number;
     remoteMinBucket: number;
     loops: {
@@ -101,12 +90,12 @@ interface Config {
   };
   allRoles: string[];
   allCreepModules: string[];
-  creepsCountMax: object[number];
+  creepsCountMax:  { [key: string]: number};
   roleCountByRoomByRole: { [key: string]: { [key: string]: number } };
   cpuUsedByRoomByRole: { [key: string]: { [key: string]: number } };
   creepModuleCpuCost: { [key: string]: { [key: string]: number } };
   expenses: {
-    spawnExpenses: { [key: string]: Object[string] };
+    spawnExpenses: { [key: string]: { [key: string]: number } };
     building: { [key: string]: number };
     repairing: { [key: string]: number };
     upgrading: { [key: string]: number };
@@ -115,15 +104,14 @@ interface Config {
 }
 
 interface BestPosition {
-  id?: string | undefined;
+  id?: string;
   structureType?: string;
-  pos?: { x: number; y: number; roomName: string };
+  pos?: RoomPos;
   spotsAround?: number;
 }
 
-// `global` extension samples
-declare namespace NodeJS {
-  interface Global {
-    log: object;
-  }
+interface RoomPos {
+  x: number;
+  y: number;
+  roomName: string;
 }

@@ -1,43 +1,38 @@
 //#region Require('./)
-import {
-  Config,
-  FunctionRunnerWithCpu,
-  IsMemoryPathDefined
-} from "../Utils/importer/internals";
+import _ from "lodash";
+import { MemoryApi_Empire, RoomHelper_State, RoomHelper_Structure, TimerManager } from "Utils/importer/internals";
 //#endregion
 
-//#region Functions()
-const allRoomsHandler = (): void => {
-  // Return if not enough space in the bucket to run rooms //
-  if (Game.cpu.bucket <= Config.rooms.minBucket) return;
-
-  // Timers through all rooms with vision in them.
-  _.forEach(Object.keys(Game.rooms), roomName => {
-    const room = Game.rooms[roomName];
-    if (!Config.expenses.spawnExpenses[roomName]) Config.expenses.spawnExpenses[roomName] = {};
-    Config.allRoles.forEach((role: any) => {
-      Config.expenses.spawnExpenses[roomName][role] = 0;
-    });
-
-    // Run room handlers //
-    if (room.controller && room.controller.my)
-      FunctionRunnerWithCpu(OwnedRoomHandler, IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu`), "used","=", room);
-    else if (
-      room.controller &&
-      room.controller.reservation &&
-      room.controller.reservation.username === Config.username
-    ) {
-      FunctionRunnerWithCpu(
-        RemoteRoomHandler,
-        IsMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu`),
-        "used","=",
-        room
-      );
+//#region Class
+export class RoomManager {
+    /**
+     * Get all ownedRooms and run the runSingleRoom function on the rooms
+     * @returns {void} Only calls other class member functions
+     */
+    public static runRoomManager(): void {
+        // Get all ownedRooms and run for each room found the runSingleRoom function
+        const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
+        _.forEach(ownedRooms, (room: Room) => RoomManager.runSingleRoom(room));
     }
-  });
-};
-//#endregion
 
-//#region Export functions
-export { allRoomsHandler as GlobalAllRoomsHandler };
+    private static runSingleRoom(room: Room): void {
+        RoomHelper_State.isRoomSetup(room);
+        TimerManager.runTimerForRoom(room);
+        const roomState: string = RoomHelper_State.getRoomState(room);
+
+        if (room.controller!.level >= 3) {
+            if (roomState === 'ATTACK') {
+                RoomHelper_Structure.towerAttacking(room);
+            }
+            else {
+                RoomHelper_Structure.towerRepairing(room);
+                RoomHelper_Structure.towerHealing(room);
+            }
+        }
+
+        if (room.controller!.level >= 5) {
+            RoomHelper_Structure.runLinks(room);
+        }
+    }
+}
 //#endregion

@@ -1,13 +1,14 @@
 //#region Require('./)
-import { Config } from "../../Utils/importer/internals";
+import {Config} from "Utils/importer/internals";
 //#endregion
 
-//#region Functions()
-const upgrade = (creep: Creep): string | undefined => {
+//#region Class
+export class CreepRole_Upgrade {
+public static upgrade(creep: Creep): string | undefined {
   // Return full if current creep's storage is full
-  if (creep.store.getUsedCapacity() === 0) return "empty";
+  if (creep.store.getUsedCapacity() === 0) {return "empty";}
 
-  if (creep.room.controller === undefined) return;
+  if (creep.room.controller === undefined) {return;}
 
   // Run upgradeController function
   const result = creep.upgradeController(creep.room.controller);
@@ -27,8 +28,5 @@ const upgrade = (creep: Creep): string | undefined => {
 
   return;
 };
-//#endregion
-
-//#region Export functions
-export { upgrade as Upgrade };
+}
 //#endregion
