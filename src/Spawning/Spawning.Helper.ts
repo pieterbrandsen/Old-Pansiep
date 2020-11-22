@@ -171,17 +171,7 @@ export class SpawningHelper {
               Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName] &&
               targetRoomMemory.commonMemory.constructionSites.length === 0
             ) {
-              if (
-                roomMemory.commonMemory.controllerStorage &&
-                Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null &&
-                (Game.getObjectById(
-                  roomMemory.commonMemory.controllerStorage.id
-                ) as StructureContainer).store.getFreeCapacity(RESOURCE_ENERGY) > 500
-              ) {
-                break;
-              } else if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-                break;
-              }
+              break;
             } else if (
               Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName] / 2 &&
               targetRoomMemory.commonMemory.constructionSites.length > 0
