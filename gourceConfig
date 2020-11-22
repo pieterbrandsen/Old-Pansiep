@@ -1,9 +1,8 @@
 [display]
 fullscreen=true
+camera-mode=overview
 
 [gource]
-camera-mode=overview
-hide=filenames,mouse
+start-date=2020-11-10
 stop-at-end=true
 title=Screeps
-
