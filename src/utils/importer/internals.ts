@@ -1,6 +1,9 @@
 //#region Require('./)
 export * from "ManagerManager";
 
+// * Constants
+export * from "Utils/Importer/constants";
+
 // * Creeps
 export * from "Creeps/CreepsManager";
 export * from "Creeps/Creeps.Roles.Helper";
@@ -16,9 +19,11 @@ export * from "Creeps/modules/withdraw";
 
 // * Memory
 export * from "Memory/MemoryManager";
+export * from "Memory/Memory.Helper";
 export * from "Memory/Memory.All.Api";
 export * from "Memory/Memory.Empire.Api";
 export * from "Memory/Memory.Room.Api";
+export * from "Memory/Memory.Room.Helper";
 
 // * Room
 export * from "Rooms/RoomManager";

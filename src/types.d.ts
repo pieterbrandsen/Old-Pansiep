@@ -12,6 +12,7 @@ interface CreepMemory {
 }
 
 interface RoomMemory {
+  structures: Cache,
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
@@ -114,4 +115,19 @@ interface RoomPos {
   x: number;
   y: number;
   roomName: string;
+}
+
+interface Cache {
+  /**
+   * The data that the Cache object validates
+   */
+  data: any;
+  /**
+   * Cache Object - used for validation
+   */
+  cache: any;
+}
+
+interface StringMap {
+  [key: string]: any;
 }
