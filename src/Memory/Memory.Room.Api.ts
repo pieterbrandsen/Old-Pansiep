@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { Config, MemoryApi_All, TimerManager } from "Utils/importer/internals";
+import { Config, MemoryApi_All, TimerManager, MemoryHelper_Room, MemoryHelper, STRUCT_CACHE_TTL } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -44,13 +44,47 @@ export class MemoryApi_Room {
           creeps: []
         },
         damagedCreeps: [],
-        remotes: { totalSourceCount: 0, rooms: [] }
+        remotes: { totalSourceCount: 0, rooms: [] },
+        structures: {data: null, cache: null}
       };
     }
 
     // Get objects to fill memory
     this.resetRoomMemory(room, true, isOwnedRoom);
+    MemoryHelper_Room.updateRoomMemory(room, isOwnedRoom);
   }
+
+  public static getStructures<T extends Structure>(
+    room: Room,
+    type: StructureConstant,
+    filterFunction?: (object: T) => boolean,
+    forceUpdate?: boolean
+): T[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+        return [];
+    }
+
+    if (
+        forceUpdate ||
+        room.memory.structures === undefined ||
+        room.memory.structures.data === null ||
+        room.memory.structures.data[type] === undefined ||
+        room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
+    ) {
+        MemoryHelper_Room.updateStructures(room);
+    }
+
+    const structureIDs: string[] = room.memory.structures.data[type];
+
+    let structures: T[] = MemoryHelper.getOnlyObjectsFromIDs<T>(structureIDs);
+
+    if (filterFunction !== undefined) {
+        structures = _.filter(structures, filterFunction);
+    }
+
+    return structures;
+}
 
   /**
    * Get all structures based on a type and filter
@@ -61,22 +95,33 @@ export class MemoryApi_Room {
   public static getStructuresOfType(
     room: Room,
     type: StructureConstant,
-    filterFunction?: (object: any) => boolean
-  ): any[] {
-    // Find all structures with the structureType inputted
-    let structures: Array<Structure<StructureConstant>> = room.find(FIND_STRUCTURES, {
-      filter: {
-        structureType: type
+    filterFunction?: (object: any) => boolean,
+    forceUpdate?: boolean
+  ): Structure[] {
+        // If we have no vision of the room, return an empty array
+        if (!room.memory) {
+          return [];
       }
-    });
+  
+      if (
+          forceUpdate ||
+          room.memory.structures === undefined ||
+          room.memory.structures.data === null ||
+          room.memory.structures.data[type] === undefined ||
+          room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
+      ) {
+          MemoryHelper_Room.updateStructures(room);
+      }
 
-    // If a filter function was provided, use it to filter based on the function
-    if (filterFunction !== undefined) {
-      structures = _.filter(structures, filterFunction);
-    }
+      const structureIDs: string[] = room.memory.structures.data[type];
 
-    // Return all found structures after the possible filter
-    return structures;
+      let structures: Structure[] = MemoryHelper.getOnlyObjectsFromIDs<Structure>(structureIDs);
+
+      if (filterFunction !== undefined) {
+          structures = _.filter(structures, filterFunction);
+      }
+
+      return structures;
   }
 
   public static getRandomFreePos(startPos: RoomPos): RoomPos {
@@ -98,7 +143,7 @@ export class MemoryApi_Room {
     room.memory.commonMemory.constructionSites = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
   }
 
-  public static resetTracking(room: Room): void {
+  public static resetRoomTracking(room: Room): void {
     // Reset all creepModules
     Config.creepModuleCpuCost[room.name] = {};
     Config.allCreepModules.forEach(module => {
