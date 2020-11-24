@@ -47,7 +47,7 @@ export class CreepRole_Transfer {
           roomMemory.commonMemory.controllerStorage &&
           roomMemory.commonMemory.controllerStorage.usable < 1500 &&
           roomMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER &&
-          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null
+          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null
         ) {
           creep.memory.miniJob = "controller";
           break;
@@ -321,7 +321,7 @@ export class CreepRole_Transfer {
     }
 
     // Get the saved structure from memory
-    const transferStructure: AnyStructure | null = Game.getObjectById(roomMemory.commonMemory.controllerStorage.id);
+    const transferStructure: AnyStructure | null = Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!);
 
     // Return empty if transferStructure is null
     if (transferStructure === null) {
@@ -339,7 +339,7 @@ export class CreepRole_Transfer {
         // Delete targetId
         delete creep.memory.targetId;
         if (result === ERR_INVALID_TARGET) {
-          roomMemory.commonMemory.controllerStorage.id = "";
+          roomMemory.commonMemory.controllerStorage.id! = "";
         }
         break;
       case ERR_NOT_IN_RANGE:

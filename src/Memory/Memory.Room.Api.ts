@@ -1,6 +1,13 @@
 //#region Require('./)
 import _ from "lodash";
-import { Config, TimerManager, MemoryHelper_Room, MemoryHelper, STRUCT_CACHE_TTL } from "Utils/importer/internals";
+import {
+  Config,
+  TimerManager,
+  MemoryHelper_Room,
+  MemoryHelper,
+  STRUCT_CACHE_TTL,
+  CONST_CACHE_TTL
+} from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -25,7 +32,6 @@ export class MemoryApi_Room {
           sourceCount: 0,
           mineral: { id: "", type: "", amount: 0 },
           sources: [],
-          constructionSites: [],
           energyStructures: [],
           repair: { targets: [], hitsTarget: 250 * 1000 },
           controllerLevel: 0,
@@ -45,7 +51,8 @@ export class MemoryApi_Room {
         },
         damagedCreeps: [],
         remotes: { totalSourceCount: 0, rooms: [] },
-        structures: { data: null, cache: null }
+        structures: { data: null, cache: null },
+        constructionSites: { data: null, cache: null }
       };
     }
 
@@ -54,21 +61,13 @@ export class MemoryApi_Room {
     MemoryHelper_Room.updateRoomMemory(room, isOwnedRoom);
   }
 
-  public static getStructures(
-    room: Room,
-    filterFunction?: (object: Structure) => boolean,
-    forceUpdate?: boolean
-  ): Structure[] {
+  public static getStructures(room: Room, filterFunction?: (object: Structure) => boolean): Structure[] {
     // If we have no vision of the room, return an empty array
     if (!room.memory) {
       return [];
     }
 
-    if (
-      forceUpdate ||
-      room.memory.structures === undefined ||
-      room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
-    ) {
+    if (room.memory.structures === undefined || room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL) {
       MemoryHelper_Room.updateStructures(room);
     }
 
@@ -101,8 +100,7 @@ export class MemoryApi_Room {
   public static getStructuresOfType<T extends Structure>(
     room: Room,
     type: StructureConstant,
-    filterFunction?: (object: any) => boolean,
-    forceUpdate?: boolean
+    filterFunction?: (object: any) => boolean
   ): T[] {
     // If we have no vision of the room, return an empty array
     if (!room.memory) {
@@ -110,7 +108,6 @@ export class MemoryApi_Room {
     }
 
     if (
-      forceUpdate ||
       room.memory.structures === undefined ||
       room.memory.structures.data === null ||
       room.memory.structures.data[type] === undefined ||
@@ -143,10 +140,6 @@ export class MemoryApi_Room {
       y = startPos.y + Math.floor(Math.random() * (distance * 2 + 1)) - distance;
     } while ((x + y) % 2 !== (startPos.x + startPos.y) % 2 || terrain.get(x, y) === TERRAIN_MASK_WALL);
     return new RoomPosition(x, y, startPos.roomName);
-  }
-
-  public static updateConstructionSites(room: Room): void {
-    room.memory.commonMemory.constructionSites = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
   }
 
   public static resetRoomTracking(room: Room): void {
@@ -215,8 +208,6 @@ export class MemoryApi_Room {
       },
       // Set the id and pos of all sources to the memory of the room
       sources,
-      // Create a empty array for storing constructionSites
-      constructionSites: [],
       // Create a empty array for storing energyStructures
       energyStructures: [],
       // Set the repair object
@@ -328,8 +319,7 @@ export class MemoryApi_Room {
             type: upgraderStructure.structureType,
             usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
           };
-        }
-        else { 
+        } else {
           room.memory.commonMemory.controllerStorage = {
             id: undefined,
             type: undefined,
@@ -339,6 +329,36 @@ export class MemoryApi_Room {
       }
 
       return upgraderStructure;
+    }
+  }
+
+  public static getAllConstructionSites(
+    room: Room,
+    filterFunction?: (object: Structure) => boolean
+  ): ConstructionSite[] {
+    {
+      // If we have no vision of the room, return an empty array
+      if (!room.memory) {
+        return [];
+      }
+
+      if (
+        room.memory.constructionSites === undefined ||
+        room.memory.constructionSites.data === null ||
+        room.memory.constructionSites.cache < Game.time - CONST_CACHE_TTL
+      ) {
+        MemoryHelper_Room.updateConstructionSites(room);
+      }
+
+      const structureIDs: string[] = room.memory.structures.data;
+
+      let structures: ConstructionSite[] = MemoryHelper.getOnlyObjectsFromIDs<ConstructionSite>(structureIDs);
+
+      if (filterFunction !== undefined) {
+        structures = _.filter(structures, filterFunction);
+      }
+
+      return structures;
     }
   }
 }

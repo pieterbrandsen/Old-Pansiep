@@ -216,7 +216,7 @@ export class CreepsHelper_Role {
           creep.memory.job = "transfer";
         } else if (roomMemory.commonMemory.repair.targets.length > 0) {
           creep.memory.job = "repair";
-        } else if (roomMemory.commonMemory.constructionSites.length > 0) {
+        } else if (roomMemory.constructionSites.data.length > 0) {
           creep.memory.job = "build";
         } else {
           creep.memory.job = "upgrade";
@@ -398,7 +398,7 @@ export class CreepsHelper_Role {
           roomMemory.commonMemory.energyStored.usable >= 10 * 1000 ||
           (roomMemory.commonMemory.controllerStorage &&
             roomMemory.commonMemory.controllerStorage.usable >= 250 &&
-            Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null)
+            Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null)
         ) {
           creep.memory.job = "withdraw";
         } else {
@@ -487,7 +487,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Switch to one of the jobs that drains energy
-        if (roomMemory.commonMemory.constructionSites.length > 0) {
+        if (roomMemory.constructionSites.data.length > 0) {
           creep.memory.job = "build";
         } else {
           creep.memory.job = "upgrade";

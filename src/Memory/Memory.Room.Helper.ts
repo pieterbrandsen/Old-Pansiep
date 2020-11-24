@@ -8,7 +8,7 @@ export class MemoryHelper_Room {
   public static updateRoomMemory(room: Room, isOwnedRoom: boolean): void {
     this.updateStructures(room);
     if (isOwnedRoom) {
-      // All ownedRoom memory updating
+      this.updateConstructionSites(room);      
     }
   }
 
@@ -32,6 +32,20 @@ export class MemoryHelper_Room {
 
     room.memory.structures.data = sortedStructureIDs;
     room.memory.structures.cache = Game.time;
+  }
+
+  public static updateConstructionSites(room: Room): void {
+        // If we have no vision of the room, return
+        if (!room.memory) {
+          return;
+        }
+    
+        room.memory.constructionSites = { data: [], cache: null };
+    
+        const allConstructionSitesIds: string[] = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
+    
+        room.memory.constructionSites.data = allConstructionSitesIds;
+        room.memory.constructionSites.cache = Game.time;
   }
 }
 //#endregion

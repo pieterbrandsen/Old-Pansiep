@@ -22,7 +22,7 @@ export class CreepRole_Withdraw {
         if (
           roomMemory.commonMemory.controllerStorage &&
           creepMemory.role.includes("upgrade") &&
-          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null &&
+          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null &&
           roomMemory.commonMemory.controllerStorage.usable > 250
         ) {
           creep.memory.miniJob = "upgrade";
@@ -152,7 +152,7 @@ export class CreepRole_Withdraw {
 
     // Get the saved structure from memory
     const withdrawStructure: StructureContainer | StructureLink | null = Game.getObjectById(
-      roomMemory.commonMemory.controllerStorage.id
+      roomMemory.commonMemory.controllerStorage.id!
     );
 
     if (withdrawStructure === null) {

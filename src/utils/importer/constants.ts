@@ -25,3 +25,4 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
 
 // Cache ticks
 export const STRUCT_CACHE_TTL = 100;
+export const CONST_CACHE_TTL = 1000;

@@ -169,12 +169,12 @@ export class SpawningHelper {
             // Check if input role is less then max creeps allowed //
             if (
               Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName] &&
-              targetRoomMemory.commonMemory.constructionSites.length === 0
+              targetRoomMemory.constructionSites.data.length === 0
             ) {
               break;
             } else if (
               Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName] / 2 &&
-              targetRoomMemory.commonMemory.constructionSites.length > 0
+              targetRoomMemory.constructionSites.data.length > 0
             ) {
               break;
             }
@@ -216,7 +216,7 @@ export class SpawningHelper {
             }
           }
 
-          if (targetRoomMemory.commonMemory.constructionSites.length === 0) {
+          if (targetRoomMemory.constructionSites.data.length === 0) {
             break;
           }
 

@@ -13,11 +13,11 @@ interface CreepMemory {
 
 interface RoomMemory {
   structures: Cache,
+  constructionSites: Cache,
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
     sources: Array<{ id: string; pos: RoomPos }>;
-    constructionSites: string[];
     energyStructures: Array<{ id: string; usable: number }>;
     repair: { targets: string[]; hitsTarget: number };
     controllerLevel?: number;

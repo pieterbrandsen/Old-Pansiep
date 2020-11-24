@@ -15,7 +15,7 @@ export class CreepRole_Build {
     }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
-    if (roomMemory.commonMemory.constructionSites.length === 0 && !creepMemory.targetId) {
+    if (roomMemory.constructionSites.data.length === 0 && !creepMemory.targetId) {
       if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
         creep.moveTo(creep.room.controller);
       }
@@ -26,14 +26,14 @@ export class CreepRole_Build {
     if (creepMemory.targetId === undefined) {
       // Get the fist target from what is saved //
       // This target will get later shifted when its completed
-      creep.memory.targetId = roomMemory.commonMemory.constructionSites[0];
+      creep.memory.targetId = roomMemory.constructionSites.data[0];
     } else {
       // Get the saved construction site from memory
       const constructionSite: ConstructionSite | null = Game.getObjectById(creepMemory.targetId);
 
       // If construction site doesn't exist, remove it
       if (constructionSite === null) {
-        roomMemory.commonMemory.constructionSites.shift();
+        roomMemory.constructionSites.data.shift();
         return "empty";
       }
 
@@ -77,8 +77,8 @@ export class CreepRole_Build {
           // }
 
           // Check if target that's going to be lost is still on the construction list, if so shift it.
-          if (roomMemory.commonMemory.constructionSites.indexOf(creep.memory.targetId!) === 0) {
-            roomMemory.commonMemory.constructionSites.shift();
+          if (roomMemory.constructionSites.data.indexOf(creep.memory.targetId!) === 0) {
+            roomMemory.constructionSites.data.shift();
           }
           // Delete target from the memory
           delete creep.memory.targetId;

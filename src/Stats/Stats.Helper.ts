@@ -44,7 +44,7 @@ export class StatsHelper {
       // Set all commonMemory related memory
       const commonMemory = roomStats["commonMemory"];
       if (typeof commonMemory === "object") {
-        commonMemory.constructionSitesCount = roomMemory.commonMemory.constructionSites.length;
+        commonMemory.constructionSitesCount = roomMemory.constructionSites.data.length;
         if (!commonMemory.creepCountByRole) {
           commonMemory.creepCountByRole = {};
         }
