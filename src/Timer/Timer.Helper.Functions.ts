@@ -9,7 +9,7 @@ export class TimerHelper_Functions {
     const roomMemory: RoomMemory = Memory.rooms[room.name];
 
     // Get all constructionSites and map them based on the id
-    roomMemory.commonMemory.constructionSites = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
+    roomMemory.constructionSites.data = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
   }
 
   public static getDamagedCreeps(room: Room) {
@@ -234,7 +234,7 @@ export class TimerHelper_Functions {
     // If the controller storage is undefined or null
     if (
       roomMemory.commonMemory.controllerStorage === undefined ||
-      Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) === null
+      Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) === null
     ) {
       // If the roomPlanner knows the position
       if (roomMemory.roomPlanner.room.controller && roomMemory.roomPlanner.room.controller.pos) {
@@ -261,7 +261,7 @@ export class TimerHelper_Functions {
 
         // If the structure was found in the loop, save everything to the roomMemory
         if (roomMemory.commonMemory.controllerStorage !== undefined && controllerStorage) {
-          roomMemory.commonMemory.controllerStorage.id = controllerStorage.id;
+          roomMemory.commonMemory.controllerStorage.id! = controllerStorage.id;
           roomMemory.commonMemory.controllerStorage.type = controllerStorage.type;
         } else if (roomMemory.commonMemory.controllerStorage !== undefined) {
           roomMemory.commonMemory.controllerStorage.usable = 0;
@@ -329,10 +329,10 @@ export class TimerHelper_Functions {
 
     const isStructureTheControllerStructure = (id: string): boolean => {
       // Check if the memory path is completely defined
-      if (MemoryApi_All.isMemoryPathDefined(`Memory.rooms.${room.name}.commonMemory.controllerStorage.id`)) {
+      if (MemoryApi_All.isMemoryPathDefined(`Memory.rooms.${room.name}.commonMemory.controllerStorage.id!`)) {
         // @ts-ignore: Above is checked if the path is defined
         // If the known controller storage id is the id inputted
-        if (room.memory.commonMemory.controllerStorage.id === id) {
+        if (room.memory.commonMemory.controllerStorage.id! === id) {
           return true;
         }
       }
@@ -349,7 +349,7 @@ export class TimerHelper_Functions {
     let energyCapacity: number = 0;
 
     // Loop through all containers
-    MemoryApi_Room.getStructuresOfType(room, STRUCTURE_CONTAINER).forEach((storageStructure: StructureContainer) => {
+    (MemoryApi_Room.getStructuresOfType(room, STRUCTURE_CONTAINER) as StructureContainer[]).forEach((storageStructure: StructureContainer) => {
       if (!isStructureTheControllerStructure(storageStructure.id)) {
         // Add the total energy available and capacity
         energyUsable += storageStructure.store.getUsedCapacity(RESOURCE_ENERGY);
