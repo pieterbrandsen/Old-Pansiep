@@ -1,6 +1,12 @@
 //#region Require('./)
 import _ from "lodash";
-import { Config, MemoryApi_All, TimerManager, MemoryHelper_Room, MemoryHelper, STRUCT_CACHE_TTL } from "Utils/importer/internals";
+import {
+  Config,
+  TimerManager,
+  MemoryHelper_Room,
+  MemoryHelper,
+  STRUCT_CACHE_TTL
+} from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -45,7 +51,7 @@ export class MemoryApi_Room {
         },
         damagedCreeps: [],
         remotes: { totalSourceCount: 0, rooms: [] },
-        structures: {data: null, cache: null}
+        structures: { data: null, cache: null }
       };
     }
 
@@ -54,37 +60,43 @@ export class MemoryApi_Room {
     MemoryHelper_Room.updateRoomMemory(room, isOwnedRoom);
   }
 
-  public static getStructures<T extends Structure>(
+  public static getStructures(
     room: Room,
-    type: StructureConstant,
-    filterFunction?: (object: T) => boolean,
+    filterFunction?: (object: Structure) => boolean,
     forceUpdate?: boolean
-): T[] {
+  ): Structure[] {
     // If we have no vision of the room, return an empty array
     if (!room.memory) {
-        return [];
+      return [];
     }
 
     if (
-        forceUpdate ||
-        room.memory.structures === undefined ||
-        room.memory.structures.data === null ||
-        room.memory.structures.data[type] === undefined ||
-        room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
+      forceUpdate ||
+      room.memory.structures === undefined ||
+      room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
     ) {
-        MemoryHelper_Room.updateStructures(room);
+      MemoryHelper_Room.updateStructures(room);
     }
 
-    const structureIDs: string[] = room.memory.structures.data[type];
+    const structureIDs: string[] = [];
+    // Flatten the object into an array of IDs
+    for (const type in room.memory.structures.data) {
+      const IDs = room.memory.structures.data[type];
+      for (const singleID of IDs) {
+        if (singleID) {
+          structureIDs.push(singleID);
+        }
+      }
+    }
 
-    let structures: T[] = MemoryHelper.getOnlyObjectsFromIDs<T>(structureIDs);
+    let structures: Structure[] = MemoryHelper.getOnlyObjectsFromIDs<Structure<StructureConstant>>(structureIDs);
 
     if (filterFunction !== undefined) {
-        structures = _.filter(structures, filterFunction);
+      structures = _.filter(structures, filterFunction);
     }
 
     return structures;
-}
+  }
 
   /**
    * Get all structures based on a type and filter
@@ -92,36 +104,36 @@ export class MemoryApi_Room {
    * @param type A structure type
    * @param filterFunction A function to filter with
    */
-  public static getStructuresOfType(
+  public static getStructuresOfType<T extends Structure>(
     room: Room,
     type: StructureConstant,
     filterFunction?: (object: any) => boolean,
     forceUpdate?: boolean
-  ): Structure[] {
-        // If we have no vision of the room, return an empty array
-        if (!room.memory) {
-          return [];
-      }
-  
-      if (
-          forceUpdate ||
-          room.memory.structures === undefined ||
-          room.memory.structures.data === null ||
-          room.memory.structures.data[type] === undefined ||
-          room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
-      ) {
-          MemoryHelper_Room.updateStructures(room);
-      }
+  ): T[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+      return [];
+    }
 
-      const structureIDs: string[] = room.memory.structures.data[type];
+    if (
+      forceUpdate ||
+      room.memory.structures === undefined ||
+      room.memory.structures.data === null ||
+      room.memory.structures.data[type] === undefined ||
+      room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
+    ) {
+      MemoryHelper_Room.updateStructures(room);
+    }
 
-      let structures: Structure[] = MemoryHelper.getOnlyObjectsFromIDs<Structure>(structureIDs);
+    const structureIDs: string[] = room.memory.structures.data[type];
 
-      if (filterFunction !== undefined) {
-          structures = _.filter(structures, filterFunction);
-      }
+    let structures: T[] = MemoryHelper.getOnlyObjectsFromIDs<T>(structureIDs);
 
-      return structures;
+    if (filterFunction !== undefined) {
+      structures = _.filter(structures, filterFunction);
+    }
+
+    return structures;
   }
 
   public static getRandomFreePos(startPos: RoomPos): RoomPos {
@@ -284,6 +296,43 @@ export class MemoryApi_Room {
 
     // Run all timers for this room
     TimerManager.runTimerForRoom(room, forceUpdate);
+  }
+
+  public static getUpgraderStructure(room: Room): StructureLink | StructureContainer | null {
+    if (!room.controller) {
+      return null;
+    }
+    let upgraderStructure: StructureLink | StructureContainer | null = null;
+
+    const upgraderStructureLink: StructureLink[] = this.getStructuresOfType(
+      room,
+      STRUCTURE_LINK,
+      (str: StructureLink) => str.pos.inRangeTo(room.controller!, 3)
+    );
+    if (upgraderStructureLink.length > 0) {
+      upgraderStructure = upgraderStructureLink[0];
+      room.memory.commonMemory.controllerStorage = {
+        id: upgraderStructure.id,
+        type: upgraderStructure.structureType,
+        usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
+      };
+    } else {
+      const upgraderStructureContainer: StructureContainer[] = this.getStructuresOfType(
+        room,
+        STRUCTURE_CONTAINER,
+        (str: StructureContainer) => str.pos.inRangeTo(room.controller!, 3)
+      );
+      if (upgraderStructureContainer.length > 0) {
+        upgraderStructure = upgraderStructureContainer[0];
+        room.memory.commonMemory.controllerStorage = {
+          id: upgraderStructure.id,
+          type: upgraderStructure.structureType,
+          usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
+        };
+      }
+    }
+
+    return upgraderStructure;
   }
 }
 //#endregion
