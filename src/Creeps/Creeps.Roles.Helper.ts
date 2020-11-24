@@ -250,7 +250,7 @@ export class CreepsHelper_Role {
       return;
     }
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "harvest";
       return;
     }
@@ -288,7 +288,7 @@ export class CreepsHelper_Role {
       return;
     }
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "harvest";
       return;
     }
@@ -321,7 +321,7 @@ export class CreepsHelper_Role {
     // Get missing parts for the memory
     CreepsHelper_Role.getMissingPartsCount(creep);
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "withdraw";
       return;
     }
@@ -373,7 +373,7 @@ export class CreepsHelper_Role {
     // Create a acces point to the roomMemory //
     const roomMemory = Memory.rooms[creep.memory.spawnRoom];
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "withdraw";
       return;
     }
@@ -422,7 +422,7 @@ export class CreepsHelper_Role {
     // Create a acces point to the roomMemory //
     const roomMemory = Memory.rooms[creep.memory.spawnRoom];
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "withdraw";
       return;
     }
@@ -472,7 +472,7 @@ export class CreepsHelper_Role {
     // Create a acces point to the roomMemory //
     const roomMemory = Memory.rooms[creep.memory.spawnRoom];
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "withdraw";
       return;
     }
@@ -519,7 +519,7 @@ export class CreepsHelper_Role {
       return;
     }
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "reserve";
       return;
     }
@@ -537,7 +537,7 @@ export class CreepsHelper_Role {
       return;
     }
 
-    if (creep.memory.job === undefined) {
+    if (!creep.memory.job) {
       creep.memory.job = "claim";
       return;
     }

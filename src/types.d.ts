@@ -12,6 +12,7 @@ interface CreepMemory {
 }
 
 interface RoomMemory {
+  structures: Cache,
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
@@ -23,7 +24,7 @@ interface RoomMemory {
     headSpawnId?: string;
     spawnEnergyStructures?: Array<{ needed: number; id: string }>;
     energyStored: { usable: number; capacity: number };
-    controllerStorage?: { usable: number; id: string; type: string };
+    controllerStorage?: { usable: number; id: string|undefined; type: STRUCTURE_LINK | STRUCTURE_CONTAINER | undefined };
     links?: {
       [key: string]: string;
       source0: string;
@@ -114,4 +115,19 @@ interface RoomPos {
   x: number;
   y: number;
   roomName: string;
+}
+
+interface Cache {
+  /**
+   * The data that the Cache object validates
+   */
+  data: any;
+  /**
+   * Cache Object - used for validation
+   */
+  cache: any;
+}
+
+interface StringMap {
+  [key: string]: any;
 }

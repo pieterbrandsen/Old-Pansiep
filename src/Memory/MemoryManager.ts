@@ -13,7 +13,7 @@ export class MemoryManager {
     _.forEach(ownedRooms, (room: Room): void => {
       const isOwnedRoom: boolean = true;
       MemoryApi_Room.initRoomMemory(room, isOwnedRoom);
-      MemoryApi_Room.resetTracking(room);
+      MemoryApi_Room.resetRoomTracking(room);
     });
 
     // Set the ticks alive one tick higher
