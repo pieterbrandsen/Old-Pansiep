@@ -1,12 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import {
-  Config,
-  TimerManager,
-  MemoryHelper_Room,
-  MemoryHelper,
-  STRUCT_CACHE_TTL
-} from "Utils/importer/internals";
+import { Config, TimerManager, MemoryHelper_Room, MemoryHelper, STRUCT_CACHE_TTL } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -38,7 +32,7 @@ export class MemoryApi_Room {
           headSpawnId: "",
           spawnEnergyStructures: [],
           energyStored: { usable: 0, capacity: 0 },
-          controllerStorage: { usable: 0, id: "", type: "" },
+          controllerStorage: { usable: 0, id: undefined, type: undefined },
           links: { source0: "", source1: "", controller: "", head: "" }
         },
         roomPlanner: {
@@ -283,7 +277,7 @@ export class MemoryApi_Room {
     // Create a empty array for storing spawnEnergyStructures
     roomMemory.commonMemory.spawnEnergyStructures = [];
     // Set the storage in the controller storage to 0
-    roomMemory.commonMemory.controllerStorage = { usable: 0, type: "", id: "" };
+    roomMemory.commonMemory.controllerStorage = { usable: 0, type: undefined, id: undefined };
     // Set all links to undefined
     roomMemory.commonMemory.links = {
       source0: "",
@@ -302,37 +296,50 @@ export class MemoryApi_Room {
     if (!room.controller) {
       return null;
     }
-    let upgraderStructure: StructureLink | StructureContainer | null = null;
-
-    const upgraderStructureLink: StructureLink[] = this.getStructuresOfType(
-      room,
-      STRUCTURE_LINK,
-      (str: StructureLink) => str.pos.inRangeTo(room.controller!, 3)
+    let upgraderStructure: StructureLink | StructureContainer | null = Game.getObjectById(
+      room.memory.commonMemory.controllerStorage!.id!
     );
-    if (upgraderStructureLink.length > 0) {
-      upgraderStructure = upgraderStructureLink[0];
-      room.memory.commonMemory.controllerStorage = {
-        id: upgraderStructure.id,
-        type: upgraderStructure.structureType,
-        usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
-      };
+    if (upgraderStructure !== null) {
+      room.memory.commonMemory.controllerStorage!.usable = upgraderStructure.store.energy;
+      return upgraderStructure;
     } else {
-      const upgraderStructureContainer: StructureContainer[] = this.getStructuresOfType(
+      const upgraderStructureLink: StructureLink[] = this.getStructuresOfType(
         room,
-        STRUCTURE_CONTAINER,
-        (str: StructureContainer) => str.pos.inRangeTo(room.controller!, 3)
+        STRUCTURE_LINK,
+        (str: StructureLink) => str.pos.inRangeTo(room.controller!, 3)
       );
-      if (upgraderStructureContainer.length > 0) {
-        upgraderStructure = upgraderStructureContainer[0];
+      if (upgraderStructureLink.length > 0) {
+        upgraderStructure = upgraderStructureLink[0];
         room.memory.commonMemory.controllerStorage = {
           id: upgraderStructure.id,
           type: upgraderStructure.structureType,
           usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
         };
+      } else {
+        const upgraderStructureContainer: StructureContainer[] = this.getStructuresOfType(
+          room,
+          STRUCTURE_CONTAINER,
+          (str: StructureContainer) => str.pos.inRangeTo(room.controller!, 3)
+        );
+        if (upgraderStructureContainer.length > 0) {
+          upgraderStructure = upgraderStructureContainer[0];
+          room.memory.commonMemory.controllerStorage = {
+            id: upgraderStructure.id,
+            type: upgraderStructure.structureType,
+            usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
+          };
+        }
+        else { 
+          room.memory.commonMemory.controllerStorage = {
+            id: undefined,
+            type: undefined,
+            usable: 0
+          };
+        }
       }
-    }
 
-    return upgraderStructure;
+      return upgraderStructure;
+    }
   }
 }
 //#endregion

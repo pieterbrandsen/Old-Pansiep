@@ -24,7 +24,7 @@ interface RoomMemory {
     headSpawnId?: string;
     spawnEnergyStructures?: Array<{ needed: number; id: string }>;
     energyStored: { usable: number; capacity: number };
-    controllerStorage?: { usable: number; id: string; type: string };
+    controllerStorage?: { usable: number; id: string|undefined; type: STRUCTURE_LINK | STRUCTURE_CONTAINER | undefined };
     links?: {
       [key: string]: string;
       source0: string;
