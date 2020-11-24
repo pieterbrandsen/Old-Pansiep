@@ -37,7 +37,9 @@
   "cSpell.words": [
     "STRUCT",
     "averager",
+    "buble",
     "codacy",
+    "eduter",
     "eslint",
     "estree",
     "fiskmans",
@@ -45,11 +47,14 @@
     "memory averager",
     "microsoft",
     "microsoft tsdoc",
+    "nodent",
     "pserver",
     "rivaryn",
     "tsdoc",
+    "typedoc",
     "typescript",
     "typescript eslint estree",
     "upgrader"
-  ]
+  ],
+  "mocha.subdirectory": "..\\..\\..\\..\\..\\c:\\Users\\piete\\Source\\repos\\Pansiep\\src",
 }
