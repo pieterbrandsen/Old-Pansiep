@@ -17,6 +17,9 @@ export * from "Creeps/modules/transfer";
 export * from "Creeps/modules/upgrade";
 export * from "Creeps/modules/withdraw";
 
+// * Jobs
+export * from "Jobs/JobsManager";
+
 // * Memory
 export * from "Memory/MemoryManager";
 export * from "Memory/Memory.Helper";
