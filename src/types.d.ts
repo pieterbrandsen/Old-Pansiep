@@ -14,6 +14,7 @@ interface CreepMemory {
 interface RoomMemory {
   structures: Cache,
   constructionSites: Cache,
+  jobs: Cache,
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
@@ -130,4 +131,11 @@ interface Cache {
 
 interface StringMap {
   [key: string]: any;
+}
+
+interface JobTemplate { 
+  pos: RoomPos,
+  id: string,
+  usable?: number, 
+  needed?: number,
 }

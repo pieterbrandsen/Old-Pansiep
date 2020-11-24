@@ -49,6 +49,7 @@ export class MemoryApi_Room {
           parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
           creeps: []
         },
+        jobs: { data: null, cache: null },
         damagedCreeps: [],
         remotes: { totalSourceCount: 0, rooms: [] },
         structures: { data: null, cache: null },
