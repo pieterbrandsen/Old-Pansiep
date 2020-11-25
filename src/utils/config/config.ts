@@ -18,9 +18,6 @@ export const Config: Config = {
       structureNullChecker: 1000,
       spawnCreep: 10,
       getSpawnEnergyStructures: 50,
-      getAllEnergyStructures: 50,
-      getConstructionSites: 100,
-      getDamagedStructures: 50,
       getDamagedCreeps: 50,
       getHostileCreeps: 50,
       linkHandler: 10
