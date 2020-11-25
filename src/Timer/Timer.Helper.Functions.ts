@@ -16,20 +16,6 @@ export class TimerHelper_Functions {
       .map(c => c.id);
   }
 
-  public static getDamagedStructures(room: Room) {
-    // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[room.name];
-
-    // Get all structures that are under max hits and under hitsTarget
-    roomMemory.commonMemory.repair.targets = room
-      .find(FIND_STRUCTURES, {
-        filter: s =>
-          s.hits < s.hitsMax &&
-          s.hits < (roomMemory.commonMemory.repair.hitsTarget ? roomMemory.commonMemory.repair.hitsTarget : 250 * 1000)
-      })
-      .map(c => c.id);
-  }
-
   public static getHostileCreeps(room: Room) {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
