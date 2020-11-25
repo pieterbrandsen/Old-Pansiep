@@ -50,7 +50,10 @@ export class CreepRole_Withdraw {
     }
 
     // If there is not enough to withdraw from, return empty to get another goal if possible
-    if (roomMemory.commonMemory.energyStored.usable <= creep.store.getCapacity() && creep.memory.targetId === undefined) {
+    if (
+      roomMemory.commonMemory.energyStored.usable <= creep.store.getCapacity() &&
+      creep.memory.targetId === undefined
+    ) {
       return "empty";
     }
 
@@ -58,15 +61,20 @@ export class CreepRole_Withdraw {
     if (!creep.memory.targetId) {
       let job: JobTemplate;
       if (creepMemory.role === "transferer" && roomMemory.commonMemory.spawnEnergyStructures!.length > 0) {
-        const allContainerStoragesJobs: JobTemplate[] = JobsHelper.getAllContainerEnergyStoragesJobs(creep.room);
-        job = allContainerStoragesJobs.sort((a, b) => b.usable! - a.usable!)[0]
+        job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       } else if (
         (creepMemory.role === "transferer" || creepMemory.role === "pioneer") &&
         roomMemory.commonMemory.spawnEnergyStructures!.length === 0
-        ) {
-          job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
-        if (Game.getObjectById(job.id) === null) {
-          return;
+      ) {
+        const allContainerStoragesJobs: JobTemplate[] = JobsHelper.getAllContainerEnergyStoragesJobs(creep.room);
+        job = allContainerStoragesJobs.sort((a, b) => b.usable! - a.usable!)[0];
+        if (allContainerStoragesJobs.length === 0 || Game.getObjectById(job.id) === null) {
+          if (creep.pos.inRangeTo(creep.room.storage!, 10)) {
+            creep.moveTo(creep.room.controller!);
+            return;
+          } else {
+            return;
+          }
         }
       } else {
         job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
@@ -77,8 +85,10 @@ export class CreepRole_Withdraw {
       }
       roomMemory.jobs.energyStorages.forEach((structureInMem: any) => {
         if (structureInMem.id === job.id) {
-          structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
-          roomMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+          if (structureInMem.usable > 0) {
+            roomMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+            structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+          }
         }
       });
 
