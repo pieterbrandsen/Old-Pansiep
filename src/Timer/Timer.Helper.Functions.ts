@@ -4,14 +4,6 @@ import { Config, MemoryApi_All, MemoryApi_Room } from "Utils/importer/internals"
 
 //#region Class
 export class TimerHelper_Functions {
-  public static getConstructionSites(room: Room) {
-    // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[room.name];
-
-    // Get all constructionSites and map them based on the id
-    roomMemory.constructionSites.data = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
-  }
-
   public static getDamagedCreeps(room: Room) {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];

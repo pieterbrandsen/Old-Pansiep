@@ -39,19 +39,6 @@ export class TimerManager {
       MemoryApi_All.memoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getAllEnergyStructures"], 0);
     }
 
-    // Run GetConstructionSites if the ExecuteEachTicks returns true;
-    if (MemoryApi_All.executeEachTicks(Config.rooms.loops.getConstructionSites) || forceUpdate) {
-      MemoryApi_All.functionRunnerWithCpu(
-        TimerHelper_Functions.getConstructionSites,
-        MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-        "getConstructionSites",
-        "=",
-        room
-      );
-    } else if (MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined) {
-      MemoryApi_All.memoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getConstructionSites"], 0);
-    }
-
     // Run GetDamagedStructures if the ExecuteEachTicks returns true;
     if (MemoryApi_All.executeEachTicks(Config.rooms.loops.getDamagedStructures) || forceUpdate) {
       MemoryApi_All.functionRunnerWithCpu(

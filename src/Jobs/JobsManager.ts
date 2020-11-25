@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { MemoryApi_Empire } from "Utils/importer/internals";
+import { MemoryApi_All, MemoryApi_Empire, CONST_JOBS_CACHE_TTL, JobsHelper } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -14,7 +14,11 @@ export class JobsManager {
   }
 
   private static runJobsForRoom(room: Room, isOwnedRoom: boolean): void {
-    // Empty
+    if (isOwnedRoom) {
+      if (MemoryApi_All.executeEachTicks(CONST_JOBS_CACHE_TTL)) {
+        JobsHelper.updateAllConstructionSitesJobs(room);
+      }
+    }
   }
 }
 //#endregion

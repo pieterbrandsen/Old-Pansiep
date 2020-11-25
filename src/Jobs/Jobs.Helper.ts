@@ -8,15 +8,14 @@ export class JobsHelper {
   public static updateAllConstructionSitesJobs(room: Room): void {
     const allConstructionSites: ConstructionSite[] = MemoryApi_Room.getAllConstructionSites(room);
 
-    let jobConstructionSites: JobTemplate[] = room.memory.jobs.data.constructionSites;
-    jobConstructionSites = [];
+    room.memory.jobs.constructionSites = [];
     _.forEach(allConstructionSites, (site: ConstructionSite) => {
       const jobSite: JobTemplate = {
         pos: site.pos,
         id: site.id,
         needed: site.progressTotal - site.progress
       };
-      jobConstructionSites.push(jobSite);
+      room.memory.jobs.constructionSites.push(jobSite);
     });
   }
 }
