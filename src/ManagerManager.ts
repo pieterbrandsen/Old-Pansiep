@@ -29,7 +29,7 @@ export class ManagerManager {
     // This will run all memory related management
     // Like setting up the memory
     MemoryManager.runMemoryManager();
-
+    
     // Run the roomManager
     // This will run all room related management
     // Like the towers and spawningEnergy gathering

@@ -25,6 +25,7 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
 
 // Jobs ticks
 export const CONST_JOBS_CACHE_TTL = 100;
+export const ENERGY_STORAGES_JOBS_CACHE_TTL = 100;
 
 // Cache ticks
 export const STRUCT_CACHE_TTL = 100;

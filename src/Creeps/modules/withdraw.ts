@@ -1,5 +1,6 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import _ from "lodash";
+import { Config, JobsHelper } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -49,55 +50,40 @@ export class CreepRole_Withdraw {
     }
 
     // If there is not enough to withdraw from, return empty to get another goal if possible
-    if (roomMemory.commonMemory.energyStored.usable <= 500 && creep.memory.targetId === undefined) {
+    if (roomMemory.commonMemory.energyStored.usable <= creep.store.getCapacity() && creep.memory.targetId === undefined) {
       return "empty";
     }
 
     // If creep memory is missing a targetId, find one
     if (!creep.memory.targetId) {
-      const highestEnergyStructure = roomMemory.commonMemory.energyStructures.sort(
-        (a: any, b: any) => b.usable - a.usable
-      )[0];
-      const highestSourceStructure = roomMemory.commonMemory.energyStructures
-        .filter((s: any) => s.usable <= 2000)
-        .sort((a: any, b: any) => b.usable - a.usable)[0];
-
-      let structure: any;
+      let job: JobTemplate;
       if (creepMemory.role === "transferer" && roomMemory.commonMemory.spawnEnergyStructures!.length > 0) {
-        structure = highestEnergyStructure;
+        const allContainerStoragesJobs: JobTemplate[] = JobsHelper.getAllContainerEnergyStoragesJobs(creep.room);
+        job = allContainerStoragesJobs.sort((a, b) => b.usable! - a.usable!)[0]
       } else if (
         (creepMemory.role === "transferer" || creepMemory.role === "pioneer") &&
         roomMemory.commonMemory.spawnEnergyStructures!.length === 0
-      ) {
-        const structureObj:
-          | StructureStorage
-          | StructureTerminal
-          | StructureContainer
-          | StructureLink
-          | null = Game.getObjectById(highestSourceStructure.id);
-        if (structureObj === null) {
+        ) {
+          job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
+        if (Game.getObjectById(job.id) === null) {
           return;
         }
-        if (structureObj.structureType === STRUCTURE_STORAGE || structureObj.structureType === STRUCTURE_TERMINAL) {
-          return;
-        }
-        structure = highestSourceStructure;
       } else {
-        structure = highestEnergyStructure;
+        job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       }
 
-      if (structure === undefined) {
+      if (job === undefined) {
         return;
       }
-      roomMemory.commonMemory.energyStructures.forEach((structureInMem: any) => {
-        if (structureInMem.id === structure.id) {
+      roomMemory.jobs.energyStorages.forEach((structureInMem: any) => {
+        if (structureInMem.id === job.id) {
           structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
           roomMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
         }
       });
 
-      if (structure.usable > 0) {
-        creep.memory.targetId = structure.id;
+      if (job.usable! > 0) {
+        creep.memory.targetId = job.id;
       }
     } else {
       if (creepMemory.targetId === undefined) {

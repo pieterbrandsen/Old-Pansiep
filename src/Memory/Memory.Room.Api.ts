@@ -6,14 +6,15 @@ import {
   MemoryHelper_Room,
   MemoryHelper,
   STRUCT_CACHE_TTL,
-  CONST_CACHE_TTL
+  CONST_CACHE_TTL,
+  RoomHelper_State
 } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
 export class MemoryApi_Room {
   public static initRoomMemory(room: Room, isOwnedRoom: boolean): void {
-    if (Memory.rooms[room.name]) {
+    if (room.memory!.isSetup) {
       return;
     }
 
@@ -32,7 +33,6 @@ export class MemoryApi_Room {
           sourceCount: 0,
           mineral: { id: "", type: "", amount: 0 },
           sources: [],
-          energyStructures: [],
           repair: { targets: [], hitsTarget: 250 * 1000 },
           controllerLevel: 0,
           headSpawnId: "",
@@ -49,20 +49,21 @@ export class MemoryApi_Room {
           parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
           creeps: []
         },
-        jobs: { constructionSites: [] },
+        jobs: { constructionSites: [], energyStorages: [] },
         damagedCreeps: [],
-        remotes: { totalSourceCount: 0, rooms: [] },
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null }
       };
     }
 
     // Get objects to fill memory
-    this.resetRoomMemory(room, true, isOwnedRoom);
     MemoryHelper_Room.updateRoomMemory(room, isOwnedRoom);
+    this.resetRoomMemory(room, true, isOwnedRoom);
+
+    room.memory.isSetup = true;
   }
 
-  public static getStructures(room: Room, filterFunction?: (object: Structure) => boolean): Structure[] {
+  public static getStructures(room: Room, filterFunction?: (object: any) => boolean): Structure[] {
     // If we have no vision of the room, return an empty array
     if (!room.memory) {
       return [];
@@ -172,10 +173,6 @@ export class MemoryApi_Room {
   }
 
   public static resetRoomMemory(room: Room, forceUpdate?: boolean, isOwnedRoom: boolean = false): void {
-    if (isOwnedRoom) {
-      this.resetOwnedRoomMemory(room, forceUpdate);
-    }
-
     // Acces the roomMemory of this room
     const roomMemory: RoomMemory = room.memory;
 
@@ -209,8 +206,6 @@ export class MemoryApi_Room {
       },
       // Set the id and pos of all sources to the memory of the room
       sources,
-      // Create a empty array for storing energyStructures
-      energyStructures: [],
       // Set the repair object
       // Create a empty array for storing targets to repair
       // Set the hitsTarget to a default of 250K
@@ -233,6 +228,10 @@ export class MemoryApi_Room {
 
     // Sets the damagedCreeps object to a empty array
     roomMemory.damagedCreeps = [];
+
+    if (isOwnedRoom) {
+      this.resetOwnedRoomMemory(room, forceUpdate);
+    }
   }
 
   private static resetOwnedRoomMemory(room: Room, forceUpdate?: boolean): void {
@@ -254,8 +253,7 @@ export class MemoryApi_Room {
     const spawns = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
     roomMemory.commonMemory.headSpawnId = room.terminal
       ? room.terminal.pos.findInRange(spawns, 2)[0]
-        ? // @ts-ignore: Id DOES exist on the result
-          room.terminal.pos.findInRange(room.spawns, 2)[0].id
+        ? (room.terminal.pos.findInRange(spawns, 2)[0] as StructureTerminal).id
         : spawns[0].id
       : spawns[0]
       ? spawns[0].id
@@ -288,9 +286,11 @@ export class MemoryApi_Room {
     if (!room.controller) {
       return null;
     }
-    let upgraderStructure: StructureLink | StructureContainer | null = Game.getObjectById(
-      room.memory.commonMemory.controllerStorage!.id!
-    );
+    let upgraderStructure: StructureLink | StructureContainer | null = null;
+    if (room.memory.commonMemory.controllerStorage) {
+      upgraderStructure = Game.getObjectById(room.memory.commonMemory.controllerStorage!.id!);
+    }
+
     if (upgraderStructure !== null) {
       room.memory.commonMemory.controllerStorage!.usable = upgraderStructure.store.energy;
       return upgraderStructure;
@@ -360,6 +360,23 @@ export class MemoryApi_Room {
       }
 
       return structures;
+    }
+  }
+
+  public static isRoomSetup(room: Room): boolean {
+    if (!Game.flags[room.name]) {
+      room.createFlag(
+        room.controller
+          ? room.controller.pos
+          : (MemoryApi_Room.getRandomFreePos({ x: 0, y: 0, roomName: room.name }) as RoomPosition),
+        room.name,
+        COLOR_RED,
+        COLOR_WHITE
+      );
+      delete Memory.rooms[room.name];
+      return false;
+    } else {
+      return true;
     }
   }
 }

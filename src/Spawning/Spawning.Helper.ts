@@ -274,7 +274,7 @@ export class SpawningHelper {
             break;
           }
 
-          if (Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[0].id!) === null) {
+          if (!targetRoomMemory.roomPlanner.room.sources[0] || Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[0].id!) === null) {
             break;
           }
 
@@ -305,7 +305,7 @@ export class SpawningHelper {
             break;
           }
 
-          if (Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[1].id!) === null) {
+          if (!targetRoomMemory.roomPlanner.room.sources[1] || Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[1].id!) === null) {
             break;
           }
 

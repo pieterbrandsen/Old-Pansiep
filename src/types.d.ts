@@ -14,12 +14,11 @@ interface CreepMemory {
 interface RoomMemory {
   structures: Cache,
   constructionSites: Cache,
-  jobs: { constructionSites: JobTemplate[]},
+  jobs: { constructionSites: JobTemplate[], energyStorages: JobTemplate[]},
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
     sources: Array<{ id: string; pos: RoomPos }>;
-    energyStructures: Array<{ id: string; usable: number }>;
     repair: { targets: string[]; hitsTarget: number };
     controllerLevel?: number;
     headSpawnId?: string;
@@ -40,7 +39,7 @@ interface RoomMemory {
   };
   enemies: { parts: { [key: string]: number }; creeps: Array<{ id: string; parts: { [key: string]: number } }> };
   damagedCreeps: string[];
-  remotes: { totalSourceCount: number; rooms: string[] };
+  isSetup?: boolean;
 
   // BuilderLD
   spawnRoom?: string;
@@ -138,4 +137,5 @@ interface JobTemplate {
   id: string,
   usable?: number, 
   needed?: number,
+  structureType?: StructureConstant
 }
