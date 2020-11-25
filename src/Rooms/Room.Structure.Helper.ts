@@ -6,9 +6,13 @@ import { MemoryApi_Room, MemoryApi_All } from "Utils/importer/internals";
 //#region Class
 export class RoomHelper_Structure {
   public static towerRepairing(room: Room): void {
-    const structureId: string = _.first(room.memory.commonMemory.repair.targets);
+    if (room.memory.jobs.damagedStructures.data.length === 0) {
+      return;
+    }
+
+    const structureId: string = _.first(room.memory.jobs.damagedStructures.data).id;
     const structure: Structure | null = Game.getObjectById(structureId);
-    const hitsTarget: number = room.memory.commonMemory.repair.hitsTarget;
+    const hitsTarget: number = room.memory.jobs.damagedStructures.hitsTarget;
 
     if (structure && structure.hits < structure.hitsMax && structure.hits < hitsTarget) {
       const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
@@ -21,7 +25,7 @@ export class RoomHelper_Structure {
         tower.repair(structure);
       });
     } else {
-      room.memory.commonMemory.repair.targets.shift();
+      room.memory.jobs.damagedStructures.data.shift();
     }
   }
 

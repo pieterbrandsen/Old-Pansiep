@@ -33,7 +33,6 @@ export class MemoryApi_Room {
           sourceCount: 0,
           mineral: { id: "", type: "", amount: 0 },
           sources: [],
-          repair: { targets: [], hitsTarget: 250 * 1000 },
           controllerLevel: 0,
           headSpawnId: "",
           spawnEnergyStructures: [],
@@ -49,7 +48,7 @@ export class MemoryApi_Room {
           parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
           creeps: []
         },
-        jobs: { constructionSites: [], energyStorages: [] },
+        jobs: { constructionSites: [], energyStorages: [], damagedStructures: {data: [], hitsTarget:250*1000} },
         damagedCreeps: [],
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null }
@@ -206,13 +205,6 @@ export class MemoryApi_Room {
       },
       // Set the id and pos of all sources to the memory of the room
       sources,
-      // Set the repair object
-      // Create a empty array for storing targets to repair
-      // Set the hitsTarget to a default of 250K
-      repair: {
-        targets: [],
-        hitsTarget: 250 * 1000
-      },
       // Set the energyStored to a 0 for both of the keys
       energyStored: { usable: 0, capacity: 0 }
     };

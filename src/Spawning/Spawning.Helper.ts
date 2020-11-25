@@ -248,7 +248,7 @@ export class SpawningHelper {
           }
 
           // Break if there are no targets left
-          if (targetRoomMemory.commonMemory.repair.targets.length === 0) {
+          if (targetRoomMemory.jobs.damagedStructures.data.length === 0) {
             break;
           }
 

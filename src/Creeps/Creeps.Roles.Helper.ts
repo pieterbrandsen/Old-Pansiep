@@ -214,7 +214,7 @@ export class CreepsHelper_Role {
           roomMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER
         ) {
           creep.memory.job = "transfer";
-        } else if (roomMemory.commonMemory.repair.targets.length > 0) {
+        } else if (roomMemory.jobs.damagedStructures.data.length > 0) {
           creep.memory.job = "repair";
         } else if (roomMemory.constructionSites.data.length > 0) {
           creep.memory.job = "build";
@@ -437,7 +437,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Switch to one of the jobs that drains energy
-        if (roomMemory.commonMemory.repair.targets.length > 0) {
+        if (roomMemory.jobs.damagedStructures.data.length > 0) {
           creep.memory.job = "repair";
         } else {
           creep.memory.job = "upgrade";

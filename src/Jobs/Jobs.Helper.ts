@@ -37,22 +37,58 @@ export class JobsHelper {
         s.id !== controllerStorage.id
     );
 
+    // Set energyUsable and energyCapacity to zero
+    let energyUsable: number = 0;
+    let energyCapacity: number = 0;
+
     room.memory.jobs.energyStorages = [];
     _.forEach(allEnergyStructures, (str: StructureStorage) => {
-      const jobSite: JobTemplate = {
+      const jobStr: JobTemplate = {
         pos: str.pos,
         id: str.id,
         usable: str.store.energy,
         structureType: str.structureType
       };
-      room.memory.jobs.energyStorages.push(jobSite);
+
+      if (jobStr.id === room.memory.commonMemory.controllerStorage?.id) {
+        room.memory.commonMemory.controllerStorage.usable = jobStr.usable!;
+      } else {
+        room.memory.jobs.energyStorages.push(jobStr);
+      }
+
+      // Add the total energy available and capacity
+      energyUsable += str.store.getUsedCapacity(RESOURCE_ENERGY);
+      energyCapacity += str.store.getCapacity(RESOURCE_ENERGY);
     });
 
-    room.memory.jobs.energyStorages.sort((a, b) => a.usable! - b.usable!);
+    room.memory.commonMemory.energyStored = { usable: energyUsable, capacity: energyCapacity };
   }
 
-  public static getAllContainerEnergyStoragesJobs(room:Room): JobTemplate[] {
+  public static getAllContainerEnergyStoragesJobs(room: Room): JobTemplate[] {
     return room.memory.jobs.energyStorages.filter((job: JobTemplate) => job.structureType === STRUCTURE_CONTAINER);
+  }
+
+  public static updateAllDamagedStructuresJobs(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = Memory.rooms[room.name];
+
+    const allDamagedStructures = MemoryApi_Room.getStructures(
+      room,
+      (s: Structure) =>
+        s.hits < s.hitsMax &&
+        s.hits <
+          (roomMemory.jobs.damagedStructures.hitsTarget ? roomMemory.jobs.damagedStructures.hitsTarget : 250 * 1000)
+    );
+
+    room.memory.jobs.damagedStructures.data = [];
+    _.forEach(allDamagedStructures, (str: Structure) => {
+      const jobStr: JobTemplate = {
+        pos: str.pos,
+        id: str.id,
+        needed: (str.hitsMax - str.hits) / 100
+      };
+      room.memory.jobs.damagedStructures.data.push(jobStr);
+    });
   }
 }
 //#endregion

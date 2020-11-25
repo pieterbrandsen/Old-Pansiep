@@ -19,7 +19,7 @@ export class CreepRole_Repair {
     }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
-    if (roomMemory.commonMemory.repair.targets.length === 0 && !creepMemory.targetId && !data.id) {
+    if (roomMemory.jobs.damagedStructures.data.length === 0 && !creepMemory.targetId && !data.id) {
       if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
         creep.moveTo(creep.room.controller);
       }
@@ -31,13 +31,13 @@ export class CreepRole_Repair {
     // If creep is missing a targetId
     if (targetId === undefined) {
       // Get the fist target from what is saved //
-      creep.memory.targetId = roomMemory.commonMemory.repair.targets[0];
+      creep.memory.targetId = roomMemory.jobs.damagedStructures.data[0].id;
     } else {
       // Get the saved structure site from memory
       const repairTarget: AnyStructure | null = Game.getObjectById(targetId);
 
       if (repairTarget === null) {
-        roomMemory.commonMemory.repair.targets.shift();
+        roomMemory.jobs.damagedStructures.data.shift();
         return "empty";
       }
 
@@ -52,12 +52,9 @@ export class CreepRole_Repair {
           // If the hits of the repairTarget are high enough, remove structure
           if (
             repairTarget.hits === repairTarget.hitsMax ||
-            repairTarget.hits > roomMemory.commonMemory.repair.hitsTarget
+            repairTarget.hits > roomMemory.jobs.damagedStructures.hitsTarget
           ) {
-            // Check if target that's going to be lost is still on the construction list, if so shift it.
-            if (roomMemory.commonMemory.repair.targets.indexOf(creep.memory.targetId!) === 0) {
-              roomMemory.commonMemory.repair.targets.shift();
-            }
+            roomMemory.jobs.damagedStructures.data.shift();
 
             delete creep.memory.targetId;
           }
