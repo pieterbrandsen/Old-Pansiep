@@ -180,7 +180,7 @@ export class CreepRole_Transfer {
       return "full";
     }
 
-    if (!roomMemory || (roomMemory.commonMemory.spawnEnergyStructures!.length === 0 && !creepMemory.targetId)) {
+    if (roomMemory.commonMemory.spawnEnergyStructures!.length === 0 && !creepMemory.targetId) {
       return "empty";
     }
 

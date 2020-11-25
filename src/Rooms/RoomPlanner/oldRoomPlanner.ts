@@ -183,7 +183,7 @@ export class OldRoomPlanner {
     const roomMemory: RoomMemory = Memory.rooms[roomName];
 
     // Wait until all other construction sites are build
-    if (roomMemory.constructionSites.data.length > 0) {
+    if (roomMemory.constructionSites.data?.length > 0) {
       return;
     }
 

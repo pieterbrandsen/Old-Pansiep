@@ -12,6 +12,7 @@ export class MemoryManager {
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room): void => {
       const isOwnedRoom: boolean = true;
+      MemoryApi_Room.isRoomSetup(room);
       MemoryApi_Room.initRoomMemory(room, isOwnedRoom);
       MemoryApi_Room.resetRoomTracking(room);
     });

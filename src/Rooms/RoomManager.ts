@@ -16,7 +16,6 @@ export class RoomManager {
   }
 
   private static runSingleRoom(room: Room): void {
-    RoomHelper_State.isRoomSetup(room);
     TimerManager.runTimerForRoom(room);
     const roomState: string = RoomHelper_State.getRoomState(room);
 
