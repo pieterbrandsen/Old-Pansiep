@@ -26,14 +26,16 @@ export class CreepRole_Build {
     if (creepMemory.targetId === undefined) {
       // Get the fist target from what is saved //
       // This target will get later shifted when its completed
-      creep.memory.targetId = roomMemory.constructionSites.data[0];
+      if (roomMemory.jobs.constructionSites[0]) {
+        creep.memory.targetId = roomMemory.jobs.constructionSites[0].id;
+      }
     } else {
       // Get the saved construction site from memory
       const constructionSite: ConstructionSite | null = Game.getObjectById(creepMemory.targetId);
 
       // If construction site doesn't exist, remove it
       if (constructionSite === null) {
-        roomMemory.constructionSites.data.shift();
+        roomMemory.jobs.constructionSites.shift();
         return "empty";
       }
 
@@ -45,41 +47,8 @@ export class CreepRole_Build {
           Config.expenses.building[creep.room.name] += creep.memory.parts.work * 5;
           break;
         case ERR_INVALID_TARGET:
-          // TODO SAVE THE TARGET POS BECAUSE ATM THE CONSTRUCTION IS ALREADY LOST
-          // // If the structure is a rampart, heal it until 5K hits
-          // if (
-          //   constructionSite &&
-          //     constructionSite.structureType === STRUCTURE_RAMPART
-          // ) {
-          //   // Find all structures at last known position
-          //   const foundStructures = creep.room.lookForAt(
-          //     LOOK_STRUCTURES,
-          //     constructionSite.pos.x,
-          //     constructionSite.pos.y,
-          //   );
-
-          //   // Loop through all structures that are found at last know position and try to find a rampart
-          //   let repairStructureId;
-          //   foundStructures.forEach((structure) => {
-          //     if (structure.structureType === STRUCTURE_RAMPART) {
-          //       repairStructureId = structure.id;
-          //     }
-          //   });
-
-          //   // If a rampart was found, repair that structure
-          //   if (repairStructureId) {
-          //     repair({id: repairStructureId});
-          //     const repairStructure = Game.getObjectById(repairStructureId);
-          //     if (repairStructure.hits < 5000) {
-          //       return;
-          //     }
-          //   }
-          // }
-
           // Check if target that's going to be lost is still on the construction list, if so shift it.
-          if (roomMemory.constructionSites.data.indexOf(creep.memory.targetId!) === 0) {
-            roomMemory.constructionSites.data.shift();
-          }
+          roomMemory.jobs.constructionSites.shift();
           // Delete target from the memory
           delete creep.memory.targetId;
           return "full";

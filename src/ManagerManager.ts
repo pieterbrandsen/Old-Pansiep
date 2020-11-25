@@ -35,15 +35,15 @@ export class ManagerManager {
     // Like the towers and spawningEnergy gathering
     RoomManager.runRoomManager();
 
-    // Run the spawningManager
-    // This will run all spawning related management
-    // Like spawning creeps and setting caps for spawning
-    SpawningManager.runSpawningManager();
-
     // Run the creepsManager
     // This will run creep related logic
     // Like running creeps and saving cpu of creeps
     CreepsManager.runCreepsManager();
+
+    // Run the spawningManager
+    // This will run all spawning related management
+    // Like spawning creeps and setting caps for spawning
+    SpawningManager.runSpawningManager();
 
     // Run the statsManager
     // This will run all stats saving related logic

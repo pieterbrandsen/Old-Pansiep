@@ -23,6 +23,9 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
   STRUCTURE_INVADER_CORE
 ];
 
+// Jobs ticks
+export const CONST_JOBS_CACHE_TTL = 100;
+
 // Cache ticks
 export const STRUCT_CACHE_TTL = 100;
 export const CONST_CACHE_TTL = 1000;

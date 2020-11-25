@@ -49,7 +49,7 @@ export class MemoryApi_Room {
           parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
           creeps: []
         },
-        jobs: { data: null, cache: null },
+        jobs: { constructionSites: [] },
         damagedCreeps: [],
         remotes: { totalSourceCount: 0, rooms: [] },
         structures: { data: null, cache: null },
@@ -351,7 +351,7 @@ export class MemoryApi_Room {
         MemoryHelper_Room.updateConstructionSites(room);
       }
 
-      const structureIDs: string[] = room.memory.structures.data;
+      const structureIDs: string[] = room.memory.constructionSites.data;
 
       let structures: ConstructionSite[] = MemoryHelper.getOnlyObjectsFromIDs<ConstructionSite>(structureIDs);
 
