@@ -109,5 +109,29 @@ export class JobsHelper {
       roomMemory.jobs.damagedCreeps.push(creepJob);
     });
   }
+
+  public static updateAllSpawnerEnergyStructures(room: Room): void {
+    const allSpawnerEnergyStructures: Structure[] = MemoryApi_Room.getStructures(
+      room,
+      (s: StructureExtension | StructureSpawn | StructureLab) =>
+        (s.structureType === STRUCTURE_EXTENSION ||
+          s.structureType === STRUCTURE_SPAWN ||
+          s.structureType === STRUCTURE_LAB) &&
+          // @ts-ignore: Function is defined
+        s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+    );
+
+    room.memory.jobs.spawnerEnergyStructures = [];
+    _.forEach(allSpawnerEnergyStructures, (str: StructureStorage) => {
+      const jobStr: JobTemplate = {
+        pos: str.pos,
+        id: str.id,
+        needed: str.store.getFreeCapacity(RESOURCE_ENERGY),
+        structureType: str.structureType
+      };
+
+      room.memory.jobs.spawnerEnergyStructures!.push(jobStr);
+    });
+  }
 }
 //#endregion

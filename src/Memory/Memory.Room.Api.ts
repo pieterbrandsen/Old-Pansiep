@@ -35,7 +35,6 @@ export class MemoryApi_Room {
           sources: [],
           controllerLevel: 0,
           headSpawnId: "",
-          spawnEnergyStructures: [],
           energyStored: { usable: 0, capacity: 0 },
           controllerStorage: { usable: 0, id: undefined, type: undefined },
           links: { source0: "", source1: "", controller: "", head: "" }
@@ -52,7 +51,8 @@ export class MemoryApi_Room {
           constructionSites: [],
           energyStorages: [],
           damagedStructures: { data: [], hitsTarget: 250 * 1000 },
-          damagedCreeps: []
+          damagedCreeps: [],
+          spawnerEnergyStructures: []
         },
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null },
@@ -259,7 +259,7 @@ export class MemoryApi_Room {
         })[0].id
       : undefined;
     // Create a empty array for storing spawnEnergyStructures
-    roomMemory.commonMemory.spawnEnergyStructures = [];
+    roomMemory.jobs.spawnerEnergyStructures = [];
     // Set the storage in the controller storage to 0
     roomMemory.commonMemory.controllerStorage = { usable: 0, type: undefined, id: undefined };
     // Set all links to undefined

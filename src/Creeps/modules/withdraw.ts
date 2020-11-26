@@ -60,11 +60,11 @@ export class CreepRole_Withdraw {
     // If creep memory is missing a targetId, find one
     if (!creep.memory.targetId) {
       let job: JobTemplate;
-      if (creepMemory.role === "transferer" && roomMemory.commonMemory.spawnEnergyStructures!.length > 0) {
+      if (creepMemory.role === "transferer" && roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
         job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       } else if (
         (creepMemory.role === "transferer" || creepMemory.role === "pioneer") &&
-        roomMemory.commonMemory.spawnEnergyStructures!.length === 0
+        roomMemory.jobs.spawnerEnergyStructures!.length === 0
       ) {
         const allContainerStoragesJobs: JobTemplate[] = JobsHelper.getAllContainerEnergyStoragesJobs(creep.room);
         job = allContainerStoragesJobs.sort((a, b) => b.usable! - a.usable!)[0];

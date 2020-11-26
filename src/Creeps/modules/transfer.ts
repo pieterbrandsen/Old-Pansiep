@@ -34,7 +34,7 @@ export class CreepRole_Transfer {
           break;
         }
 
-        if (roomMemory.commonMemory.spawnEnergyStructures!.length > 0) {
+        if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
           creep.memory.miniJob = "spawner";
           break;
         } else if (
@@ -180,7 +180,7 @@ export class CreepRole_Transfer {
       return "full";
     }
 
-    if (roomMemory.commonMemory.spawnEnergyStructures!.length === 0 && !creepMemory.targetId) {
+    if (roomMemory.jobs.spawnerEnergyStructures!.length === 0 && !creepMemory.targetId) {
       return "empty";
     }
 
@@ -190,17 +190,17 @@ export class CreepRole_Transfer {
       const getCapacityCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
 
       // If current spawnEnergyStructure needs less then zero energy, shift it.
-      if (roomMemory.commonMemory.spawnEnergyStructures![0].needed < 0) {
-        roomMemory.commonMemory.spawnEnergyStructures!.shift();
+      if (roomMemory.jobs.spawnerEnergyStructures![0].needed! < 0) {
+        roomMemory.jobs.spawnerEnergyStructures!.shift();
         return;
       }
 
       // Get first id from array, shift only if creep can fill the whole target.
-      if (roomMemory.commonMemory.spawnEnergyStructures![0].needed < getCapacityCreep) {
-        creep.memory.targetId = roomMemory.commonMemory.spawnEnergyStructures!.shift()!.id;
+      if (roomMemory.jobs.spawnerEnergyStructures![0].needed! < getCapacityCreep) {
+        creep.memory.targetId = roomMemory.jobs.spawnerEnergyStructures!.shift()!.id;
       } else {
-        creep.memory.targetId = roomMemory.commonMemory.spawnEnergyStructures![0].id;
-        roomMemory.commonMemory.spawnEnergyStructures![0].needed -= getCapacityCreep;
+        creep.memory.targetId = roomMemory.jobs.spawnerEnergyStructures![0].id;
+        roomMemory.jobs.spawnerEnergyStructures![0].needed! -= getCapacityCreep;
       }
     } else {
       // Get the saved structure from memory
@@ -217,22 +217,15 @@ export class CreepRole_Transfer {
       // Switch based on the results
       switch (result) {
         case OK:
-          if (transferStructure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-            roomMemory.commonMemory.spawnEnergyStructures!.push({
-              id: transferStructure.id,
-              needed: transferStructure.store.getFreeCapacity(RESOURCE_ENERGY)
-            });
-          }
-          break;
         case ERR_INVALID_TARGET:
         case ERR_FULL:
           // Delete targetId
           delete creep.memory.targetId;
-          return;
+          break;
         case ERR_NOT_IN_RANGE:
           // If creep is not in range, move to target
           creep.moveTo(transferStructure);
-          return;
+          break;
         default:
           break;
       }

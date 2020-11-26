@@ -201,7 +201,7 @@ export class CreepsHelper_Role {
         delete creep.memory.sourceNumber;
 
         // Switch to one of the jobs that drains energy
-        if (roomMemory.commonMemory.spawnEnergyStructures!.length > 0) {
+        if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
           creep.memory.job = "transfer";
         } else if (
           roomMemory.commonMemory.energyStored.capacity > 10000 &&
