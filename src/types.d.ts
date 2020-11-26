@@ -93,7 +93,6 @@ interface Config {
       roomPlanner: { base: number; room: number };
       structureNullChecker: number;
       spawnCreep: number;
-      getSpawnEnergyStructures: number;
       getHostileCreeps: number;
       linkHandler: number;
     };
