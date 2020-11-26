@@ -48,10 +48,11 @@ export class MemoryApi_Room {
           parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
           creeps: []
         },
-        jobs: { constructionSites: [], energyStorages: [], damagedStructures: {data: [], hitsTarget:250*1000} },
+        jobs: { constructionSites: [], energyStorages: [], damagedStructures: { data: [], hitsTarget: 250 * 1000 } },
         damagedCreeps: [],
         structures: { data: null, cache: null },
-        constructionSites: { data: null, cache: null }
+        constructionSites: { data: null, cache: null },
+        myCreeps: { data: null, cache: null }
       };
     }
 
@@ -370,6 +371,31 @@ export class MemoryApi_Room {
     } else {
       return true;
     }
+  }
+
+  public static getMyCreeps(room: Room, filterFunction?: (object: Structure) => boolean): Creep[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+      return [];
+    }
+
+    if (
+      room.memory.myCreeps === undefined ||
+      room.memory.myCreeps.data === null ||
+      room.memory.myCreeps.cache < Game.time - CONST_CACHE_TTL
+    ) {
+      MemoryHelper_Room.updateMyCreeps(room);
+    }
+
+    const creepsIDs: string[] = room.memory.myCreeps!.data;
+
+    let creeps: Creep[] = MemoryHelper.getOnlyObjectsFromIDs<Creep>(creepsIDs);
+
+    if (filterFunction !== undefined) {
+      creeps = _.filter(creeps, filterFunction);
+    }
+
+    return creeps;
   }
 }
 //#endregion

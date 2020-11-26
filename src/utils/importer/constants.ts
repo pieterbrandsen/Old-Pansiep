@@ -29,5 +29,6 @@ export const ENERGY_STORAGES_JOBS_CACHE_TTL = 50;
 export const DAMAGED_STRUCTURES_JOBS_CACHE_TTL = 500;
 
 // Cache ticks
-export const STRUCT_CACHE_TTL = 100;
 export const CONST_CACHE_TTL = 1000;
+export const CREEPS_CACHE_TTL = 100;
+export const STRUCT_CACHE_TTL = 100;

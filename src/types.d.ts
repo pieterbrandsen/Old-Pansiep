@@ -12,9 +12,15 @@ interface CreepMemory {
 }
 
 interface RoomMemory {
+  // Cached objects
   structures: Cache,
   constructionSites: Cache,
+  myCreeps?: Cache,
+
+  // Jobs
   jobs: { constructionSites: JobTemplate[], energyStorages: JobTemplate[], damagedStructures: { data: JobTemplate[]; hitsTarget: number }},
+  
+  // Room memory
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
