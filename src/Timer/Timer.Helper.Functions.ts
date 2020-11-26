@@ -4,18 +4,6 @@ import { Config, MemoryApi_All, MemoryApi_Room } from "Utils/importer/internals"
 
 //#region Class
 export class TimerHelper_Functions {
-  public static getDamagedCreeps(room: Room) {
-    // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[room.name];
-
-    // Find all creeps that are damaged and are mine
-    roomMemory.damagedCreeps = room
-      .find(FIND_MY_CREEPS, {
-        filter: c => c.hits < c.hitsMax
-      })
-      .map(c => c.id);
-  }
-
   public static getHostileCreeps(room: Room) {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
