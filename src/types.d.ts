@@ -24,6 +24,7 @@ interface RoomMemory {
     damagedStructures: { data: JobTemplate[]; hitsTarget: number };
     damagedCreeps: JobTemplate[];
     spawnerEnergyStructures?: JobTemplate[];
+    enemies: { parts: { [key: string]: number }; creeps: JobTemplate[] };
   };
 
   // Room memory
@@ -51,7 +52,6 @@ interface RoomMemory {
     room: { sources: BestPosition[]; controller?: BestPosition };
     base?: { type: string | undefined; midPos: RoomPos };
   };
-  enemies: { parts: { [key: string]: number }; creeps: Array<{ id: string; parts: { [key: string]: number } }> };
   isSetup?: boolean;
 
   // BuilderLD
@@ -93,7 +93,6 @@ interface Config {
       roomPlanner: { base: number; room: number };
       structureNullChecker: number;
       spawnCreep: number;
-      getHostileCreeps: number;
       linkHandler: number;
     };
   };
@@ -146,4 +145,5 @@ interface JobTemplate {
   usable?: number;
   needed?: number;
   structureType?: StructureConstant;
+  parts?: { [key: string]: number };
 }

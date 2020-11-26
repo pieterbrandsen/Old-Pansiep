@@ -17,7 +17,6 @@ export const Config: Config = {
       },
       structureNullChecker: 1000,
       spawnCreep: 10,
-      getHostileCreeps: 50,
       linkHandler: 10
     }
   },
