@@ -65,19 +65,6 @@ export class TimerManager {
       MemoryApi_All.memoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["basePlanner"], 0);
     }
 
-    // Run GetSpawnEnergyStructures if the ExecuteEachTicks returns true;
-    if (MemoryApi_All.executeEachTicks(Config.rooms.loops.getSpawnEnergyStructures) || forceUpdate) {
-      MemoryApi_All.functionRunnerWithCpu(
-        TimerHelper_Functions.getSpawnEnergyStructures,
-        MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-        "getSpawnEnergyStructures",
-        "=",
-        room
-      );
-    } else if (MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined) {
-      MemoryApi_All.memoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["getSpawnEnergyStructures"], 0);
-    }
-
     // Run OwnedRoomStructureNullChecker if the ExecuteEachTicks returns true;
     if (MemoryApi_All.executeEachTicks(Config.rooms.loops.structureNullChecker) || forceUpdate) {
       MemoryApi_All.functionRunnerWithCpu(

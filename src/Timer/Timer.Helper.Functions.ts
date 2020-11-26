@@ -114,26 +114,6 @@ export class TimerHelper_Functions {
     }
   }
 
-  public static getSpawnEnergyStructures(room: Room) {
-    // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[room.name];
-
-    // Find all spawner structures and map them to the id and energy space
-    roomMemory.commonMemory.spawnEnergyStructures = room
-      .find(FIND_MY_STRUCTURES, {
-        filter: s =>
-          // @ts-ignore
-          [STRUCTURE_LAB, STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER].indexOf(s.structureType) !== -1 &&
-          // @ts-ignore
-          s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-      })
-      .map(s => ({
-        id: s.id,
-        // @ts-ignore
-        needed: s.store.getFreeCapacity(RESOURCE_ENERGY)
-      }));
-  }
-
   public static globalRoomStructureNullChecker(room: Room) {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
