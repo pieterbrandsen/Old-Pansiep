@@ -23,6 +23,7 @@ interface RoomMemory {
     energyStorages: JobTemplate[];
     damagedStructures: { data: JobTemplate[]; hitsTarget: number };
     damagedCreeps: JobTemplate[];
+    spawnerEnergyStructures?: JobTemplate[];
   };
 
   // Room memory
@@ -32,7 +33,6 @@ interface RoomMemory {
     sources: Array<{ id: string; pos: RoomPos }>;
     controllerLevel?: number;
     headSpawnId?: string;
-    spawnEnergyStructures?: Array<{ needed: number; id: string }>;
     energyStored: { usable: number; capacity: number };
     controllerStorage?: {
       usable: number;
