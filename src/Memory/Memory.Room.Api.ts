@@ -43,16 +43,17 @@ export class MemoryApi_Room {
           room: { sources: [] },
           base: { type: undefined, midPos: { x: 0, y: 0, roomName: room.name } }
         },
-        enemies: {
-          parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
-          creeps: []
-        },
+
         jobs: {
           constructionSites: [],
           energyStorages: [],
           damagedStructures: { data: [], hitsTarget: 250 * 1000 },
           damagedCreeps: [],
-          spawnerEnergyStructures: []
+          spawnerEnergyStructures: [],
+          enemies: {
+            parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
+            creeps: []
+          }
         },
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null },
@@ -216,12 +217,6 @@ export class MemoryApi_Room {
 
     // Set the roomPlanner object to the template
     roomMemory.roomPlanner = { room: { sources: [] } };
-
-    // Set the enemies object to the template
-    roomMemory.enemies = {
-      parts: { ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
-      creeps: []
-    };
 
     if (isOwnedRoom) {
       this.resetOwnedRoomMemory(room, forceUpdate);

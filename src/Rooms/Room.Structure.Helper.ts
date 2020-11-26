@@ -30,7 +30,7 @@ export class RoomHelper_Structure {
   }
 
   public static towerAttacking(room: Room): void {
-    const creepId: string = _.first(room.memory.enemies.creeps).id;
+    const creepId: string = _.first(room.memory.jobs.enemies.creeps).id;
     const creep: Structure | null = Game.getObjectById(creepId);
 
     if (creep && creep.hits > 0) {
@@ -44,7 +44,7 @@ export class RoomHelper_Structure {
         tower.attack(creep);
       });
     } else {
-      room.memory.enemies.creeps.shift();
+      room.memory.jobs.enemies.creeps.shift();
     }
   }
 

@@ -15,7 +15,7 @@ export class RoomHelper_State {
   }
 
   public static getRoomState(room: Room): string {
-    if (room.memory.enemies.creeps.length > 0) {
+    if (room.memory.jobs.enemies.creeps.length > 0) {
       return "ATTACK";
     } else {
       return "NORMAL";

@@ -8,7 +8,8 @@ import {
   ENERGY_STORAGES_JOBS_CACHE_TTL,
   DAMAGED_STRUCTURES_JOBS_CACHE_TTL,
   DAMAGED_CREEPS_JOBS_CACHE_TTL,
-  SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL
+  SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL,
+  HOSTILE_CREEPS_JOBS_CACHE_TTL
 } from "Utils/importer/internals";
 //#endregion
 
@@ -35,6 +36,10 @@ export class JobsManager {
       if (MemoryApi_All.executeEachTicks(DAMAGED_CREEPS_JOBS_CACHE_TTL)) {
         JobsHelper.updateAllDamagedCreepsJobs(room);
       }
+
+      if (MemoryApi_All.executeEachTicks(HOSTILE_CREEPS_JOBS_CACHE_TTL)) {
+        JobsHelper.updateAllHostileCreepsJobs(room);
+      }
     }
 
     if (MemoryApi_All.executeEachTicks(ENERGY_STORAGES_JOBS_CACHE_TTL)) {
@@ -42,7 +47,7 @@ export class JobsManager {
     }
 
     if (MemoryApi_All.executeEachTicks(SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL)) {
-      JobsHelper.updateAllSpawnerEnergyStructures(room);
+      JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
     }
   }
 }

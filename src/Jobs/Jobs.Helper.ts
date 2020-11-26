@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { MemoryApi_Room } from "Utils/importer/internals";
+import { Config, MemoryApi_Room } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -110,14 +110,14 @@ export class JobsHelper {
     });
   }
 
-  public static updateAllSpawnerEnergyStructures(room: Room): void {
+  public static updateAllSpawnerEnergyStructuresJobs(room: Room): void {
     const allSpawnerEnergyStructures: Structure[] = MemoryApi_Room.getStructures(
       room,
       (s: StructureExtension | StructureSpawn | StructureLab) =>
         (s.structureType === STRUCTURE_EXTENSION ||
           s.structureType === STRUCTURE_SPAWN ||
           s.structureType === STRUCTURE_LAB) &&
-          // @ts-ignore: Function is defined
+        // @ts-ignore: Function is defined
         s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
     );
 
@@ -132,6 +132,117 @@ export class JobsHelper {
 
       room.memory.jobs.spawnerEnergyStructures!.push(jobStr);
     });
+  }
+
+  public static updateAllHostileCreepsJobs(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = Memory.rooms[room.name];
+
+    // Reset the memory for enemies
+    roomMemory.jobs.enemies = {
+      parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
+      creeps: []
+    };
+
+    const allHostileCreeps: Creep[] = room.find(FIND_HOSTILE_CREEPS);
+
+    // Loop through each hostile creep found
+    for (let i = 0; i < allHostileCreeps.length; i++) {
+      const creep: Creep = allHostileCreeps[i];
+      // Check if current owner is on whitelist. If so break
+      if (Config.whitelist.indexOf(creep.owner.username) >= 0) {
+        break;
+      }
+
+      // Create variables for creep part counts
+      let netToughCount: number = 0;
+      let netAttackCount: number = 0;
+      let netRangedAttackCount: number = 0;
+      let netHealCount: number = 0;
+
+      // Loop though all the parts in the body to check for boost.
+      creep.body.forEach(part => {
+        // If the part is boosted
+        if (part.boost !== undefined) {
+          switch (part.boost) {
+            case RESOURCE_UTRIUM_HYDRIDE:
+              netAttackCount += 2;
+              break;
+            case RESOURCE_KEANIUM_OXIDE:
+              netRangedAttackCount += 2;
+              break;
+            case RESOURCE_LEMERGIUM_OXIDE:
+              netHealCount += 2;
+              break;
+            // case RESOURCE_GHODIUM_OXIDE:
+            // netToughCount+=2;
+            // break;
+            case RESOURCE_UTRIUM_ACID:
+              netAttackCount += 3;
+              break;
+            case RESOURCE_KEANIUM_ALKALIDE:
+              netRangedAttackCount += 3;
+              break;
+            case RESOURCE_LEMERGIUM_ALKALIDE:
+              netHealCount += 3;
+              break;
+            // case RESOURCE_GHODIUM_ALKALIDE:
+            // netToughCount+=3;
+            // break;
+            case RESOURCE_CATALYZED_UTRIUM_ACID:
+              netAttackCount += 4;
+              break;
+            case RESOURCE_CATALYZED_KEANIUM_ACID:
+              netRangedAttackCount += 4;
+              break;
+            case RESOURCE_CATALYZED_LEMERGIUM_ALKALIDE:
+              netHealCount += 4;
+              break;
+            // case RESOURCE_CATALYZED_GHODIUM_ALKALIDE:
+            //   netToughCount += 4;
+            //   break;
+            default:
+              break;
+          }
+        } else {
+          // Else switch between the parts that needs to be saved
+          switch (part.type) {
+            case "tough":
+              netToughCount += 1;
+              break;
+            case "attack":
+              netAttackCount += 1;
+              break;
+            case "ranged_attack":
+              netRangedAttackCount += 1;
+              break;
+            case "heal":
+              netHealCount += 1;
+              break;
+            default:
+              break;
+          }
+        }
+      });
+
+      // Add all found parts to total memory
+      roomMemory.jobs.enemies.parts.ATTACK += netAttackCount;
+      roomMemory.jobs.enemies.parts.RANGED_ATTACK += netRangedAttackCount;
+      roomMemory.jobs.enemies.parts.HEAL += netHealCount;
+      roomMemory.jobs.enemies.parts.TOUGH += netToughCount;
+
+      // Add job to memory
+      roomMemory.jobs.enemies.creeps.push({
+        pos: creep.pos,
+        id: creep.id,
+        parts: {
+          ATTACK: netAttackCount,
+          RANGED_ATTACK: netRangedAttackCount,
+          TOUGH: netToughCount,
+          HEAL: netHealCount
+        }
+      });
+    }
   }
 }
 //#endregion
