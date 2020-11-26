@@ -26,19 +26,6 @@ export class TimerManager {
       MemoryApi_All.memoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["roomPlanner"], 0);
     }
 
-    // Run GetHostileCreeps if the ExecuteEachTicks returns true;
-    if (MemoryApi_All.executeEachTicks(Config.rooms.loops.getHostileCreeps) || forceUpdate) {
-      MemoryApi_All.functionRunnerWithCpu(
-        TimerHelper_Functions.getHostileCreeps,
-        MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-        "getHostileCreeps",
-        "=",
-        room
-      );
-    } else if (MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined) {
-      Memory.stats.rooms[room.name].cpu.smallModules["getHostileCreeps"] = 0;
-    }
-
     // Run GlobalRoomStructureNullChecker if the ExecuteEachTicks returns true;
     if (MemoryApi_All.executeEachTicks(Config.rooms.loops.structureNullChecker) || forceUpdate) {
       MemoryApi_All.functionRunnerWithCpu(
