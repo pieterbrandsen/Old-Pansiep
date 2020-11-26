@@ -209,43 +209,6 @@ export class TimerHelper_Functions {
           })[0].id
         : undefined;
     }
-    // If the controller storage is undefined or null
-    if (
-      roomMemory.commonMemory.controllerStorage === undefined ||
-      Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) === null
-    ) {
-      // If the roomPlanner knows the position
-      if (roomMemory.roomPlanner.room.controller && roomMemory.roomPlanner.room.controller.pos) {
-        // Create a shortcut to the controller storage position
-        const controllerPos = roomMemory.roomPlanner.room.controller.pos;
-        // Find all structures at the known controller position
-        const foundStructures = room.lookForAt(LOOK_STRUCTURES, controllerPos.x, controllerPos.y);
-
-        // Save the found controller storage
-        let controllerStorage: any;
-
-        // Loop through each of the structures found
-        foundStructures.forEach(structure => {
-          // If the structure is a container or link
-          if (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_LINK) {
-            // Save everything known of the structure
-            controllerStorage = {
-              usable: 0,
-              type: structure.structureType,
-              id: structure.id
-            };
-          }
-        });
-
-        // If the structure was found in the loop, save everything to the roomMemory
-        if (roomMemory.commonMemory.controllerStorage !== undefined && controllerStorage) {
-          roomMemory.commonMemory.controllerStorage.id! = controllerStorage.id;
-          roomMemory.commonMemory.controllerStorage.type = controllerStorage.type;
-        } else if (roomMemory.commonMemory.controllerStorage !== undefined) {
-          roomMemory.commonMemory.controllerStorage.usable = 0;
-        }
-      }
-    }
 
     // Check all links to see if its still there //
     // Check each source for a link
