@@ -27,6 +27,7 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
 export const CONST_JOBS_CACHE_TTL = 100;
 export const ENERGY_STORAGES_JOBS_CACHE_TTL = 50;
 export const DAMAGED_STRUCTURES_JOBS_CACHE_TTL = 500;
+export const DAMAGED_CREEPS_JOBS_CACHE_TTL = 500;
 
 // Cache ticks
 export const CONST_CACHE_TTL = 1000;

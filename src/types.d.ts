@@ -13,13 +13,18 @@ interface CreepMemory {
 
 interface RoomMemory {
   // Cached objects
-  structures: Cache,
-  constructionSites: Cache,
-  myCreeps?: Cache,
+  structures: Cache;
+  constructionSites: Cache;
+  myCreeps?: Cache;
 
   // Jobs
-  jobs: { constructionSites: JobTemplate[], energyStorages: JobTemplate[], damagedStructures: { data: JobTemplate[]; hitsTarget: number }},
-  
+  jobs: {
+    constructionSites: JobTemplate[];
+    energyStorages: JobTemplate[];
+    damagedStructures: { data: JobTemplate[]; hitsTarget: number };
+    damagedCreeps: JobTemplate[];
+  };
+
   // Room memory
   commonMemory: {
     sourceCount: number;
@@ -29,7 +34,11 @@ interface RoomMemory {
     headSpawnId?: string;
     spawnEnergyStructures?: Array<{ needed: number; id: string }>;
     energyStored: { usable: number; capacity: number };
-    controllerStorage?: { usable: number; id: string|undefined; type: STRUCTURE_LINK | STRUCTURE_CONTAINER | undefined };
+    controllerStorage?: {
+      usable: number;
+      id: string | undefined;
+      type: STRUCTURE_LINK | STRUCTURE_CONTAINER | undefined;
+    };
     links?: {
       [key: string]: string;
       source0: string;
@@ -43,7 +52,6 @@ interface RoomMemory {
     base?: { type: string | undefined; midPos: RoomPos };
   };
   enemies: { parts: { [key: string]: number }; creeps: Array<{ id: string; parts: { [key: string]: number } }> };
-  damagedCreeps: string[];
   isSetup?: boolean;
 
   // BuilderLD
@@ -86,7 +94,6 @@ interface Config {
       structureNullChecker: number;
       spawnCreep: number;
       getSpawnEnergyStructures: number;
-      getDamagedCreeps: number;
       getHostileCreeps: number;
       linkHandler: number;
     };
@@ -134,10 +141,10 @@ interface StringMap {
   [key: string]: any;
 }
 
-interface JobTemplate { 
-  pos: RoomPos,
-  id: string,
-  usable?: number, 
-  needed?: number,
-  structureType?: StructureConstant
+interface JobTemplate {
+  pos: RoomPos;
+  id: string;
+  usable?: number;
+  needed?: number;
+  structureType?: StructureConstant;
 }
