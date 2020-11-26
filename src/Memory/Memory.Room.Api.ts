@@ -48,8 +48,12 @@ export class MemoryApi_Room {
           parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
           creeps: []
         },
-        jobs: { constructionSites: [], energyStorages: [], damagedStructures: { data: [], hitsTarget: 250 * 1000 } },
-        damagedCreeps: [],
+        jobs: {
+          constructionSites: [],
+          energyStorages: [],
+          damagedStructures: { data: [], hitsTarget: 250 * 1000 },
+          damagedCreeps: []
+        },
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null },
         myCreeps: { data: null, cache: null }
@@ -219,9 +223,6 @@ export class MemoryApi_Room {
       creeps: []
     };
 
-    // Sets the damagedCreeps object to a empty array
-    roomMemory.damagedCreeps = [];
-
     if (isOwnedRoom) {
       this.resetOwnedRoomMemory(room, forceUpdate);
     }
@@ -373,7 +374,7 @@ export class MemoryApi_Room {
     }
   }
 
-  public static getMyCreeps(room: Room, filterFunction?: (object: Structure) => boolean): Creep[] {
+  public static getMyCreeps(room: Room, filterFunction?: (object: Creep) => boolean): Creep[] {
     // If we have no vision of the room, return an empty array
     if (!room.memory) {
       return [];

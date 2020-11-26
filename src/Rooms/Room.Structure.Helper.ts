@@ -49,8 +49,8 @@ export class RoomHelper_Structure {
   }
 
   public static towerHealing(room: Room): void {
-    const creepId: string = _.first(room.memory.damagedCreeps);
-    const creep: Creep | null = Game.getObjectById(creepId);
+    const damagedCreepJob: JobTemplate = _.first(room.memory.jobs.damagedCreeps);
+    const creep: Creep | null = Game.getObjectById(damagedCreepJob.id);
 
     if (creep && creep.hits < creep.hitsMax) {
       const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
@@ -63,7 +63,7 @@ export class RoomHelper_Structure {
         tower.heal(creep);
       });
     } else {
-      room.memory.damagedCreeps.shift();
+      room.memory.jobs.damagedCreeps.shift();
     }
   }
 

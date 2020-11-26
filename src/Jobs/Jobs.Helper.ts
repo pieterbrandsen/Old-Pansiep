@@ -80,14 +80,33 @@ export class JobsHelper {
           (roomMemory.jobs.damagedStructures.hitsTarget ? roomMemory.jobs.damagedStructures.hitsTarget : 250 * 1000)
     );
 
-    room.memory.jobs.damagedStructures.data = [];
+    roomMemory.jobs.damagedStructures.data = [];
     _.forEach(allDamagedStructures, (str: Structure) => {
       const jobStr: JobTemplate = {
         pos: str.pos,
         id: str.id,
         needed: (str.hitsMax - str.hits) / 100
       };
-      room.memory.jobs.damagedStructures.data.push(jobStr);
+      roomMemory.jobs.damagedStructures.data.push(jobStr);
+    });
+  }
+
+  public static updateAllDamagedCreepsJobs(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = Memory.rooms[room.name];
+
+    const allDamagedCreepsInRoom = MemoryApi_Room.getMyCreeps(
+      room,
+      (c: Creep) => c.room.name === room.name && c.hits < c.hitsMax
+    );
+
+    roomMemory.jobs.damagedCreeps = [];
+    _.forEach(allDamagedCreepsInRoom, (c: Creep) => {
+      const creepJob: JobTemplate = {
+        pos: c.pos,
+        id: c.id
+      };
+      roomMemory.jobs.damagedCreeps.push(creepJob);
     });
   }
 }
