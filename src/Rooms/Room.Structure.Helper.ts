@@ -49,7 +49,10 @@ export class RoomHelper_Structure {
   }
 
   public static towerHealing(room: Room): void {
-    const damagedCreepJob: JobTemplate = _.first(room.memory.jobs.damagedCreeps);
+    const damagedCreepJob: JobTemplate | undefined = _.first(room.memory.jobs.damagedCreeps);
+    if (!damagedCreepJob) {
+      return;
+    }
     const creep: Creep | null = Game.getObjectById(damagedCreepJob.id);
 
     if (creep && creep.hits < creep.hitsMax) {
