@@ -4,10 +4,6 @@ import { Config, MemoryApi_All, MemoryApi_Room } from "Utils/importer/internals"
 
 //#region Class
 export class TimerHelper_Functions {
-  public static getHostileCreeps(room: Room) {
-    
-  }
-
   public static globalRoomStructureNullChecker(room: Room) {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
@@ -53,25 +49,6 @@ export class TimerHelper_Functions {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
 
-    // If the headSpawn is null
-    if (Game.getObjectById(roomMemory.commonMemory.headSpawnId!) === null) {
-      const spawns = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
-      roomMemory.commonMemory.headSpawnId = room.terminal
-        ? room.terminal.pos.findInRange(spawns, 2)[0]
-          ? // @ts-ignore: Id DOES exist on the result
-            room.terminal.pos.findInRange(room.spawns, 2)[0].id
-          : spawns[0].id
-        : spawns[0]
-        ? spawns[0].id
-        : room.find(FIND_STRUCTURES, {
-            filter: s => s.structureType === STRUCTURE_SPAWN
-          }).length > 0
-        ? room.find(FIND_STRUCTURES, {
-            filter: s => s.structureType === STRUCTURE_SPAWN
-          })[0].id
-        : undefined;
-    }
-
     // Check all links to see if its still there //
     // Check each source for a link
     if (room.controller!.level >= 5) {
@@ -94,7 +71,7 @@ export class TimerHelper_Functions {
       }
 
       // Check if there is a link at the headSpawn
-      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory.headSpawnId!);
+      const headSpawn: StructureSpawn | null = MemoryApi_Room.getHeadSpawn(room);
       if (headSpawn !== null) {
         // Find a link
         const spawnLink = headSpawn.pos.findInRange(FIND_MY_STRUCTURES, 2, {

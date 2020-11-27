@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import { Config, MemoryApi_Room } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -9,7 +9,7 @@ export class SpawningHelper {
     const roomMemory = Memory.rooms[room.name];
 
     // Get all spawns //
-    const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory!.headSpawnId!);
+    const headSpawn: StructureSpawn | null = MemoryApi_Room.getHeadSpawn(room);
     if (!spawn || headSpawn === null) {
       return;
     }

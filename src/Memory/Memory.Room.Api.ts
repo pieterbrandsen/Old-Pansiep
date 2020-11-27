@@ -239,20 +239,7 @@ export class MemoryApi_Room {
     roomMemory.commonMemory.controllerLevel = room.controller ? room.controller.level : undefined;
 
     // Set and get the headSpawnId
-    const spawns = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
-    roomMemory.commonMemory.headSpawnId = room.terminal
-      ? room.terminal.pos.findInRange(spawns, 2)[0]
-        ? (room.terminal.pos.findInRange(spawns, 2)[0] as StructureTerminal).id
-        : spawns[0].id
-      : spawns[0]
-      ? spawns[0].id
-      : room.find(FIND_STRUCTURES, {
-          filter: s => s.structureType === STRUCTURE_SPAWN
-        }).length > 0
-      ? room.find(FIND_STRUCTURES, {
-          filter: s => s.structureType === STRUCTURE_SPAWN
-        })[0].id
-      : undefined;
+    roomMemory.commonMemory.headSpawnId = (this.getHeadSpawn(room) !== null) ? this.getHeadSpawn(room)!.id : "";
     // Create a empty array for storing spawnEnergyStructures
     roomMemory.jobs.spawnerEnergyStructures = [];
     // Set the storage in the controller storage to 0
@@ -392,6 +379,30 @@ export class MemoryApi_Room {
     }
 
     return creeps;
+  }
+
+  public static getHeadSpawn(room: Room): StructureSpawn | null {
+    if (Game.getObjectById(room.memory.commonMemory.headSpawnId!) === null) {
+
+      const updateHeadSpawnInMem = (spawn: StructureSpawn) => {
+        room.memory.commonMemory.headSpawnId! = spawn.id;
+      };
+      
+      // Get all spawns and filter them on spawns not spawning
+      const spawns: StructureSpawn[] = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
+      const headSpawn: StructureSpawn[] | null = room.terminal! ? room.terminal!.pos.findInRange(spawns, 2) : null;
+      if (headSpawn !== null && headSpawn[0]) {
+        updateHeadSpawnInMem(headSpawn[0]);
+        return headSpawn[0];
+      } else if (spawns.length === 1) {
+        updateHeadSpawnInMem(spawns[0]);
+        return spawns[0];
+      } else {
+        return null;
+      }
+    } else {
+      return Game.getObjectById(room.memory.commonMemory.headSpawnId!);
+    }
   }
 }
 //#endregion
