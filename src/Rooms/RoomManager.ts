@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { MemoryApi_Empire, RoomHelper_State, RoomHelper_Structure, TimerManager } from "Utils/importer/internals";
+import { BASE_PLANNER_TIMER, MemoryApi_All, MemoryApi_Empire, MemoryApi_Room, OldRoomPlanner, RoomHelper_State, RoomHelper_Structure, ROOM_PLANNER_TIMER, RUN_LINKS_TIMER, UPDATE_LINKS_TIMER, UPDATE_MINERAL_AMOUNT_TIMER, UPDATE_SOURCE_STRUCTURES_TIMER } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -16,7 +16,6 @@ export class RoomManager {
   }
 
   private static runSingleRoom(room: Room): void {
-    TimerManager.runTimerForRoom(room);
     const roomState: string = RoomHelper_State.getRoomState(room);
 
     if (room.controller!.level >= 3) {
@@ -28,8 +27,28 @@ export class RoomManager {
       }
     }
 
+    if (MemoryApi_All.executeEachTicks(ROOM_PLANNER_TIMER)) {
+      OldRoomPlanner.roomPlanner(room);
+    }
+    if (MemoryApi_All.executeEachTicks(BASE_PLANNER_TIMER)) {
+      OldRoomPlanner.basePlanner(room);
+    }
+
+    if (MemoryApi_All.executeEachTicks(UPDATE_SOURCE_STRUCTURES_TIMER)) {
+      MemoryApi_Room.updateSourceStructures(room);
+    }
+    if (MemoryApi_All.executeEachTicks(UPDATE_MINERAL_AMOUNT_TIMER)) {
+      MemoryApi_Room.updateMineralAmount(room);
+    }
+
     if (room.controller!.level >= 5) {
-      RoomHelper_Structure.runLinks(room);
+      if (MemoryApi_All.executeEachTicks(UPDATE_LINKS_TIMER)) {
+        MemoryApi_Room.updateAllLinksInMemory(room);
+      }
+
+      if (MemoryApi_All.executeEachTicks(RUN_LINKS_TIMER)) {
+        RoomHelper_Structure.runLinks(room);
+      }
     }
   }
 }

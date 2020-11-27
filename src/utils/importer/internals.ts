@@ -47,10 +47,6 @@ export * from "Spawning/Spawning.Helper";
 export * from "Stats/StatsManager";
 export * from "Stats/Stats.Helper";
 
-// * Timer
-export * from "Timer/TimerManager";
-export * from "Timer/Timer.Helper.Functions";
-
 // * Utils
 export * from "Utils/config/config";
 export * from "Utils/ErrorMapper";

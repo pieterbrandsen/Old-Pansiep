@@ -2,7 +2,6 @@
 import _ from "lodash";
 import {
   Config,
-  TimerManager,
   MemoryHelper_Room,
   MemoryHelper,
   STRUCT_CACHE_TTL,
@@ -239,7 +238,7 @@ export class MemoryApi_Room {
     roomMemory.commonMemory.controllerLevel = room.controller ? room.controller.level : undefined;
 
     // Set and get the headSpawnId
-    roomMemory.commonMemory.headSpawnId = (this.getHeadSpawn(room) !== null) ? this.getHeadSpawn(room)!.id : "";
+    roomMemory.commonMemory.headSpawnId = this.getHeadSpawn(room) !== null ? this.getHeadSpawn(room)!.id : "";
     // Create a empty array for storing spawnEnergyStructures
     roomMemory.jobs.spawnerEnergyStructures = [];
     // Set the storage in the controller storage to 0
@@ -251,11 +250,6 @@ export class MemoryApi_Room {
       head: "",
       controller: ""
     };
-    // Set the remotes object to default template
-    // roomMemory.remotes = { totalSourceCount: 0, rooms: [] };
-
-    // Run all timers for this room
-    TimerManager.runTimerForRoom(room, forceUpdate);
   }
 
   public static getUpgraderStructure(room: Room): StructureLink | StructureContainer | null {
@@ -383,11 +377,10 @@ export class MemoryApi_Room {
 
   public static getHeadSpawn(room: Room): StructureSpawn | null {
     if (Game.getObjectById(room.memory.commonMemory.headSpawnId!) === null) {
-
       const updateHeadSpawnInMem = (spawn: StructureSpawn) => {
         room.memory.commonMemory.headSpawnId! = spawn.id;
       };
-      
+
       // Get all spawns and filter them on spawns not spawning
       const spawns: StructureSpawn[] = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
       const headSpawn: StructureSpawn[] | null = room.terminal! ? room.terminal!.pos.findInRange(spawns, 2) : null;
@@ -402,6 +395,100 @@ export class MemoryApi_Room {
       }
     } else {
       return Game.getObjectById(room.memory.commonMemory.headSpawnId!);
+    }
+  }
+
+  public static doesStructureExist(room: Room, pos: RoomPos, structureType: string): [boolean, string] {
+    // Get all structure at input position
+    const structures = room.lookForAt(LOOK_STRUCTURES, pos.x, pos.y);
+
+    // Loop through all structures
+    for (const structure of structures) {
+      // Is the structure type the Structure
+      if (structure.structureType === structureType) {
+        return [true, structure.id];
+      }
+    }
+    return [false, ""];
+  }
+
+  public static updateSourceStructures(room: Room): void {
+    const roomMemory: RoomMemory = room.memory;
+    // Check all source structures
+    for (let i = 0; i < roomMemory.roomPlanner.room.sources.length; i++) {
+      // Get source
+      const source = roomMemory.roomPlanner.room.sources[i];
+
+      // Break if there is still a live structure
+      if (Game.getObjectById(source!.id!) === null) {
+        // Get all structures at saved pos
+        const structureExistResult = this.doesStructureExist(room, source.pos!, source.structureType!);
+
+        // If structure was found
+        if (structureExistResult[0]) {
+          // Save the id back to memory
+          roomMemory.roomPlanner.room.sources[i].id = structureExistResult[1];
+        } else {
+          // Remove id from memory if its removed
+          roomMemory.roomPlanner.room.sources[i].id = undefined;
+        }
+      }
+    }
+  }
+
+  public static updateAllLinksInMemory(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = Memory.rooms[room.name];
+
+    // Check all links to see if its still there //
+    // Check each source for a link
+    if (room.controller!.level >= 5) {
+      const links: StructureLink[] = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_LINK);
+      for (let i = 0; i < roomMemory.commonMemory.sources.length; i++) {
+        // Get the source
+        const source: Source | null = Game.getObjectById(roomMemory.commonMemory.sources[i].id);
+
+        // If source is not null
+        if (source !== null) {
+          // Find a link
+          const sourceLink: StructureLink = source.pos.findInRange(links, 2)[0];
+
+          // If a link is found, set it to the memory
+          if (roomMemory.commonMemory.links !== undefined && sourceLink !== undefined) {
+            roomMemory.commonMemory.links[`source${i}`] = sourceLink.id;
+          }
+        }
+      }
+
+      // Check if there is a link at the headSpawn
+      const headSpawn: StructureSpawn | null = MemoryApi_Room.getHeadSpawn(room);
+      if (headSpawn !== null) {
+        // Find a link
+        const spawnLink: StructureLink = headSpawn.pos.findInRange(links, 2)[0];
+
+        // If a link is found, set it to the memory
+        if (roomMemory.commonMemory.links !== undefined && spawnLink !== undefined) {
+          roomMemory.commonMemory.links["head"] = spawnLink.id;
+        }
+      }
+
+      // Check if there is a link at the controller
+      // Find a link
+      const controllerLink: StructureLink | undefined = room.controller?.pos.findInRange(links, 2)[0];
+
+      // If a link is found, set it to the memory
+      if (roomMemory.commonMemory.links !== undefined && controllerLink !== undefined) {
+        roomMemory.commonMemory.links["controller"] = controllerLink.id;
+      }
+    }
+  }
+
+  public static updateMineralAmount(room: Room): void {
+    const mineral: Mineral = room.find(FIND_MINERALS)[0];
+    if (mineral) {
+      room.memory.commonMemory.mineral!.amount! = Math.round(room.find(FIND_MINERALS)[0].mineralAmount);
+    } else {
+      room.memory.commonMemory.mineral!.amount! = 0;
     }
   }
 }

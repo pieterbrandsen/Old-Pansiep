@@ -10,15 +10,6 @@ export const Config: Config = {
   rooms: {
     minBucket: 1000,
     remoteMinBucket: 3000,
-    loops: {
-      roomPlanner: {
-        base: 2500,
-        room: 1
-      },
-      structureNullChecker: 1000,
-      spawnCreep: 10,
-      linkHandler: 10
-    }
   },
   allRoles: [
     "pioneer",

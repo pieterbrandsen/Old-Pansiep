@@ -89,12 +89,6 @@ interface Config {
     [key: string]: number | object;
     minBucket: number;
     remoteMinBucket: number;
-    loops: {
-      roomPlanner: { base: number; room: number };
-      structureNullChecker: number;
-      spawnCreep: number;
-      linkHandler: number;
-    };
   };
   allRoles: string[];
   allCreepModules: string[];
