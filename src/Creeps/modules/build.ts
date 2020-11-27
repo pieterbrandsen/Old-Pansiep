@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import { Config, JobsApi } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -26,8 +26,9 @@ export class CreepRole_Build {
     if (creepMemory.targetId === undefined) {
       // Get the fist target from what is saved //
       // This target will get later shifted when its completed
-      if (roomMemory.jobs.constructionSites[0]) {
-        creep.memory.targetId = roomMemory.jobs.constructionSites[0].id;
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.constructionSites);
+      if (job) {
+        creep.memory.targetId = job.id;
       }
     } else {
       // Get the saved construction site from memory
@@ -35,7 +36,8 @@ export class CreepRole_Build {
 
       // If construction site doesn't exist, remove it
       if (constructionSite === null) {
-        roomMemory.jobs.constructionSites.shift();
+        roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+        delete creep.memory.targetId;
         return "empty";
       }
 
@@ -47,9 +49,7 @@ export class CreepRole_Build {
           Config.expenses.building[creep.room.name] += creep.memory.parts.work * 5;
           break;
         case ERR_INVALID_TARGET:
-          // Check if target that's going to be lost is still on the construction list, if so shift it.
-          roomMemory.jobs.constructionSites.shift();
-          // Delete target from the memory
+          roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
           delete creep.memory.targetId;
           return "full";
         case ERR_NOT_IN_RANGE:
