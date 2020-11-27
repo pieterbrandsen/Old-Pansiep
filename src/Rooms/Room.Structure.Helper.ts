@@ -6,9 +6,13 @@ import { MemoryApi_Room, MemoryApi_All } from "Utils/importer/internals";
 //#region Class
 export class RoomHelper_Structure {
   public static towerRepairing(room: Room): void {
-    const structureId: string = _.first(room.memory.commonMemory.repair.targets);
+    if (room.memory.jobs.damagedStructures.data.length === 0) {
+      return;
+    }
+
+    const structureId: string = _.first(room.memory.jobs.damagedStructures.data).id;
     const structure: Structure | null = Game.getObjectById(structureId);
-    const hitsTarget: number = room.memory.commonMemory.repair.hitsTarget;
+    const hitsTarget: number = room.memory.jobs.damagedStructures.hitsTarget;
 
     if (structure && structure.hits < structure.hitsMax && structure.hits < hitsTarget) {
       const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
@@ -21,12 +25,12 @@ export class RoomHelper_Structure {
         tower.repair(structure);
       });
     } else {
-      room.memory.commonMemory.repair.targets.shift();
+      room.memory.jobs.damagedStructures.data.shift();
     }
   }
 
   public static towerAttacking(room: Room): void {
-    const creepId: string = _.first(room.memory.enemies.creeps).id;
+    const creepId: string = _.first(room.memory.jobs.enemies.creeps).id;
     const creep: Structure | null = Game.getObjectById(creepId);
 
     if (creep && creep.hits > 0) {
@@ -40,13 +44,13 @@ export class RoomHelper_Structure {
         tower.attack(creep);
       });
     } else {
-      room.memory.enemies.creeps.shift();
+      room.memory.jobs.enemies.creeps.shift();
     }
   }
 
   public static towerHealing(room: Room): void {
-    const creepId: string = _.first(room.memory.damagedCreeps);
-    const creep: Creep | null = Game.getObjectById(creepId);
+    const damagedCreepJob: JobTemplate = _.first(room.memory.jobs.damagedCreeps);
+    const creep: Creep | null = Game.getObjectById(damagedCreepJob.id);
 
     if (creep && creep.hits < creep.hitsMax) {
       const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
@@ -59,7 +63,7 @@ export class RoomHelper_Structure {
         tower.heal(creep);
       });
     } else {
-      room.memory.damagedCreeps.shift();
+      room.memory.jobs.damagedCreeps.shift();
     }
   }
 

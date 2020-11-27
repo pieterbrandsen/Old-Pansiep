@@ -7,8 +7,10 @@ import { ALL_STRUCTURE_TYPES } from "Utils/importer/internals";
 export class MemoryHelper_Room {
   public static updateRoomMemory(room: Room, isOwnedRoom: boolean): void {
     this.updateStructures(room);
+    
     if (isOwnedRoom) {
-      // All ownedRoom memory updating
+      this.updateMyCreeps(room);
+      this.updateConstructionSites(room);
     }
   }
 
@@ -32,6 +34,35 @@ export class MemoryHelper_Room {
 
     room.memory.structures.data = sortedStructureIDs;
     room.memory.structures.cache = Game.time;
+  }
+
+  public static updateConstructionSites(room: Room): void {
+    // If we have no vision of the room, return
+    if (!room.memory) {
+      return;
+    }
+
+    room.memory.constructionSites = { data: [], cache: null };
+
+    const allConstructionSitesIds: string[] = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
+
+    room.memory.constructionSites.data = allConstructionSitesIds;
+    room.memory.constructionSites.cache = Game.time;
+  }
+
+  public static updateMyCreeps(room: Room): void {
+    // If we have no vision of the room, return
+    if (!room.memory) {
+      return;
+    }
+
+    room.memory.myCreeps = { data: [], cache: null };
+
+    const creeps = _.filter(Game.creeps, creep => creep.memory.spawnRoom === room.name);
+
+    room.memory.myCreeps!.data = _.map(creeps, (creep: Creep) => creep.id);
+
+    room.memory.myCreeps.cache = Game.time;
   }
 }
 //#endregion

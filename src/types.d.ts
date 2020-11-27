@@ -12,19 +12,34 @@ interface CreepMemory {
 }
 
 interface RoomMemory {
-  structures: Cache,
+  // Cached objects
+  structures: Cache;
+  constructionSites: Cache;
+  myCreeps?: Cache;
+
+  // Jobs
+  jobs: {
+    constructionSites: JobTemplate[];
+    energyStorages: JobTemplate[];
+    damagedStructures: { data: JobTemplate[]; hitsTarget: number };
+    damagedCreeps: JobTemplate[];
+    spawnerEnergyStructures?: JobTemplate[];
+    enemies: { parts: { [key: string]: number }; creeps: JobTemplate[] };
+  };
+
+  // Room memory
   commonMemory: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
     sources: Array<{ id: string; pos: RoomPos }>;
-    constructionSites: string[];
-    energyStructures: Array<{ id: string; usable: number }>;
-    repair: { targets: string[]; hitsTarget: number };
     controllerLevel?: number;
     headSpawnId?: string;
-    spawnEnergyStructures?: Array<{ needed: number; id: string }>;
     energyStored: { usable: number; capacity: number };
-    controllerStorage?: { usable: number; id: string|undefined; type: STRUCTURE_LINK | STRUCTURE_CONTAINER | undefined };
+    controllerStorage?: {
+      usable: number;
+      id: string | undefined;
+      type: STRUCTURE_LINK | STRUCTURE_CONTAINER | undefined;
+    };
     links?: {
       [key: string]: string;
       source0: string;
@@ -37,9 +52,7 @@ interface RoomMemory {
     room: { sources: BestPosition[]; controller?: BestPosition };
     base?: { type: string | undefined; midPos: RoomPos };
   };
-  enemies: { parts: { [key: string]: number }; creeps: Array<{ id: string; parts: { [key: string]: number } }> };
-  damagedCreeps: string[];
-  remotes: { totalSourceCount: number; rooms: string[] };
+  isSetup?: boolean;
 
   // BuilderLD
   spawnRoom?: string;
@@ -76,18 +89,6 @@ interface Config {
     [key: string]: number | object;
     minBucket: number;
     remoteMinBucket: number;
-    loops: {
-      roomPlanner: { base: number; room: number };
-      structureNullChecker: number;
-      spawnCreep: number;
-      getSpawnEnergyStructures: number;
-      getAllEnergyStructures: number;
-      getConstructionSites: number;
-      getDamagedStructures: number;
-      getDamagedCreeps: number;
-      getHostileCreeps: number;
-      linkHandler: number;
-    };
   };
   allRoles: string[];
   allCreepModules: string[];
@@ -130,4 +131,13 @@ interface Cache {
 
 interface StringMap {
   [key: string]: any;
+}
+
+interface JobTemplate {
+  pos: RoomPos;
+  id: string;
+  usable?: number;
+  needed?: number;
+  structureType?: StructureConstant;
+  parts?: { [key: string]: number };
 }

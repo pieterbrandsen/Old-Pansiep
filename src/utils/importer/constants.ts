@@ -23,5 +23,24 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
   STRUCTURE_INVADER_CORE
 ];
 
+// Jobs ticks
+export const CONST_JOBS_CACHE_TTL = 100;
+export const ENERGY_STORAGES_JOBS_CACHE_TTL = 50;
+export const DAMAGED_STRUCTURES_JOBS_CACHE_TTL = 500;
+export const DAMAGED_CREEPS_JOBS_CACHE_TTL = 500;
+export const SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL = 500;
+export const HOSTILE_CREEPS_JOBS_CACHE_TTL = 50;
+
 // Cache ticks
+export const CONST_CACHE_TTL = 1000;
+export const CREEPS_CACHE_TTL = 100;
 export const STRUCT_CACHE_TTL = 100;
+
+// Timer ticks
+export const UPDATE_LINKS_TIMER = 500;
+export const RUN_LINKS_TIMER = 10;
+export const UPDATE_SOURCE_STRUCTURES_TIMER = 500;
+export const UPDATE_MINERAL_AMOUNT_TIMER = 5000;
+export const SPAWN_CREEP_TIMER = 10;
+export const ROOM_PLANNER_TIMER = 10;
+export const BASE_PLANNER_TIMER = 10;
