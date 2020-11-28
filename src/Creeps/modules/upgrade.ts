@@ -20,7 +20,7 @@ export class CreepRole_Upgrade {
     // Switch based on the results of the upgrade function
     switch (result) {
       case OK:
-        Config.expenses.upgrading[creep.room.name] += creep.memory.parts.work * 2;
+        Config.expenses.upgrading[creep.room.name] += creep.memory.parts!.work * 2;
         break;
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to controller
