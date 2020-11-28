@@ -204,14 +204,14 @@ export class CreepsHelper_Role {
         if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
           creep.memory.job = "transfer";
         } else if (
-          roomMemory.commonMemory.energyStored.capacity > 10000 &&
-          roomMemory.commonMemory.energyStored.capacity / 10 > roomMemory.commonMemory.energyStored.usable
+          roomMemory.commonMemory!.energyStored.capacity > 10000 &&
+          roomMemory.commonMemory!.energyStored.capacity / 10 > roomMemory.commonMemory!.energyStored.usable
         ) {
           creep.memory.job = "transfer";
         } else if (
-          roomMemory.commonMemory.controllerStorage !== undefined &&
-          roomMemory.commonMemory.controllerStorage.usable < 1500 &&
-          roomMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER
+          roomMemory.commonMemory!.controllerStorage !== undefined &&
+          roomMemory.commonMemory!.controllerStorage.usable < 1500 &&
+          roomMemory.commonMemory!.controllerStorage.type === STRUCTURE_CONTAINER
         ) {
           creep.memory.job = "transfer";
         } else if (roomMemory.jobs.damagedStructures.data.length > 0) {
@@ -230,7 +230,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory.energyStored.usable > 1500) {
+        if (roomMemory.commonMemory!.energyStored.usable > 1500) {
           creep.memory.job = "withdraw";
         } else {
           creep.memory.job = "harvest";
@@ -395,10 +395,10 @@ export class CreepsHelper_Role {
 
         // Switch to one of the roles that gets energy
         if (
-          roomMemory.commonMemory.energyStored.usable >= 10 * 1000 ||
-          (roomMemory.commonMemory.controllerStorage &&
-            roomMemory.commonMemory.controllerStorage.usable >= 250 &&
-            Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null)
+          roomMemory.commonMemory!.energyStored.usable >= 10 * 1000 ||
+          (roomMemory.commonMemory!.controllerStorage &&
+            roomMemory.commonMemory!.controllerStorage.usable >= 250 &&
+            Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null)
         ) {
           creep.memory.job = "withdraw";
         } else {
@@ -449,7 +449,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory.energyStored.usable >= 2000) {
+        if (roomMemory.commonMemory!.energyStored.usable >= 2000) {
           creep.memory.job = "withdraw";
         } else {
           creep.memory.job = "harvest";
@@ -499,7 +499,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory.energyStored.usable >= 2000) {
+        if (roomMemory.commonMemory!.energyStored.usable >= 2000) {
           creep.memory.job = "withdraw";
         } else {
           creep.memory.job = "harvest";
