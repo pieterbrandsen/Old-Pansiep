@@ -2,8 +2,8 @@ interface CreepMemory {
   role: string;
   targetRoom: string;
   spawnRoom: string;
-  parts: { work: number; carry: number };
-  job: string;
+  parts?: { work: number; carry: number };
+  job?: string;
   miniJob?: string;
   sourceNumber?: number;
   sourceId?: string;
@@ -12,10 +12,12 @@ interface CreepMemory {
 }
 
 interface RoomMemory {
+  roomName?: string;
+
   // Cached objects
   structures: Cache;
   constructionSites: Cache;
-  myCreeps?: Cache;
+  myCreeps: Cache;
 
   // Jobs
   jobs: {
@@ -47,6 +49,9 @@ interface RoomMemory {
       controller: string;
       head: string;
     };
+    reserve?: {
+      TTL: number, username: string
+    }
   };
   roomPlanner: {
     room: { sources: BestPosition[]; controller?: BestPosition };
@@ -143,30 +148,6 @@ interface JobTemplate {
   structureType?: StructureConstant;
   parts?: { [key: string]: number };
 }
-interface RemoteRoomMemory {
-  roomName: string;
-
-  /**
-   * sources in the room
-   */
-  sources: Cache;
-  /**
-   * hostiles in the room
-   */
-  hostiles: Cache;
-  /**
-   * structures in room
-   */
-  structures: Cache;
-  /**
-   * time remaining for reserving the controller
-   */
-  reserveTTL: number;
-  /**
-   * username reserving the controller - used to detect invader reserve
-   */
-  reserveUsername: string | undefined;
-}
 interface RemoteRoomObject {
-  [key: string]: RemoteRoomMemory;
+  [key: string]: RoomMemory;
 }
