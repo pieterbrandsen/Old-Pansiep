@@ -35,13 +35,19 @@ export class JobsApi {
     const job: JobTemplate | undefined = this.findJob(jobId, jobs);
     if (!job) {
       return jobs;
-    } else {
-      return _.remove(jobs, job);
+    } else if (jobs.length > 1) {
+      _.remove(jobs, job);
+      return jobs;
+    }
+    else {
+      jobs.shift();
+      return jobs;
     }
   }
 
   public static findJob(jobId: string, jobs: JobTemplate[]): JobTemplate | undefined {
-    return _.find(jobs, { id: jobId });
+    const job: JobTemplate | undefined =_.find(jobs, { id: jobId });
+    return job
   }
 }
 //#endregion
