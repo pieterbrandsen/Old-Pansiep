@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CreepRole_Harvest | screeps-bot-pansiep</title>
+	<title>JobsManager | screeps-bot-pansiep</title>
 	<meta name="description" content="Documentation for screeps-bot-pansiep">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_creeps_modules_harvest_.html">&quot;Creeps/modules/harvest&quot;</a>
+					<a href="../modules/_jobs_jobsmanager_.html">&quot;Jobs/JobsManager&quot;</a>
 				</li>
 				<li>
-					<a href="_creeps_modules_harvest_.creeprole_harvest.html">CreepRole_Harvest</a>
+					<a href="_jobs_jobsmanager_.jobsmanager.html">JobsManager</a>
 				</li>
 			</ul>
-			<h1>Class CreepRole_Harvest</h1>
+			<h1>Class JobsManager</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">CreepRole_Harvest</span>
+						<span class="target">JobsManager</span>
 					</li>
 				</ul>
 			</section>
@@ -84,8 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_creeps_modules_harvest_.creeprole_harvest.html#mineral" class="tsd-kind-icon">mineral</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_creeps_modules_harvest_.creeprole_harvest.html#source" class="tsd-kind-icon">source</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_jobs_jobsmanager_.jobsmanager.html#runjobsforroom" class="tsd-kind-icon">run<wbr>Jobs<wbr>For<wbr>Room</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_jobs_jobsmanager_.jobsmanager.html#runjobsmanager" class="tsd-kind-icon">run<wbr>Jobs<wbr>Manager</a></li>
 							</ul>
 						</section>
 					</div>
@@ -93,49 +93,46 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="mineral" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> mineral</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">mineral<span class="tsd-signature-symbol">(</span>creep<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Creep</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="runjobsforroom" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> run<wbr>Jobs<wbr>For<wbr>Room</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">run<wbr>Jobs<wbr>For<wbr>Room<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, isOwnedRoom<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Creeps/modules/harvest.ts#L7">Creeps/modules/harvest.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Jobs/JobsManager.ts#L26">Jobs/JobsManager.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>creep: <span class="tsd-signature-type">Creep</span></h5>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5>isOwnedRoom: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="source" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> source</h3>
+					<a name="runjobsmanager" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> run<wbr>Jobs<wbr>Manager</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">source<span class="tsd-signature-symbol">(</span>creep<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Creep</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<wbr>Jobs<wbr>Manager<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Creeps/modules/harvest.ts#L41">Creeps/modules/harvest.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Jobs/JobsManager.ts#L18">Jobs/JobsManager.ts:18</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>creep: <span class="tsd-signature-type">Creep</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -148,7 +145,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_creeps_modules_harvest_.html">&quot;<wbr>Creeps/modules/harvest&quot;</a>
+						<a href="../modules/_jobs_jobsmanager_.html">&quot;<wbr>Jobs/<wbr>Jobs<wbr>Manager&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -157,13 +154,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_creeps_modules_harvest_.creeprole_harvest.html" class="tsd-kind-icon">Creep<wbr>Role_<wbr><wbr>Harvest</a>
+						<a href="_jobs_jobsmanager_.jobsmanager.html" class="tsd-kind-icon">Jobs<wbr>Manager</a>
 						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_creeps_modules_harvest_.creeprole_harvest.html#mineral" class="tsd-kind-icon">mineral</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="_jobs_jobsmanager_.jobsmanager.html#runjobsforroom" class="tsd-kind-icon">run<wbr>Jobs<wbr>For<wbr>Room</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_creeps_modules_harvest_.creeprole_harvest.html#source" class="tsd-kind-icon">source</a>
+								<a href="_jobs_jobsmanager_.jobsmanager.html#runjobsmanager" class="tsd-kind-icon">run<wbr>Jobs<wbr>Manager</a>
 							</li>
 						</ul>
 					</li>
