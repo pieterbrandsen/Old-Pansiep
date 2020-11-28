@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>RoomHelper_Structure | screeps-bot-pansiep</title>
+	<title>JobsApi | screeps-bot-pansiep</title>
 	<meta name="description" content="Documentation for screeps-bot-pansiep">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_rooms_room_structure_helper_.html">&quot;Rooms/Room.Structure.Helper&quot;</a>
+					<a href="../modules/_jobs_jobs_api_.html">&quot;Jobs/Jobs.Api&quot;</a>
 				</li>
 				<li>
-					<a href="_rooms_room_structure_helper_.roomhelper_structure.html">RoomHelper_Structure</a>
+					<a href="_jobs_jobs_api_.jobsapi.html">JobsApi</a>
 				</li>
 			</ul>
-			<h1>Class RoomHelper_Structure</h1>
+			<h1>Class JobsApi</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">RoomHelper_Structure</span>
+						<span class="target">JobsApi</span>
 					</li>
 				</ul>
 			</section>
@@ -84,10 +84,10 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_rooms_room_structure_helper_.roomhelper_structure.html#runlinks" class="tsd-kind-icon">run<wbr>Links</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_rooms_room_structure_helper_.roomhelper_structure.html#towerattacking" class="tsd-kind-icon">tower<wbr>Attacking</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_rooms_room_structure_helper_.roomhelper_structure.html#towerhealing" class="tsd-kind-icon">tower<wbr>Healing</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_rooms_room_structure_helper_.roomhelper_structure.html#towerrepairing" class="tsd-kind-icon">tower<wbr>Repairing</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_jobs_jobs_api_.jobsapi.html#findjob" class="tsd-kind-icon">find<wbr>Job</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_jobs_jobs_api_.jobsapi.html#getclosestjob" class="tsd-kind-icon">get<wbr>Closest<wbr>Job</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_jobs_jobs_api_.jobsapi.html#getfirstjob" class="tsd-kind-icon">get<wbr>First<wbr>Job</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_jobs_jobs_api_.jobsapi.html#removejob" class="tsd-kind-icon">remove<wbr>Job</a></li>
 							</ul>
 						</section>
 					</div>
@@ -96,94 +96,103 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="runlinks" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> run<wbr>Links</h3>
+					<a name="findjob" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> find<wbr>Job</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">run<wbr>Links<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Job<span class="tsd-signature-symbol">(</span>jobId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, jobs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Rooms/Room.Structure.Helper.ts#L82">Rooms/Room.Structure.Helper.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Jobs/Jobs.Api.ts#L48">Jobs/Jobs.Api.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+									<h5>jobId: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>jobs: <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="towerattacking" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> tower<wbr>Attacking</h3>
+					<a name="getclosestjob" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Closest<wbr>Job</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">tower<wbr>Attacking<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Closest<wbr>Job<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RoomPos</span>, jobs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Rooms/Room.Structure.Helper.ts#L37">Rooms/Room.Structure.Helper.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Jobs/Jobs.Api.ts#L8">Jobs/Jobs.Api.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+									<h5>position: <span class="tsd-signature-type">RoomPos</span></h5>
+								</li>
+								<li>
+									<h5>jobs: <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="towerhealing" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> tower<wbr>Healing</h3>
+					<a name="getfirstjob" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>First<wbr>Job</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">tower<wbr>Healing<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Job<span class="tsd-signature-symbol">(</span>jobs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Rooms/Room.Structure.Helper.ts#L57">Rooms/Room.Structure.Helper.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Jobs/Jobs.Api.ts#L30">Jobs/Jobs.Api.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+									<h5>jobs: <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="towerrepairing" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> tower<wbr>Repairing</h3>
+					<a name="removejob" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> remove<wbr>Job</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">tower<wbr>Repairing<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Job<span class="tsd-signature-symbol">(</span>jobId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, jobs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Rooms/Room.Structure.Helper.ts#L8">Rooms/Room.Structure.Helper.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Jobs/Jobs.Api.ts#L34">Jobs/Jobs.Api.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+									<h5>jobId: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>jobs: <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">JobTemplate</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -196,7 +205,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_rooms_room_structure_helper_.html">&quot;<wbr>Rooms/<wbr>Room.<wbr>Structure.<wbr>Helper&quot;</a>
+						<a href="../modules/_jobs_jobs_api_.html">&quot;<wbr>Jobs/<wbr>Jobs.<wbr>Api&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -205,19 +214,19 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_rooms_room_structure_helper_.roomhelper_structure.html" class="tsd-kind-icon">Room<wbr>Helper_<wbr><wbr>Structure</a>
+						<a href="_jobs_jobs_api_.jobsapi.html" class="tsd-kind-icon">Jobs<wbr>Api</a>
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_rooms_room_structure_helper_.roomhelper_structure.html#runlinks" class="tsd-kind-icon">run<wbr>Links</a>
+								<a href="_jobs_jobs_api_.jobsapi.html#findjob" class="tsd-kind-icon">find<wbr>Job</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_rooms_room_structure_helper_.roomhelper_structure.html#towerattacking" class="tsd-kind-icon">tower<wbr>Attacking</a>
+								<a href="_jobs_jobs_api_.jobsapi.html#getclosestjob" class="tsd-kind-icon">get<wbr>Closest<wbr>Job</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_rooms_room_structure_helper_.roomhelper_structure.html#towerhealing" class="tsd-kind-icon">tower<wbr>Healing</a>
+								<a href="_jobs_jobs_api_.jobsapi.html#getfirstjob" class="tsd-kind-icon">get<wbr>First<wbr>Job</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_rooms_room_structure_helper_.roomhelper_structure.html#towerrepairing" class="tsd-kind-icon">tower<wbr>Repairing</a>
+								<a href="_jobs_jobs_api_.jobsapi.html#removejob" class="tsd-kind-icon">remove<wbr>Job</a>
 							</li>
 						</ul>
 					</li>

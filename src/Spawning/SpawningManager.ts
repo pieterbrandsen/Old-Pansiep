@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { Config, MemoryApi_Empire, SpawningApi, SpawningHelper, MemoryApi_All } from "Utils/importer/internals";
+import { Config, MemoryApi_Empire, SpawningApi, SpawningHelper, MemoryApi_All, SPAWN_CREEP_TIMER } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -14,7 +14,7 @@ export class SpawningManager {
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room) => {
       // Run SpawnCreep if the ExecuteEachTicks returns true;
-      if (MemoryApi_All.executeEachTicks(Config.rooms.loops.spawnCreep)) {
+        if (MemoryApi_All.executeEachTicks(SPAWN_CREEP_TIMER)) {
         MemoryApi_All.functionRunnerWithCpu(
           SpawningManager.runSpawningForRoom,
           MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),

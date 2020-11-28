@@ -1,5 +1,5 @@
 //#region Require('./)
-import {} from "Utils/importer/internals";
+import { JobsApi } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -34,7 +34,7 @@ export class CreepRole_Transfer {
           break;
         }
 
-        if (roomMemory.commonMemory.spawnEnergyStructures!.length > 0) {
+        if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
           creep.memory.miniJob = "spawner";
           break;
         } else if (
@@ -47,7 +47,7 @@ export class CreepRole_Transfer {
           roomMemory.commonMemory.controllerStorage &&
           roomMemory.commonMemory.controllerStorage.usable < 1500 &&
           roomMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER &&
-          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null
+          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null
         ) {
           creep.memory.miniJob = "controller";
           break;
@@ -152,7 +152,7 @@ export class CreepRole_Transfer {
         case ERR_INVALID_TARGET:
           // Delete targetId
           delete creep.memory.targetId;
-          delete roomMemory.roomPlanner.room.sources[creep.memory.sourceNumber!];
+          roomMemory.roomPlanner.room.sources[creep.memory.sourceNumber!].id = "";
           break;
         default:
           break;
@@ -180,27 +180,29 @@ export class CreepRole_Transfer {
       return "full";
     }
 
-    if (!roomMemory || (roomMemory.commonMemory.spawnEnergyStructures!.length === 0 && !creepMemory.targetId)) {
+    if (roomMemory.jobs.spawnerEnergyStructures!.length === 0 && !creepMemory.targetId) {
       return "empty";
     }
 
     // If creep is missing targetId
     if (creepMemory.targetId === undefined) {
       // Find and shift the first energy structure in the spawner array
-      const getCapacityCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
+      const getEnergyInCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
 
-      // If current spawnEnergyStructure needs less then zero energy, shift it.
-      if (roomMemory.commonMemory.spawnEnergyStructures![0].needed < 0) {
-        roomMemory.commonMemory.spawnEnergyStructures!.shift();
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.spawnerEnergyStructures!);
+      if (job && job.needed! <= 0) {
+        roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(job.id, roomMemory.jobs.spawnerEnergyStructures!);
+        delete creep.memory.targetId;
         return;
       }
 
       // Get first id from array, shift only if creep can fill the whole target.
-      if (roomMemory.commonMemory.spawnEnergyStructures![0].needed < getCapacityCreep) {
-        creep.memory.targetId = roomMemory.commonMemory.spawnEnergyStructures!.shift()!.id;
-      } else {
-        creep.memory.targetId = roomMemory.commonMemory.spawnEnergyStructures![0].id;
-        roomMemory.commonMemory.spawnEnergyStructures![0].needed -= getCapacityCreep;
+      if (job && job.needed! <= getEnergyInCreep) {
+        creep.memory.targetId = job.id;
+        roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(job.id, roomMemory.jobs.spawnerEnergyStructures!);
+      } else if (job && job.needed) {
+        creep.memory.targetId = job.id;
+        job.needed -= getEnergyInCreep;
       }
     } else {
       // Get the saved structure from memory
@@ -217,22 +219,19 @@ export class CreepRole_Transfer {
       // Switch based on the results
       switch (result) {
         case OK:
-          if (transferStructure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-            roomMemory.commonMemory.spawnEnergyStructures!.push({
-              id: transferStructure.id,
-              needed: transferStructure.store.getFreeCapacity(RESOURCE_ENERGY)
-            });
-          }
-          break;
         case ERR_INVALID_TARGET:
         case ERR_FULL:
           // Delete targetId
+          roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(
+            creep.memory.targetId!,
+            roomMemory.jobs.spawnerEnergyStructures!
+          );
           delete creep.memory.targetId;
-          return;
+          break;
         case ERR_NOT_IN_RANGE:
           // If creep is not in range, move to target
           creep.moveTo(transferStructure);
-          return;
+          break;
         default:
           break;
       }
@@ -321,7 +320,7 @@ export class CreepRole_Transfer {
     }
 
     // Get the saved structure from memory
-    const transferStructure: AnyStructure | null = Game.getObjectById(roomMemory.commonMemory.controllerStorage.id);
+    const transferStructure: AnyStructure | null = Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!);
 
     // Return empty if transferStructure is null
     if (transferStructure === null) {
@@ -339,7 +338,7 @@ export class CreepRole_Transfer {
         // Delete targetId
         delete creep.memory.targetId;
         if (result === ERR_INVALID_TARGET) {
-          roomMemory.commonMemory.controllerStorage.id = "";
+          roomMemory.commonMemory.controllerStorage.id! = "";
         }
         break;
       case ERR_NOT_IN_RANGE:

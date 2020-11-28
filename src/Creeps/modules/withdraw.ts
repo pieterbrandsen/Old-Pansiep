@@ -1,5 +1,6 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import _ from "lodash";
+import { Config, JobsHelper } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -22,7 +23,7 @@ export class CreepRole_Withdraw {
         if (
           roomMemory.commonMemory.controllerStorage &&
           creepMemory.role.includes("upgrade") &&
-          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null &&
+          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null &&
           roomMemory.commonMemory.controllerStorage.usable > 250
         ) {
           creep.memory.miniJob = "upgrade";
@@ -49,55 +50,50 @@ export class CreepRole_Withdraw {
     }
 
     // If there is not enough to withdraw from, return empty to get another goal if possible
-    if (roomMemory.commonMemory.energyStored.usable <= 500 && creep.memory.targetId === undefined) {
+    if (
+      roomMemory.commonMemory.energyStored.usable <= creep.store.getCapacity() &&
+      creep.memory.targetId === undefined
+    ) {
       return "empty";
     }
 
     // If creep memory is missing a targetId, find one
     if (!creep.memory.targetId) {
-      const highestEnergyStructure = roomMemory.commonMemory.energyStructures.sort(
-        (a: any, b: any) => b.usable - a.usable
-      )[0];
-      const highestSourceStructure = roomMemory.commonMemory.energyStructures
-        .filter((s: any) => s.usable <= 2000)
-        .sort((a: any, b: any) => b.usable - a.usable)[0];
-
-      let structure: any;
-      if (creepMemory.role === "transferer" && roomMemory.commonMemory.spawnEnergyStructures!.length > 0) {
-        structure = highestEnergyStructure;
+      let job: JobTemplate;
+      if (creepMemory.role === "transferer" && roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
+        job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       } else if (
         (creepMemory.role === "transferer" || creepMemory.role === "pioneer") &&
-        roomMemory.commonMemory.spawnEnergyStructures!.length === 0
+        roomMemory.jobs.spawnerEnergyStructures!.length === 0
       ) {
-        const structureObj:
-          | StructureStorage
-          | StructureTerminal
-          | StructureContainer
-          | StructureLink
-          | null = Game.getObjectById(highestSourceStructure.id);
-        if (structureObj === null) {
-          return;
+        const allContainerStoragesJobs: JobTemplate[] = JobsHelper.getAllContainerEnergyStoragesJobs(creep.room);
+        job = allContainerStoragesJobs.sort((a, b) => b.usable! - a.usable!)[0];
+        if (allContainerStoragesJobs.length === 0 || Game.getObjectById(job.id) === null) {
+          if (creep.pos.inRangeTo(creep.room.storage!, 10)) {
+            creep.moveTo(creep.room.controller!);
+            return;
+          } else {
+            return;
+          }
         }
-        if (structureObj.structureType === STRUCTURE_STORAGE || structureObj.structureType === STRUCTURE_TERMINAL) {
-          return;
-        }
-        structure = highestSourceStructure;
       } else {
-        structure = highestEnergyStructure;
+        job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       }
 
-      if (structure === undefined) {
+      if (job === undefined) {
         return;
       }
-      roomMemory.commonMemory.energyStructures.forEach((structureInMem: any) => {
-        if (structureInMem.id === structure.id) {
-          structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
-          roomMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+      roomMemory.jobs.energyStorages.forEach((structureInMem: any) => {
+        if (structureInMem.id === job.id) {
+          if (structureInMem.usable > 0) {
+            roomMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+            structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+          }
         }
       });
 
-      if (structure.usable > 0) {
-        creep.memory.targetId = structure.id;
+      if (job.usable! > 0) {
+        creep.memory.targetId = job.id;
       }
     } else {
       if (creepMemory.targetId === undefined) {
@@ -152,7 +148,7 @@ export class CreepRole_Withdraw {
 
     // Get the saved structure from memory
     const withdrawStructure: StructureContainer | StructureLink | null = Game.getObjectById(
-      roomMemory.commonMemory.controllerStorage.id
+      roomMemory.commonMemory.controllerStorage.id!
     );
 
     if (withdrawStructure === null) {

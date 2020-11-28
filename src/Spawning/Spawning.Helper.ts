@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import { Config, MemoryApi_Room } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -9,7 +9,7 @@ export class SpawningHelper {
     const roomMemory = Memory.rooms[room.name];
 
     // Get all spawns //
-    const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory!.headSpawnId!);
+    const headSpawn: StructureSpawn | null = MemoryApi_Room.getHeadSpawn(room);
     if (!spawn || headSpawn === null) {
       return;
     }
@@ -169,12 +169,12 @@ export class SpawningHelper {
             // Check if input role is less then max creeps allowed //
             if (
               Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName] &&
-              targetRoomMemory.commonMemory.constructionSites.length === 0
+              targetRoomMemory.constructionSites.data.length === 0
             ) {
               break;
             } else if (
               Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName] / 2 &&
-              targetRoomMemory.commonMemory.constructionSites.length > 0
+              targetRoomMemory.constructionSites.data.length > 0
             ) {
               break;
             }
@@ -216,7 +216,7 @@ export class SpawningHelper {
             }
           }
 
-          if (targetRoomMemory.commonMemory.constructionSites.length === 0) {
+          if (targetRoomMemory.constructionSites.data.length === 0) {
             break;
           }
 
@@ -248,7 +248,7 @@ export class SpawningHelper {
           }
 
           // Break if there are no targets left
-          if (targetRoomMemory.commonMemory.repair.targets.length === 0) {
+          if (targetRoomMemory.jobs.damagedStructures.data.length === 0) {
             break;
           }
 
@@ -274,7 +274,7 @@ export class SpawningHelper {
             break;
           }
 
-          if (Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[0].id!) === null) {
+          if (!targetRoomMemory.roomPlanner.room.sources[0] || Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[0].id!) === null) {
             break;
           }
 
@@ -305,7 +305,7 @@ export class SpawningHelper {
             break;
           }
 
-          if (Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[1].id!) === null) {
+          if (!targetRoomMemory.roomPlanner.room.sources[1] || Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[1].id!) === null) {
             break;
           }
 
