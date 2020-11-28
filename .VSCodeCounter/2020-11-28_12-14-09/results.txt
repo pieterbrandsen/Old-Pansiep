@@ -1,0 +1,72 @@
+Date : 2020-11-28 12:14:09
+Directory : c:\Users\piete\source\repos\Pansiep\src
+Total : 37 files,  3986 codes, 817 comments, 632 blanks, all 5435 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |         37 |      3,986 |        817 |        632 |      5,435 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                            | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                               |         37 |      3,986 |        817 |        632 |      5,435 |
+| Creeps                                                                          |         10 |      1,152 |        252 |        199 |      1,603 |
+| Creeps\modules                                                                  |          8 |        704 |        168 |        119 |        991 |
+| Jobs                                                                            |          3 |        279 |         37 |         43 |        359 |
+| Memory                                                                          |          6 |        567 |        106 |        122 |        795 |
+| Rooms                                                                           |          6 |      1,077 |        235 |        124 |      1,436 |
+| Rooms\RoomPlanner                                                               |          3 |        923 |        205 |         96 |      1,224 |
+| Spawning                                                                        |          3 |        449 |         77 |         74 |        600 |
+| Stats                                                                           |          2 |        130 |         28 |         22 |        180 |
+| Utils                                                                           |          4 |        181 |         38 |         25 |        244 |
+| Utils\config                                                                    |          1 |         43 |          5 |          2 |         50 |
+| Utils\importer                                                                  |          2 |         74 |         15 |         12 |        101 |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                        | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\Creeps.Roles.Helper.ts           | TypeScript |        412 |         68 |         70 |        550 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\CreepsManager.ts                 | TypeScript |         36 |         16 |         10 |         62 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\build.ts                 | TypeScript |         44 |         15 |          8 |         67 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\claim.ts                 | TypeScript |         26 |         13 |          6 |         45 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\harvest.ts               | TypeScript |        157 |         24 |         20 |        201 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\repair.ts                | TypeScript |         56 |         17 |         10 |         83 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\reserve.ts               | TypeScript |         16 |          6 |          2 |         24 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\transfer.ts              | TypeScript |        246 |         63 |         45 |        354 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\upgrade.ts               | TypeScript |         23 |          8 |          6 |         37 |
+| c:\Users\piete\source\repos\Pansiep\src\Creeps\modules\withdraw.ts              | TypeScript |        136 |         22 |         22 |        180 |
+| c:\Users\piete\source\repos\Pansiep\src\Jobs\Jobs.Api.ts                        | TypeScript |         42 |          4 |          8 |         54 |
+| c:\Users\piete\source\repos\Pansiep\src\Jobs\Jobs.Helper.ts                     | TypeScript |        194 |         29 |         27 |        250 |
+| c:\Users\piete\source\repos\Pansiep\src\Jobs\JobsManager.ts                     | TypeScript |         43 |          4 |          8 |         55 |
+| c:\Users\piete\source\repos\Pansiep\src\ManagerManager.ts                       | TypeScript |         26 |         26 |          8 |         60 |
+| c:\Users\piete\source\repos\Pansiep\src\Memory\Memory.All.Api.ts                | TypeScript |        105 |         20 |         23 |        148 |
+| c:\Users\piete\source\repos\Pansiep\src\Memory\Memory.Empire.Api.ts             | TypeScript |         21 |          5 |          6 |         32 |
+| c:\Users\piete\source\repos\Pansiep\src\Memory\Memory.Helper.ts                 | TypeScript |         17 |          4 |          4 |         25 |
+| c:\Users\piete\source\repos\Pansiep\src\Memory\Memory.Room.Api.ts               | TypeScript |        315 |         44 |         57 |        416 |
+| c:\Users\piete\source\repos\Pansiep\src\Memory\Memory.Room.Helper.ts            | TypeScript |         93 |         28 |         28 |        149 |
+| c:\Users\piete\source\repos\Pansiep\src\Memory\MemoryManager.ts                 | TypeScript |         16 |          5 |          4 |         25 |
+| c:\Users\piete\source\repos\Pansiep\src\Rooms\Room.State.Helper.ts              | TypeScript |         14 |          9 |          3 |         26 |
+| c:\Users\piete\source\repos\Pansiep\src\Rooms\Room.Structure.Helper.ts          | TypeScript |        101 |         12 |         17 |        130 |
+| c:\Users\piete\source\repos\Pansiep\src\Rooms\RoomManager.ts                    | TypeScript |         39 |          9 |          8 |         56 |
+| c:\Users\piete\source\repos\Pansiep\src\Rooms\RoomPlanner\RoomPlannerManager.ts | TypeScript |          2 |          4 |          2 |          8 |
+| c:\Users\piete\source\repos\Pansiep\src\Rooms\RoomPlanner\bunkerLayoutConst.ts  | TypeScript |        451 |         36 |         18 |        505 |
+| c:\Users\piete\source\repos\Pansiep\src\Rooms\RoomPlanner\oldRoomPlanner.ts     | TypeScript |        470 |        165 |         76 |        711 |
+| c:\Users\piete\source\repos\Pansiep\src\Spawning\Spawning.Api.ts                | TypeScript |         15 |         12 |          4 |         31 |
+| c:\Users\piete\source\repos\Pansiep\src\Spawning\Spawning.Helper.ts             | TypeScript |        406 |         49 |         66 |        521 |
+| c:\Users\piete\source\repos\Pansiep\src\Spawning\SpawningManager.ts             | TypeScript |         28 |         16 |          4 |         48 |
+| c:\Users\piete\source\repos\Pansiep\src\Stats\Stats.Helper.ts                   | TypeScript |        115 |         19 |         17 |        151 |
+| c:\Users\piete\source\repos\Pansiep\src\Stats\StatsManager.ts                   | TypeScript |         15 |          9 |          5 |         29 |
+| c:\Users\piete\source\repos\Pansiep\src\Utils\ErrorMapper.ts                    | TypeScript |         64 |         18 |         11 |         93 |
+| c:\Users\piete\source\repos\Pansiep\src\Utils\config\config.ts                  | TypeScript |         43 |          5 |          2 |         50 |
+| c:\Users\piete\source\repos\Pansiep\src\Utils\importer\constants.ts             | TypeScript |         39 |          4 |          3 |         46 |
+| c:\Users\piete\source\repos\Pansiep\src\Utils\importer\internals.ts             | TypeScript |         35 |         11 |          9 |         55 |
+| c:\Users\piete\source\repos\Pansiep\src\main.ts                                 | TypeScript |          4 |          8 |          2 |         14 |
+| c:\Users\piete\source\repos\Pansiep\src\types.d.ts                              | TypeScript |        121 |         10 |         13 |        144 |
+| Total                                                                           |            |      3,986 |        817 |        632 |      5,435 |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
