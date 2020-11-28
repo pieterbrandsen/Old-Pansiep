@@ -46,7 +46,7 @@ export class CreepRole_Build {
       // Switch based on the results
       switch (result) {
         case OK:
-          Config.expenses.building[creep.room.name] += creep.memory.parts.work * 5;
+          Config.expenses.building[creep.room.name] += creep.memory.parts!.work * 5;
           break;
         case ERR_INVALID_TARGET:
           roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);

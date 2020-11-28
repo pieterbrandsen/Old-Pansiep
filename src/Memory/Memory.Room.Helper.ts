@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { ALL_STRUCTURE_TYPES, MemoryApi_Room } from "Utils/importer/internals";
+import { ALL_CREEP_ROLES, ALL_STRUCTURE_TYPES, MemoryApi_Room } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -53,12 +53,18 @@ export class MemoryHelper_Room {
       return;
     }
 
-    room.memory.myCreeps = { data: [], cache: null };
+    room.memory.myCreeps = { data: {}, cache: null };
 
-    const creeps = _.filter(Game.creeps, creep => creep.memory.spawnRoom === room.name);
+    const allCreeps: Creep[] = room.find(FIND_MY_CREEPS);
+    const sortedCreepsIDs: StringMap = {};
+    _.forEach(ALL_CREEP_ROLES, (role: string) => {
+      sortedCreepsIDs[role] = _.map(
+        _.remove(allCreeps, (c: Creep) => c.memory.role === role),
+        (c: Creep) => c.memory.role
+      );
+    });
 
-    room.memory.myCreeps!.data = _.map(creeps, (creep: Creep) => creep.id);
-
+    room.memory.myCreeps!.data = sortedCreepsIDs;
     room.memory.myCreeps.cache = Game.time;
   }
 

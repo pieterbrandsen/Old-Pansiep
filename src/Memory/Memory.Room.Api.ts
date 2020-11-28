@@ -6,8 +6,8 @@ import {
   MemoryHelper,
   STRUCT_CACHE_TTL,
   CONST_CACHE_TTL,
-  RoomHelper_State,
-  MemoryApi_Empire
+  MemoryApi_Empire,
+  CREEPS_CACHE_TTL
 } from "Utils/importer/internals";
 //#endregion
 
@@ -63,10 +63,11 @@ export class MemoryApi_Room {
       };
     } else {
       room.memory = {
+        roomName: room.name,
         commonMemory: {
           sources: [],
           sourceCount: 0,
-          energyStored: { usable: 0, capacity: 0 }
+          energyStored: { usable: 0, capacity: 0 }, reserve: {TTL: 0, username: ""}
         },
         roomPlanner: {
           room: { sources: [] }
@@ -83,7 +84,8 @@ export class MemoryApi_Room {
           }
         },
         structures: { data: null, cache: null },
-        constructionSites: { data: null, cache: null }
+        constructionSites: { data: null, cache: null },
+        myCreeps: { data: null, cache: null }
       };
     }
 
@@ -386,14 +388,54 @@ export class MemoryApi_Room {
     if (
       room.memory.myCreeps === undefined ||
       room.memory.myCreeps.data === null ||
-      room.memory.myCreeps.cache < Game.time - CONST_CACHE_TTL
+      room.memory.myCreeps.cache < Game.time - CREEPS_CACHE_TTL
     ) {
       MemoryHelper_Room.updateMyCreeps(room);
     }
 
-    const creepsIDs: string[] = room.memory.myCreeps!.data;
+    const creepsIDs: string[] = [];
+    // Flatten the object into an array of IDs
+    for (const type in room.memory.myCreeps.data) {
+      const IDs = room.memory.myCreeps.data[type];
+      for (const singleID of IDs) {
+        if (singleID) {
+          creepsIDs.push(singleID);
+        }
+      }
+    }
+
 
     let creeps: Creep[] = MemoryHelper.getOnlyObjectsFromIDs<Creep>(creepsIDs);
+
+    if (filterFunction !== undefined) {
+      creeps = _.filter(creeps, filterFunction);
+    }
+
+    return creeps;
+  }
+
+  public static getMyCreepsOfType(
+    room: Room,
+    type: string,
+    filterFunction?: (object: any) => boolean
+  ): Creep[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+      return [];
+    }
+
+    if (
+      room.memory.myCreeps === undefined ||
+      room.memory.myCreeps.data === null ||
+      room.memory.myCreeps.data[type] === undefined ||
+      room.memory.myCreeps.cache < Game.time - CREEPS_CACHE_TTL
+    ) {
+      MemoryHelper_Room.updateMyCreeps(room);
+    }
+
+    const creepIds: string[] = room.memory.myCreeps.data[type];
+
+    let creeps: Creep[] = MemoryHelper.getOnlyObjectsFromIDs(creepIds);
 
     if (filterFunction !== undefined) {
       creeps = _.filter(creeps, filterFunction);
@@ -441,16 +483,16 @@ export class MemoryApi_Room {
 
   public static getRemoteRooms(
     room: Room,
-    filterFunction?: (object: RemoteRoomMemory) => boolean,
+    filterFunction?: (object: RoomMemory) => boolean,
     targetRoom?: string
-  ): RemoteRoomMemory[] {
+  ): RoomMemory[] {
     if (Memory.rooms[room.name] === undefined || Memory.rooms[room.name]!.remoteRooms === undefined) {
       return [];
     }
 
-    let remoteRooms: RemoteRoomMemory[] = [];
+    let remoteRooms: RoomMemory[] = [];
     for (const i in room.memory.remoteRooms) {
-      const rr: RemoteRoomMemory = room.memory.remoteRooms[i];
+      const rr: RoomMemory = room.memory.remoteRooms[i];
       if (rr) {
         remoteRooms.push(rr);
       }
@@ -458,7 +500,7 @@ export class MemoryApi_Room {
 
     // TargetRoom parameter provided
     if (targetRoom !== undefined) {
-      remoteRooms = _.filter(remoteRooms, (roomMemory: RemoteRoomMemory) => roomMemory.roomName === targetRoom);
+      remoteRooms = _.filter(remoteRooms, (roomMemory: RoomMemory) => roomMemory.roomName === targetRoom);
     }
 
     if (filterFunction !== undefined) {
@@ -474,7 +516,7 @@ export class MemoryApi_Room {
     const roomNames: string[] = [];
     _.forEach(ownedRooms, (room: Room) => {
       // Collect the room names for dependent rooms
-      _.forEach(MemoryApi_Room.getRemoteRooms(room), (rr: RemoteRoomMemory) => roomNames.push(rr.roomName));
+      _.forEach(MemoryApi_Room.getRemoteRooms(room), (rr: RoomMemory) => roomNames.push(rr.roomName!));
     });
 
     // Return all visible rooms which appear in roomNames array

@@ -51,7 +51,7 @@ export class CreepRole_Repair {
       // Switch based on the results
       switch (result) {
         case OK:
-          Config.expenses.repairing[creep.room.name] += creep.memory.parts.work;
+          Config.expenses.repairing[creep.room.name] += creep.memory.parts!.work;
 
           // If the hits of the repairTarget are high enough, remove structure
           if (
