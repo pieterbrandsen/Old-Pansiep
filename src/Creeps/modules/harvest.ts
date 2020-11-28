@@ -14,7 +14,7 @@ export class CreepRole_Harvest {
       return "full";
     }
 
-    const mineral: Mineral | null = Game.getObjectById(roomMemory.commonMemory.mineral.id);
+    const mineral: Mineral | null = Game.getObjectById(roomMemory.commonMemory!.mineral.id);
 
     // Return if structure is null
     if (mineral === null) {
@@ -96,8 +96,8 @@ export class CreepRole_Harvest {
         } else {
           // Else loop until assigned source's id is found
           let i = 0;
-          while (i < roomMemory.commonMemory.sources.length) {
-            const newSource = roomMemory.commonMemory.sources[i];
+          while (i < roomMemory.commonMemory!.sources.length) {
+            const newSource = roomMemory.commonMemory!.sources[i];
             if (newSource.id === source.id) {
               creep.memory.sourceNumber = i;
             }
@@ -125,8 +125,8 @@ export class CreepRole_Harvest {
           }
         } else {
           let i = 0;
-          while (i < roomMemory.commonMemory.sources.length) {
-            const newSource = roomMemory.commonMemory.sources[i];
+          while (i < roomMemory.commonMemory!.sources.length) {
+            const newSource = roomMemory.commonMemory!.sources[i];
             const roomPlannerNewSource = roomMemory.roomPlanner.room.sources[i];
             if (roomPlannerNewSource !== null) {
               const creepsAroundNewSource = creep.room.lookForAtArea(

@@ -63,8 +63,8 @@ export class SpawningHelper {
 
       const roomMemory = Memory.rooms[newMemory.targetRoom];
       if (role.includes("harvester") && !newMemory.sourceId) {
-        if (typeof roomMemory.commonMemory.sources[(role.split("-")[1] as unknown) as number] === "object") {
-          newMemory.sourceId = roomMemory.commonMemory.sources[(role.split("-")[1] as unknown) as number].id;
+        if (typeof roomMemory.commonMemory!.sources[(role.split("-")[1] as unknown) as number] === "object") {
+          newMemory.sourceId = roomMemory.commonMemory!.sources[(role.split("-")[1] as unknown) as number].id;
         }
       }
 
@@ -93,7 +93,7 @@ export class SpawningHelper {
           // Check if input role is less then max creeps allowed //
           if (
             Config.roleCountByRoomByRole[room.name][role] >=
-            Config.creepsCountMax[shortRoleName] * roomMemory.commonMemory.sources.length
+            Config.creepsCountMax[shortRoleName] * roomMemory.commonMemory!.sources.length
           ) {
             break;
           }
@@ -111,7 +111,7 @@ export class SpawningHelper {
         case "transfererLD":
           // Check if input role is less then max creeps allowed //
           if (role === "transfererLD") {
-            if (Config.roleCountByRoomByRole[room.name][role] >= targetRoomMemory.commonMemory.sources.length) {
+            if (Config.roleCountByRoomByRole[room.name][role] >= targetRoomMemory.commonMemory!.sources.length) {
               break;
             }
           } else {
@@ -122,7 +122,7 @@ export class SpawningHelper {
             } else {
               if (
                 Config.roleCountByRoomByRole[room.name][role] >=
-                Config.creepsCountMax[shortRoleName] * targetRoomMemory.commonMemory.sources.length
+                Config.creepsCountMax[shortRoleName] * targetRoomMemory.commonMemory!.sources.length
               ) {
                 break;
               }
@@ -138,7 +138,7 @@ export class SpawningHelper {
             break;
           }
 
-          if (targetRoomMemory === undefined || targetRoomMemory.commonMemory.energyStored.usable < 1000) {
+          if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1000) {
             break;
           }
 
@@ -159,9 +159,9 @@ export class SpawningHelper {
             }
           } else {
             if (
-              targetRoomMemory.commonMemory.energyStored.capacity > 10000 &&
-              targetRoomMemory.commonMemory.energyStored.capacity / 10 >
-                targetRoomMemory.commonMemory.energyStored.usable
+              targetRoomMemory.commonMemory!.energyStored.capacity > 10000 &&
+              targetRoomMemory.commonMemory!.energyStored.capacity / 10 >
+                targetRoomMemory.commonMemory!.energyStored.usable
             ) {
               break;
             }
@@ -238,7 +238,7 @@ export class SpawningHelper {
             break;
           }
 
-          if (targetRoomMemory === undefined || targetRoomMemory.commonMemory.energyStored.usable < 1500) {
+          if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1500) {
             break;
           }
 
@@ -283,7 +283,7 @@ export class SpawningHelper {
         case "harvester-1":
         case "harvesterLD-1":
           // If there is more then 1 source
-          if (targetRoomMemory.commonMemory.sources.length === 1) {
+          if (targetRoomMemory.commonMemory!.sources.length === 1) {
             break;
           }
 
@@ -378,8 +378,8 @@ export class SpawningHelper {
 
           // @ts-ignore
           if (
-            roomMemory.commonMemory.mineral.amount &&
-            roomMemory.commonMemory.mineral.amount > 0 &&
+            roomMemory.commonMemory!.mineral.amount &&
+            roomMemory.commonMemory!.mineral.amount > 0 &&
             room.controller &&
             room.controller.level >= 6 &&
             room.storage &&
@@ -433,7 +433,7 @@ export class SpawningHelper {
           break;
         case "harvester-0":
         case "harvester-1":
-          if (typeof roomMemory.commonMemory.sources[(role.split("-")[1] as unknown) as number] === "object") {
+          if (typeof roomMemory.commonMemory!.sources[(role.split("-")[1] as unknown) as number] === "object") {
             const sourceStructureType =
               roomMemory.roomPlanner.room.sources[(role.split("-")[1] as unknown) as number].structureType;
             switch (sourceStructureType) {

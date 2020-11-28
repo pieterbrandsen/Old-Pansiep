@@ -28,7 +28,7 @@ interface RoomMemory {
   };
 
   // Room memory
-  commonMemory: {
+  commonMemory?: {
     sourceCount: number;
     mineral: { id: string; type: any; amount: number };
     sources: Array<{ id: string; pos: RoomPos }>;

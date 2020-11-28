@@ -97,9 +97,9 @@ export class MemoryHelper_Room {
     // Check each source for a link
     if (room.controller!.level >= 5) {
       const links: StructureLink[] = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_LINK);
-      for (let i = 0; i < roomMemory.commonMemory.sources.length; i++) {
+      for (let i = 0; i < roomMemory.commonMemory!.sources.length; i++) {
         // Get the source
-        const source: Source | null = Game.getObjectById(roomMemory.commonMemory.sources[i].id);
+        const source: Source | null = Game.getObjectById(roomMemory.commonMemory!.sources[i].id);
 
         // If source is not null
         if (source !== null) {
@@ -107,8 +107,8 @@ export class MemoryHelper_Room {
           const sourceLink: StructureLink = source.pos.findInRange(links, 2)[0];
 
           // If a link is found, set it to the memory
-          if (roomMemory.commonMemory.links !== undefined && sourceLink !== undefined) {
-            roomMemory.commonMemory.links[`source${i}`] = sourceLink.id;
+          if (roomMemory.commonMemory!.links !== undefined && sourceLink !== undefined) {
+            roomMemory.commonMemory!.links[`source${i}`] = sourceLink.id;
           }
         }
       }
@@ -120,8 +120,8 @@ export class MemoryHelper_Room {
         const spawnLink: StructureLink = headSpawn.pos.findInRange(links, 2)[0];
 
         // If a link is found, set it to the memory
-        if (roomMemory.commonMemory.links !== undefined && spawnLink !== undefined) {
-          roomMemory.commonMemory.links["head"] = spawnLink.id;
+        if (roomMemory.commonMemory!.links !== undefined && spawnLink !== undefined) {
+          roomMemory.commonMemory!.links["head"] = spawnLink.id;
         }
       }
 
@@ -130,8 +130,8 @@ export class MemoryHelper_Room {
       const controllerLink: StructureLink | undefined = room.controller?.pos.findInRange(links, 2)[0];
 
       // If a link is found, set it to the memory
-      if (roomMemory.commonMemory.links !== undefined && controllerLink !== undefined) {
-        roomMemory.commonMemory.links["controller"] = controllerLink.id;
+      if (roomMemory.commonMemory!.links !== undefined && controllerLink !== undefined) {
+        roomMemory.commonMemory!.links["controller"] = controllerLink.id;
       }
     }
   }
@@ -139,9 +139,9 @@ export class MemoryHelper_Room {
   public static updateMineralAmount(room: Room): void {
     const mineral: Mineral = room.find(FIND_MINERALS)[0];
     if (mineral) {
-      room.memory.commonMemory.mineral!.amount! = Math.round(room.find(FIND_MINERALS)[0].mineralAmount);
+      room.memory.commonMemory!.mineral!.amount! = Math.round(room.find(FIND_MINERALS)[0].mineralAmount);
     } else {
-      room.memory.commonMemory.mineral!.amount! = 0;
+      room.memory.commonMemory!.mineral!.amount! = 0;
     }
   }
 }
