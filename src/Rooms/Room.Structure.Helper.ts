@@ -1,66 +1,82 @@
 //#region Require('./)
 import _ from "lodash";
-import { MemoryApi_Room, MemoryApi_All } from "Utils/importer/internals";
+import { MemoryApi_Room, MemoryApi_All, JobsApi } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
 export class RoomHelper_Structure {
   public static towerRepairing(room: Room): void {
-    const structureId: string = _.first(room.memory.commonMemory.repair.targets);
-    const structure: Structure | null = Game.getObjectById(structureId);
-    const hitsTarget: number = room.memory.commonMemory.repair.hitsTarget;
-
-    if (structure && structure.hits < structure.hitsMax && structure.hits < hitsTarget) {
-      const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
-        room,
-        STRUCTURE_TOWER,
-        (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
-      );
-
-      _.forEach(towers, (tower: StructureTower) => {
-        tower.repair(structure);
-      });
-    } else {
-      room.memory.commonMemory.repair.targets.shift();
+    if (room.memory.jobs.damagedStructures.data.length === 0) {
+      return;
     }
+
+    const hitsTarget: number = room.memory.jobs.damagedStructures.hitsTarget;
+
+    const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
+      room,
+      STRUCTURE_TOWER,
+      (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
+    );
+
+    _.forEach(towers, (tower: StructureTower) => {
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(tower.pos, room.memory.jobs.damagedStructures.data);
+      if (job) {
+        const structure: Structure | null = Game.getObjectById(job.id);
+        if (structure && structure.hits > 0 && structure.hits < hitsTarget) {
+          tower.repair(structure);
+        } else {
+          room.memory.jobs.damagedStructures.data = JobsApi.removeJob(
+            structure!.id,
+            room.memory.jobs.damagedStructures.data
+          );
+        }
+      }
+    });
   }
 
   public static towerAttacking(room: Room): void {
-    const creepId: string = _.first(room.memory.enemies.creeps).id;
-    const creep: Structure | null = Game.getObjectById(creepId);
+    const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
+      room,
+      STRUCTURE_TOWER,
+      (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
+    );
 
-    if (creep && creep.hits > 0) {
-      const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
-        room,
-        STRUCTURE_TOWER,
-        (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
-      );
-
-      _.forEach(towers, (tower: StructureTower) => {
-        tower.attack(creep);
-      });
-    } else {
-      room.memory.enemies.creeps.shift();
-    }
+    _.forEach(towers, (tower: StructureTower) => {
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(tower.pos, room.memory.jobs.enemies.creeps);
+      if (job) {
+        const creep: Creep | null = Game.getObjectById(job.id);
+        if (creep && creep.hits > 0) {
+          tower.attack(creep);
+        } else {
+          room.memory.jobs.enemies.creeps = JobsApi.removeJob(creep!.id, room.memory.jobs.enemies.creeps);
+        }
+      }
+    });
   }
 
   public static towerHealing(room: Room): void {
-    const creepId: string = _.first(room.memory.damagedCreeps);
-    const creep: Creep | null = Game.getObjectById(creepId);
-
-    if (creep && creep.hits < creep.hitsMax) {
-      const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
-        room,
-        STRUCTURE_TOWER,
-        (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
-      );
-
-      _.forEach(towers, (tower: StructureTower) => {
-        tower.heal(creep);
-      });
-    } else {
-      room.memory.damagedCreeps.shift();
+    const damagedCreepJob: JobTemplate | undefined = _.first(room.memory.jobs.damagedCreeps);
+    if (!damagedCreepJob) {
+      return;
     }
+
+    const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
+      room,
+      STRUCTURE_TOWER,
+      (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
+    );
+
+    _.forEach(towers, (tower: StructureTower) => {
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(tower.pos, room.memory.jobs.damagedCreeps);
+      if (job) {
+        const creep: Creep | null = Game.getObjectById(job.id);
+        if (creep && creep.hits < creep.hitsMax) {
+          tower.heal(creep);
+        } else {
+          room.memory.jobs.damagedCreeps = JobsApi.removeJob(creep!.id, room.memory.jobs.damagedCreeps);
+        }
+      }
+    });
   }
 
   public static runLinks(room: Room): void {

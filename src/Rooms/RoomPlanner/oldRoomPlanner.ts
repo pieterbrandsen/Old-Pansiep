@@ -122,7 +122,7 @@ export class OldRoomPlanner {
       (roomMemory.roomPlanner.room.controller &&
         roomMemory.roomPlanner.room.controller.structureType === structureType &&
         roomMemory.commonMemory.controllerStorage !== undefined &&
-        Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null) ||
+        Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null) ||
       (room.controller && !room.controller.my)
     ) {
       return;
@@ -139,7 +139,7 @@ export class OldRoomPlanner {
         const structureObject: StructureLink | StructureContainer | null = Game.getObjectById(structureExistResult[1]);
         if (structureObject !== null && roomMemory.commonMemory.controllerStorage) {
           structureObject.destroy();
-          roomMemory.commonMemory.controllerStorage.id = "";
+          roomMemory.commonMemory.controllerStorage.id! = "";
         }
       } else {
         const constructionSite = room.lookForAt(
@@ -183,7 +183,7 @@ export class OldRoomPlanner {
     const roomMemory: RoomMemory = Memory.rooms[roomName];
 
     // Wait until all other construction sites are build
-    if (roomMemory.commonMemory.constructionSites.length > 0) {
+    if (roomMemory.constructionSites.data?.length > 0) {
       return;
     }
 
@@ -672,7 +672,7 @@ export class OldRoomPlanner {
         // TODO THIS doesn't WORK BECAUSE THE CONSTRUCTION site is not yet known at time of calling
         // // Push constructor to array
         // if (placedConstructionSite && placedConstructionSite.id) {
-        //   roomMemory.commonMemory.constructionSites.push(
+        //   roomMemory.constructionSites.data.push(
         //     placedConstructionSite[0].id);
         // }
         break;

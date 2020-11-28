@@ -84,13 +84,19 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#doesstructureexist" class="tsd-kind-icon">does<wbr>Structure<wbr>Exist</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getallconstructionsites" class="tsd-kind-icon">get<wbr>All<wbr>Construction<wbr>Sites</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getheadspawn" class="tsd-kind-icon">get<wbr>Head<wbr>Spawn</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getmycreeps" class="tsd-kind-icon">get<wbr>MyCreeps</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getrandomfreepos" class="tsd-kind-icon">get<wbr>Random<wbr>Free<wbr>Pos</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getstructuresoftype" class="tsd-kind-icon">get<wbr>Structures<wbr>OfType</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getstructures" class="tsd-kind-icon">get<wbr>Structures</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getstructuresoftype" class="tsd-kind-icon">get<wbr>Structures<wbr>OfType</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#getupgraderstructure" class="tsd-kind-icon">get<wbr>Upgrader<wbr>Structure</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#initroommemory" class="tsd-kind-icon">init<wbr>Room<wbr>Memory</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#isroomsetup" class="tsd-kind-icon">is<wbr>Room<wbr>Setup</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#resetownedroommemory" class="tsd-kind-icon">reset<wbr>Owned<wbr>Room<wbr>Memory</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#resetroommemory" class="tsd-kind-icon">reset<wbr>Room<wbr>Memory</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#resettracking" class="tsd-kind-icon">reset<wbr>Tracking</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#updateconstructionsites" class="tsd-kind-icon">update<wbr>Construction<wbr>Sites</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_memory_memory_room_api_.memoryapi_room.html#resetroomtracking" class="tsd-kind-icon">reset<wbr>Room<wbr>Tracking</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,6 +104,110 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="doesstructureexist" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> does<wbr>Structure<wbr>Exist</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">does<wbr>Structure<wbr>Exist<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, pos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RoomPos</span>, structureType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L401">Memory/Memory.Room.Api.ts:401</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5>pos: <span class="tsd-signature-type">RoomPos</span></h5>
+								</li>
+								<li>
+									<h5>structureType: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getallconstructionsites" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>All<wbr>Construction<wbr>Sites</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>All<wbr>Construction<wbr>Sites<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, filterFunction<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Structure</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ConstructionSite</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L306">Memory/Memory.Room.Api.ts:306</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filterFunction: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Structure</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ConstructionSite</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getheadspawn" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Head<wbr>Spawn</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Head<wbr>Spawn<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">StructureSpawn</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L378">Memory/Memory.Room.Api.ts:378</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">StructureSpawn</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getmycreeps" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>MyCreeps</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>MyCreeps<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, filterFunction<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Creep</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Creep</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L353">Memory/Memory.Room.Api.ts:353</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filterFunction: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Creep</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Creep</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
 					<a name="getrandomfreepos" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Random<wbr>Free<wbr>Pos</h3>
@@ -108,7 +218,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/ad58719/src/Memory/Memory.Room.Api.ts#L82">Memory/Memory.Room.Api.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L136">Memory/Memory.Room.Api.ts:136</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -122,16 +232,42 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="getstructuresoftype" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Structures<wbr>OfType</h3>
+					<a name="getstructures" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Structures</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Structures<wbr>OfType<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">StructureConstant</span>, filterFunction<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Structures<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, filterFunction<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Structure</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/ad58719/src/Memory/Memory.Room.Api.ts#L61">Memory/Memory.Room.Api.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L70">Memory/Memory.Room.Api.ts:70</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filterFunction: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Structure</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+					<a name="getstructuresoftype" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Structures<wbr>OfType</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Structures<wbr>OfType&lt;T&gt;<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">StructureConstant</span>, filterFunction<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L106">Memory/Memory.Room.Api.ts:106</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -139,6 +275,12 @@
 									<p>Get all structures based on a type and filter</p>
 								</div>
 							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Structure</span></h4>
+								</li>
+							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -160,7 +302,30 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getupgraderstructure" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Upgrader<wbr>Structure</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Upgrader<wbr>Structure<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">StructureLink</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">StructureContainer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L255">Memory/Memory.Room.Api.ts:255</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">StructureLink</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">StructureContainer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -174,7 +339,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/ad58719/src/Memory/Memory.Room.Api.ts#L8">Memory/Memory.Room.Api.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L15">Memory/Memory.Room.Api.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -190,6 +355,29 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="isroomsetup" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>Room<wbr>Setup</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Room<wbr>Setup<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L336">Memory/Memory.Room.Api.ts:336</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
 					<a name="resetownedroommemory" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> reset<wbr>Owned<wbr>Room<wbr>Memory</h3>
@@ -200,7 +388,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/ad58719/src/Memory/Memory.Room.Api.ts#L195">Memory/Memory.Room.Api.ts:195</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L225">Memory/Memory.Room.Api.ts:225</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -226,7 +414,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/ad58719/src/Memory/Memory.Room.Api.ts#L129">Memory/Memory.Room.Api.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L179">Memory/Memory.Room.Api.ts:179</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -246,39 +434,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="resettracking" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> reset<wbr>Tracking</h3>
+					<a name="resetroomtracking" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> reset<wbr>Room<wbr>Tracking</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">reset<wbr>Tracking<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">reset<wbr>Room<wbr>Tracking<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/ad58719/src/Memory/Memory.Room.Api.ts#L101">Memory/Memory.Room.Api.ts:101</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>room: <span class="tsd-signature-type">Room</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="updateconstructionsites" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> update<wbr>Construction<wbr>Sites</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>Construction<wbr>Sites<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/ad58719/src/Memory/Memory.Room.Api.ts#L97">Memory/Memory.Room.Api.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Memory/Memory.Room.Api.ts#L151">Memory/Memory.Room.Api.ts:151</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -312,13 +477,34 @@
 						<a href="_memory_memory_room_api_.memoryapi_room.html" class="tsd-kind-icon">Memory<wbr>Api_<wbr><wbr>Room</a>
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_memory_memory_room_api_.memoryapi_room.html#doesstructureexist" class="tsd-kind-icon">does<wbr>Structure<wbr>Exist</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_memory_memory_room_api_.memoryapi_room.html#getallconstructionsites" class="tsd-kind-icon">get<wbr>All<wbr>Construction<wbr>Sites</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_memory_memory_room_api_.memoryapi_room.html#getheadspawn" class="tsd-kind-icon">get<wbr>Head<wbr>Spawn</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_memory_memory_room_api_.memoryapi_room.html#getmycreeps" class="tsd-kind-icon">get<wbr>MyCreeps</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_memory_memory_room_api_.memoryapi_room.html#getrandomfreepos" class="tsd-kind-icon">get<wbr>Random<wbr>Free<wbr>Pos</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_memory_memory_room_api_.memoryapi_room.html#getstructures" class="tsd-kind-icon">get<wbr>Structures</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
 								<a href="_memory_memory_room_api_.memoryapi_room.html#getstructuresoftype" class="tsd-kind-icon">get<wbr>Structures<wbr>OfType</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_memory_memory_room_api_.memoryapi_room.html#getupgraderstructure" class="tsd-kind-icon">get<wbr>Upgrader<wbr>Structure</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_memory_memory_room_api_.memoryapi_room.html#initroommemory" class="tsd-kind-icon">init<wbr>Room<wbr>Memory</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_memory_memory_room_api_.memoryapi_room.html#isroomsetup" class="tsd-kind-icon">is<wbr>Room<wbr>Setup</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
 								<a href="_memory_memory_room_api_.memoryapi_room.html#resetownedroommemory" class="tsd-kind-icon">reset<wbr>Owned<wbr>Room<wbr>Memory</a>
@@ -327,10 +513,7 @@
 								<a href="_memory_memory_room_api_.memoryapi_room.html#resetroommemory" class="tsd-kind-icon">reset<wbr>Room<wbr>Memory</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_memory_memory_room_api_.memoryapi_room.html#resettracking" class="tsd-kind-icon">reset<wbr>Tracking</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_memory_memory_room_api_.memoryapi_room.html#updateconstructionsites" class="tsd-kind-icon">update<wbr>Construction<wbr>Sites</a>
+								<a href="_memory_memory_room_api_.memoryapi_room.html#resetroomtracking" class="tsd-kind-icon">reset<wbr>Room<wbr>Tracking</a>
 							</li>
 						</ul>
 					</li>

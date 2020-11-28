@@ -1377,7 +1377,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.constructionSitesCount, 0.01), 4)",
+          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.constructionSites.dataCount, 0.01), 4)",
           "textEditor": false
         }
       ],

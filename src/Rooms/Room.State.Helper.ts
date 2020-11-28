@@ -15,31 +15,10 @@ export class RoomHelper_State {
   }
 
   public static getRoomState(room: Room): string {
-    if (room.memory.enemies.creeps.length > 0) {
+    if (room.memory.jobs.enemies.creeps.length > 0) {
       return "ATTACK";
     } else {
       return "NORMAL";
-    }
-  }
-
-  public static isRoomSetup(room: Room): boolean {
-    if (!room.memory) {
-      MemoryApi_Room.initRoomMemory(room, this.isMyRoom(room));
-      return false;
-    } else if (!Game.flags[room.name]) {
-      room.createFlag(
-        room.controller
-          ? room.controller.pos
-          : (MemoryApi_Room.getRandomFreePos({ x: 0, y: 0, roomName: room.name }) as RoomPosition),
-        room.name,
-        COLOR_RED,
-        COLOR_WHITE
-      );
-      delete Memory.rooms[room.name];
-      MemoryApi_Room.initRoomMemory(room, this.isMyRoom(room));
-      return false;
-    } else {
-      return true;
     }
   }
 }

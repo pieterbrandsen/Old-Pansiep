@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import { Config, JobsApi } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -15,7 +15,7 @@ export class CreepRole_Build {
     }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
-    if (roomMemory.commonMemory.constructionSites.length === 0 && !creepMemory.targetId) {
+    if (roomMemory.constructionSites.data.length === 0 && !creepMemory.targetId) {
       if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
         creep.moveTo(creep.room.controller);
       }
@@ -26,14 +26,18 @@ export class CreepRole_Build {
     if (creepMemory.targetId === undefined) {
       // Get the fist target from what is saved //
       // This target will get later shifted when its completed
-      creep.memory.targetId = roomMemory.commonMemory.constructionSites[0];
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.constructionSites);
+      if (job) {
+        creep.memory.targetId = job.id;
+      }
     } else {
       // Get the saved construction site from memory
       const constructionSite: ConstructionSite | null = Game.getObjectById(creepMemory.targetId);
 
       // If construction site doesn't exist, remove it
       if (constructionSite === null) {
-        roomMemory.commonMemory.constructionSites.shift();
+        roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+        delete creep.memory.targetId;
         return "empty";
       }
 
@@ -45,42 +49,7 @@ export class CreepRole_Build {
           Config.expenses.building[creep.room.name] += creep.memory.parts.work * 5;
           break;
         case ERR_INVALID_TARGET:
-          // TODO SAVE THE TARGET POS BECAUSE ATM THE CONSTRUCTION IS ALREADY LOST
-          // // If the structure is a rampart, heal it until 5K hits
-          // if (
-          //   constructionSite &&
-          //     constructionSite.structureType === STRUCTURE_RAMPART
-          // ) {
-          //   // Find all structures at last known position
-          //   const foundStructures = creep.room.lookForAt(
-          //     LOOK_STRUCTURES,
-          //     constructionSite.pos.x,
-          //     constructionSite.pos.y,
-          //   );
-
-          //   // Loop through all structures that are found at last know position and try to find a rampart
-          //   let repairStructureId;
-          //   foundStructures.forEach((structure) => {
-          //     if (structure.structureType === STRUCTURE_RAMPART) {
-          //       repairStructureId = structure.id;
-          //     }
-          //   });
-
-          //   // If a rampart was found, repair that structure
-          //   if (repairStructureId) {
-          //     repair({id: repairStructureId});
-          //     const repairStructure = Game.getObjectById(repairStructureId);
-          //     if (repairStructure.hits < 5000) {
-          //       return;
-          //     }
-          //   }
-          // }
-
-          // Check if target that's going to be lost is still on the construction list, if so shift it.
-          if (roomMemory.commonMemory.constructionSites.indexOf(creep.memory.targetId!) === 0) {
-            roomMemory.commonMemory.constructionSites.shift();
-          }
-          // Delete target from the memory
+          roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
           delete creep.memory.targetId;
           return "full";
         case ERR_NOT_IN_RANGE:

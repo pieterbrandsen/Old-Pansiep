@@ -1,12 +1,19 @@
 //#region Require('./)
 import _ from "lodash";
-import { Config, MemoryApi_All, TimerManager } from "Utils/importer/internals";
+import {
+  Config,
+  MemoryHelper_Room,
+  MemoryHelper,
+  STRUCT_CACHE_TTL,
+  CONST_CACHE_TTL,
+  RoomHelper_State
+} from "Utils/importer/internals";
 //#endregion
 
 //#region Class
 export class MemoryApi_Room {
   public static initRoomMemory(room: Room, isOwnedRoom: boolean): void {
-    if (Memory.rooms[room.name]) {
+    if (room.memory!.isSetup) {
       return;
     }
 
@@ -25,31 +32,69 @@ export class MemoryApi_Room {
           sourceCount: 0,
           mineral: { id: "", type: "", amount: 0 },
           sources: [],
-          constructionSites: [],
-          energyStructures: [],
-          repair: { targets: [], hitsTarget: 250 * 1000 },
           controllerLevel: 0,
           headSpawnId: "",
-          spawnEnergyStructures: [],
           energyStored: { usable: 0, capacity: 0 },
-          controllerStorage: { usable: 0, id: "", type: "" },
+          controllerStorage: { usable: 0, id: undefined, type: undefined },
           links: { source0: "", source1: "", controller: "", head: "" }
         },
         roomPlanner: {
           room: { sources: [] },
           base: { type: undefined, midPos: { x: 0, y: 0, roomName: room.name } }
         },
-        enemies: {
-          parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
-          creeps: []
+
+        jobs: {
+          constructionSites: [],
+          energyStorages: [],
+          damagedStructures: { data: [], hitsTarget: 250 * 1000 },
+          damagedCreeps: [],
+          spawnerEnergyStructures: [],
+          enemies: {
+            parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
+            creeps: []
+          }
         },
-        damagedCreeps: [],
-        remotes: { totalSourceCount: 0, rooms: [] }
+        structures: { data: null, cache: null },
+        constructionSites: { data: null, cache: null },
+        myCreeps: { data: null, cache: null }
       };
     }
 
     // Get objects to fill memory
+    MemoryHelper_Room.updateRoomMemory(room, isOwnedRoom);
     this.resetRoomMemory(room, true, isOwnedRoom);
+
+    room.memory.isSetup = true;
+  }
+
+  public static getStructures(room: Room, filterFunction?: (object: any) => boolean): Structure[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+      return [];
+    }
+
+    if (room.memory.structures === undefined || room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL) {
+      MemoryHelper_Room.updateStructures(room);
+    }
+
+    const structureIDs: string[] = [];
+    // Flatten the object into an array of IDs
+    for (const type in room.memory.structures.data) {
+      const IDs = room.memory.structures.data[type];
+      for (const singleID of IDs) {
+        if (singleID) {
+          structureIDs.push(singleID);
+        }
+      }
+    }
+
+    let structures: Structure[] = MemoryHelper.getOnlyObjectsFromIDs<Structure<StructureConstant>>(structureIDs);
+
+    if (filterFunction !== undefined) {
+      structures = _.filter(structures, filterFunction);
+    }
+
+    return structures;
   }
 
   /**
@@ -58,24 +103,33 @@ export class MemoryApi_Room {
    * @param type A structure type
    * @param filterFunction A function to filter with
    */
-  public static getStructuresOfType(
+  public static getStructuresOfType<T extends Structure>(
     room: Room,
     type: StructureConstant,
     filterFunction?: (object: any) => boolean
-  ): any[] {
-    // Find all structures with the structureType inputted
-    let structures: Array<Structure<StructureConstant>> = room.find(FIND_STRUCTURES, {
-      filter: {
-        structureType: type
-      }
-    });
+  ): T[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+      return [];
+    }
 
-    // If a filter function was provided, use it to filter based on the function
+    if (
+      room.memory.structures === undefined ||
+      room.memory.structures.data === null ||
+      room.memory.structures.data[type] === undefined ||
+      room.memory.structures.cache < Game.time - STRUCT_CACHE_TTL
+    ) {
+      MemoryHelper_Room.updateStructures(room);
+    }
+
+    const structureIDs: string[] = room.memory.structures.data[type];
+
+    let structures: T[] = MemoryHelper.getOnlyObjectsFromIDs<T>(structureIDs);
+
     if (filterFunction !== undefined) {
       structures = _.filter(structures, filterFunction);
     }
 
-    // Return all found structures after the possible filter
     return structures;
   }
 
@@ -94,11 +148,7 @@ export class MemoryApi_Room {
     return new RoomPosition(x, y, startPos.roomName);
   }
 
-  public static updateConstructionSites(room: Room): void {
-    room.memory.commonMemory.constructionSites = room.find(FIND_CONSTRUCTION_SITES).map(c => c.id);
-  }
-
-  public static resetTracking(room: Room): void {
+  public static resetRoomTracking(room: Room): void {
     // Reset all creepModules
     Config.creepModuleCpuCost[room.name] = {};
     Config.allCreepModules.forEach(module => {
@@ -127,10 +177,6 @@ export class MemoryApi_Room {
   }
 
   public static resetRoomMemory(room: Room, forceUpdate?: boolean, isOwnedRoom: boolean = false): void {
-    if (isOwnedRoom) {
-      this.resetOwnedRoomMemory(room, forceUpdate);
-    }
-
     // Acces the roomMemory of this room
     const roomMemory: RoomMemory = room.memory;
 
@@ -164,17 +210,6 @@ export class MemoryApi_Room {
       },
       // Set the id and pos of all sources to the memory of the room
       sources,
-      // Create a empty array for storing constructionSites
-      constructionSites: [],
-      // Create a empty array for storing energyStructures
-      energyStructures: [],
-      // Set the repair object
-      // Create a empty array for storing targets to repair
-      // Set the hitsTarget to a default of 250K
-      repair: {
-        targets: [],
-        hitsTarget: 250 * 1000
-      },
       // Set the energyStored to a 0 for both of the keys
       energyStored: { usable: 0, capacity: 0 }
     };
@@ -182,14 +217,9 @@ export class MemoryApi_Room {
     // Set the roomPlanner object to the template
     roomMemory.roomPlanner = { room: { sources: [] } };
 
-    // Set the enemies object to the template
-    roomMemory.enemies = {
-      parts: { ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
-      creeps: []
-    };
-
-    // Sets the damagedCreeps object to a empty array
-    roomMemory.damagedCreeps = [];
+    if (isOwnedRoom) {
+      this.resetOwnedRoomMemory(room, forceUpdate);
+    }
   }
 
   private static resetOwnedRoomMemory(room: Room, forceUpdate?: boolean): void {
@@ -208,25 +238,11 @@ export class MemoryApi_Room {
     roomMemory.commonMemory.controllerLevel = room.controller ? room.controller.level : undefined;
 
     // Set and get the headSpawnId
-    const spawns = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
-    roomMemory.commonMemory.headSpawnId = room.terminal
-      ? room.terminal.pos.findInRange(spawns, 2)[0]
-        ? // @ts-ignore: Id DOES exist on the result
-          room.terminal.pos.findInRange(room.spawns, 2)[0].id
-        : spawns[0].id
-      : spawns[0]
-      ? spawns[0].id
-      : room.find(FIND_STRUCTURES, {
-          filter: s => s.structureType === STRUCTURE_SPAWN
-        }).length > 0
-      ? room.find(FIND_STRUCTURES, {
-          filter: s => s.structureType === STRUCTURE_SPAWN
-        })[0].id
-      : undefined;
+    roomMemory.commonMemory.headSpawnId = this.getHeadSpawn(room) !== null ? this.getHeadSpawn(room)!.id : "";
     // Create a empty array for storing spawnEnergyStructures
-    roomMemory.commonMemory.spawnEnergyStructures = [];
+    roomMemory.jobs.spawnerEnergyStructures = [];
     // Set the storage in the controller storage to 0
-    roomMemory.commonMemory.controllerStorage = { usable: 0, type: "", id: "" };
+    roomMemory.commonMemory.controllerStorage = { usable: 0, type: undefined, id: undefined };
     // Set all links to undefined
     roomMemory.commonMemory.links = {
       source0: "",
@@ -234,11 +250,166 @@ export class MemoryApi_Room {
       head: "",
       controller: ""
     };
-    // Set the remotes object to default template
-    // roomMemory.remotes = { totalSourceCount: 0, rooms: [] };
+  }
 
-    // Run all timers for this room
-    TimerManager.runTimerForRoom(room, forceUpdate);
+  public static getUpgraderStructure(room: Room): StructureLink | StructureContainer | null {
+    if (!room.controller) {
+      return null;
+    }
+    let upgraderStructure: StructureLink | StructureContainer | null = null;
+    if (room.memory.commonMemory.controllerStorage) {
+      upgraderStructure = Game.getObjectById(room.memory.commonMemory.controllerStorage!.id!);
+    }
+
+    if (upgraderStructure !== null) {
+      room.memory.commonMemory.controllerStorage!.usable = upgraderStructure.store.energy;
+      return upgraderStructure;
+    } else {
+      const upgraderStructureLink: StructureLink[] = this.getStructuresOfType(
+        room,
+        STRUCTURE_LINK,
+        (str: StructureLink) => str.pos.inRangeTo(room.controller!, 3)
+      );
+      if (upgraderStructureLink.length > 0) {
+        upgraderStructure = upgraderStructureLink[0];
+        room.memory.commonMemory.controllerStorage = {
+          id: upgraderStructure.id,
+          type: upgraderStructure.structureType,
+          usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
+        };
+      } else {
+        const upgraderStructureContainer: StructureContainer[] = this.getStructuresOfType(
+          room,
+          STRUCTURE_CONTAINER,
+          (str: StructureContainer) => str.pos.inRangeTo(room.controller!, 3)
+        );
+        if (upgraderStructureContainer.length > 0) {
+          upgraderStructure = upgraderStructureContainer[0];
+          room.memory.commonMemory.controllerStorage = {
+            id: upgraderStructure.id,
+            type: upgraderStructure.structureType,
+            usable: upgraderStructure.store.getUsedCapacity(RESOURCE_ENERGY)
+          };
+        } else {
+          room.memory.commonMemory.controllerStorage = {
+            id: undefined,
+            type: undefined,
+            usable: 0
+          };
+        }
+      }
+
+      return upgraderStructure;
+    }
+  }
+
+  public static getAllConstructionSites(
+    room: Room,
+    filterFunction?: (object: Structure) => boolean
+  ): ConstructionSite[] {
+    {
+      // If we have no vision of the room, return an empty array
+      if (!room.memory) {
+        return [];
+      }
+
+      if (
+        room.memory.constructionSites === undefined ||
+        room.memory.constructionSites.data === null ||
+        room.memory.constructionSites.cache < Game.time - CONST_CACHE_TTL
+      ) {
+        MemoryHelper_Room.updateConstructionSites(room);
+      }
+
+      const structureIDs: string[] = room.memory.constructionSites.data;
+
+      let structures: ConstructionSite[] = MemoryHelper.getOnlyObjectsFromIDs<ConstructionSite>(structureIDs);
+
+      if (filterFunction !== undefined) {
+        structures = _.filter(structures, filterFunction);
+      }
+
+      return structures;
+    }
+  }
+
+  public static isRoomSetup(room: Room): boolean {
+    if (!Game.flags[room.name]) {
+      room.createFlag(
+        room.controller
+          ? room.controller.pos
+          : (MemoryApi_Room.getRandomFreePos({ x: 0, y: 0, roomName: room.name }) as RoomPosition),
+        room.name,
+        COLOR_RED,
+        COLOR_WHITE
+      );
+      delete Memory.rooms[room.name];
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  public static getMyCreeps(room: Room, filterFunction?: (object: Creep) => boolean): Creep[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+      return [];
+    }
+
+    if (
+      room.memory.myCreeps === undefined ||
+      room.memory.myCreeps.data === null ||
+      room.memory.myCreeps.cache < Game.time - CONST_CACHE_TTL
+    ) {
+      MemoryHelper_Room.updateMyCreeps(room);
+    }
+
+    const creepsIDs: string[] = room.memory.myCreeps!.data;
+
+    let creeps: Creep[] = MemoryHelper.getOnlyObjectsFromIDs<Creep>(creepsIDs);
+
+    if (filterFunction !== undefined) {
+      creeps = _.filter(creeps, filterFunction);
+    }
+
+    return creeps;
+  }
+
+  public static getHeadSpawn(room: Room): StructureSpawn | null {
+    if (Game.getObjectById(room.memory.commonMemory.headSpawnId!) === null) {
+      const updateHeadSpawnInMem = (spawn: StructureSpawn) => {
+        room.memory.commonMemory.headSpawnId! = spawn.id;
+      };
+
+      // Get all spawns and filter them on spawns not spawning
+      const spawns: StructureSpawn[] = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_SPAWN);
+      const headSpawn: StructureSpawn[] | null = room.terminal! ? room.terminal!.pos.findInRange(spawns, 2) : null;
+      if (headSpawn !== null && headSpawn[0]) {
+        updateHeadSpawnInMem(headSpawn[0]);
+        return headSpawn[0];
+      } else if (spawns.length === 1) {
+        updateHeadSpawnInMem(spawns[0]);
+        return spawns[0];
+      } else {
+        return null;
+      }
+    } else {
+      return Game.getObjectById(room.memory.commonMemory.headSpawnId!);
+    }
+  }
+
+  public static doesStructureExist(room: Room, pos: RoomPos, structureType: string): [boolean, string] {
+    // Get all structure at input position
+    const structures = room.lookForAt(LOOK_STRUCTURES, pos.x, pos.y);
+
+    // Loop through all structures
+    for (const structure of structures) {
+      // Is the structure type the Structure
+      if (structure.structureType === structureType) {
+        return [true, structure.id];
+      }
+    }
+    return [false, ""];
   }
 }
 //#endregion
