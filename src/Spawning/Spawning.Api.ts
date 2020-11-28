@@ -106,6 +106,9 @@ export class SpawningApi {
       case "claimerLD":
         returnBody([], [CLAIM, MOVE]);
         break;
+      case "scout":
+        returnBody([], [CARRY, CARRY], 1);
+        break;
       default:
         break;
     }

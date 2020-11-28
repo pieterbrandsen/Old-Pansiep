@@ -9,7 +9,8 @@ import {
   CreepRole_Harvest,
   CreepRole_Repair,
   CreepRole_Reserve,
-  CreepRole_Transfer
+  CreepRole_Transfer,
+  CreepRole_Scout
 } from "Utils/importer/internals";
 //#endregion
 
@@ -43,6 +44,9 @@ export class CreepsHelper_Role {
         break;
       case "mineral":
         this.mineral(creep);
+        break;
+        case "scout": 
+        this.scout(creep);
         break;
       default:
         break;
@@ -123,6 +127,14 @@ export class CreepsHelper_Role {
           "+=",
           creep
         );
+        case "scout":
+          return MemoryApi_All.functionRunnerWithCpu(
+            CreepRole_Scout.scout,
+            Config.creepModuleCpuCost[creep.room.name],
+            job,
+            "+=",
+            creep
+          );
       default:
         break;
     }
@@ -511,9 +523,6 @@ export class CreepsHelper_Role {
   };
 
   private static reserver = (creep: Creep) => {
-    // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
-
     // Check if creep needs to move to another room
     if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
@@ -529,9 +538,6 @@ export class CreepsHelper_Role {
   };
 
   private static claimer = (creep: Creep) => {
-    // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
-
     // Check if creep needs to move to another room
     if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
@@ -539,6 +545,21 @@ export class CreepsHelper_Role {
 
     if (!creep.memory.job) {
       creep.memory.job = "claim";
+      return;
+    }
+
+    // Run the creep
+    CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+  };
+
+  private static scout = (creep: Creep) => {
+    // Check if creep needs to move to another room
+    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+      return;
+    }
+
+    if (!creep.memory.job) {
+      creep.memory.job = "scout";
       return;
     }
 
