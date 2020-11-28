@@ -48,7 +48,7 @@ export class RoomHelper_Structure {
         if (creep && creep.hits > 0) {
           tower.attack(creep);
         } else {
-          room.memory.jobs.enemies.creeps = JobsApi.removeJob(creep!.id, room.memory.jobs.enemies.creeps);
+          room.memory.jobs.enemies.creeps = JobsApi.removeJob(job.id, room.memory.jobs.enemies.creeps);
         }
       }
     });
