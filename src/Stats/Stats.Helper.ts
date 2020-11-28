@@ -55,7 +55,7 @@ export class StatsHelper {
             Config.roleCountByRoomByRole[room.name][role]
           );
         }
-        commonMemory.sourceCount = roomMemory.commonMemory.sources.length;
+        commonMemory.sourceCount = roomMemory.commonMemory!.sources.length;
       }
 
       // Set all performance related memory
@@ -98,8 +98,8 @@ export class StatsHelper {
       if (typeof energyMemory === "object") {
         energyMemory.storage = room.storage ? room.storage.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
         energyMemory.terminal = room.terminal ? room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
-        energyMemory.capacity = roomMemory.commonMemory.energyStored.capacity;
-        energyMemory.total = roomMemory.commonMemory.energyStored.usable;
+        energyMemory.capacity = roomMemory.commonMemory!.energyStored.capacity;
+        energyMemory.total = roomMemory.commonMemory!.energyStored.usable;
       }
 
       // Set all cpu related memory

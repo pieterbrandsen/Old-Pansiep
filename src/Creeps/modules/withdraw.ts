@@ -21,13 +21,13 @@ export class CreepRole_Withdraw {
         break;
       default:
         if (
-          roomMemory.commonMemory.controllerStorage &&
+          roomMemory.commonMemory!.controllerStorage &&
           creepMemory.role.includes("upgrade") &&
-          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null &&
-          roomMemory.commonMemory.controllerStorage.usable > 250
+          Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null &&
+          roomMemory.commonMemory!.controllerStorage.usable > 250
         ) {
           creep.memory.miniJob = "upgrade";
-        } else if (roomMemory.commonMemory.energyStored.usable > 500) {
+        } else if (roomMemory.commonMemory!.energyStored.usable > 500) {
           creep.memory.miniJob = "normal";
         } else {
           return "empty";
@@ -51,7 +51,7 @@ export class CreepRole_Withdraw {
 
     // If there is not enough to withdraw from, return empty to get another goal if possible
     if (
-      roomMemory.commonMemory.energyStored.usable <= creep.store.getCapacity() &&
+      roomMemory.commonMemory!.energyStored.usable <= creep.store.getCapacity() &&
       creep.memory.targetId === undefined
     ) {
       return "empty";
@@ -86,7 +86,7 @@ export class CreepRole_Withdraw {
       roomMemory.jobs.energyStorages.forEach((structureInMem: any) => {
         if (structureInMem.id === job.id) {
           if (structureInMem.usable > 0) {
-            roomMemory.commonMemory.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
+            roomMemory.commonMemory!.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
             structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
           }
         }
@@ -142,13 +142,13 @@ export class CreepRole_Withdraw {
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
       return "full";
     }
-    if (roomMemory.commonMemory.controllerStorage === undefined) {
+    if (roomMemory.commonMemory!.controllerStorage === undefined) {
       return "empty";
     }
 
     // Get the saved structure from memory
     const withdrawStructure: StructureContainer | StructureLink | null = Game.getObjectById(
-      roomMemory.commonMemory.controllerStorage.id!
+      roomMemory.commonMemory!.controllerStorage.id!
     );
 
     if (withdrawStructure === null) {

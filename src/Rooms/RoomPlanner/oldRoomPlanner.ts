@@ -15,12 +15,12 @@ export class OldRoomPlanner {
     }
 
     // Loop through all sources in the room
-    for (let i = 0; i < roomMemory.commonMemory.sources.length; i++) {
+    for (let i = 0; i < roomMemory.commonMemory!.sources.length; i++) {
       // Default is container
       let structureType: STRUCTURE_LINK | STRUCTURE_CONTAINER = STRUCTURE_CONTAINER;
 
       // Is 7 (3 links needed) and 6 otherwise (2 links needed)
-      if (room.controller.level >= 5 + roomMemory.commonMemory.sources.length) {
+      if (room.controller.level >= 5 + roomMemory.commonMemory!.sources.length) {
         structureType = STRUCTURE_LINK;
       }
 
@@ -33,7 +33,7 @@ export class OldRoomPlanner {
         break;
       }
 
-      const source = roomMemory.commonMemory.sources[i];
+      const source = roomMemory.commonMemory!.sources[i];
       if (
         roomMemory.roomPlanner.room.sources[i] !== undefined &&
         roomMemory.roomPlanner.room.sources[i].structureType !== structureType
@@ -121,8 +121,8 @@ export class OldRoomPlanner {
     if (
       (roomMemory.roomPlanner.room.controller &&
         roomMemory.roomPlanner.room.controller.structureType === structureType &&
-        roomMemory.commonMemory.controllerStorage !== undefined &&
-        Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null) ||
+        roomMemory.commonMemory!.controllerStorage !== undefined &&
+        Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null) ||
       (room.controller && !room.controller.my)
     ) {
       return;
@@ -137,9 +137,9 @@ export class OldRoomPlanner {
       const structureExistResult = OldRoomPlanner.structureExist(room, bestControllerPosition.pos, structureType);
       if (structureExistResult[0]) {
         const structureObject: StructureLink | StructureContainer | null = Game.getObjectById(structureExistResult[1]);
-        if (structureObject !== null && roomMemory.commonMemory.controllerStorage) {
+        if (structureObject !== null && roomMemory.commonMemory!.controllerStorage) {
           structureObject.destroy();
-          roomMemory.commonMemory.controllerStorage.id! = "";
+          roomMemory.commonMemory!.controllerStorage.id! = "";
         }
       } else {
         const constructionSite = room.lookForAt(
@@ -343,12 +343,12 @@ export class OldRoomPlanner {
 
     // Check if there is already a spawn
     if (
-      roomMemory.commonMemory.headSpawnId !== undefined &&
+      roomMemory.commonMemory!.headSpawnId !== undefined &&
       roomMemory.roomPlanner.base &&
       roomMemory.roomPlanner.base.type === undefined
     ) {
       // Make a base based on current already placed layout
-      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory.headSpawnId);
+      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory!.headSpawnId);
       if (headSpawn === null) {
         return;
       }
@@ -395,8 +395,8 @@ export class OldRoomPlanner {
     const roomMemory = Memory.rooms[room.name];
     let midPos: any = {};
 
-    if (roomMemory.commonMemory.headSpawnId) {
-      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory.headSpawnId);
+    if (roomMemory.commonMemory!.headSpawnId) {
+      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory!.headSpawnId);
       if (headSpawn === null) {
         return;
       }

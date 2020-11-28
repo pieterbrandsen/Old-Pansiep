@@ -26,5 +26,7 @@ export class SpawningApi {
     // Return the first item out of the OpenSpawns array
     return _.first(openSpawns);
   }
+
+  
 }
 //#endregion
