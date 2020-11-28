@@ -6,7 +6,8 @@ import {
   MemoryHelper,
   STRUCT_CACHE_TTL,
   CONST_CACHE_TTL,
-  RoomHelper_State
+  RoomHelper_State,
+  MemoryApi_Empire
 } from "Utils/importer/internals";
 //#endregion
 
@@ -54,16 +55,21 @@ export class MemoryApi_Room {
             creeps: []
           }
         },
+        remoteRooms: {},
+
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null },
         myCreeps: { data: null, cache: null }
       };
-    }
-    else {
+    } else {
       room.memory = {
+        commonMemory: {
+          sources: [],
+          sourceCount: 0,
+          energyStored: { usable: 0, capacity: 0 }
+        },
         roomPlanner: {
-          room: { sources: [] },
-          base: { type: undefined, midPos: { x: 0, y: 0, roomName: room.name } }
+          room: { sources: [] }
         },
 
         jobs: {
@@ -71,7 +77,6 @@ export class MemoryApi_Room {
           energyStorages: [],
           damagedStructures: { data: [], hitsTarget: 250 * 1000 },
           damagedCreeps: [],
-          spawnerEnergyStructures: [],
           enemies: {
             parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
             creeps: []
@@ -79,7 +84,7 @@ export class MemoryApi_Room {
         },
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null }
-      }
+      };
     }
 
     // Get objects to fill memory
@@ -432,6 +437,48 @@ export class MemoryApi_Room {
       }
     }
     return [false, ""];
+  }
+
+  public static getRemoteRooms(
+    room: Room,
+    filterFunction?: (object: RemoteRoomMemory) => boolean,
+    targetRoom?: string
+  ): RemoteRoomMemory[] {
+    if (Memory.rooms[room.name] === undefined || Memory.rooms[room.name]!.remoteRooms === undefined) {
+      return [];
+    }
+
+    let remoteRooms: RemoteRoomMemory[] = [];
+    for (const i in room.memory.remoteRooms) {
+      const rr: RemoteRoomMemory = room.memory.remoteRooms[i];
+      if (rr) {
+        remoteRooms.push(rr);
+      }
+    }
+
+    // TargetRoom parameter provided
+    if (targetRoom !== undefined) {
+      remoteRooms = _.filter(remoteRooms, (roomMemory: RemoteRoomMemory) => roomMemory.roomName === targetRoom);
+    }
+
+    if (filterFunction !== undefined) {
+      // No target room provided, just return them all
+      remoteRooms = _.filter(remoteRooms, filterFunction);
+    }
+
+    return remoteRooms;
+  }
+
+  public static getVisibleDependentRooms(): Room[] {
+    const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
+    const roomNames: string[] = [];
+    _.forEach(ownedRooms, (room: Room) => {
+      // Collect the room names for dependent rooms
+      _.forEach(MemoryApi_Room.getRemoteRooms(room), (rr: RemoteRoomMemory) => roomNames.push(rr.roomName));
+    });
+
+    // Return all visible rooms which appear in roomNames array
+    return _.filter(Game.rooms, (room: Room) => roomNames.includes(room.name));
   }
 }
 //#endregion

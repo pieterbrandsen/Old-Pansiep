@@ -25,20 +25,8 @@ export class JobsManager {
 
   private static runJobsForRoom(room: Room, isOwnedRoom: boolean): void {
     if (isOwnedRoom) {
-      if (MemoryApi_All.executeEachTicks(CONST_JOBS_CACHE_TTL)) {
-        JobsHelper.updateAllConstructionSitesJobs(room);
-      }
-
-      if (MemoryApi_All.executeEachTicks(DAMAGED_STRUCTURES_JOBS_CACHE_TTL)) {
-        JobsHelper.updateAllDamagedStructuresJobs(room);
-      }
-
-      if (MemoryApi_All.executeEachTicks(DAMAGED_CREEPS_JOBS_CACHE_TTL)) {
-        JobsHelper.updateAllDamagedCreepsJobs(room);
-      }
-
-      if (MemoryApi_All.executeEachTicks(HOSTILE_CREEPS_JOBS_CACHE_TTL)) {
-        JobsHelper.updateAllHostileCreepsJobs(room);
+      if (MemoryApi_All.executeEachTicks(SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL)) {
+        JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
       }
     }
 
@@ -46,8 +34,20 @@ export class JobsManager {
       JobsHelper.updateAllEnergyStoragesJobs(room);
     }
 
-    if (MemoryApi_All.executeEachTicks(SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL)) {
-      JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
+    if (MemoryApi_All.executeEachTicks(HOSTILE_CREEPS_JOBS_CACHE_TTL)) {
+      JobsHelper.updateAllHostileCreepsJobs(room);
+    }
+
+    if (MemoryApi_All.executeEachTicks(DAMAGED_CREEPS_JOBS_CACHE_TTL)) {
+      JobsHelper.updateAllDamagedCreepsJobs(room);
+    }
+
+    if (MemoryApi_All.executeEachTicks(CONST_JOBS_CACHE_TTL)) {
+      JobsHelper.updateAllConstructionSitesJobs(room);
+    }
+
+    if (MemoryApi_All.executeEachTicks(DAMAGED_STRUCTURES_JOBS_CACHE_TTL)) {
+      JobsHelper.updateAllDamagedStructuresJobs(room);
     }
   }
 }

@@ -83,7 +83,7 @@ export class CreepRole_Transfer {
       return "empty";
     }
     // Run the transfer function
-    const result = creep.transfer(target, roomMemory.commonMemory!.mineral.type);
+    const result = creep.transfer(target, roomMemory.commonMemory!.mineral!.type);
 
     // Switch based on the results
     switch (result) {

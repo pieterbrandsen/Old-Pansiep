@@ -7,11 +7,8 @@ import { ALL_STRUCTURE_TYPES, MemoryApi_Room } from "Utils/importer/internals";
 export class MemoryHelper_Room {
   public static updateRoomMemory(room: Room, isOwnedRoom: boolean): void {
     this.updateStructures(room);
-    
-    if (isOwnedRoom) {
-      this.updateMyCreeps(room);
-      this.updateConstructionSites(room);
-    }
+    this.updateConstructionSites(room);
+    this.updateMyCreeps(room);
   }
 
   public static updateStructures(room: Room): void {

@@ -14,7 +14,7 @@ export class CreepRole_Harvest {
       return "full";
     }
 
-    const mineral: Mineral | null = Game.getObjectById(roomMemory.commonMemory!.mineral.id);
+    const mineral: Mineral | null = Game.getObjectById(roomMemory.commonMemory!.mineral!.id);
 
     // Return if structure is null
     if (mineral === null) {

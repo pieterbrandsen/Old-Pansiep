@@ -30,7 +30,7 @@ interface RoomMemory {
   // Room memory
   commonMemory?: {
     sourceCount: number;
-    mineral: { id: string; type: any; amount: number };
+    mineral?: { id: string; type: any; amount: number };
     sources: Array<{ id: string; pos: RoomPos }>;
     controllerLevel?: number;
     headSpawnId?: string;
@@ -53,6 +53,8 @@ interface RoomMemory {
     base?: { type: string | undefined; midPos: RoomPos };
   };
   isSetup?: boolean;
+
+  remoteRooms?: RemoteRoomObject;
 
   // BuilderLD
   spawnRoom?: string;
@@ -140,4 +142,31 @@ interface JobTemplate {
   needed?: number;
   structureType?: StructureConstant;
   parts?: { [key: string]: number };
+}
+interface RemoteRoomMemory {
+  roomName: string;
+
+  /**
+   * sources in the room
+   */
+  sources: Cache;
+  /**
+   * hostiles in the room
+   */
+  hostiles: Cache;
+  /**
+   * structures in room
+   */
+  structures: Cache;
+  /**
+   * time remaining for reserving the controller
+   */
+  reserveTTL: number;
+  /**
+   * username reserving the controller - used to detect invader reserve
+   */
+  reserveUsername: string | undefined;
+}
+interface RemoteRoomObject {
+  [key: string]: RemoteRoomMemory;
 }

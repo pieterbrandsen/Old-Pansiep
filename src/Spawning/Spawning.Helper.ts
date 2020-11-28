@@ -378,8 +378,8 @@ export class SpawningHelper {
 
           // @ts-ignore
           if (
-            roomMemory.commonMemory!.mineral.amount &&
-            roomMemory.commonMemory!.mineral.amount > 0 &&
+            roomMemory.commonMemory!.mineral!.amount &&
+            roomMemory.commonMemory!.mineral!.amount > 0 &&
             room.controller &&
             room.controller.level >= 6 &&
             room.storage &&
