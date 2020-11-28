@@ -187,36 +187,22 @@ export class CreepRole_Transfer {
     // If creep is missing targetId
     if (creepMemory.targetId === undefined) {
       // Find and shift the first energy structure in the spawner array
-      const getCapacityCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
+      const getEnergyInCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
 
-      // If current spawnEnergyStructure needs less then zero energy, shift it.
-      const job: JobTemplate | undefined = JobsApi.findJob(
-        creepMemory.targetId!,
-        roomMemory.jobs.spawnerEnergyStructures!
-      );
-
-      if (job && job.needed! < 0) {
-        roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(
-          creep.memory.targetId!,
-          roomMemory.jobs.spawnerEnergyStructures!
-        );
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.spawnerEnergyStructures!);
+      if (job && job.needed! <= 0) {
+        roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(job.id, roomMemory.jobs.spawnerEnergyStructures!);
         delete creep.memory.targetId;
         return;
       }
 
       // Get first id from array, shift only if creep can fill the whole target.
-      if (job && job.needed! < getCapacityCreep) {
-        const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.spawnerEnergyStructures!);
-        if (job) {
-          creep.memory.targetId = job.id;
-          roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(job.id, roomMemory.jobs.spawnerEnergyStructures!);
-        }
-      } else {
-        const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.spawnerEnergyStructures!);
-        if (job) {
-          creep.memory.targetId = job.id;
-          job.needed! -= getCapacityCreep;
-        }
+      if (job && job.needed! <= getEnergyInCreep) {
+        creep.memory.targetId = job.id;
+        roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(job.id, roomMemory.jobs.spawnerEnergyStructures!);
+      } else if (job && job.needed) {
+        creep.memory.targetId = job.id;
+        job.needed -= getEnergyInCreep;
       }
     } else {
       // Get the saved structure from memory
