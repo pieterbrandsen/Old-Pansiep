@@ -1,5 +1,5 @@
 //#region Require('./)
-import {} from "Utils/importer/internals";
+import { JobsApi } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -152,7 +152,7 @@ export class CreepRole_Transfer {
         case ERR_INVALID_TARGET:
           // Delete targetId
           delete creep.memory.targetId;
-          delete roomMemory.roomPlanner.room.sources[creep.memory.sourceNumber!];
+          roomMemory.roomPlanner.room.sources[creep.memory.sourceNumber!].id = "";
           break;
         default:
           break;
@@ -187,20 +187,22 @@ export class CreepRole_Transfer {
     // If creep is missing targetId
     if (creepMemory.targetId === undefined) {
       // Find and shift the first energy structure in the spawner array
-      const getCapacityCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
+      const getEnergyInCreep = creep.store.getUsedCapacity(RESOURCE_ENERGY);
 
-      // If current spawnEnergyStructure needs less then zero energy, shift it.
-      if (roomMemory.jobs.spawnerEnergyStructures![0].needed! < 0) {
-        roomMemory.jobs.spawnerEnergyStructures!.shift();
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.spawnerEnergyStructures!);
+      if (job && job.needed! <= 0) {
+        roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(job.id, roomMemory.jobs.spawnerEnergyStructures!);
+        delete creep.memory.targetId;
         return;
       }
 
       // Get first id from array, shift only if creep can fill the whole target.
-      if (roomMemory.jobs.spawnerEnergyStructures![0].needed! < getCapacityCreep) {
-        creep.memory.targetId = roomMemory.jobs.spawnerEnergyStructures!.shift()!.id;
-      } else {
-        creep.memory.targetId = roomMemory.jobs.spawnerEnergyStructures![0].id;
-        roomMemory.jobs.spawnerEnergyStructures![0].needed! -= getCapacityCreep;
+      if (job && job.needed! <= getEnergyInCreep) {
+        creep.memory.targetId = job.id;
+        roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(job.id, roomMemory.jobs.spawnerEnergyStructures!);
+      } else if (job && job.needed) {
+        creep.memory.targetId = job.id;
+        job.needed -= getEnergyInCreep;
       }
     } else {
       // Get the saved structure from memory
@@ -220,6 +222,10 @@ export class CreepRole_Transfer {
         case ERR_INVALID_TARGET:
         case ERR_FULL:
           // Delete targetId
+          roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(
+            creep.memory.targetId!,
+            roomMemory.jobs.spawnerEnergyStructures!
+          );
           delete creep.memory.targetId;
           break;
         case ERR_NOT_IN_RANGE:

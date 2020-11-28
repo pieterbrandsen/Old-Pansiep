@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import { Config, JobsApi } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -31,13 +31,17 @@ export class CreepRole_Repair {
     // If creep is missing a targetId
     if (targetId === undefined) {
       // Get the fist target from what is saved //
-      creep.memory.targetId = roomMemory.jobs.damagedStructures.data[0].id;
+      const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.damagedStructures.data);
+      if (job) {
+        creep.memory.targetId = job.id;
+      }
     } else {
       // Get the saved structure site from memory
       const repairTarget: AnyStructure | null = Game.getObjectById(targetId);
 
       if (repairTarget === null) {
-        roomMemory.jobs.damagedStructures.data.shift();
+        roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+        delete creep.memory.targetId;
         return "empty";
       }
 
@@ -54,13 +58,13 @@ export class CreepRole_Repair {
             repairTarget.hits === repairTarget.hitsMax ||
             repairTarget.hits > roomMemory.jobs.damagedStructures.hitsTarget
           ) {
-            roomMemory.jobs.damagedStructures.data.shift();
-
+            roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
             delete creep.memory.targetId;
           }
           break;
         case ERR_INVALID_TARGET:
           // Delete target from the memory
+          roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
           delete creep.memory.targetId;
           break;
         case ERR_NOT_IN_RANGE:

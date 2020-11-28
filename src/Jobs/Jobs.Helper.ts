@@ -113,9 +113,10 @@ export class JobsHelper {
   public static updateAllSpawnerEnergyStructuresJobs(room: Room): void {
     const allSpawnerEnergyStructures: Structure[] = MemoryApi_Room.getStructures(
       room,
-      (s: StructureExtension | StructureSpawn | StructureLab) =>
+      (s: StructureExtension | StructureSpawn | StructureLab | StructureTower) =>
         (s.structureType === STRUCTURE_EXTENSION ||
           s.structureType === STRUCTURE_SPAWN ||
+          s.structureType === STRUCTURE_TOWER ||
           s.structureType === STRUCTURE_LAB) &&
         // @ts-ignore: Function is defined
         s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
