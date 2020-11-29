@@ -36,6 +36,7 @@ export class RoomManager {
   }
 
   private static runSingleRoom(room: Room): void {
+    const cpuStart: number = MemoryApi_All.preCpuGetter();
     const roomState: string = RoomHelper_State.getRoomState(room);
 
     if (room.controller!.level >= 3) {
@@ -70,10 +71,12 @@ export class RoomManager {
         RoomHelper_Structure.runLinks(room);
       }
     }
+
+    const cpuEnd: number = MemoryApi_All.endCpuGetter();
+    Memory.stats.rooms[room.name].cpu.used = cpuEnd - cpuStart;
   }
 
   private static runSingleDependentRoom(room: Room): void {
-    console.log(room, "remoteRoom");
     if (MemoryApi_All.executeEachTicks(ROOM_PLANNER_TIMER)) {
       OldRoomPlanner.roomPlanner(room);
     }
