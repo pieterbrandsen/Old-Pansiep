@@ -40,13 +40,22 @@ export class SpawningManager {
    * @param room Room to run spawning in
    */
   private static runSpawningForRoom(room: Room): void {
-    SpawningHelper.spawnNormalCreep(room);
+    const spawnReturn: ScreepsReturnCode = SpawningHelper.spawnNormalCreep(room);
+    if (spawnReturn !== OK) {
+      return;
+    }
 
-    const remoteRoomsArray = Object.keys(room.memory.remoteRooms!);
-    _.forEach(remoteRoomsArray, (remoteRoomObject: RoomMemory) => {
-      const remoteRoom: Room = Game.rooms[remoteRoomObject.roomName!];
-      SpawningHelper.spawnRemoteCreep(room, remoteRoom);
-    });
+    if (room.energyAvailable >= 1000) {
+      const remoteRoomsArray = room.memory.remoteRooms!;
+      _.forEach(remoteRoomsArray, (roomName: string) => {
+        // const roomName = remoteRoomsArray[index];
+        const remoteRoom: Room = Game.rooms[roomName];
+        const remoteSpawnReturn = SpawningHelper.spawnRemoteCreep(room, remoteRoom, roomName);
+        if (remoteSpawnReturn !== OK) {
+          return;
+        }
+      });
+    }
   }
 }
 //#endregion

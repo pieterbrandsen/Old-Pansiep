@@ -97,7 +97,7 @@ export class SpawningApi {
       case "repairer":
       case "repairerLD":
       case "mineral":
-        returnBody([], [WORK, MOVE, CARRY]);
+        returnBody([], [WORK, MOVE, CARRY], 10);
         break;
       case "upgrader":
         returnBody([CARRY, MOVE, CARRY, MOVE], [WORK]);
@@ -107,7 +107,7 @@ export class SpawningApi {
         returnBody([], [CLAIM, MOVE]);
         break;
       case "scout":
-        returnBody([], [CARRY, CARRY], 1);
+        returnBody([], [MOVE, MOVE], 1);
         break;
       default:
         break;
@@ -159,317 +159,321 @@ export class SpawningApi {
 
       const shortRoleName: string = role.split("-")[0].replace("LD", "");
 
-      switch (role) {
-        // Owned room roles
-        case "pioneer":
-          // Check if input role is less then max creeps allowed //
-          if (creeps.length >= Config.creepsCountMax[shortRoleName] * targetRoomMemory.commonMemory!.sources.length) {
-            break;
-          }
-
-          // If energy capacity is more then 300
-          if (room.energyAvailable > 300) {
-            break;
-          }
-
-          if (room.energyAvailable === 300) {
-            result = [true, role];
-          }
-          break;
-        case "transferer":
-        case "transfererLD":
-          // Check if input role is less then max creeps allowed //
-          if (role === "transfererLD") {
-            if (Config.roleCountByRoomByRole[room.name][role] >= targetRoomMemory.commonMemory!.sources.length) {
+      if (!result[0]) {
+        switch (role) {
+          // Owned room roles
+          case "pioneer":
+            // Check if input role is less then max creeps allowed //
+            if (creeps.length >= Config.creepsCountMax[shortRoleName] * targetRoomMemory.commonMemory!.sources.length) {
               break;
             }
-          } else {
-            if ((room.controller && room.controller.level >= 6) || (room.controller && room.controller.level >= 7)) {
-              if (Config.roleCountByRoomByRole[room.name][role] >= 1) {
+
+            // If energy capacity is more then 300
+            if (room.energyAvailable > 300) {
+              break;
+            }
+
+            if (room.energyAvailable === 300) {
+              result = [true, role];
+            }
+            break;
+          case "transferer":
+          case "transfererLD":
+            // Check if input role is less then max creeps allowed //
+            if (role === "transfererLD") {
+              if (creeps.length >= targetRoomMemory.commonMemory!.sources.length * 1.5) {
                 break;
               }
             } else {
+              if ((room.controller && room.controller.level >= 6) || (room.controller && room.controller.level >= 7)) {
+                if (creeps.length >= 1) {
+                  break;
+                }
+              } else {
+                if (
+                  creeps.length >=
+                  Config.creepsCountMax[shortRoleName] * targetRoomMemory.commonMemory!.sources.length
+                ) {
+                  break;
+                }
+              }
+            }
+
+            // If energy is less then 300
+            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+              break;
+            }
+
+            if (targetRoom === undefined) {
+              break;
+            }
+
+            if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1000) {
+              break;
+            }
+
+            if (role.includes("LD") && targetRoomMemory.constructionSites.data.length > 0) {
+              break;
+            }
+
+            result = [true, role];
+            break;
+          case "upgrader":
+            // If energy is less then 300
+            if (room.energyAvailable <= 300) {
+              break;
+            }
+
+            if (room.controller && room.controller.ticksToDowngrade <= 1 * 1000) {
+              // Check if input role is less then max creeps allowed //
+              if (creeps.length >= 1) {
+                break;
+              } else {
+                result = [true, role];
+              }
+            } else {
               if (
-                creeps.length >=
-                Config.creepsCountMax[shortRoleName] * targetRoomMemory.commonMemory!.sources.length
+                targetRoomMemory.commonMemory!.energyStored.capacity > 10000 &&
+                targetRoomMemory.commonMemory!.energyStored.capacity / 10 >
+                  targetRoomMemory.commonMemory!.energyStored.usable
+              ) {
+                break;
+              }
+
+              // Check if input role is less then max creeps allowed //
+              if (
+                creeps.length >= Config.creepsCountMax[shortRoleName] &&
+                targetRoomMemory.constructionSites.data.length === 0
+              ) {
+                break;
+              } else if (
+                creeps.length >= Config.creepsCountMax[shortRoleName] / 2 &&
+                targetRoomMemory.constructionSites.data.length > 0
               ) {
                 break;
               }
             }
-          }
 
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
+            if (targetRoom === undefined) {
+              break;
+            }
+
+            result = [true, role];
             break;
-          }
-
-          if (targetRoom === undefined) {
-            break;
-          }
-
-          if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1000) {
-            break;
-          }
-
-          result = [true, role];
-          break;
-        case "upgrader":
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
-            break;
-          }
-
-          if (room.controller && room.controller.ticksToDowngrade <= 1 * 1000) {
+          case "builder":
+          case "builderLD":
             // Check if input role is less then max creeps allowed //
-            if (Config.roleCountByRoomByRole[room.name][role] >= 1) {
+            if (creeps.length >= Config.creepsCountMax[shortRoleName]) {
               break;
-            } else {
-              result = [true, role];
             }
-          } else {
+
+            // If energy is less then 300
+            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+              break;
+            }
+
+            if (targetRoom === undefined) {
+              break;
+            }
+
+            if (targetRoomMemory === undefined) {
+              break;
+            }
+
+
+            if (role.includes("LD") && roomType !== "remote") {
+              if (!Game.flags[`builderLD${room.name}`]) {
+                break;
+              } else if (
+                Memory.rooms[`builderLD${room.name}`] &&
+                Memory.rooms[`builderLD${room.name}`].spawnRoom === room.name
+                ) {
+                  // @ts-ignore
+                  if (Memory.rooms[`builderLD${room.name}`].room !== undefined) {
+                    // @ts-ignore
+                    memory.targetRoom = Memory.rooms[`builderLD${room.name}`].room;
+                  }
+                }
+              }
+                
+            if (targetRoomMemory.constructionSites.data.length === 0) {
+              break;
+            }
+
+            result = [true, role];
+            break;
+          case "repairer":
+          case "repairerLD":
+            // Check if input role is less then max creeps allowed //
+            if (creeps.length >= Config.creepsCountMax[shortRoleName]) {
+              break;
+            }
+
+            // If energy is less then 300
+            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+              break;
+            }
+
+            if (targetRoom === undefined) {
+              break;
+            }
+
+            if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1500) {
+              break;
+            }
+
+            // Break if there is a tower to repair from
+            if (room.controller!.level >= 3 && !role.includes("LD")) {
+              break;
+            }
+
+            // Break if there are no targets left
+            if (targetRoomMemory.jobs.damagedStructures.data.length === 0) {
+              break;
+            }
+
+            result = [true, role];
+            break;
+          case "harvester-0":
+          case "harvesterLD-0":
+            // Check if input role is less then max creeps allowed //
+            if (creeps.length >= Config.creepsCountMax[shortRoleName]) {
+              break;
+            }
+
+            // If energy is less then 300
+            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+              break;
+            }
+
+            if (targetRoom === undefined) {
+              break;
+            }
+
+            if (targetRoomMemory === undefined) {
+              break;
+            }
+
             if (
-              targetRoomMemory.commonMemory!.energyStored.capacity > 10000 &&
-              targetRoomMemory.commonMemory!.energyStored.capacity / 10 >
-                targetRoomMemory.commonMemory!.energyStored.usable
+              !targetRoomMemory.roomPlanner.room.sources[0] ||
+              Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[0].id!) === null
             ) {
+              break;
+            }
+
+            result = [true, role];
+            break;
+          case "harvester-1":
+          case "harvesterLD-1":
+            // If there is more then 1 source
+            if (targetRoomMemory.commonMemory!.sources.length === 1) {
               break;
             }
 
             // Check if input role is less then max creeps allowed //
+            if (creeps.length >= Config.creepsCountMax[shortRoleName]) {
+              break;
+            }
+
+            // If energy is less then 300
+            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+              break;
+            }
+
+            if (targetRoom === undefined) {
+              break;
+            }
+
+            if (targetRoomMemory === undefined) {
+              break;
+            }
+
             if (
-              creeps.length >= Config.creepsCountMax[shortRoleName] &&
-              targetRoomMemory.constructionSites.data.length === 0
-            ) {
-              break;
-            } else if (
-              creeps.length >= Config.creepsCountMax[shortRoleName] / 2 &&
-              targetRoomMemory.constructionSites.data.length > 0
+              !targetRoomMemory.roomPlanner.room.sources[1] ||
+              Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[1].id!) === null
             ) {
               break;
             }
-          }
 
-          if (targetRoom === undefined) {
+            result = [true, role];
             break;
-          }
-
-          result = [true, role];
-          break;
-        case "builder":
-        case "builderLD":
-          // Check if input role is less then max creeps allowed //
-          if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-            break;
-          }
-
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
-            break;
-          }
-
-          if (targetRoom === undefined) {
-            break;
-          }
-
-          if (role.includes("LD") && !Game.flags[`builderLD${room.name}`]) {
-            break;
-          } else if (
-            role.includes("LD") &&
-            Memory.rooms[`builderLD${room.name}`] &&
-            Memory.rooms[`builderLD${room.name}`].spawnRoom === room.name
-          ) {
-            // @ts-ignore
-            if (Memory.rooms[`builderLD${room.name}`].room !== undefined) {
-              // @ts-ignore
-              memory.targetRoom = Memory.rooms[`builderLD${room.name}`].room;
+          case "reserverLD":
+            // Check if input role is less then max creeps allowed //
+            if (creeps.length >= Config.creepsCountMax[shortRoleName]) {
+              break;
             }
-          }
 
-          if (targetRoomMemory.constructionSites.data.length === 0) {
-            break;
-          }
+            if (targetRoom === undefined) {
+              break;
+            }
 
-          result = [true, role];
-          break;
-        case "repairer":
-        case "repairerLD":
-          // Check if input role is less then max creeps allowed //
-          if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-            break;
-          }
+            if (targetRoomMemory === undefined) {
+              break;
+            }
 
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
-            break;
-          }
-
-          if (targetRoom === undefined) {
-            break;
-          }
-
-          if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1500) {
-            break;
-          }
-
-          // Break if there is a tower to repair from
-          if (room.controller!.level >= 3) {
-            break;
-          }
-
-          // Break if there are no targets left
-          if (targetRoomMemory.jobs.damagedStructures.data.length === 0) {
-            break;
-          }
-
-          result = [true, role];
-          break;
-        case "harvester-0":
-        case "harvesterLD-0":
-          // Check if input role is less then max creeps allowed //
-          if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-            break;
-          }
-
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
-            break;
-          }
-
-          if (targetRoom === undefined) {
-            break;
-          }
-
-          if (targetRoomMemory === undefined) {
-            break;
-          }
-
-          if (
-            !targetRoomMemory.roomPlanner.room.sources[0] ||
-            Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[0].id!) === null
-          ) {
-            break;
-          }
-
-          result = [true, role];
-          break;
-        case "harvester-1":
-        case "harvesterLD-1":
-          // If there is more then 1 source
-          if (targetRoomMemory.commonMemory!.sources.length === 1) {
-            break;
-          }
-
-          // Check if input role is less then max creeps allowed //
-          if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-            break;
-          }
-
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
-            break;
-          }
-
-          if (targetRoom === undefined) {
-            break;
-          }
-
-          if (targetRoomMemory === undefined) {
-            break;
-          }
-
-          if (
-            !targetRoomMemory.roomPlanner.room.sources[1] ||
-            Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[1].id!) === null
-          ) {
-            break;
-          }
-
-          result = [true, role];
-          break;
-        case "reserverLD":
-          // Check if input role is less then max creeps allowed //
-          if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-            break;
-          }
-
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
-            break;
-          }
-
-          if (targetRoom === undefined) {
-            break;
-          }
-
-          if (targetRoomMemory === undefined) {
-            break;
-          }
-
-          // If reservation is defined, the username is mine and the ticksToEnd is higher then 2500 ticks
-          if (
-            (targetRoom.controller && typeof targetRoom.controller.reservation !== "object") ||
-            (targetRoom.controller &&
+            // If reservation is defined, the username is mine and the ticksToEnd is higher then 2500 ticks
+            if (
+              targetRoom.controller &&
               targetRoom.controller.reservation &&
               (targetRoom.controller.reservation.username !== Config.username ||
-                targetRoom.controller.reservation.ticksToEnd > 2500))
-          ) {
-            break;
-          }
+                targetRoom.controller.reservation.ticksToEnd > 2500)
+            ) {
+              break;
+            }
 
-          result = [true, role];
-          break;
-        case "claimerLD":
-          // Check if input role is less then max creeps allowed //
-          if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-            break;
-          }
-
-          // If flag is removed, delete the memory
-          if (!Game.flags["claim"]) {
-            delete Memory.rooms["claim"];
-            break;
-          }
-
-          // If room is missing claim roomMemory, assign it
-          // TODO FIX THIS TO CLAIM ANOTHER ROOM
-          // if (!Memory.rooms["claim"]) {
-          //   // @ts-ignore
-          //   Memory.rooms["claim"] = { spawnRoom: "", room: "" };
-          //   break;
-          // } else if (Memory.rooms["claim"].spawnRoom === room.name && Memory.rooms["claim"].room !== undefined) {
-          //   memory.targetRoom = Memory.rooms["claim"].room;
-          //   result = [true, role];
-          // }
-          break;
-        case "mineral":
-          // Check if input role is less then max creeps allowed //
-          if (Config.roleCountByRoomByRole[room.name][role] >= Config.creepsCountMax[shortRoleName]) {
-            break;
-          }
-
-          // If energy is less then 300
-          if (room.energyAvailable <= 300) {
-            break;
-          }
-
-          // @ts-ignore
-          if (
-            targetRoomMemory.commonMemory!.mineral!.amount &&
-            targetRoomMemory.commonMemory!.mineral!.amount > 0 &&
-            room.controller &&
-            room.controller.level >= 6 &&
-            room.storage &&
-            // @ts-ignore
-            room.storage.store.getUsedCapacity(targetRoomMemory.commonMemory.mineral.type) < 200 * 1000
-          ) {
             result = [true, role];
-          }
-          break;
-        default:
-          break;
-      }
+            break;
+          case "claimerLD":
+            // Check if input role is less then max creeps allowed //
+            if (creeps.length >= Config.creepsCountMax[shortRoleName]) {
+              break;
+            }
 
-      return result;
+            // If flag is removed, delete the memory
+            if (!Game.flags["claim"]) {
+              delete Memory.rooms["claim"];
+              break;
+            }
+
+            // If room is missing claim roomMemory, assign it
+            // TODO FIX THIS TO CLAIM ANOTHER ROOM
+            // if (!Memory.rooms["claim"]) {
+            //   // @ts-ignore
+            //   Memory.rooms["claim"] = { spawnRoom: "", room: "" };
+            //   break;
+            // } else if (Memory.rooms["claim"].spawnRoom === room.name && Memory.rooms["claim"].room !== undefined) {
+            //   memory.targetRoom = Memory.rooms["claim"].room;
+            //   result = [true, role];
+            // }
+            break;
+          case "mineral":
+            // Check if input role is less then max creeps allowed //
+            if (creeps.length >= Config.creepsCountMax[shortRoleName]) {
+              break;
+            }
+
+            // If energy is less then 300
+            if (room.energyAvailable <= 300) {
+              break;
+            }
+
+            // @ts-ignore
+            if (
+              targetRoomMemory.commonMemory!.mineral!.amount &&
+              targetRoomMemory.commonMemory!.mineral!.amount > 0 &&
+              room.controller &&
+              room.controller.level >= 6 &&
+              room.storage &&
+              // @ts-ignore
+              room.storage.store.getUsedCapacity(targetRoomMemory.commonMemory.mineral.type) < 200 * 1000
+            ) {
+              result = [true, role];
+            }
+            break;
+          default:
+            break;
+        }
+      }
     });
     return result;
   }
