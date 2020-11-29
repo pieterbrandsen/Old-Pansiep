@@ -140,9 +140,9 @@ export class CreepsHelper_Role {
     }
   }
 
-  private static isInTargetRoom(creep: Creep, currentRoom: string, targetRoom: string): boolean {
+  private static HasVisionInTargetRoom(creep: Creep, currentRoom: string, targetRoom: string): boolean {
     // Check if current room is target room, return true if not false
-    if (currentRoom === targetRoom) {
+    if (Game.rooms[targetRoom] !== undefined) {
       return true;
     } else {
       return this.moveToRoom(creep, targetRoom);
@@ -159,7 +159,7 @@ export class CreepsHelper_Role {
     }
   }
 
-  private static moveToRoom(creep: Creep, targetRoom: string): boolean {
+  public static moveToRoom(creep: Creep, targetRoom: string): boolean {
     // Define the way how the creep is going to this room
     let travelWay = "unknown";
     const targetRoomFlag = Game.flags[targetRoom];
@@ -192,7 +192,7 @@ export class CreepsHelper_Role {
     const roomMemory: RoomMemory = Memory.rooms[creep.memory.spawnRoom];
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -258,7 +258,7 @@ export class CreepsHelper_Role {
     CreepsHelper_Role.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -296,7 +296,7 @@ export class CreepsHelper_Role {
     CreepsHelper_Role.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -348,7 +348,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Check if creep needs to move to another room
-        if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
+        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
           return;
         }
 
@@ -361,7 +361,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Check if creep needs to move to another room
-        if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
           return;
         }
 
@@ -378,7 +378,7 @@ export class CreepsHelper_Role {
     CreepsHelper_Role.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -427,12 +427,12 @@ export class CreepsHelper_Role {
     CreepsHelper_Role.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
     // Create a acces point to the roomMemory //
-    const roomMemory = Memory.rooms[creep.memory.spawnRoom];
+    const roomMemory = Memory.rooms[creep.memory.targetRoom];
 
     if (!creep.memory.job) {
       creep.memory.job = "withdraw";
@@ -451,8 +451,18 @@ export class CreepsHelper_Role {
         // Switch to one of the jobs that drains energy
         if (roomMemory.jobs.damagedStructures.data.length > 0) {
           creep.memory.job = "repair";
-        } else {
+        } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
           creep.memory.job = "upgrade";
+        }
+        else {
+          if (!creep.pos.inRangeTo(25,25,20)) {
+            if (creep.room.controller) {
+              creep.moveTo(creep.room.controller);
+            }
+            else {
+              creep.moveTo(25,25);
+            }
+          } 
         }
         break;
       case "empty":
@@ -477,12 +487,12 @@ export class CreepsHelper_Role {
     CreepsHelper_Role.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
     // Create a acces point to the roomMemory //
-    const roomMemory = Memory.rooms[creep.memory.spawnRoom];
+    const roomMemory = Memory.rooms[creep.memory.targetRoom];
 
     if (!creep.memory.job) {
       creep.memory.job = "withdraw";
@@ -496,22 +506,27 @@ export class CreepsHelper_Role {
       case "full":
         // Delete targetId
         delete creep.memory.targetId;
+        delete creep.memory.sourceId;
         delete creep.memory.miniJob;
 
         // Switch to one of the jobs that drains energy
         if (roomMemory.constructionSites.data.length > 0) {
           creep.memory.job = "build";
-        } else {
+        } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
           creep.memory.job = "upgrade";
+        }
+        else { 
+          creep.suicide();
         }
         break;
       case "empty":
         // Delete targetId
         delete creep.memory.targetId;
+        delete creep.memory.sourceId;
         delete creep.memory.miniJob;
 
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory!.energyStored.usable >= 2000) {
+        if (roomMemory.commonMemory!.energyStored.usable >= 2000 && !creep.memory.role.includes("LD")) {
           creep.memory.job = "withdraw";
         } else {
           creep.memory.job = "harvest";
@@ -524,7 +539,7 @@ export class CreepsHelper_Role {
 
   private static reserver = (creep: Creep) => {
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -539,7 +554,7 @@ export class CreepsHelper_Role {
 
   private static claimer = (creep: Creep) => {
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -554,7 +569,7 @@ export class CreepsHelper_Role {
 
   private static scout = (creep: Creep) => {
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.isInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
