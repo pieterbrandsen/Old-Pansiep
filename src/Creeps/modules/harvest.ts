@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import { Config, CreepsHelper_Role } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -42,15 +42,21 @@ export class CreepRole_Harvest {
     // Make shortcut to memory
     const creepMemory = creep.memory;
     const roomMemory = Memory.rooms[creepMemory.targetRoom];
+    const targetRoom = Game.rooms[creepMemory.targetRoom];
 
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
       return "full";
     }
 
+    if (creep.room.name !== targetRoom.name) {
+      CreepsHelper_Role.moveToRoom(creep, creepMemory.targetRoom);
+      return;
+    }
+
     // If creep has no sourceId saved
     if (creepMemory.sourceId === undefined) {
-      if (creepMemory.role.includes("harvester-")) {
+      if (creepMemory.role.includes("harvester")) {
         const sourceNumber:number = creep.memory.role.split("-")[1] as unknown as number;
         creep.memory.sourceId = roomMemory.commonMemory!.sources[sourceNumber].id;
         creep.memory.sourceNumber = sourceNumber;

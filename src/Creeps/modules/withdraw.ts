@@ -61,7 +61,7 @@ export class CreepRole_Withdraw {
     if (!creep.memory.targetId) {
       let job: JobTemplate;
       if (creepMemory.role === "transferer" && roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
-        job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
+        job = roomMemory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       } else if (
         (creepMemory.role === "transferer" || creepMemory.role === "pioneer") &&
         roomMemory.jobs.spawnerEnergyStructures!.length === 0
@@ -77,7 +77,7 @@ export class CreepRole_Withdraw {
           }
         }
       } else {
-        job = creep.room.memory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
+        job = roomMemory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       }
 
       if (job === undefined) {
@@ -115,7 +115,7 @@ export class CreepRole_Withdraw {
       // Switch based on the results
       switch (result) {
         case OK:
-          return "full";
+          break;
         case ERR_NOT_IN_RANGE:
           // If creep is not in range, move to target
           creep.moveTo(withdrawStructure);

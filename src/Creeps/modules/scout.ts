@@ -5,7 +5,7 @@ import {} from "Utils/importer/internals";
 //#region Class
 export class CreepRole_Scout {
   public static scout(creep: Creep) {
-    if (!creep.pos.inRangeTo(25,25,15)) {
+    if (!creep.pos.inRangeTo(25,25,20)) {
       if (creep.room.controller) {
         creep.moveTo(creep.room.controller);
       }

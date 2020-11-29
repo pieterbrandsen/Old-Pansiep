@@ -33,6 +33,10 @@ export class CreepRole_Transfer {
           creep.memory.miniJob = "mineral";
           break;
         }
+        else if (creepMemory.role.includes("LD")) {
+          creep.memory.miniJob = "storage";
+          break;
+        }
 
         if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
           creep.memory.miniJob = "spawner";
@@ -241,10 +245,11 @@ export class CreepRole_Transfer {
   private static storage(creep: Creep): void | string {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
-    const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
+    const spawnRoom: Room = Game.rooms[creepMemory.spawnRoom];
+    const roomMemory: RoomMemory = Memory.rooms[creepMemory.spawnRoom];
 
     // Return empty if current creep's storage is empty
-    if (creep.store.getUsedCapacity() === 0) {
+    if (creep.store.getUsedCapacity() === 0 || spawnRoom === undefined) {
       return "empty";
     }
 
@@ -259,11 +264,11 @@ export class CreepRole_Transfer {
     // If room is in need of more energy in the storage/terminal
     if (creepMemory.targetId === undefined) {
       // If there is enough space in storage
-      if (creep.room.storage && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 400 * 1000) {
-        creepMemory.targetId = creep.room.storage.id;
+      if (spawnRoom.storage && spawnRoom.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 400 * 1000) {
+        creepMemory.targetId = spawnRoom.storage!.id;
         // If there is enough space in terminal
-      } else if (creep.room.terminal && creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 100 * 1000) {
-        creepMemory.targetId = creep.room.terminal.id;
+      } else if (spawnRoom.terminal && spawnRoom.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 100 * 1000) {
+        creepMemory.targetId = spawnRoom.terminal!.id;
       }
     } else {
       // Get the saved structure from memory

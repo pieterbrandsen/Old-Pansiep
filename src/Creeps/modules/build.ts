@@ -15,7 +15,7 @@ export class CreepRole_Build {
     }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
-    if (roomMemory.constructionSites.data.length === 0 && !creepMemory.targetId) {
+    if (roomMemory.jobs.constructionSites.length === 0 && !creepMemory.targetId) {
       if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
         creep.moveTo(creep.room.controller);
       }

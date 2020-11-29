@@ -10,8 +10,8 @@ export class CreepRole_Upgrade {
       return "empty";
     }
 
-    if (creep.room.controller === undefined) {
-      return;
+    if (creep.room.controller === undefined || creep.memory.role.includes("LD")) {
+      return "empty";
     }
 
     // Run upgradeController function
