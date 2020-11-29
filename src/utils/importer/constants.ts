@@ -31,7 +31,7 @@ export const ALL_OWNED_ROOM_CREEP_ROLES: string[] = [
   "builder",
   "repairer",
   "upgrader",
-  "mineral",
+  // "mineral"
 ];
 
 export const ALL_REMOTE_CREEP_ROLES: string[] = [
@@ -57,7 +57,7 @@ export const HOSTILE_CREEPS_JOBS_CACHE_TTL = 50;
 
 // Cache ticks
 export const CONST_CACHE_TTL = 1000;
-export const CREEPS_CACHE_TTL = 10;
+export const CREEPS_CACHE_TTL = 9;
 export const STRUCT_CACHE_TTL = 100;
 
 // Timer ticks
