@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 4,
-  "iteration": 1605512820632,
+  "id": 3,
+  "iteration": 1606676734101,
   "links": [],
   "panels": [
     {
@@ -38,7 +38,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -75,7 +75,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -86,32 +86,36 @@
       "targets": [
         {
           "hide": true,
-          "refCount": 1,
+          "queryType": "randomWalk",
+          "refCount": 0,
           "refId": "A",
-          "target": "sumSeries(stats.gauges.rooms.$room.performance.income.*)",
-          "textEditor": false
+          "target": "sumSeries(screeps.privateserver.rooms.$room.performance.income.*)",
+          "textEditor": true
         },
         {
           "hide": true,
-          "refCount": 1,
+          "queryType": "randomWalk",
+          "refCount": -1,
           "refId": "B",
-          "target": "sumSeries(stats.gauges.rooms.$room.performance.expenses.*.*, #D)",
-          "targetFull": "sumSeries(stats.gauges.rooms.$room.performance.expenses.*.*, sumSeries(stats.gauges.rooms.$room.performance.expenses.*))",
-          "textEditor": false
+          "target": "sumSeries(screeps.privateserver.rooms.$room.performance.expenses.*.*, #D)",
+          "targetFull": "sumSeries(screeps.privateserver.rooms.$room.performance.expenses.*.*, sumSeries(screeps.privateserver.rooms.$room.performance.expenses.*))",
+          "textEditor": true
         },
         {
-          "hide": false,
-          "refCount": 1,
+          "queryType": "randomWalk",
+          "refCount": 0,
           "refId": "C",
           "target": "alias(diffSeries(#A, #B), 'Net')",
-          "targetFull": "alias(diffSeries(sumSeries(stats.gauges.rooms.$room.performance.income.*), sumSeries(stats.gauges.rooms.$room.performance.expenses.*.*, sumSeries(stats.gauges.rooms.$room.performance.expenses.*))), 'Net')"
+          "targetFull": "alias(diffSeries(sumSeries(screeps.privateserver.rooms.$room.performance.income.*), sumSeries(screeps.privateserver.rooms.$room.performance.expenses.*.*, sumSeries(screeps.privateserver.rooms.$room.performance.expenses.*))), 'Net')",
+          "textEditor": true
         },
         {
           "hide": true,
+          "queryType": "randomWalk",
           "refCount": 0,
           "refId": "D",
-          "target": "sumSeries(stats.gauges.rooms.$room.performance.expenses.*)",
-          "textEditor": false
+          "target": "sumSeries(screeps.privateserver.rooms.$room.performance.expenses.*)",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -160,7 +164,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -197,7 +201,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -207,11 +211,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "hide": false,
-          "refCount": 0,
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByMetric(averageAbove(stats.gauges.rooms.$room.performance.income.*, 0.01))",
-          "textEditor": false
+          "target": "aliasByMetric(averageAbove(screeps.privateserver.rooms.$room.performance.income.*, 0.01))",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -260,7 +263,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -297,7 +300,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -308,16 +311,17 @@
       "targets": [
         {
           "hide": false,
+          "queryType": "randomWalk",
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.*, 0.01), 6)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.performance.expenses.*, 0.01), 6)",
           "textEditor": false
         },
         {
-          "hide": false,
+          "queryType": "randomWalk",
           "refCount": 0,
           "refId": "B",
-          "target": "alias(sumSeries(averageAbove(stats.gauges.rooms.$room.performance.expenses.*.*, 0.01)), 'spawning')",
+          "target": "alias(sumSeries(averageAbove(screeps.privateserver.rooms.$room.performance.expenses.*.*, 0.01)), 'spawning')",
           "textEditor": false
         }
       ],
@@ -381,7 +385,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -418,7 +422,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -428,8 +432,9 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.performance.income.ownedHarvesting, 0.01), 3)",
           "textEditor": false
         }
       ],
@@ -480,11 +485,11 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {},
-          "unit": "percent"
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -518,7 +523,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -528,26 +533,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "hide": true,
-          "refCount": 0,
-          "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3)",
-          "textEditor": true
-        },
-        {
-          "hide": true,
-          "refCount": 1,
-          "refId": "B",
-          "target": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), #A)",
-          "targetFull": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3))",
-          "textEditor": true
-        },
-        {
           "hide": false,
+          "queryType": "randomWalk",
           "refCount": 0,
-          "refId": "D",
-          "target": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), #B), 0)",
-          "targetFull": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.ownedHarvesting, 0.01), 3))), 0)",
+          "refId": "C",
+          "target": "aliasByNode(divideSeries(divideSeries(averageAbove(screeps.privateserver.rooms.$room.performance.income.ownedHarvesting, 0.01), screeps.privateserver.rooms.$room.commonMemory.owned.sourceCount), screeps.privateserver.common.energyEachTickPerSource), 3)",
           "textEditor": true
         }
       ],
@@ -572,10 +562,10 @@
       "yaxes": [
         {
           "decimals": 1,
-          "format": "percent",
+          "format": "percentunit",
           "label": null,
           "logBase": 1,
-          "max": "100",
+          "max": "1",
           "min": "0",
           "show": true
         },
@@ -598,7 +588,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -635,7 +625,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -645,8 +635,9 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.performance.income.remoteHarvesting, 0.01), 3)",
           "textEditor": false
         }
       ],
@@ -697,7 +688,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -735,7 +726,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -745,26 +736,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "hide": true,
-          "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3)",
-          "textEditor": false
-        },
-        {
-          "hide": true,
-          "refCount": 1,
-          "refId": "B",
-          "target": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), #A)",
-          "targetFull": "divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3))",
-          "textEditor": false
-        },
-        {
-          "hide": true,
-          "refCount": 0,
-          "refId": "D",
-          "target": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), #B), 0)",
-          "targetFull": "aliasByNode(divideSeries(averageAbove(stats.gauges.common.energyEachTickPerSource, 0.01), divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.commonMemory.sourceCount, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.income.remoteHarvesting, 0.01), 3))), 0)",
+          "target": "aliasByNode(divideSeries(divideSeries(averageAbove(screeps.privateserver.rooms.$room.performance.income.remoteHarvesting, 0.01), screeps.privateserver.rooms.$room.commonMemory.remote.sourceCount), screeps.privateserver.common.energyEachTickPerSource), 3)",
           "textEditor": false
         }
       ],
@@ -829,7 +802,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -866,7 +839,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -876,8 +849,9 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByMetric(averageAbove(stats.gauges.rooms.$room.performance.expenses.spawnExpenses.*, 0.01))",
+          "target": "aliasByMetric(averageAbove(screeps.privateserver.rooms.$room.performance.expenses.spawnExpenses.*, 0.01))",
           "textEditor": false
         }
       ],
@@ -927,7 +901,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -964,7 +938,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -974,8 +948,9 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.upgrading, 0.01), 3)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.performance.expenses.upgrading, 0.01), 3)",
           "textEditor": true
         }
       ],
@@ -1025,7 +1000,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1062,7 +1037,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1072,9 +1047,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.building, 0.01), 3)",
-          "textEditor": false
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.performance.expenses.building, 0.01), 3)",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -1123,7 +1099,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1160,7 +1136,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1170,8 +1146,9 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.performance.expenses.repairing, 0.01), 3)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.performance.expenses.repairing, 0.01), 3)",
           "textEditor": true
         }
       ],
@@ -1235,7 +1212,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1246,7 +1223,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 9,
         "x": 0,
         "y": 28
       },
@@ -1272,7 +1249,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1282,9 +1259,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "groupByNode(aliasByMetric(averageAbove(stats.gauges.rooms.$room.commonMemory.creepCountByRole.*, 0.01)), 0, 'sum')",
-          "textEditor": false
+          "target": "groupByNode(aliasByMetric(averageAbove(screeps.privateserver.rooms.$room.commonMemory.creepCountByRole.*, 0.01)), 0, 'sum')",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -1333,7 +1311,122 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
+      "decimals": 0,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 9,
+        "y": 28
+      },
+      "hiddenSeries": false,
+      "id": 38,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": false,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "hide": false,
+          "queryType": "randomWalk",
+          "refCount": 0,
+          "refId": "A",
+          "target": "aliasByNode(divideSeries(averageAbove(screeps.privateserver.rooms.$room.spawnerEnergy.available, 0.01), #B), 3)",
+          "targetFull": "aliasByNode(divideSeries(averageAbove(screeps.privateserver.rooms.$room.spawnerEnergy.available, 0.01), averageAbove(screeps.privateserver.rooms.$room.spawnerEnergy.capacityAvailable, 0.01)), 3)",
+          "textEditor": false
+        },
+        {
+          "hide": true,
+          "queryType": "randomWalk",
+          "refCount": -1,
+          "refId": "B",
+          "target": "averageAbove(screeps.privateserver.rooms.$room.spawnerEnergy.capacityAvailable, 0.01)",
+          "textEditor": false
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Spawner energy",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 1,
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "decimals": null,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Graphite",
+      "decimals": 0,
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1344,8 +1437,8 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 6,
+        "x": 18,
         "y": 28
       },
       "hiddenSeries": false,
@@ -1366,7 +1459,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1376,8 +1469,11 @@
       "steppedLine": false,
       "targets": [
         {
+          "hide": false,
+          "queryType": "randomWalk",
+          "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.constructionSites.dataCount, 0.01), 4)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.commonMemory.constructionSitesCount, 0.01), 4)",
           "textEditor": false
         }
       ],
@@ -1410,6 +1506,7 @@
           "show": true
         },
         {
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1442,7 +1539,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1479,7 +1576,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1495,15 +1592,17 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refCount": 0,
           "refId": "A",
-          "target": "groupByNode(aliasByMetric(averageAbove(stats.gauges.rooms.$room.energyStored.total, 0.01)), 0, 'sum')",
+          "target": "groupByNode(aliasByMetric(averageAbove(screeps.privateserver.rooms.$room.energyStored.total, 0.01)), 0, 'sum')",
           "textEditor": true
         },
         {
+          "queryType": "randomWalk",
           "refCount": 0,
           "refId": "B",
-          "target": "groupByNode(aliasByMetric(averageAbove(stats.gauges.rooms.$room.energyStored.capacity, 0.01)), 0, 'sum')",
+          "target": "groupByNode(aliasByMetric(averageAbove(screeps.privateserver.rooms.$room.energyStored.capacity, 0.01)), 0, 'sum')",
           "textEditor": true
         }
       ],
@@ -1554,7 +1653,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1591,7 +1690,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1601,9 +1700,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "refCount": 0,
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.energyStored.storage, 0.01), 3)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.energyStored.storage, 0.01), 3)",
           "textEditor": false
         }
       ],
@@ -1662,7 +1761,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1699,7 +1798,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1709,9 +1808,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "refCount": 0,
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.energyStored.terminal, 0.01), 3)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.energyStored.terminal, 0.01), 3)",
           "textEditor": true
         }
       ],
@@ -1784,7 +1883,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "decimals": 0,
       "fieldConfig": {
         "defaults": {
@@ -1820,7 +1919,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1830,8 +1929,9 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.level, 0.01), 3)",
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.controller.level, 0.01), 3)",
           "textEditor": true
         }
       ],
@@ -1883,7 +1983,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "decimals": 2,
       "fieldConfig": {
         "defaults": {
@@ -1922,7 +2022,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1932,19 +2032,20 @@
       "steppedLine": false,
       "targets": [
         {
-          "hide": false,
+          "queryType": "randomWalk",
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progress, 0.01), 3), #B), 0)",
-          "targetFull": "aliasByNode(divideSeries(aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progress, 0.01), 3), aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progressTotal, 0.01), 3)), 0)",
-          "textEditor": false
+          "target": "aliasByNode(divideSeries(aliasByNode(averageAbove(screeps.privateserver.rooms.$room.controller.progress, 0.01), 3), #B), 0)",
+          "targetFull": "aliasByNode(divideSeries(aliasByNode(averageAbove(screeps.privateserver.rooms.$room.controller.progress, 0.01), 3), aliasByNode(averageAbove(screeps.privateserver.rooms.$room.controller.progressTotal, 0.01), 3)), 0)",
+          "textEditor": true
         },
         {
           "hide": true,
+          "queryType": "randomWalk",
           "refCount": -1,
           "refId": "B",
-          "target": "aliasByNode(averageAbove(stats.gauges.rooms.$room.controller.progressTotal, 0.01), 3)",
-          "textEditor": false
+          "target": "aliasByNode(averageAbove(screeps.privateserver.rooms.$room.controller.progressTotal, 0.01), 3)",
+          "textEditor": true
         }
       ],
       "thresholds": [],
@@ -2008,8 +2109,8 @@
             "$__all"
           ]
         },
-        "datasource": "localGraphite",
-        "definition": "stats.gauges.*.rooms.*",
+        "datasource": "Graphite",
+        "definition": "screeps.privateserver.rooms.*",
         "error": null,
         "hide": 0,
         "includeAll": true,
@@ -2017,7 +2118,7 @@
         "multi": true,
         "name": "room",
         "options": [],
-        "query": "stats.gauges.*.rooms.*",
+        "query": "screeps.privateserver.rooms.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -2031,12 +2132,12 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Performance",
   "uid": "Y68OQXhMk",
-  "version": 13
+  "version": 8
 }
