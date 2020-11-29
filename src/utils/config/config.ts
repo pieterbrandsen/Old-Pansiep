@@ -34,13 +34,12 @@ export const Config: Config = {
     transferer: 3,
     harvester: 1,
     builder: 4,
-    repairer: 2,
-    upgrader: 3,
+    repairer: 1,
+    upgrader: 4,
     reserver: 1,
     claimer: 1,
     mineral: 1
   },
-  roleCountByRoomByRole: {},
   cpuUsedByRoomByRole: {},
 
   creepModuleCpuCost: {},
