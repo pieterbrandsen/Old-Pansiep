@@ -20,11 +20,11 @@ export class JobsHelper {
   }
 
   public static updateAllEnergyStoragesJobs(room: Room): void {
-    const controllerStorage: StructureContainer | StructureLink | null | string = MemoryApi_Room.getUpgraderStructure(
+    let controllerStorage: any = MemoryApi_Room.getUpgraderStructure(
       room
     );
     if (controllerStorage === null) {
-      (controllerStorage as any) = { id: "" };
+      controllerStorage = {id: ""};
     }
     const allEnergyStructures: Structure[] = MemoryApi_Room.getStructures(
       room,

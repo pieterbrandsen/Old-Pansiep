@@ -9,7 +9,8 @@ import {
   DAMAGED_STRUCTURES_JOBS_CACHE_TTL,
   DAMAGED_CREEPS_JOBS_CACHE_TTL,
   SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL,
-  HOSTILE_CREEPS_JOBS_CACHE_TTL
+  HOSTILE_CREEPS_JOBS_CACHE_TTL,
+  MemoryApi_Room
 } from "Utils/importer/internals";
 //#endregion
 
@@ -19,6 +20,13 @@ export class JobsManager {
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room): void => {
       const isOwnedRoom: boolean = true;
+      this.runJobsForRoom(room, isOwnedRoom);
+    });
+
+        // Run all dependent rooms we have visiblity in
+        const dependentRooms: Room[] = MemoryApi_Room.getVisibleDependentRooms();
+        _.forEach(dependentRooms, (room: Room): void => {
+          const isOwnedRoom: boolean = false;
       this.runJobsForRoom(room, isOwnedRoom);
     });
   }
