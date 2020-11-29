@@ -354,12 +354,11 @@ export class OldRoomPlanner {
       }
 
       // Get middle position of bunker
-      const midPos: any = { x: headSpawn.pos.x, y: headSpawn.pos.y };
-      midPos.x += 1;
-      midPos.y -= 1;
+      const midPos: any = { x: headSpawn.pos.x + 1, y: headSpawn.pos.y -1 };
 
       if (doesBunkerFitAtPosition(terrain, midPos)) {
         roomMemory.roomPlanner.base.type = "bunker";
+        roomMemory.roomPlanner.base.midPos = midPos;
       } else {
         roomMemory.roomPlanner.base.type = "generated";
       }
@@ -395,19 +394,7 @@ export class OldRoomPlanner {
     const roomMemory = Memory.rooms[room.name];
     let midPos: any = {};
 
-    if (roomMemory.commonMemory!.headSpawnId) {
-      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory!.headSpawnId);
-      if (headSpawn === null) {
-        return;
-      }
-
-      // Get middle position of bunker
-      midPos = { x: headSpawn.pos.x, y: headSpawn.pos.y };
-      midPos.x += 1;
-      midPos.y -= 1;
-    } else if (roomMemory.roomPlanner.base !== undefined && roomMemory.roomPlanner.base.midPos) {
-      midPos = roomMemory.roomPlanner.base.midPos;
-    }
+    midPos = roomMemory.roomPlanner.base!.midPos;
 
     if (midPos === undefined) {
       return;
