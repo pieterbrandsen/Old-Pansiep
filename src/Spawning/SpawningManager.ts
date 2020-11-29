@@ -1,6 +1,13 @@
 //#region Require('./)
 import _ from "lodash";
-import { Config, MemoryApi_Empire, SpawningApi, SpawningHelper, MemoryApi_All, SPAWN_CREEP_TIMER } from "Utils/importer/internals";
+import {
+  Config,
+  MemoryApi_Empire,
+  SpawningApi,
+  SpawningHelper,
+  MemoryApi_All,
+  SPAWN_CREEP_TIMER
+} from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -14,7 +21,7 @@ export class SpawningManager {
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room) => {
       // Run SpawnCreep if the ExecuteEachTicks returns true;
-        if (MemoryApi_All.executeEachTicks(SPAWN_CREEP_TIMER)) {
+      if (MemoryApi_All.executeEachTicks(SPAWN_CREEP_TIMER)) {
         MemoryApi_All.functionRunnerWithCpu(
           SpawningManager.runSpawningForRoom,
           MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
@@ -33,14 +40,21 @@ export class SpawningManager {
    * @param room Room to run spawning in
    */
   private static runSpawningForRoom(room: Room): void {
-    // Get a open spawn
-    const openSpawn: StructureSpawn | null = SpawningApi.getOpenSpawn(room);
-
-    // If no open spawn was found, return null
-    if (openSpawn === null) {
+    const spawnReturn: ScreepsReturnCode = SpawningHelper.spawnNormalCreep(room);
+    if (spawnReturn !== OK) {
       return;
-    } else {
-      SpawningHelper.spawnCreep(room, "owned", openSpawn);
+    }
+
+    if (room.energyAvailable >= 1000) {
+      const remoteRoomsArray = room.memory.remoteRooms!;
+      _.forEach(remoteRoomsArray, (roomName: string) => {
+        // const roomName = remoteRoomsArray[index];
+        const remoteRoom: Room = Game.rooms[roomName];
+        const remoteSpawnReturn = SpawningHelper.spawnRemoteCreep(room, remoteRoom, roomName);
+        if (remoteSpawnReturn !== OK) {
+          return;
+        }
+      });
     }
   }
 }

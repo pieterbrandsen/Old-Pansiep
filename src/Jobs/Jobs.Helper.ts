@@ -20,11 +20,11 @@ export class JobsHelper {
   }
 
   public static updateAllEnergyStoragesJobs(room: Room): void {
-    const controllerStorage: StructureContainer | StructureLink | null | string = MemoryApi_Room.getUpgraderStructure(
+    let controllerStorage: any = MemoryApi_Room.getUpgraderStructure(
       room
     );
     if (controllerStorage === null) {
-      (controllerStorage as any) = { id: "" };
+      controllerStorage = {id: ""};
     }
     const allEnergyStructures: Structure[] = MemoryApi_Room.getStructures(
       room,
@@ -50,8 +50,8 @@ export class JobsHelper {
         structureType: str.structureType
       };
 
-      if (jobStr.id === room.memory.commonMemory.controllerStorage?.id) {
-        room.memory.commonMemory.controllerStorage.usable = jobStr.usable!;
+      if (jobStr.id === room.memory.commonMemory!.controllerStorage?.id) {
+        room.memory.commonMemory!.controllerStorage.usable = jobStr.usable!;
       } else {
         room.memory.jobs.energyStorages.push(jobStr);
       }
@@ -61,7 +61,7 @@ export class JobsHelper {
       energyCapacity += str.store.getCapacity(RESOURCE_ENERGY);
     });
 
-    room.memory.commonMemory.energyStored = { usable: energyUsable, capacity: energyCapacity };
+    room.memory.commonMemory!.energyStored = { usable: energyUsable, capacity: energyCapacity };
   }
 
   public static getAllContainerEnergyStoragesJobs(room: Room): JobTemplate[] {

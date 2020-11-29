@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { MemoryApi_Empire, StatsHelper } from "Utils/importer/internals";
+import { MemoryApi_Empire, MemoryApi_Room, StatsHelper } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -12,13 +12,20 @@ export class StatsManager {
   public static runStatsManager(): void {
     // Get all ownedRooms and run for each room found the runSpawningForRoom function
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
-    _.forEach(ownedRooms, (room: Room) => this.runStatsManagerForRoom(room));
+    _.forEach(ownedRooms, (room: Room) => this.runStatsManagerForOwnedRoom(room));
+
+    const dependentRooms: Room[] = MemoryApi_Room.getVisibleDependentRooms();
+    _.forEach(dependentRooms, (room: Room): void => this.runStatsManagerForGlobalRoom(room));
 
     this.runStatsManagerForGlobal();
   }
 
-  private static runStatsManagerForRoom(room: Room): void {
+  private static runStatsManagerForOwnedRoom(room: Room): void {
     StatsHelper.ownedRoom(room);
+  }
+
+  private static runStatsManagerForGlobalRoom(room: Room): void {
+    StatsHelper.remoteRoom(room);
   }
 
   private static runStatsManagerForGlobal(): void {

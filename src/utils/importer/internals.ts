@@ -16,6 +16,7 @@ export * from "Creeps/modules/reserve";
 export * from "Creeps/modules/transfer";
 export * from "Creeps/modules/upgrade";
 export * from "Creeps/modules/withdraw";
+export * from "Creeps/modules/scout";
 
 // * Jobs
 export * from "Jobs/JobsManager";
@@ -51,4 +52,7 @@ export * from "Stats/Stats.Helper";
 // * Utils
 export * from "Utils/config/config";
 export * from "Utils/ErrorMapper";
+// Utils Helpers
+export * from "Utils/UtilsHelpers/consoleCommands";
+
 //#endregion

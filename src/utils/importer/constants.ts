@@ -23,6 +23,30 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
   STRUCTURE_INVADER_CORE
 ];
 
+export const ALL_OWNED_ROOM_CREEP_ROLES: string[] = [
+  "pioneer",
+  "transferer",
+  "harvester-0",
+  "harvester-1",
+  "builder",
+  "repairer",
+  "upgrader",
+  // "mineral"
+];
+
+export const ALL_REMOTE_CREEP_ROLES: string[] = [
+  "claimerLD",
+  "builderLD",
+  "transfererLD",
+  "reserverLD",
+  "repairerLD",
+  "harvesterLD-0",
+  "harvesterLD-1",
+  "scout"
+];
+
+export const ALL_CREEP_ROLES: string[] = ALL_OWNED_ROOM_CREEP_ROLES.concat(ALL_REMOTE_CREEP_ROLES);
+
 // Jobs ticks
 export const CONST_JOBS_CACHE_TTL = 100;
 export const ENERGY_STORAGES_JOBS_CACHE_TTL = 50;
@@ -33,7 +57,7 @@ export const HOSTILE_CREEPS_JOBS_CACHE_TTL = 50;
 
 // Cache ticks
 export const CONST_CACHE_TTL = 1000;
-export const CREEPS_CACHE_TTL = 100;
+export const CREEPS_CACHE_TTL = 9;
 export const STRUCT_CACHE_TTL = 100;
 
 // Timer ticks

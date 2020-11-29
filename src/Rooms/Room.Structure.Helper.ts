@@ -48,7 +48,7 @@ export class RoomHelper_Structure {
         if (creep && creep.hits > 0) {
           tower.attack(creep);
         } else {
-          room.memory.jobs.enemies.creeps = JobsApi.removeJob(creep!.id, room.memory.jobs.enemies.creeps);
+          room.memory.jobs.enemies.creeps = JobsApi.removeJob(job.id, room.memory.jobs.enemies.creeps);
         }
       }
     });
@@ -84,17 +84,17 @@ export class RoomHelper_Structure {
 
     if (
       roomMemory === undefined ||
-      roomMemory.commonMemory.links === undefined ||
+      roomMemory.commonMemory!.links === undefined ||
       !MemoryApi_All.isMemoryPathDefined(`Memory.rooms.${room.name}.commonMemory.links`)
     ) {
       return;
     }
 
     // Define all possible sources
-    const source0: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links["source0"]);
-    const source1: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links["source1"]);
-    const head: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links["head"]);
-    const controller: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links["controller"]);
+    const source0: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["source0"]);
+    const source1: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["source1"]);
+    const head: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["head"]);
+    const controller: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["controller"]);
 
     // Define function to check if there is space in target link
     const sendEnergy = (fromLink: StructureLink, toLink: StructureLink) => {

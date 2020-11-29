@@ -2,8 +2,8 @@ interface CreepMemory {
   role: string;
   targetRoom: string;
   spawnRoom: string;
-  parts: { work: number; carry: number };
-  job: string;
+  parts?: { work: number; carry: number };
+  job?: string;
   miniJob?: string;
   sourceNumber?: number;
   sourceId?: string;
@@ -12,10 +12,12 @@ interface CreepMemory {
 }
 
 interface RoomMemory {
+  roomName?: string;
+
   // Cached objects
   structures: Cache;
   constructionSites: Cache;
-  myCreeps?: Cache;
+  myCreeps: Cache;
 
   // Jobs
   jobs: {
@@ -28,9 +30,9 @@ interface RoomMemory {
   };
 
   // Room memory
-  commonMemory: {
+  commonMemory?: {
     sourceCount: number;
-    mineral: { id: string; type: any; amount: number };
+    mineral?: { id: string; type: any; amount: number };
     sources: Array<{ id: string; pos: RoomPos }>;
     controllerLevel?: number;
     headSpawnId?: string;
@@ -47,12 +49,18 @@ interface RoomMemory {
       controller: string;
       head: string;
     };
+    reserve?: {
+      TTL: number;
+      username: string;
+    };
   };
   roomPlanner: {
     room: { sources: BestPosition[]; controller?: BestPosition };
     base?: { type: string | undefined; midPos: RoomPos };
   };
   isSetup?: boolean;
+
+  remoteRooms?: string[];
 
   // BuilderLD
   spawnRoom?: string;
@@ -74,7 +82,7 @@ interface Stats {
       energyStored: any;
       spawnerEnergy: any;
       controller: any;
-      cpu: { headModules: { creeps: any }; smallModules: { [key: string]: number }; creepModules: any };
+      cpu: { used: number, headModules: { creeps: any }; smallModules: { [key: string]: number }; creepModules: any };
     };
   };
   common: any;
@@ -93,7 +101,6 @@ interface Config {
   allRoles: string[];
   allCreepModules: string[];
   creepsCountMax: { [key: string]: number };
-  roleCountByRoomByRole: { [key: string]: { [key: string]: number } };
   cpuUsedByRoomByRole: { [key: string]: { [key: string]: number } };
   creepModuleCpuCost: { [key: string]: { [key: string]: number } };
   expenses: {
@@ -140,4 +147,13 @@ interface JobTemplate {
   needed?: number;
   structureType?: StructureConstant;
   parts?: { [key: string]: number };
+}
+
+declare namespace NodeJS {
+  interface Global {
+    Memory: Memory;
+    age?: number;
+    addRemoteRoom(spawnRoom: string, remoteRoom: string): void;
+    help(): void;
+  }
 }

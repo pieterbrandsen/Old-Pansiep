@@ -7,7 +7,8 @@ import {
   MemoryApi_Empire,
   CreepsManager,
   StatsManager,
-  JobsManager
+  JobsManager,
+  ConsoleCommands
 } from "Utils/importer/internals";
 //#endregion
 
@@ -17,6 +18,10 @@ export class ManagerManager {
    * Run all managers that need to be called by the ManagerManager
    */
   public static runManagerManager(): void {
+    if (MemoryApi_All.executeEachTicks(1000)) {
+      ConsoleCommands.init();
+    }
+
     // Load memory and save cpu before another function does this
     MemoryApi_All.functionRunnerWithCpu(
       MemoryApi_Empire.memoryLoader,
@@ -29,7 +34,7 @@ export class ManagerManager {
     // This will run all memory related management
     // Like setting up the memory
     MemoryManager.runMemoryManager();
-    
+
     // Run the roomManager
     // This will run all room related management
     // Like the towers and spawningEnergy gathering

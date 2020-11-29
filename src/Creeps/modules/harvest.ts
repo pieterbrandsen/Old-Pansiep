@@ -1,5 +1,5 @@
 //#region Require('./)
-import { Config } from "Utils/importer/internals";
+import { Config, CreepsHelper_Role } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -14,7 +14,7 @@ export class CreepRole_Harvest {
       return "full";
     }
 
-    const mineral: Mineral | null = Game.getObjectById(roomMemory.commonMemory.mineral.id);
+    const mineral: Mineral | null = Game.getObjectById(roomMemory.commonMemory!.mineral!.id);
 
     // Return if structure is null
     if (mineral === null) {
@@ -42,29 +42,42 @@ export class CreepRole_Harvest {
     // Make shortcut to memory
     const creepMemory = creep.memory;
     const roomMemory = Memory.rooms[creepMemory.targetRoom];
+    const targetRoom = Game.rooms[creepMemory.targetRoom];
 
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
       return "full";
     }
 
+    if (creep.room.name !== targetRoom.name) {
+      CreepsHelper_Role.moveToRoom(creep, creepMemory.targetRoom);
+      return;
+    }
+
     // If creep has no sourceId saved
     if (creepMemory.sourceId === undefined) {
-      const closestActiveSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-      if (closestActiveSource !== null) {
-        creep.memory.sourceId = closestActiveSource.id;
-        delete creep.memory.sourceNumber;
-      } else {
-        // If no active source available, move to another one and wait there.
-        const closestSource = creep.pos.findClosestByRange(FIND_SOURCES);
-        if (closestSource !== null && !creep.pos.inRangeTo(closestSource, 3)) {
-          creep.moveTo(closestSource);
-          return;
+      if (creepMemory.role.includes("harvester")) {
+        const sourceNumber:number = creep.memory.role.split("-")[1] as unknown as number;
+        creep.memory.sourceId = roomMemory.commonMemory!.sources[sourceNumber].id;
+        creep.memory.sourceNumber = sourceNumber;
+      }
+      else { 
+        const closestActiveSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+        if (closestActiveSource !== null) {
+          creep.memory.sourceId = closestActiveSource.id;
+          delete creep.memory.sourceNumber;
         } else {
-          return;
+          // If no active source available, move to another one and wait there.
+          const closestSource = creep.pos.findClosestByRange(FIND_SOURCES);
+          if (closestSource !== null && !creep.pos.inRangeTo(closestSource, 3)) {
+            creep.moveTo(closestSource);
+            return;
+          } else {
+            return;
+          }
         }
       }
-
+        
       return;
     }
 
@@ -88,7 +101,7 @@ export class CreepRole_Harvest {
       if (sourceNumber === undefined) {
         // If sourceNumber is in creep's role
         if (
-          creep.memory.role.split("-").length > 0 &&
+          creepMemory.role.split("-").length > 0 &&
           // @ts-ignore
           !isNaN(creep.memory.role.split("-")[1])
         ) {
@@ -96,8 +109,8 @@ export class CreepRole_Harvest {
         } else {
           // Else loop until assigned source's id is found
           let i = 0;
-          while (i < roomMemory.commonMemory.sources.length) {
-            const newSource = roomMemory.commonMemory.sources[i];
+          while (i < roomMemory.commonMemory!.sources.length) {
+            const newSource = roomMemory.commonMemory!.sources[i];
             if (newSource.id === source.id) {
               creep.memory.sourceNumber = i;
             }
@@ -125,8 +138,8 @@ export class CreepRole_Harvest {
           }
         } else {
           let i = 0;
-          while (i < roomMemory.commonMemory.sources.length) {
-            const newSource = roomMemory.commonMemory.sources[i];
+          while (i < roomMemory.commonMemory!.sources.length) {
+            const newSource = roomMemory.commonMemory!.sources[i];
             const roomPlannerNewSource = roomMemory.roomPlanner.room.sources[i];
             if (roomPlannerNewSource !== null) {
               const creepsAroundNewSource = creep.room.lookForAtArea(
@@ -176,9 +189,9 @@ export class CreepRole_Harvest {
       switch (result) {
         case OK:
           if (creepMemory.role.includes("LD")) {
-            Config.income.remoteHarvesting[creep.room.name] += creep.memory.parts.work * 2;
+            Config.income.remoteHarvesting[creep.room.name] += creep.memory.parts!.work * 2;
           } else {
-            Config.income.ownedHarvesting[creep.room.name] += creep.memory.parts.work * 2;
+            Config.income.ownedHarvesting[creep.room.name] += creep.memory.parts!.work * 2;
           }
           break;
         case ERR_NOT_ENOUGH_RESOURCES:

@@ -15,11 +15,9 @@ export class MemoryApi_Empire {
   }
 
   public static resetMainTracking(): void {
-    Config.roleCountByRoomByRole = {};
     Config.cpuUsedByRoomByRole = {};
 
     Config.creepModuleCpuCost = {};
-    Config.roleCountByRoomByRole = {};
 
     Config.expenses.building = {};
     Config.expenses.repairing = {};

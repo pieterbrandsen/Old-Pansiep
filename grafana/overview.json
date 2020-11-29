@@ -15,15 +15,15 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 4,
   "links": [],
   "panels": [
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Graphite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -49,14 +49,14 @@
         "total": false,
         "values": false
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -66,8 +66,9 @@
       "steppedLine": false,
       "targets": [
         {
+          "queryType": "randomWalk",
           "refId": "A",
-          "target": "aliasByMetric(stats.gauges.ticksAlive)"
+          "target": "alias(screeps.privateserver.ticksAlive, 'Ticks')"
         }
       ],
       "thresholds": [],
@@ -95,7 +96,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         },
         {
           "format": "short",
@@ -126,5 +127,5 @@
   "timezone": "",
   "title": "Overview",
   "uid": "nqOnoshMz",
-  "version": 1
+  "version": 4
 }

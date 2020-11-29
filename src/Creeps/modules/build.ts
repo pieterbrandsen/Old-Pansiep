@@ -15,7 +15,7 @@ export class CreepRole_Build {
     }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
-    if (roomMemory.constructionSites.data.length === 0 && !creepMemory.targetId) {
+    if (roomMemory.jobs.constructionSites.length === 0 && !creepMemory.targetId) {
       if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
         creep.moveTo(creep.room.controller);
       }
@@ -46,7 +46,7 @@ export class CreepRole_Build {
       // Switch based on the results
       switch (result) {
         case OK:
-          Config.expenses.building[creep.room.name] += creep.memory.parts.work * 5;
+          Config.expenses.building[creep.room.name] += creep.memory.parts!.work * 5;
           break;
         case ERR_INVALID_TARGET:
           roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);

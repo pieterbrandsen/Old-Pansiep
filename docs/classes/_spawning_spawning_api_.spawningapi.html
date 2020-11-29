@@ -84,7 +84,12 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getopenspawn" class="tsd-kind-icon">get<wbr>Open<wbr>Spawn</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getallopenspawn" class="tsd-kind-icon">get<wbr>All<wbr>Open<wbr>Spawn</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getcreepdirections" class="tsd-kind-icon">get<wbr>Creep<wbr>Directions</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getcreepmemory" class="tsd-kind-icon">get<wbr>Creep<wbr>Memory</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getcreepname" class="tsd-kind-icon">get<wbr>Creep<wbr>Name</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getcreepparts" class="tsd-kind-icon">get<wbr>Creep<wbr>Parts</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spawning_spawning_api_.spawningapi.html#getnextrolename" class="tsd-kind-icon">get<wbr>Next<wbr>Role<wbr>Name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -93,16 +98,16 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="getopenspawn" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Open<wbr>Spawn</h3>
+					<a name="getallopenspawn" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>All<wbr>Open<wbr>Spawn</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Open<wbr>Spawn<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>All<wbr>Open<wbr>Spawn<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/7f7e491/src/Spawning/Spawning.Api.ts#L13">Spawning/Spawning.Api.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/8558913/src/Spawning/Spawning.Api.ts#L13">Spawning/Spawning.Api.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -121,6 +126,147 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getcreepdirections" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Creep<wbr>Directions</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Creep<wbr>Directions<span class="tsd-signature-symbol">(</span>role<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DirectionConstant</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/8558913/src/Spawning/Spawning.Api.ts#L124">Spawning/Spawning.Api.ts:124</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>role: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">DirectionConstant</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getcreepmemory" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Creep<wbr>Memory</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Creep<wbr>Memory<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, role<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetRoom<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CreepMemory</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/8558913/src/Spawning/Spawning.Api.ts#L30">Spawning/Spawning.Api.ts:30</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5>role: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> targetRoom: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = room.name</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">CreepMemory</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getcreepname" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Creep<wbr>Name</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Creep<wbr>Name<span class="tsd-signature-symbol">(</span>role<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/8558913/src/Spawning/Spawning.Api.ts#L120">Spawning/Spawning.Api.ts:120</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>role: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getcreepparts" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Creep<wbr>Parts</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Creep<wbr>Parts<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, role<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BodyPartConstant</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>bodyCost<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/8558913/src/Spawning/Spawning.Api.ts#L39">Spawning/Spawning.Api.ts:39</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5>role: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BodyPartConstant</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>bodyCost<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BodyPartConstant</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>body<wbr>Cost<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="getnextrolename" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Next<wbr>Role<wbr>Name</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Next<wbr>Role<wbr>Name<span class="tsd-signature-symbol">(</span>room<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Room</span>, roomType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetRoom<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/pieterbrandsen/Pansiep/blob/8558913/src/Spawning/Spawning.Api.ts#L136">Spawning/Spawning.Api.ts:136</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>room: <span class="tsd-signature-type">Room</span></h5>
+								</li>
+								<li>
+									<h5>roomType: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> targetRoom: <span class="tsd-signature-type">Room</span><span class="tsd-signature-symbol"> = room</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -145,7 +291,22 @@
 						<a href="_spawning_spawning_api_.spawningapi.html" class="tsd-kind-icon">Spawning<wbr>Api</a>
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_spawning_spawning_api_.spawningapi.html#getopenspawn" class="tsd-kind-icon">get<wbr>Open<wbr>Spawn</a>
+								<a href="_spawning_spawning_api_.spawningapi.html#getallopenspawn" class="tsd-kind-icon">get<wbr>All<wbr>Open<wbr>Spawn</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_spawning_spawning_api_.spawningapi.html#getcreepdirections" class="tsd-kind-icon">get<wbr>Creep<wbr>Directions</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_spawning_spawning_api_.spawningapi.html#getcreepmemory" class="tsd-kind-icon">get<wbr>Creep<wbr>Memory</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_spawning_spawning_api_.spawningapi.html#getcreepname" class="tsd-kind-icon">get<wbr>Creep<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_spawning_spawning_api_.spawningapi.html#getcreepparts" class="tsd-kind-icon">get<wbr>Creep<wbr>Parts</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_spawning_spawning_api_.spawningapi.html#getnextrolename" class="tsd-kind-icon">get<wbr>Next<wbr>Role<wbr>Name</a>
 							</li>
 						</ul>
 					</li>

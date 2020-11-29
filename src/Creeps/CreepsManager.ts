@@ -43,11 +43,6 @@ export class CreepsManager {
       creep,
       creepRoleName
     );
-
-    // Handle the counting
-    if (Config.roleCountByRoomByRole[creep.room.name]) {
-      Config.roleCountByRoomByRole[creep.room.name][creepMemory.role]++;
-    }
   }
 
   private static roleHandler(creep: Creep, roleName: string): void {

@@ -33,27 +33,31 @@ export class CreepRole_Transfer {
           creep.memory.miniJob = "mineral";
           break;
         }
+        else if (creepMemory.role.includes("LD")) {
+          creep.memory.miniJob = "storage";
+          break;
+        }
 
         if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
           creep.memory.miniJob = "spawner";
           break;
         } else if (
-          roomMemory.commonMemory.energyStored.capacity > 10000 &&
-          roomMemory.commonMemory.energyStored.capacity / 10 > roomMemory.commonMemory.energyStored.usable
+          roomMemory.commonMemory!.energyStored.capacity > 10000 &&
+          roomMemory.commonMemory!.energyStored.capacity / 10 > roomMemory.commonMemory!.energyStored.usable
         ) {
           creep.memory.miniJob = "storage";
           break;
         } else if (
-          roomMemory.commonMemory.controllerStorage &&
-          roomMemory.commonMemory.controllerStorage.usable < 1500 &&
-          roomMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER &&
-          Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!) !== null
+          roomMemory.commonMemory!.controllerStorage &&
+          roomMemory.commonMemory!.controllerStorage.usable < 1500 &&
+          roomMemory.commonMemory!.controllerStorage.type === STRUCTURE_CONTAINER &&
+          Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null
         ) {
           creep.memory.miniJob = "controller";
           break;
         } else if (
-          roomMemory.commonMemory.energyStored.capacity > 10000 &&
-          roomMemory.commonMemory.energyStored.capacity / 2 > roomMemory.commonMemory.energyStored.usable
+          roomMemory.commonMemory!.energyStored.capacity > 10000 &&
+          roomMemory.commonMemory!.energyStored.capacity / 2 > roomMemory.commonMemory!.energyStored.usable
         ) {
           creep.memory.miniJob = "storage";
         }
@@ -83,7 +87,7 @@ export class CreepRole_Transfer {
       return "empty";
     }
     // Run the transfer function
-    const result = creep.transfer(target, roomMemory.commonMemory.mineral.type);
+    const result = creep.transfer(target, roomMemory.commonMemory!.mineral!.type);
 
     // Switch based on the results
     switch (result) {
@@ -241,17 +245,18 @@ export class CreepRole_Transfer {
   private static storage(creep: Creep): void | string {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
-    const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
+    const spawnRoom: Room = Game.rooms[creepMemory.spawnRoom];
+    const roomMemory: RoomMemory = Memory.rooms[creepMemory.spawnRoom];
 
     // Return empty if current creep's storage is empty
-    if (creep.store.getUsedCapacity() === 0) {
+    if (creep.store.getUsedCapacity() === 0 || spawnRoom === undefined) {
       return "empty";
     }
 
     // If there is enough energy in storage
     if (
-      roomMemory.commonMemory.energyStored.capacity > 10000 &&
-      roomMemory.commonMemory.energyStored.capacity / 2 < roomMemory.commonMemory.energyStored.usable
+      roomMemory.commonMemory!.energyStored.capacity > 10000 &&
+      roomMemory.commonMemory!.energyStored.capacity / 2 < roomMemory.commonMemory!.energyStored.usable
     ) {
       return "empty";
     }
@@ -259,11 +264,11 @@ export class CreepRole_Transfer {
     // If room is in need of more energy in the storage/terminal
     if (creepMemory.targetId === undefined) {
       // If there is enough space in storage
-      if (creep.room.storage && creep.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 400 * 1000) {
-        creepMemory.targetId = creep.room.storage.id;
+      if (spawnRoom.storage && spawnRoom.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 400 * 1000) {
+        creepMemory.targetId = spawnRoom.storage!.id;
         // If there is enough space in terminal
-      } else if (creep.room.terminal && creep.room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 100 * 1000) {
-        creepMemory.targetId = creep.room.terminal.id;
+      } else if (spawnRoom.terminal && spawnRoom.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 100 * 1000) {
+        creepMemory.targetId = spawnRoom.terminal!.id;
       }
     } else {
       // Get the saved structure from memory
@@ -306,21 +311,21 @@ export class CreepRole_Transfer {
     }
 
     // Return if controller object is undefined
-    if (roomMemory.commonMemory.controllerStorage === undefined) {
+    if (roomMemory.commonMemory!.controllerStorage === undefined) {
       return "empty";
     }
 
     // If controller structure has enough energy
     if (
-      (roomMemory.commonMemory.controllerStorage.usable > 1750 ||
-        roomMemory.commonMemory.controllerStorage.type !== STRUCTURE_CONTAINER) &&
+      (roomMemory.commonMemory!.controllerStorage.usable > 1750 ||
+        roomMemory.commonMemory!.controllerStorage.type !== STRUCTURE_CONTAINER) &&
       !creep.memory.targetId
     ) {
       return "empty";
     }
 
     // Get the saved structure from memory
-    const transferStructure: AnyStructure | null = Game.getObjectById(roomMemory.commonMemory.controllerStorage.id!);
+    const transferStructure: AnyStructure | null = Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!);
 
     // Return empty if transferStructure is null
     if (transferStructure === null) {
@@ -338,7 +343,7 @@ export class CreepRole_Transfer {
         // Delete targetId
         delete creep.memory.targetId;
         if (result === ERR_INVALID_TARGET) {
-          roomMemory.commonMemory.controllerStorage.id! = "";
+          roomMemory.commonMemory!.controllerStorage.id! = "";
         }
         break;
       case ERR_NOT_IN_RANGE:
