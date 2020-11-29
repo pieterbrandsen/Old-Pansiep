@@ -36,7 +36,10 @@ export class CreepRole_Build {
 
       // If construction site doesn't exist, remove it
       if (constructionSite === null) {
-        roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+        roomMemory.jobs.constructionSites = JobsApi.removeJob(
+          creep.memory.targetId!,
+          roomMemory.jobs.constructionSites
+        );
         delete creep.memory.targetId;
         return "empty";
       }
@@ -49,7 +52,10 @@ export class CreepRole_Build {
           Config.expenses.building[creep.room.name] += creep.memory.parts!.work * 5;
           break;
         case ERR_INVALID_TARGET:
-          roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+          roomMemory.jobs.constructionSites = JobsApi.removeJob(
+            creep.memory.targetId!,
+            roomMemory.jobs.constructionSites
+          );
           delete creep.memory.targetId;
           return "full";
         case ERR_NOT_IN_RANGE:

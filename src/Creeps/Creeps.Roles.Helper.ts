@@ -45,7 +45,7 @@ export class CreepsHelper_Role {
       case "mineral":
         this.mineral(creep);
         break;
-        case "scout": 
+      case "scout":
         this.scout(creep);
         break;
       default:
@@ -127,14 +127,14 @@ export class CreepsHelper_Role {
           "+=",
           creep
         );
-        case "scout":
-          return MemoryApi_All.functionRunnerWithCpu(
-            CreepRole_Scout.scout,
-            Config.creepModuleCpuCost[creep.room.name],
-            job,
-            "+=",
-            creep
-          );
+      case "scout":
+        return MemoryApi_All.functionRunnerWithCpu(
+          CreepRole_Scout.scout,
+          Config.creepModuleCpuCost[creep.room.name],
+          job,
+          "+=",
+          creep
+        );
       default:
         break;
     }
@@ -453,16 +453,14 @@ export class CreepsHelper_Role {
           creep.memory.job = "repair";
         } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
           creep.memory.job = "upgrade";
-        }
-        else {
-          if (!creep.pos.inRangeTo(25,25,20)) {
+        } else {
+          if (!creep.pos.inRangeTo(25, 25, 20)) {
             if (creep.room.controller) {
               creep.moveTo(creep.room.controller);
+            } else {
+              creep.moveTo(25, 25);
             }
-            else {
-              creep.moveTo(25,25);
-            }
-          } 
+          }
         }
         break;
       case "empty":
@@ -514,8 +512,7 @@ export class CreepsHelper_Role {
           creep.memory.job = "build";
         } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
           creep.memory.job = "upgrade";
-        }
-        else { 
+        } else {
           creep.suicide();
         }
         break;

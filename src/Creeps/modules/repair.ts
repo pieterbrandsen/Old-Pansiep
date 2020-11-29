@@ -40,7 +40,10 @@ export class CreepRole_Repair {
       const repairTarget: AnyStructure | null = Game.getObjectById(targetId);
 
       if (repairTarget === null) {
-        roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+        roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(
+          creep.memory.targetId!,
+          roomMemory.jobs.constructionSites
+        );
         delete creep.memory.targetId;
         return "empty";
       }
@@ -58,13 +61,19 @@ export class CreepRole_Repair {
             repairTarget.hits === repairTarget.hitsMax ||
             repairTarget.hits > roomMemory.jobs.damagedStructures.hitsTarget
           ) {
-            roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+            roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(
+              creep.memory.targetId!,
+              roomMemory.jobs.constructionSites
+            );
             delete creep.memory.targetId;
           }
           break;
         case ERR_INVALID_TARGET:
           // Delete target from the memory
-          roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.constructionSites);
+          roomMemory.jobs.damagedStructures.data = JobsApi.removeJob(
+            creep.memory.targetId!,
+            roomMemory.jobs.constructionSites
+          );
           delete creep.memory.targetId;
           break;
         case ERR_NOT_IN_RANGE:

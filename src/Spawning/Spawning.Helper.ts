@@ -20,8 +20,9 @@ export class SpawningHelper {
         Config.expenses.spawnExpenses[spawnRoom.name][memory.role] += bodyResult.bodyCost;
       }
       return spawnResult;
+    } else {
+      return ERR_BUSY;
     }
-    else {return ERR_BUSY}
   }
 
   public static spawnRemoteCreep(spawnRoom: Room, targetRoom: Room, targetRoomName: string): ScreepsReturnCode {
@@ -29,7 +30,6 @@ export class SpawningHelper {
     if (!nextCreep[0]) {
       return OK;
     }
-
 
     const spawns = SpawningApi.getAllOpenSpawn(spawnRoom);
     const memory = SpawningApi.getCreepMemory(spawnRoom, nextCreep[1], targetRoomName);
@@ -40,11 +40,17 @@ export class SpawningHelper {
         Config.expenses.spawnExpenses[targetRoomName][memory.role] += bodyResult.bodyCost;
       }
       return spawnResult;
+    } else {
+      return ERR_BUSY;
     }
-    else {return ERR_BUSY}
   }
 
-  private static spawnCreep(spawnRoom: Room, spawn: StructureSpawn, memory: CreepMemory, body: BodyPartConstant[]): ScreepsReturnCode {
+  private static spawnCreep(
+    spawnRoom: Room,
+    spawn: StructureSpawn,
+    memory: CreepMemory,
+    body: BodyPartConstant[]
+  ): ScreepsReturnCode {
     return spawn.spawnCreep(body, SpawningApi.getCreepName(memory.role), {
       memory,
       directions: SpawningApi.getCreepDirections(memory.role, spawnRoom)

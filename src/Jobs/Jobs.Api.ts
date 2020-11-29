@@ -38,16 +38,15 @@ export class JobsApi {
     } else if (jobs.length > 1) {
       _.remove(jobs, job);
       return jobs;
-    }
-    else {
+    } else {
       jobs.shift();
       return jobs;
     }
   }
 
   public static findJob(jobId: string, jobs: JobTemplate[]): JobTemplate | undefined {
-    const job: JobTemplate | undefined =_.find(jobs, { id: jobId });
-    return job
+    const job: JobTemplate | undefined = _.find(jobs, { id: jobId });
+    return job;
   }
 }
 //#endregion

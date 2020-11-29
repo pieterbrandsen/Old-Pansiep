@@ -32,8 +32,7 @@ export class CreepRole_Transfer {
         if (creepMemory.role === "mineral") {
           creep.memory.miniJob = "mineral";
           break;
-        }
-        else if (creepMemory.role.includes("LD")) {
+        } else if (creepMemory.role.includes("LD")) {
           creep.memory.miniJob = "storage";
           break;
         }

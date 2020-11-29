@@ -354,7 +354,7 @@ export class OldRoomPlanner {
       }
 
       // Get middle position of bunker
-      const midPos: any = { x: headSpawn.pos.x + 1, y: headSpawn.pos.y -1 };
+      const midPos: any = { x: headSpawn.pos.x + 1, y: headSpawn.pos.y - 1 };
 
       if (doesBunkerFitAtPosition(terrain, midPos)) {
         roomMemory.roomPlanner.base.type = "bunker";

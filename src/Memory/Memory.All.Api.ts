@@ -1,4 +1,4 @@
-import { MemoryApi_Room } from './Memory.Room.Api';
+import { MemoryApi_Room } from "./Memory.Room.Api";
 export class MemoryApi_All {
   public static garbageCollection(): void {
     for (const name in Memory.creeps) {

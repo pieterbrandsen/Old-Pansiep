@@ -30,7 +30,7 @@ export const ALL_OWNED_ROOM_CREEP_ROLES: string[] = [
   "harvester-1",
   "builder",
   "repairer",
-  "upgrader",
+  "upgrader"
   // "mineral"
 ];
 

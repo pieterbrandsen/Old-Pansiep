@@ -9,7 +9,7 @@ export const Config: Config = {
   // },
   rooms: {
     minBucket: 1000,
-    remoteMinBucket: 3000,
+    remoteMinBucket: 3000
   },
   allRoles: [
     "pioneer",

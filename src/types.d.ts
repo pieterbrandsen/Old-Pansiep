@@ -82,7 +82,7 @@ interface Stats {
       energyStored: any;
       spawnerEnergy: any;
       controller: any;
-      cpu: { used: number, headModules: { creeps: any }; smallModules: { [key: string]: number }; creepModules: any };
+      cpu: { used: number; headModules: { creeps: any }; smallModules: { [key: string]: number }; creepModules: any };
     };
   };
   common: any;

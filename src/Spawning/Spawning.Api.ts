@@ -280,22 +280,21 @@ export class SpawningApi {
               break;
             }
 
-
             if (role.includes("LD") && roomType !== "remote") {
               if (!Game.flags[`builderLD${room.name}`]) {
                 break;
               } else if (
                 Memory.rooms[`builderLD${room.name}`] &&
                 Memory.rooms[`builderLD${room.name}`].spawnRoom === room.name
-                ) {
+              ) {
+                // @ts-ignore
+                if (Memory.rooms[`builderLD${room.name}`].room !== undefined) {
                   // @ts-ignore
-                  if (Memory.rooms[`builderLD${room.name}`].room !== undefined) {
-                    // @ts-ignore
-                    memory.targetRoom = Memory.rooms[`builderLD${room.name}`].room;
-                  }
+                  memory.targetRoom = Memory.rooms[`builderLD${room.name}`].room;
                 }
               }
-                
+            }
+
             if (targetRoomMemory.constructionSites.data.length === 0) {
               break;
             }

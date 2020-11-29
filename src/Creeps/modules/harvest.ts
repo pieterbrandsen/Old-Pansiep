@@ -57,11 +57,10 @@ export class CreepRole_Harvest {
     // If creep has no sourceId saved
     if (creepMemory.sourceId === undefined) {
       if (creepMemory.role.includes("harvester")) {
-        const sourceNumber:number = creep.memory.role.split("-")[1] as unknown as number;
+        const sourceNumber: number = (creep.memory.role.split("-")[1] as unknown) as number;
         creep.memory.sourceId = roomMemory.commonMemory!.sources[sourceNumber].id;
         creep.memory.sourceNumber = sourceNumber;
-      }
-      else { 
+      } else {
         const closestActiveSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
         if (closestActiveSource !== null) {
           creep.memory.sourceId = closestActiveSource.id;
@@ -77,7 +76,7 @@ export class CreepRole_Harvest {
           }
         }
       }
-        
+
       return;
     }
 
