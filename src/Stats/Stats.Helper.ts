@@ -45,17 +45,14 @@ export class StatsHelper {
       const commonMemory = roomStats["commonMemory"];
       if (typeof commonMemory === "object") {
         commonMemory.constructionSitesCount = roomMemory.constructionSites.data?.length;
-        if (!commonMemory.creepCountByRole) {
-          commonMemory.creepCountByRole = {};
-        }
+
         // eslint-disable-next-line guard-for-in
-        for (const role in Config.roleCountByRoomByRole[room.name]) {
+        for (const role in room.memory.myCreeps.data) {
           commonMemory.creepCountByRole[role] = MemoryApi_All.memoryAverager(
             commonMemory.creepCountByRole[role],
-            Config.roleCountByRoomByRole[room.name][role]
+            room.memory.myCreeps.data[role].length
           );
         }
-        commonMemory.sourceCount = roomMemory.commonMemory!.sources.length;
       }
 
       // Set all performance related memory
@@ -121,7 +118,7 @@ export class StatsHelper {
     }
   };
 
-  public static ownedRoom = (room: Room) => {
+  public static ownedRoom(room: Room) {
     StatsHelper.globalRoom(room);
 
     // Define stats memory link
@@ -130,6 +127,8 @@ export class StatsHelper {
     if (typeof statsMemory.rooms === "object") {
       // Get room stats from memory
       const roomStats = statsMemory.rooms[room.name];
+      // Create a acces point to the roomMemory //
+      const roomMemory: RoomMemory = room.memory;
 
       // Set all spawner energy related memory
       const spawnerEnergy = roomStats["spawnerEnergy"];
@@ -145,6 +144,38 @@ export class StatsHelper {
         controller.progress = room.controller?.progress;
         controller.progressTotal = room.controller?.progressTotal;
       }
+
+      // Set all commonMemory related memory
+      const commonMemory = roomStats["commonMemory"];
+      if (typeof commonMemory === "object") {
+        const ownedCommonMemory = roomStats.commonMemory["owned"];
+        if (typeof ownedCommonMemory === "object") {
+          ownedCommonMemory.sourceCount = roomMemory.commonMemory!.sources.length;
+        }
+      }
     }
-  };
+  }
+
+  public static remoteRoom(room: Room) {
+    StatsHelper.globalRoom(room);
+
+    // Define stats memory link
+    const statsMemory = Memory.stats;
+
+    if (typeof statsMemory.rooms === "object") {
+      // Get room stats from memory
+      const roomStats = statsMemory.rooms[room.name];
+      // Create a acces point to the roomMemory //
+      const roomMemory: RoomMemory = room.memory;
+
+      // Set all commonMemory related memory
+      const commonMemory = roomStats["commonMemory"];
+      if (typeof commonMemory === "object") {
+        const remoteCommonMemory = roomStats.commonMemory["remote"];
+        if (typeof remoteCommonMemory === "object") {
+          remoteCommonMemory.sourceCount = roomMemory.commonMemory!.sources.length;
+        }
+      }
+    }
+  }
 }
