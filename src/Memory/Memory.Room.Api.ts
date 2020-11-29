@@ -7,7 +7,8 @@ import {
   STRUCT_CACHE_TTL,
   CONST_CACHE_TTL,
   MemoryApi_Empire,
-  CREEPS_CACHE_TTL
+  CREEPS_CACHE_TTL,
+  ALL_CREEP_ROLES
 } from "Utils/importer/internals";
 //#endregion
 
@@ -24,7 +25,7 @@ export class MemoryApi_Room {
       energyStored: {},
       spawnerEnergy: {},
       controller: {},
-      cpu: { headModules: { creeps: {} }, smallModules: {}, creepModules: {} }
+      cpu: { headModules: { creeps: {} }, smallModules: {}, creepModules: {}, used: 0 }
     };
 
     if (isOwnedRoom) {
@@ -55,7 +56,7 @@ export class MemoryApi_Room {
             creeps: []
           }
         },
-        remoteRooms: {},
+        remoteRooms: [],
 
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null },
@@ -67,7 +68,8 @@ export class MemoryApi_Room {
         commonMemory: {
           sources: [],
           sourceCount: 0,
-          energyStored: { usable: 0, capacity: 0 }, reserve: {TTL: 0, username: ""}
+          energyStored: { usable: 0, capacity: 0 },
+          reserve: { TTL: 0, username: "" }
         },
         roomPlanner: {
           room: { sources: [] }
@@ -185,10 +187,8 @@ export class MemoryApi_Room {
     });
 
     // Reset all role related memory
-    Config.roleCountByRoomByRole[room.name] = {};
     Config.cpuUsedByRoomByRole[room.name] = {};
     Config.allRoles.forEach(role => {
-      Config.roleCountByRoomByRole[room.name][role] = 0;
       Config.cpuUsedByRoomByRole[room.name][role] = 0;
     });
 
@@ -200,9 +200,20 @@ export class MemoryApi_Room {
     Config.income.remoteHarvesting[room.name] = 0;
 
     Config.expenses.spawnExpenses[room.name] = {};
-    Config.allRoles.forEach((role: string) => {
+    ALL_CREEP_ROLES.forEach((role: string) => {
       Config.expenses.spawnExpenses[room.name][role] = 0;
     });
+  }
+
+  public static resetStatsMemory(roomName: string): void {
+    Memory.stats.rooms[roomName] = {
+      commonMemory: { creepCountByRole: {}, owned: {}, remote: {} },
+      performance: { expenses: {}, income: {} },
+      energyStored: {},
+      spawnerEnergy: {},
+      controller: {},
+      cpu: { headModules: { creeps: {} }, smallModules: {}, creepModules: {}, used: 0 }
+    };
   }
 
   public static resetRoomMemory(room: Room, forceUpdate?: boolean, isOwnedRoom: boolean = false): void {
@@ -218,30 +229,26 @@ export class MemoryApi_Room {
     });
 
     // Reset this room in the stats memory
-    Memory.stats.rooms[room.name] = {
-      commonMemory: {},
-      performance: { expenses: {}, income: {} },
-      energyStored: {},
-      spawnerEnergy: {},
-      controller: {},
-      cpu: { headModules: { creeps: {} }, smallModules: {}, creepModules: {} }
-    };
+    this.resetStatsMemory(room.name);
 
     // Set all commonMemory for a owned and remote room
     roomMemory.commonMemory! = {
       // Set the source length
       sourceCount: sources.length,
-      // Get the id, type and amount from the mineral in this room
-      mineral: {
-        id: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].id : "",
-        type: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : "",
-        amount: room.find(FIND_MINERALS)[0] ? Math.round(room.find(FIND_MINERALS)[0].mineralAmount) : 0
-      },
       // Set the id and pos of all sources to the memory of the room
       sources,
       // Set the energyStored to a 0 for both of the keys
       energyStored: { usable: 0, capacity: 0 }
     };
+
+    if (isOwnedRoom) {
+      roomMemory.commonMemory!.mineral! = {
+        // Get the id, type and amount from the mineral in this room
+        id: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].id : "",
+        type: room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : "",
+        amount: room.find(FIND_MINERALS)[0] ? Math.round(room.find(FIND_MINERALS)[0].mineralAmount) : 0
+      };
+    }
 
     // Set the roomPlanner object to the template
     roomMemory.roomPlanner = { room: { sources: [] } };
@@ -404,7 +411,6 @@ export class MemoryApi_Room {
       }
     }
 
-
     let creeps: Creep[] = MemoryHelper.getOnlyObjectsFromIDs<Creep>(creepsIDs);
 
     if (filterFunction !== undefined) {
@@ -414,11 +420,7 @@ export class MemoryApi_Room {
     return creeps;
   }
 
-  public static getMyCreepsOfType(
-    room: Room,
-    type: string,
-    filterFunction?: (object: any) => boolean
-  ): Creep[] {
+  public static getMyCreepsOfType(room: Room, type: string, filterFunction?: (object: any) => boolean): Creep[] {
     // If we have no vision of the room, return an empty array
     if (!room.memory) {
       return [];
@@ -485,22 +487,16 @@ export class MemoryApi_Room {
     room: Room,
     filterFunction?: (object: RoomMemory) => boolean,
     targetRoom?: string
-  ): RoomMemory[] {
+  ): string[] {
     if (Memory.rooms[room.name] === undefined || Memory.rooms[room.name]!.remoteRooms === undefined) {
       return [];
     }
 
-    let remoteRooms: RoomMemory[] = [];
-    for (const i in room.memory.remoteRooms) {
-      const rr: RoomMemory = room.memory.remoteRooms[i];
-      if (rr) {
-        remoteRooms.push(rr);
-      }
-    }
+    let remoteRooms: string[] = room.memory.remoteRooms!;
 
     // TargetRoom parameter provided
     if (targetRoom !== undefined) {
-      remoteRooms = _.filter(remoteRooms, (roomMemory: RoomMemory) => roomMemory.roomName === targetRoom);
+      remoteRooms = _.filter(remoteRooms, (roomName: string) => roomName === targetRoom);
     }
 
     if (filterFunction !== undefined) {
@@ -516,7 +512,7 @@ export class MemoryApi_Room {
     const roomNames: string[] = [];
     _.forEach(ownedRooms, (room: Room) => {
       // Collect the room names for dependent rooms
-      _.forEach(MemoryApi_Room.getRemoteRooms(room), (rr: RoomMemory) => roomNames.push(rr.roomName!));
+      _.forEach(MemoryApi_Room.getRemoteRooms(room), (roomName: string) => roomNames.push(roomName));
     });
 
     // Return all visible rooms which appear in roomNames array

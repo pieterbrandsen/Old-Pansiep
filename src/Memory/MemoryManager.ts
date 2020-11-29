@@ -17,6 +17,15 @@ export class MemoryManager {
       MemoryApi_Room.resetRoomTracking(room);
     });
 
+    // Run all dependent rooms we have visiblity in
+    const dependentRooms: Room[] = MemoryApi_Room.getVisibleDependentRooms();
+    _.forEach(dependentRooms, (room: Room): void => {
+      const isOwnedRoom: boolean = false;
+      MemoryApi_Room.isRoomSetup(room);
+      MemoryApi_Room.initRoomMemory(room, isOwnedRoom);
+      MemoryApi_Room.resetRoomTracking(room);
+    });
+
     // Set the ticks alive one tick higher
     Memory.stats["ticksAlive"]++;
   }

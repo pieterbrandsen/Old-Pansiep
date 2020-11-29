@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { ALL_CREEP_ROLES, ALL_STRUCTURE_TYPES, MemoryApi_Room } from "Utils/importer/internals";
+import { ALL_CREEP_ROLES, ALL_STRUCTURE_TYPES, JobsHelper, MemoryApi_Room } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -9,6 +9,15 @@ export class MemoryHelper_Room {
     this.updateStructures(room);
     this.updateConstructionSites(room);
     this.updateMyCreeps(room);
+
+    if (isOwnedRoom) {
+      JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
+    }
+    JobsHelper.updateAllEnergyStoragesJobs(room);
+    JobsHelper.updateAllHostileCreepsJobs(room);
+    JobsHelper.updateAllDamagedCreepsJobs(room);
+    JobsHelper.updateAllConstructionSitesJobs(room);
+    JobsHelper.updateAllDamagedStructuresJobs(room);
   }
 
   public static updateStructures(room: Room): void {
@@ -55,12 +64,12 @@ export class MemoryHelper_Room {
 
     room.memory.myCreeps = { data: {}, cache: null };
 
-    const allCreeps: Creep[] = room.find(FIND_MY_CREEPS);
+    const allCreeps: Creep[] = _.filter(Game.creeps, creep => creep.memory.targetRoom === room.name);
     const sortedCreepsIDs: StringMap = {};
     _.forEach(ALL_CREEP_ROLES, (role: string) => {
       sortedCreepsIDs[role] = _.map(
         _.remove(allCreeps, (c: Creep) => c.memory.role === role),
-        (c: Creep) => c.memory.role
+        (c: Creep) => c.id
       );
     });
 
