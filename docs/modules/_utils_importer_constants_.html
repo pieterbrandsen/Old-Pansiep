@@ -73,6 +73,9 @@
 						<section class="tsd-index-section tsd-is-external">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external"><a href="_utils_importer_constants_.html#all_creep_roles" class="tsd-kind-icon">ALL_<wbr>CREEP_<wbr>ROLES</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external"><a href="_utils_importer_constants_.html#all_owned_room_creep_roles" class="tsd-kind-icon">ALL_<wbr>OWNED_<wbr>ROOM_<wbr>CREEP_<wbr>ROLES</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external"><a href="_utils_importer_constants_.html#all_remote_creep_roles" class="tsd-kind-icon">ALL_<wbr>REMOTE_<wbr>CREEP_<wbr>ROLES</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external"><a href="_utils_importer_constants_.html#all_structure_types" class="tsd-kind-icon">ALL_<wbr>STRUCTURE_<wbr>TYPES</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external"><a href="_utils_importer_constants_.html#base_planner_timer" class="tsd-kind-icon">BASE_<wbr>PLANNER_<wbr>TIMER</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external"><a href="_utils_importer_constants_.html#const_cache_ttl" class="tsd-kind-icon">CONST_<wbr>CACHE_<wbr>TTL</a></li>
@@ -98,6 +101,36 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-external">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external">
+					<a name="all_creep_roles" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> ALL_<wbr>CREEP_<wbr>ROLES</h3>
+					<div class="tsd-signature tsd-kind-icon">ALL_<wbr>CREEP_<wbr>ROLES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ALL_OWNED_ROOM_CREEP_ROLES.concat(ALL_REMOTE_CREEP_ROLES)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in Utils/Importer/constants.ts:48</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external">
+					<a name="all_owned_room_creep_roles" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> ALL_<wbr>OWNED_<wbr>ROOM_<wbr>CREEP_<wbr>ROLES</h3>
+					<div class="tsd-signature tsd-kind-icon">ALL_<wbr>OWNED_<wbr>ROOM_<wbr>CREEP_<wbr>ROLES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [&quot;pioneer&quot;,&quot;transferer&quot;,&quot;harvester-0&quot;,&quot;harvester-1&quot;,&quot;builder&quot;,&quot;repairer&quot;,&quot;upgrader&quot;,// &quot;mineral&quot;]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in Utils/Importer/constants.ts:26</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external">
+					<a name="all_remote_creep_roles" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> ALL_<wbr>REMOTE_<wbr>CREEP_<wbr>ROLES</h3>
+					<div class="tsd-signature tsd-kind-icon">ALL_<wbr>REMOTE_<wbr>CREEP_<wbr>ROLES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [&quot;claimerLD&quot;,&quot;builderLD&quot;,&quot;transfererLD&quot;,&quot;reserverLD&quot;,&quot;repairerLD&quot;,&quot;harvesterLD-0&quot;,&quot;harvesterLD-1&quot;,&quot;scout&quot;]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in Utils/Importer/constants.ts:37</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external">
 					<a name="all_structure_types" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> ALL_<wbr>STRUCTURE_<wbr>TYPES</h3>
 					<div class="tsd-signature tsd-kind-icon">ALL_<wbr>STRUCTURE_<wbr>TYPES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">StructureConstant</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [STRUCTURE_EXTENSION,STRUCTURE_RAMPART,STRUCTURE_ROAD,STRUCTURE_SPAWN,STRUCTURE_LINK,STRUCTURE_WALL,STRUCTURE_STORAGE,STRUCTURE_TOWER,STRUCTURE_OBSERVER,STRUCTURE_POWER_SPAWN,STRUCTURE_EXTRACTOR,STRUCTURE_LAB,STRUCTURE_TERMINAL,STRUCTURE_CONTAINER,STRUCTURE_NUKER,STRUCTURE_KEEPER_LAIR,STRUCTURE_CONTROLLER,STRUCTURE_POWER_BANK,STRUCTURE_PORTAL,STRUCTURE_FACTORY,STRUCTURE_INVADER_CORE]</span></div>
@@ -113,7 +146,7 @@
 					<div class="tsd-signature tsd-kind-icon">BASE_<wbr>PLANNER_<wbr>TIMER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">10</span><span class="tsd-signature-symbol"> = 10</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:46</li>
+							<li>Defined in Utils/Importer/constants.ts:70</li>
 						</ul>
 					</aside>
 				</section>
@@ -123,7 +156,7 @@
 					<div class="tsd-signature tsd-kind-icon">CONST_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">1000</span><span class="tsd-signature-symbol"> = 1000</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:35</li>
+							<li>Defined in Utils/Importer/constants.ts:59</li>
 						</ul>
 					</aside>
 				</section>
@@ -133,17 +166,17 @@
 					<div class="tsd-signature tsd-kind-icon">CONST_<wbr>JOBS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">100</span><span class="tsd-signature-symbol"> = 100</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:27</li>
+							<li>Defined in Utils/Importer/constants.ts:51</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external">
 					<a name="creeps_cache_ttl" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> CREEPS_<wbr>CACHE_<wbr>TTL</h3>
-					<div class="tsd-signature tsd-kind-icon">CREEPS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">100</span><span class="tsd-signature-symbol"> = 100</span></div>
+					<div class="tsd-signature tsd-kind-icon">CREEPS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">9</span><span class="tsd-signature-symbol"> = 9</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:36</li>
+							<li>Defined in Utils/Importer/constants.ts:60</li>
 						</ul>
 					</aside>
 				</section>
@@ -153,7 +186,7 @@
 					<div class="tsd-signature tsd-kind-icon">DAMAGED_<wbr>CREEPS_<wbr>JOBS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">250</span><span class="tsd-signature-symbol"> = 250</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:30</li>
+							<li>Defined in Utils/Importer/constants.ts:54</li>
 						</ul>
 					</aside>
 				</section>
@@ -163,7 +196,7 @@
 					<div class="tsd-signature tsd-kind-icon">DAMAGED_<wbr>STRUCTURES_<wbr>JOBS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">500</span><span class="tsd-signature-symbol"> = 500</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:29</li>
+							<li>Defined in Utils/Importer/constants.ts:53</li>
 						</ul>
 					</aside>
 				</section>
@@ -173,7 +206,7 @@
 					<div class="tsd-signature tsd-kind-icon">ENERGY_<wbr>STORAGES_<wbr>JOBS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">50</span><span class="tsd-signature-symbol"> = 50</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:28</li>
+							<li>Defined in Utils/Importer/constants.ts:52</li>
 						</ul>
 					</aside>
 				</section>
@@ -183,7 +216,7 @@
 					<div class="tsd-signature tsd-kind-icon">HOSTILE_<wbr>CREEPS_<wbr>JOBS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">50</span><span class="tsd-signature-symbol"> = 50</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:32</li>
+							<li>Defined in Utils/Importer/constants.ts:56</li>
 						</ul>
 					</aside>
 				</section>
@@ -193,7 +226,7 @@
 					<div class="tsd-signature tsd-kind-icon">ROOM_<wbr>PLANNER_<wbr>TIMER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">10</span><span class="tsd-signature-symbol"> = 10</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:45</li>
+							<li>Defined in Utils/Importer/constants.ts:69</li>
 						</ul>
 					</aside>
 				</section>
@@ -203,7 +236,7 @@
 					<div class="tsd-signature tsd-kind-icon">RUN_<wbr>LINKS_<wbr>TIMER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">10</span><span class="tsd-signature-symbol"> = 10</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:41</li>
+							<li>Defined in Utils/Importer/constants.ts:65</li>
 						</ul>
 					</aside>
 				</section>
@@ -213,7 +246,7 @@
 					<div class="tsd-signature tsd-kind-icon">SPAWNER_<wbr>ENERGY_<wbr>STRUCTURES_<wbr>JOBS_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">50</span><span class="tsd-signature-symbol"> = 50</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:31</li>
+							<li>Defined in Utils/Importer/constants.ts:55</li>
 						</ul>
 					</aside>
 				</section>
@@ -223,7 +256,7 @@
 					<div class="tsd-signature tsd-kind-icon">SPAWN_<wbr>CREEP_<wbr>TIMER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">10</span><span class="tsd-signature-symbol"> = 10</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:44</li>
+							<li>Defined in Utils/Importer/constants.ts:68</li>
 						</ul>
 					</aside>
 				</section>
@@ -233,7 +266,7 @@
 					<div class="tsd-signature tsd-kind-icon">STRUCT_<wbr>CACHE_<wbr>TTL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">100</span><span class="tsd-signature-symbol"> = 100</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:37</li>
+							<li>Defined in Utils/Importer/constants.ts:61</li>
 						</ul>
 					</aside>
 				</section>
@@ -243,7 +276,7 @@
 					<div class="tsd-signature tsd-kind-icon">UPDATE_<wbr>LINKS_<wbr>TIMER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">500</span><span class="tsd-signature-symbol"> = 500</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:40</li>
+							<li>Defined in Utils/Importer/constants.ts:64</li>
 						</ul>
 					</aside>
 				</section>
@@ -253,7 +286,7 @@
 					<div class="tsd-signature tsd-kind-icon">UPDATE_<wbr>MINERAL_<wbr>AMOUNT_<wbr>TIMER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">5000</span><span class="tsd-signature-symbol"> = 5000</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:43</li>
+							<li>Defined in Utils/Importer/constants.ts:67</li>
 						</ul>
 					</aside>
 				</section>
@@ -263,7 +296,7 @@
 					<div class="tsd-signature tsd-kind-icon">UPDATE_<wbr>SOURCE_<wbr>STRUCTURES_<wbr>TIMER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">500</span><span class="tsd-signature-symbol"> = 500</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Utils/Importer/constants.ts:42</li>
+							<li>Defined in Utils/Importer/constants.ts:66</li>
 						</ul>
 					</aside>
 				</section>
@@ -282,6 +315,15 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-external">
+						<a href="_utils_importer_constants_.html#all_creep_roles" class="tsd-kind-icon">ALL_<wbr>CREEP_<wbr>ROLES</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-external">
+						<a href="_utils_importer_constants_.html#all_owned_room_creep_roles" class="tsd-kind-icon">ALL_<wbr>OWNED_<wbr>ROOM_<wbr>CREEP_<wbr>ROLES</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-external">
+						<a href="_utils_importer_constants_.html#all_remote_creep_roles" class="tsd-kind-icon">ALL_<wbr>REMOTE_<wbr>CREEP_<wbr>ROLES</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-external">
 						<a href="_utils_importer_constants_.html#all_structure_types" class="tsd-kind-icon">ALL_<wbr>STRUCTURE_<wbr>TYPES</a>
 					</li>
