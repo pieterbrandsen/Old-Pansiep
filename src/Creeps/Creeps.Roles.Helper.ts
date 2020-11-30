@@ -397,6 +397,7 @@ export class CreepsHelper_Role {
       case "full":
         // Delete targetId
         delete creep.memory.targetId;
+        delete creep.memory.sourceId;
 
         // Switch to one of the jobs that drains energy
         creep.memory.job = "upgrade";
@@ -404,6 +405,7 @@ export class CreepsHelper_Role {
       case "empty":
         // Delete targetId
         delete creep.memory.targetId;
+        delete creep.memory.sourceId;
 
         // Switch to one of the roles that gets energy
         if (
@@ -447,6 +449,7 @@ export class CreepsHelper_Role {
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
+        delete creep.memory.sourceId;
 
         // Switch to one of the jobs that drains energy
         if (roomMemory.jobs.damagedStructures.data.length > 0) {
@@ -467,6 +470,7 @@ export class CreepsHelper_Role {
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
+        delete creep.memory.sourceId;
 
         // Switch to one of the roles that gets energy
         if (roomMemory.commonMemory!.energyStored.usable >= 2000) {
@@ -512,6 +516,8 @@ export class CreepsHelper_Role {
           creep.memory.job = "build";
         } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
           creep.memory.job = "upgrade";
+        } else if (roomMemory.jobs.damagedStructures.data.length > 0) {
+            creep.memory.job = "repair";
         } else {
           creep.suicide();
         }

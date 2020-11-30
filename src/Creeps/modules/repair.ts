@@ -12,6 +12,7 @@ export class CreepRole_Repair {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
     const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
+    const targetRoom: Room = Game.rooms[creepMemory.targetRoom];
 
     // Return empty if current creep's storage is empty or no targets left to repair
     if (creep.store.getUsedCapacity() === 0) {
@@ -20,8 +21,8 @@ export class CreepRole_Repair {
 
     // If there are no construction sites left and no target, return full to get another goal if possible
     if (roomMemory.jobs.damagedStructures.data.length === 0 && !creepMemory.targetId && !data.id) {
-      if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
-        creep.moveTo(creep.room.controller);
+      if (targetRoom.controller && !creep.pos.inRangeTo(targetRoom.controller, 5)) {
+        creep.moveTo(targetRoom.controller);
       }
       return "full";
     }
