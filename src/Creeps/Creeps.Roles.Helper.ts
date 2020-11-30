@@ -10,7 +10,8 @@ import {
   CreepRole_Repair,
   CreepRole_Reserve,
   CreepRole_Transfer,
-  CreepRole_Scout
+  CreepRole_Scout,
+  CreepRole_ResourcePicker
 } from "Utils/importer/internals";
 //#endregion
 
@@ -135,6 +136,14 @@ export class CreepsHelper_Role {
           "+=",
           creep
         );
+      case "resourcePicker":
+        return MemoryApi_All.functionRunnerWithCpu(
+          CreepRole_ResourcePicker.resourcePicker,
+          Config.creepModuleCpuCost[creep.room.name],
+          job,
+          "+=",
+          creep
+        );
       default:
         break;
     }
@@ -190,6 +199,7 @@ export class CreepsHelper_Role {
 
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[creep.memory.spawnRoom];
+    const spawnRoom: Room = Game.rooms[creep.memory.spawnRoom];
 
     // Check if creep needs to move to another room
     if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
@@ -241,6 +251,7 @@ export class CreepsHelper_Role {
         delete creep.memory.sourceNumber;
         delete creep.memory.miniJob;
 
+        // Switch to one of the roles that gets energy
         // Switch to one of the roles that gets energy
         if (roomMemory.commonMemory!.energyStored.usable > 1500) {
           creep.memory.job = "withdraw";
@@ -337,6 +348,10 @@ export class CreepsHelper_Role {
       creep.memory.job = "withdraw";
       return;
     }
+
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = Memory.rooms[creep.memory.spawnRoom];
+    const spawnRoom: Room = Game.rooms[creep.memory.spawnRoom];
 
     // Run the creep
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
@@ -517,7 +532,7 @@ export class CreepsHelper_Role {
         } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
           creep.memory.job = "upgrade";
         } else if (roomMemory.jobs.damagedStructures.data.length > 0) {
-            creep.memory.job = "repair";
+          creep.memory.job = "repair";
         } else {
           creep.suicide();
         }

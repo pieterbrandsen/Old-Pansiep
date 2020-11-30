@@ -1,6 +1,6 @@
 //#region Require('./)
 import _ from "lodash";
-import { ALL_CREEP_ROLES, ALL_STRUCTURE_TYPES, JobsHelper, MemoryApi_Room } from "Utils/importer/internals";
+import { ALL_CREEP_ROLES, ALL_RESOURCE_TYPES, ALL_STRUCTURE_TYPES, JobsHelper, MemoryApi_Room } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
@@ -155,6 +155,20 @@ export class MemoryHelper_Room {
     } else {
       room.memory.commonMemory!.mineral!.amount! = 0;
     }
+  }
+
+  public static updateDroppedResources(room: Room): void {
+        // If we have no vision of the room, return
+        if (!room.memory) {
+          return;
+        }
+
+    room.memory.droppedResources = { data: [], cache: null };
+
+    const allDroppedResourceIds: string[] = room.find(FIND_DROPPED_RESOURCES).map(c => c.id);
+
+    room.memory.droppedResources.data = allDroppedResourceIds;
+    room.memory.droppedResources.cache = Game.time;
   }
 }
 //#endregion

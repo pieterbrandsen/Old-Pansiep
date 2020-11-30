@@ -9,6 +9,7 @@ interface CreepMemory {
   sourceId?: string;
   targetId?: string;
   onPosition?: boolean;
+  resourceType?: ResourceConstant;
 }
 
 interface RoomMemory {
@@ -18,6 +19,7 @@ interface RoomMemory {
   structures: Cache;
   constructionSites: Cache;
   myCreeps: Cache;
+  droppedResources: Cache;
 
   // Jobs
   jobs: {
@@ -27,6 +29,7 @@ interface RoomMemory {
     damagedCreeps: JobTemplate[];
     spawnerEnergyStructures?: JobTemplate[];
     enemies: { parts: { [key: string]: number }; creeps: JobTemplate[] };
+    droppedResources: JobTemplate[];
   };
 
   // Room memory
@@ -147,6 +150,7 @@ interface JobTemplate {
   needed?: number;
   structureType?: StructureConstant;
   parts?: { [key: string]: number };
+  resourceType?: ResourceConstant;
 }
 
 declare namespace NodeJS {

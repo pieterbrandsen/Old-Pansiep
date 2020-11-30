@@ -68,7 +68,7 @@ export class JobsHelper {
 
   public static updateAllDamagedStructuresJobs(room: Room): void {
     // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[room.name];
+    const roomMemory: RoomMemory = room.memory;
 
     const allDamagedStructures = MemoryApi_Room.getStructures(
       room,
@@ -242,6 +242,24 @@ export class JobsHelper {
         }
       });
     }
+  }
+
+  public static updateAllDroppedResourcesJobs(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = room.memory;
+
+    const droppedResources = MemoryApi_Room.getDroppedResources(room);
+
+    roomMemory.jobs.droppedResources = [];
+    _.forEach(droppedResources, (resource: Resource) => {
+      const job: JobTemplate = {
+        pos: resource.pos,
+        id: resource.id,
+        usable: resource.amount,
+        resourceType: resource.resourceType
+      };
+      roomMemory.jobs.droppedResources.push(job);
+    });
   }
 }
 //#endregion

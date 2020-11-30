@@ -47,6 +47,106 @@ export const ALL_REMOTE_CREEP_ROLES: string[] = [
 
 export const ALL_CREEP_ROLES: string[] = ALL_OWNED_ROOM_CREEP_ROLES.concat(ALL_REMOTE_CREEP_ROLES);
 
+export const ALL_RESOURCE_TYPES: string[] = [
+  "energy",
+  "power",
+
+  "H",
+  "O",
+  "U",
+  "L",
+  "K",
+  "Z",
+  "X",
+  "G",
+
+  "silicon",
+  "metal",
+  "biomass",
+  "mist",
+
+  "OH",
+  "ZK",
+  "UL",
+
+  "UH",
+  "UO",
+  "KH",
+  "KO",
+  "LH",
+  "LO",
+  "ZH",
+  "ZO",
+  "GH",
+  "GO",
+
+  "UH2O",
+  "UHO2",
+  "KH2O",
+  "KHO2",
+  "LH2O",
+  "LHO2",
+  "ZH2O",
+  "ZHO2",
+  "GH2O",
+  "GHO2",
+
+  "XUH2O",
+  "XUHO2",
+  "XKH2O",
+  "XKHO2",
+  "XLH2O",
+  "XLHO2",
+  "XZH2O",
+  "XZHO2",
+  "XGH2O",
+  "XGHO2",
+
+  "ops",
+
+  "utrium_bar",
+  "lemergium_bar",
+  "zynthium_bar",
+  "keanium_bar",
+  "ghodium_melt",
+  "oxidant",
+  "reductant",
+  "purifier",
+  "battery",
+
+  "composite",
+  "crystal",
+  "liquid",
+
+  "wire",
+  "switch",
+  "transistor",
+  "microchip",
+  "circuit",
+  "device",
+
+  "cell",
+  "phlegm",
+  "tissue",
+  "muscle",
+  "organoid",
+  "organism",
+
+  "alloy",
+  "tube",
+  "fixtures",
+  "frame",
+  "hydraulics",
+
+  "machine",
+  "condensate",
+  "concentrate",
+  "extract",
+  "spirit",
+  "emanation",
+  "essence"
+];
+
 // Jobs ticks
 export const CONST_JOBS_CACHE_TTL = 100;
 export const ENERGY_STORAGES_JOBS_CACHE_TTL = 50;
@@ -54,11 +154,13 @@ export const DAMAGED_STRUCTURES_JOBS_CACHE_TTL = 500;
 export const DAMAGED_CREEPS_JOBS_CACHE_TTL = 250;
 export const SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL = 50;
 export const HOSTILE_CREEPS_JOBS_CACHE_TTL = 50;
+export const DROPPED_RESOURCE_JOBS_CACHE_TTL = 50;
 
 // Cache ticks
 export const CONST_CACHE_TTL = 1000;
 export const CREEPS_CACHE_TTL = 9;
 export const STRUCT_CACHE_TTL = 100;
+export const DROPPED_RESOURCES_CACHE_TTL = 50;
 
 // Timer ticks
 export const UPDATE_LINKS_TIMER = 500;

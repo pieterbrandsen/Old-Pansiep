@@ -1,12 +1,12 @@
 //#region Require('./)
 import _ from "lodash";
-import { Config, JobsHelper } from "Utils/importer/internals";
+import { Config, CreepRole_ResourcePicker, JobsHelper } from "Utils/importer/internals";
 //#endregion
 
 //#region Class
 export class CreepRole_Withdraw {
   public static withdraw(creep: Creep): string | undefined {
-    let result;
+    let result: string | undefined;
 
     // Make shortcut to memory
     const creepMemory = creep.memory;
@@ -27,7 +27,16 @@ export class CreepRole_Withdraw {
           roomMemory.commonMemory!.controllerStorage.usable > 250
         ) {
           creep.memory.miniJob = "upgrade";
-        } else if (roomMemory.commonMemory!.energyStored.usable > 500) {
+        } else if (
+          roomMemory.commonMemory!.energyStored.usable > 500 &&
+          roomMemory.jobs.spawnerEnergyStructures!.length > 0
+        ) {
+          creep.memory.miniJob = "normal";
+        } else if (roomMemory.jobs.droppedResources.length > 0) {
+          creep.memory.miniJob = "droppedResource";
+        } else if (
+          roomMemory.commonMemory!.energyStored.usable > 500
+        ) {
           creep.memory.miniJob = "normal";
         } else {
           return "empty";

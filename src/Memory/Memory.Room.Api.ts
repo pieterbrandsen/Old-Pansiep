@@ -8,7 +8,8 @@ import {
   CONST_CACHE_TTL,
   MemoryApi_Empire,
   CREEPS_CACHE_TTL,
-  ALL_CREEP_ROLES
+  ALL_CREEP_ROLES,
+  DROPPED_RESOURCES_CACHE_TTL
 } from "Utils/importer/internals";
 //#endregion
 
@@ -54,13 +55,15 @@ export class MemoryApi_Room {
           enemies: {
             parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
             creeps: []
-          }
+          },
+          droppedResources: []
         },
         remoteRooms: [],
 
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null },
-        myCreeps: { data: null, cache: null }
+        myCreeps: { data: null, cache: null },
+        droppedResources: { data: null, cache: null }
       };
     } else {
       room.memory = {
@@ -83,11 +86,13 @@ export class MemoryApi_Room {
           enemies: {
             parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
             creeps: []
-          }
+          },
+          droppedResources: []
         },
         structures: { data: null, cache: null },
         constructionSites: { data: null, cache: null },
-        myCreeps: { data: null, cache: null }
+        myCreeps: { data: null, cache: null },
+        droppedResources: { data: null, cache: null }
       };
     }
 
@@ -517,6 +522,27 @@ export class MemoryApi_Room {
 
     // Return all visible rooms which appear in roomNames array
     return _.filter(Game.rooms, (room: Room) => roomNames.includes(room.name));
+  }
+
+  public static getDroppedResources(room: Room, filterFunction?: (object: any) => boolean): Resource[] {
+    // If we have no vision of the room, return an empty array
+    if (!room.memory) {
+      return [];
+    }
+
+    if (room.memory.droppedResources === undefined || room.memory.droppedResources.cache < Game.time - DROPPED_RESOURCES_CACHE_TTL) {
+      MemoryHelper_Room.updateDroppedResources(room);
+    }
+
+    const resourceIDs: string[] = room.memory.droppedResources.data;
+
+    let resources: Resource[] = MemoryHelper.getOnlyObjectsFromIDs<Resource<ResourceConstant>>(resourceIDs);
+
+    if (filterFunction !== undefined) {
+      resources = _.filter(resources, filterFunction);
+    }
+
+    return resources;
   }
 }
 //#endregion

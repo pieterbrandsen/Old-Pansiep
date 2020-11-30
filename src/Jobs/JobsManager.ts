@@ -10,7 +10,8 @@ import {
   DAMAGED_CREEPS_JOBS_CACHE_TTL,
   SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL,
   HOSTILE_CREEPS_JOBS_CACHE_TTL,
-  MemoryApi_Room
+  MemoryApi_Room,
+  DROPPED_RESOURCE_JOBS_CACHE_TTL
 } from "Utils/importer/internals";
 //#endregion
 
@@ -56,6 +57,10 @@ export class JobsManager {
 
     if (MemoryApi_All.executeEachTicks(DAMAGED_STRUCTURES_JOBS_CACHE_TTL)) {
       JobsHelper.updateAllDamagedStructuresJobs(room);
+    }
+
+    if (MemoryApi_All.executeEachTicks(DROPPED_RESOURCE_JOBS_CACHE_TTL)) {
+      JobsHelper.updateAllDroppedResourcesJobs(room);
     }
   }
 }
