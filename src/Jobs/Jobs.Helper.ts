@@ -52,11 +52,11 @@ export class JobsHelper {
         room.memory.commonMemory!.controllerStorage.usable = jobStr.usable!;
       } else {
         room.memory.jobs.energyStorages.push(jobStr);
-      }
 
-      // Add the total energy available and capacity
-      energyUsable += str.store.getUsedCapacity(RESOURCE_ENERGY);
-      energyCapacity += str.store.getCapacity(RESOURCE_ENERGY);
+        // Add the total energy available and capacity
+        energyUsable += str.store.getUsedCapacity(RESOURCE_ENERGY);
+        energyCapacity += str.store.getCapacity(RESOURCE_ENERGY);
+      }
     });
 
     room.memory.commonMemory!.energyStored = { usable: energyUsable, capacity: energyCapacity };

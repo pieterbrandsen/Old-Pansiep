@@ -19,6 +19,9 @@ export class CreepRole_Withdraw {
       case "normal":
         result = CreepRole_Withdraw.normal(creep);
         break;
+        case "droppedResource": 
+        result = CreepRole_ResourcePicker.resourcePicker(creep);
+        break;
       default:
         if (
           roomMemory.commonMemory!.controllerStorage &&
