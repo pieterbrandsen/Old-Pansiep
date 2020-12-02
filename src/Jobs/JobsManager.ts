@@ -11,7 +11,8 @@ import {
   SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL,
   HOSTILE_CREEPS_JOBS_CACHE_TTL,
   MemoryApi_Room,
-  DROPPED_RESOURCE_JOBS_CACHE_TTL
+  DROPPED_RESOURCE_JOBS_CACHE_TTL,
+  SCORE_CONTAINERS_JOBS_CACHE_TTL
 } from "Utils/importer/internals";
 //#endregion
 
@@ -20,26 +21,23 @@ export class JobsManager {
   public static runJobsManager(): void {
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room): void => {
-      const isOwnedRoom: boolean = true;
-      this.runJobsForRoom(room, isOwnedRoom);
+      this.runJobsForRoom(room, "owned");
     });
 
     // Run all dependent rooms we have visiblity in
     const dependentRooms: Room[] = MemoryApi_Room.getVisibleDependentRooms();
     _.forEach(dependentRooms, (room: Room): void => {
-      const isOwnedRoom: boolean = false;
-      this.runJobsForRoom(room, isOwnedRoom);
+      const roomType: string = MemoryApi_Room.getRoomType(room);
+      this.runJobsForRoom(room, roomType);
     });
   }
 
-  private static runJobsForRoom(room: Room, isOwnedRoom: boolean): void {
-    if (isOwnedRoom) {
-      if (MemoryApi_All.executeEachTicks(SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL)) {
-        JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
-      }
+  private static runJobsForRoom(room: Room, roomType: string): void {
+    if (roomType === "owned" && MemoryApi_All.executeEachTicks(SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL)) {
+      JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
     }
 
-    if (MemoryApi_All.executeEachTicks(ENERGY_STORAGES_JOBS_CACHE_TTL)) {
+    if ((roomType === "owned" || roomType === "remote") && MemoryApi_All.executeEachTicks(ENERGY_STORAGES_JOBS_CACHE_TTL)) {
       JobsHelper.updateAllEnergyStoragesJobs(room);
     }
 
@@ -61,6 +59,12 @@ export class JobsManager {
 
     if (MemoryApi_All.executeEachTicks(DROPPED_RESOURCE_JOBS_CACHE_TTL)) {
       JobsHelper.updateAllDroppedResourcesJobs(room);
+    }
+
+    if (Game.shard.name ==="shardSeason") {
+      if (MemoryApi_All.executeEachTicks(SCORE_CONTAINERS_JOBS_CACHE_TTL)) {
+        JobsHelper.updateScoreContainersJobs(room);
+      }
     }
   }
 }

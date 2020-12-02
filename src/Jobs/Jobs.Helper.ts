@@ -261,5 +261,26 @@ export class JobsHelper {
       roomMemory.jobs.droppedResources.push(job);
     });
   }
+
+  public static updateScoreContainersJobs(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = room.memory;
+
+    const scoreContainers = MemoryApi_Room.getScoreContainerRooms(room);
+
+    roomMemory.jobs.scoreContainers = [];
+    _.forEach(scoreContainers, (container: any) => {
+      const job: JobTemplate = {
+        pos: container.pos,
+        id: container.id,
+        // @ts-ignore
+        usable: container.store[RESOURCE_SCORE]
+      };
+
+      if (container.ticksToDecay > 300) {
+        roomMemory.jobs.scoreContainers!.push(job);
+      }
+    });
+  }
 }
 //#endregion
