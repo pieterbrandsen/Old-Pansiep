@@ -12,11 +12,12 @@ export * from "Creeps/modules/claim";
 export * from "Creeps/modules/claim";
 export * from "Creeps/modules/harvest";
 export * from "Creeps/modules/repair";
-export * from "Creeps/modules/resourcePicker";
+export * from "Creeps/modules/seasonal";
 export * from "Creeps/modules/reserve";
 export * from "Creeps/modules/transfer";
 export * from "Creeps/modules/upgrade";
 export * from "Creeps/modules/withdraw";
+export * from "Creeps/modules/resourcePicker";
 export * from "Creeps/modules/scout";
 
 // * Jobs
