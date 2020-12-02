@@ -8,6 +8,7 @@ try {
 module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-typedoc");
     grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-screeps');
     
     grunt.initConfig({
         typedoc: {
@@ -23,9 +24,21 @@ module.exports = function(grunt) {
         exec: {
             test_on_private_server: "node utils/integration/helper.js"
         },
+        screeps: {
+            options: {
+                email: 'pieterbrandsen2@gmail.com',
+                token: 'fd4e4932-7c0e-4eca-9b01-474477f75740',
+                branch: 'default',
+                server: 'season'
+            },
+            dist: {
+                src: ['dist/*.js']
+            }
+        }
     });
 
     grunt.log.writeln(new Date().toString());
     grunt.registerTask("run-typedoc", ["typedoc"]);
     grunt.registerTask("test", ["exec:test_on_private_server"]);
+    grunt.registerTask("push-season", ["screeps"]);
 };

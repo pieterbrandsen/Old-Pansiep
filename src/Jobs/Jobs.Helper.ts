@@ -52,11 +52,11 @@ export class JobsHelper {
         room.memory.commonMemory!.controllerStorage.usable = jobStr.usable!;
       } else {
         room.memory.jobs.energyStorages.push(jobStr);
-      }
 
-      // Add the total energy available and capacity
-      energyUsable += str.store.getUsedCapacity(RESOURCE_ENERGY);
-      energyCapacity += str.store.getCapacity(RESOURCE_ENERGY);
+        // Add the total energy available and capacity
+        energyUsable += str.store.getUsedCapacity(RESOURCE_ENERGY);
+        energyCapacity += str.store.getCapacity(RESOURCE_ENERGY);
+      }
     });
 
     room.memory.commonMemory!.energyStored = { usable: energyUsable, capacity: energyCapacity };
@@ -68,7 +68,7 @@ export class JobsHelper {
 
   public static updateAllDamagedStructuresJobs(room: Room): void {
     // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[room.name];
+    const roomMemory: RoomMemory = room.memory;
 
     const allDamagedStructures = MemoryApi_Room.getStructures(
       room,
@@ -242,6 +242,45 @@ export class JobsHelper {
         }
       });
     }
+  }
+
+  public static updateAllDroppedResourcesJobs(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = room.memory;
+
+    const droppedResources = MemoryApi_Room.getDroppedResources(room);
+
+    roomMemory.jobs.droppedResources = [];
+    _.forEach(droppedResources, (resource: Resource) => {
+      const job: JobTemplate = {
+        pos: resource.pos,
+        id: resource.id,
+        usable: resource.amount,
+        resourceType: resource.resourceType
+      };
+      roomMemory.jobs.droppedResources.push(job);
+    });
+  }
+
+  public static updateScoreContainersJobs(room: Room): void {
+    // Create a acces point to the roomMemory //
+    const roomMemory: RoomMemory = room.memory;
+
+    const scoreContainers = MemoryApi_Room.getScoreContainerRooms(room);
+
+    roomMemory.jobs.scoreContainers = [];
+    _.forEach(scoreContainers, (container: any) => {
+      const job: JobTemplate = {
+        pos: container.pos,
+        id: container.id,
+        // @ts-ignore
+        usable: container.store[RESOURCE_SCORE]
+      };
+
+      if (container.ticksToDecay > 300) {
+        roomMemory.jobs.scoreContainers!.push(job);
+      }
+    });
   }
 }
 //#endregion

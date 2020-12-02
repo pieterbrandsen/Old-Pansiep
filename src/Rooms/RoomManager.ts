@@ -77,12 +77,23 @@ export class RoomManager {
   }
 
   private static runSingleDependentRoom(room: Room): void {
-    if (MemoryApi_All.executeEachTicks(ROOM_PLANNER_TIMER)) {
-      OldRoomPlanner.roomPlanner(room);
-    }
+    const roomType: string = MemoryApi_Room.getRoomType(room);
 
-    if (MemoryApi_All.executeEachTicks(UPDATE_SOURCE_STRUCTURES_TIMER)) {
-      MemoryHelper_Room.updateSourceStructures(room);
+    if (roomType !== 'score') {
+      if (MemoryApi_All.executeEachTicks(ROOM_PLANNER_TIMER)) {
+        OldRoomPlanner.roomPlanner(room);
+      }
+      
+      if (MemoryApi_All.executeEachTicks(UPDATE_SOURCE_STRUCTURES_TIMER)) {
+        MemoryHelper_Room.updateSourceStructures(room);
+      }
+    }
+    else if (roomType === "score") { 
+      const spawnRoom: Room | null = MemoryApi_Room.getSpawnRoomOfDependentRoom(room);
+
+      if (spawnRoom !== null) {
+        MemoryApi_Room.checkIfScoreContainerRoomIsFinished(room, spawnRoom);
+      }
     }
   }
 }

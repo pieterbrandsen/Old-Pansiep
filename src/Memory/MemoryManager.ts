@@ -11,18 +11,17 @@ export class MemoryManager {
 
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room): void => {
-      const isOwnedRoom: boolean = true;
       MemoryApi_Room.isRoomSetup(room);
-      MemoryApi_Room.initRoomMemory(room, isOwnedRoom);
+      MemoryApi_Room.initRoomMemory(room, "owned");
       MemoryApi_Room.resetRoomTracking(room);
     });
 
     // Run all dependent rooms we have visiblity in
     const dependentRooms: Room[] = MemoryApi_Room.getVisibleDependentRooms();
     _.forEach(dependentRooms, (room: Room): void => {
-      const isOwnedRoom: boolean = false;
+      const roomType: string = MemoryApi_Room.getRoomType(room);
       MemoryApi_Room.isRoomSetup(room);
-      MemoryApi_Room.initRoomMemory(room, isOwnedRoom);
+      MemoryApi_Room.initRoomMemory(room, roomType);
       MemoryApi_Room.resetRoomTracking(room);
     });
 

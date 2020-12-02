@@ -41,10 +41,14 @@ export class StatsHelper {
       // Create a acces point to the roomMemory //
       const roomMemory: RoomMemory = room.memory;
 
+      if (!roomMemory) {
+        return;
+      }
+
       // Set all commonMemory related memory
       const commonMemory = roomStats["commonMemory"];
       if (typeof commonMemory === "object") {
-        commonMemory.constructionSitesCount = roomMemory.constructionSites.data?.length;
+        commonMemory.constructionSitesCount = roomMemory.constructionSites.data!.length;
 
         // eslint-disable-next-line guard-for-in
         for (const role in room.memory.myCreeps.data) {
@@ -93,8 +97,6 @@ export class StatsHelper {
       // Set all energy stored related memory
       const energyMemory = roomStats["energyStored"];
       if (typeof energyMemory === "object") {
-        energyMemory.storage = room.storage ? room.storage.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
-        energyMemory.terminal = room.terminal ? room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
         energyMemory.capacity = roomMemory.commonMemory!.energyStored.capacity;
         energyMemory.total = roomMemory.commonMemory!.energyStored.usable;
       }
@@ -152,6 +154,13 @@ export class StatsHelper {
         if (typeof ownedCommonMemory === "object") {
           ownedCommonMemory.sourceCount = roomMemory.commonMemory!.sources.length;
         }
+      }
+
+      // Set all energy stored related memory
+      const energyMemory = roomStats["energyStored"];
+      if (typeof energyMemory === "object") {
+        energyMemory.storage = room.storage ? room.storage.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
+        energyMemory.terminal = room.terminal ? room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
       }
     }
   }

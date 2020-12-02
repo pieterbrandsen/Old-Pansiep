@@ -7,9 +7,11 @@ export class MemoryApi_All {
       }
     }
 
-    for (const roomName in Memory.stats.rooms) {
-      if (!Game.rooms[roomName]) {
-        MemoryApi_Room.resetStatsMemory(roomName);
+    if (Memory.stats?.rooms) {
+      for (const roomName in Memory.stats.rooms) {
+        if (!Game.rooms[roomName]) {
+          MemoryApi_Room.resetStatsMemory(roomName);
+        }
       }
     }
   }

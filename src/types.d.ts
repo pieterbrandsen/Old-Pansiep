@@ -9,15 +9,19 @@ interface CreepMemory {
   sourceId?: string;
   targetId?: string;
   onPosition?: boolean;
+  resourceType?: ResourceConstant;
 }
 
 interface RoomMemory {
   roomName?: string;
+  roomType?: string;
 
   // Cached objects
   structures: Cache;
   constructionSites: Cache;
   myCreeps: Cache;
+  droppedResources: Cache;
+  scoreContainers?: Cache;
 
   // Jobs
   jobs: {
@@ -27,6 +31,8 @@ interface RoomMemory {
     damagedCreeps: JobTemplate[];
     spawnerEnergyStructures?: JobTemplate[];
     enemies: { parts: { [key: string]: number }; creeps: JobTemplate[] };
+    droppedResources: JobTemplate[];
+    scoreContainers?: JobTemplate[];
   };
 
   // Room memory
@@ -54,13 +60,14 @@ interface RoomMemory {
       username: string;
     };
   };
-  roomPlanner: {
+  roomPlanner?: {
     room: { sources: BestPosition[]; controller?: BestPosition };
     base?: { type: string | undefined; midPos: RoomPos };
   };
   isSetup?: boolean;
 
   remoteRooms?: string[];
+  scoreContainerRooms?: string[];
 
   // BuilderLD
   spawnRoom?: string;
@@ -98,9 +105,6 @@ interface Config {
     minBucket: number;
     remoteMinBucket: number;
   };
-  allRoles: string[];
-  allCreepModules: string[];
-  creepsCountMax: { [key: string]: number };
   cpuUsedByRoomByRole: { [key: string]: { [key: string]: number } };
   creepModuleCpuCost: { [key: string]: { [key: string]: number } };
   expenses: {
@@ -147,6 +151,7 @@ interface JobTemplate {
   needed?: number;
   structureType?: StructureConstant;
   parts?: { [key: string]: number };
+  resourceType?: ResourceConstant;
 }
 
 declare namespace NodeJS {
@@ -154,6 +159,7 @@ declare namespace NodeJS {
     Memory: Memory;
     age?: number;
     addRemoteRoom(spawnRoom: string, remoteRoom: string): void;
+    addScoreContainerRoom(spawnRoom: string, targetRoom: string): void;
     help(): void;
   }
 }

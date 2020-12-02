@@ -1,4 +1,5 @@
 //#region Require('./)
+import _ from "lodash";
 import { JobsApi } from "Utils/importer/internals";
 //#endregion
 
@@ -9,7 +10,7 @@ export class CreepRole_Transfer {
 
     // Make shortcut to memory
     const creepMemory = creep.memory;
-    const roomMemory = Memory.rooms[creepMemory.targetRoom];
+    const roomMemory = Memory.rooms[creepMemory.spawnRoom];
 
     switch (creep.memory.miniJob) {
       case "harvest":
@@ -27,6 +28,9 @@ export class CreepRole_Transfer {
       case "mineral":
         result = CreepRole_Transfer.mineral(creep);
         break;
+      case "droppedResource":
+        result = CreepRole_Transfer.droppedResource(creep);
+        break;
       default:
         // If creep is a mineral harvester, only transfer to storage
         if (creepMemory.role === "mineral") {
@@ -35,6 +39,10 @@ export class CreepRole_Transfer {
         } else if (creepMemory.role.includes("LD")) {
           creep.memory.miniJob = "storage";
           break;
+        }
+
+        if (creep.store.energy === 0 && creep.store.getUsedCapacity() > 0) {
+          creep.memory.miniJob = "droppedResource";
         }
 
         if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
@@ -68,6 +76,39 @@ export class CreepRole_Transfer {
     // Return result
     return result;
   }
+
+  private static droppedResource(creep: Creep): void | string {
+    // Make shortcut to memory
+    const creepMemory: CreepMemory = creep.memory;
+    const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
+
+    // Return empty if current creep's storage is empty
+    if (creep.store.getUsedCapacity() === 0) {
+      return "empty";
+    }
+
+    // Get the storage and resource
+    const target: StructureStorage | undefined = creep.room.storage;
+    const resource: ResourceConstant | undefined = _.first(Object.values(creep.store));
+
+    // Return empty if transferStructure is null
+    if (target === undefined || resource === undefined) {
+      return "empty";
+    }
+    // Run the transfer function
+    const result = creep.transfer(target, resource);
+
+    // Switch based on the results
+    switch (result) {
+      case ERR_NOT_IN_RANGE:
+        // If creep is not in range, move to target
+        creep.moveTo(target);
+        break;
+      default:
+        break;
+    }
+  }
+
   private static mineral(creep: Creep): void | string {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
@@ -112,8 +153,8 @@ export class CreepRole_Transfer {
     // If creep memory is missing a targetId, find one
     if (!creepMemory.targetId) {
       // Set the storage pos as found in memory
-      const storagePos = roomMemory.roomPlanner.room.sources[creepMemory.sourceNumber!]
-        ? roomMemory.roomPlanner.room.sources[creepMemory.sourceNumber!].pos
+      const storagePos = roomMemory.roomPlanner!.room.sources[creepMemory.sourceNumber!]
+        ? roomMemory.roomPlanner!.room.sources[creepMemory.sourceNumber!].pos
         : null;
       if (storagePos === null) {
         return;
@@ -155,7 +196,7 @@ export class CreepRole_Transfer {
         case ERR_INVALID_TARGET:
           // Delete targetId
           delete creep.memory.targetId;
-          roomMemory.roomPlanner.room.sources[creep.memory.sourceNumber!].id = "";
+          roomMemory.roomPlanner!.room.sources[creep.memory.sourceNumber!].id = "";
           break;
         default:
           break;
