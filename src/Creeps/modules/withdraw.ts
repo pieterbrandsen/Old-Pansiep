@@ -19,7 +19,7 @@ export class CreepRole_Withdraw {
       case "normal":
         result = CreepRole_Withdraw.normal(creep);
         break;
-        case "droppedResource": 
+      case "droppedResource":
         result = CreepRole_ResourcePicker.droppedResource(creep);
         break;
       default:
@@ -37,9 +37,7 @@ export class CreepRole_Withdraw {
           creep.memory.miniJob = "normal";
         } else if (roomMemory.jobs.droppedResources.length > 0) {
           creep.memory.miniJob = "droppedResource";
-        } else if (
-          roomMemory.commonMemory!.energyStored.usable > 500
-        ) {
+        } else if (roomMemory.commonMemory!.energyStored.usable > 500) {
           creep.memory.miniJob = "normal";
         } else {
           return "empty";

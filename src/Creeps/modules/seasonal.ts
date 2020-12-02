@@ -61,10 +61,7 @@ export class CreepRole_Seasonal {
         case OK:
         case ERR_INVALID_TARGET:
         case ERR_FULL:
-          roomMemory.jobs.scoreContainers = JobsApi.removeJob(
-            creep.memory.targetId!,
-            roomMemory.jobs.scoreContainers!
-          );
+          roomMemory.jobs.scoreContainers = JobsApi.removeJob(creep.memory.targetId!, roomMemory.jobs.scoreContainers!);
           delete creep.memory.targetId;
           break;
         case ERR_NOT_IN_RANGE:

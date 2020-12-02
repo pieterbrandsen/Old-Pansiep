@@ -37,7 +37,10 @@ export class JobsManager {
       JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
     }
 
-    if ((roomType === "owned" || roomType === "remote") && MemoryApi_All.executeEachTicks(ENERGY_STORAGES_JOBS_CACHE_TTL)) {
+    if (
+      (roomType === "owned" || roomType === "remote") &&
+      MemoryApi_All.executeEachTicks(ENERGY_STORAGES_JOBS_CACHE_TTL)
+    ) {
       JobsHelper.updateAllEnergyStoragesJobs(room);
     }
 
@@ -61,7 +64,7 @@ export class JobsManager {
       JobsHelper.updateAllDroppedResourcesJobs(room);
     }
 
-    if (Game.shard.name ==="shardSeason") {
+    if (Game.shard.name === "shardSeason") {
       if (MemoryApi_All.executeEachTicks(SCORE_CONTAINERS_JOBS_CACHE_TTL)) {
         JobsHelper.updateScoreContainersJobs(room);
       }

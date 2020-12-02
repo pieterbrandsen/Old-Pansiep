@@ -33,7 +33,7 @@ export class ConsoleCommands {
       console.log("This shard is not on seasonal, please try again");
       return;
     }
-    
+
     if (!spawnRoom) {
       console.log("SpawnRoom is not inputted, please try again");
       return;

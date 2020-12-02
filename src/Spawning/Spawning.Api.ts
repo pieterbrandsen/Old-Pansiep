@@ -6,7 +6,8 @@ import {
   ALL_REMOTE_CREEP_ROLES,
   Config,
   MemoryApi_Room,
-  CREEP_COUNT_MAX
+  CREEP_ROLE_COUNT_MAX,
+  CREEP_PART_COUNT_MAX
 } from "Utils/importer/internals";
 //#endregion
 
@@ -41,6 +42,19 @@ export class SpawningApi {
       role,
       job: ""
     };
+  }
+
+  private static getTotalAliveParts(partType: BodyPartConstant, creeps: Creep[]): number {
+    const partCountArray: number[] = creeps.map((creep: Creep) => creep.getActiveBodyparts(partType));
+    if (partCountArray.length > 0) {
+      const partCount: number = partCountArray.reduce((total: number, num: number): number => {
+        return total + num;
+      });
+
+      return partCount;
+    } else {
+      return 0;
+    }
   }
 
   public static getCreepParts(room: Room, role: string): { body: BodyPartConstant[]; bodyCost: number } {
@@ -168,16 +182,21 @@ export class SpawningApi {
     _.forEach(rolesNeededInRoom, (role: string) => {
       const targetRoomMemory = targetRoom.memory;
 
-      const creeps: Creep[] = MemoryApi_Room.getMyCreepsOfType(targetRoom, role);
-
       const shortRoleName: string = role.split("-")[0].replace("LD", "");
+      const creeps: Creep[] = MemoryApi_Room.getMyCreepsOfType(targetRoom, role);
+      const maxCreepCount: number = CREEP_ROLE_COUNT_MAX[shortRoleName];
+      const partCount = this.getTotalAliveParts(CREEP_PART_COUNT_MAX[shortRoleName].part, creeps);
+      const maxPartCount: number = CREEP_PART_COUNT_MAX[shortRoleName].amount;
 
       if (!result[0]) {
         switch (role) {
           // Owned room roles
           case "pioneer":
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName] * targetRoomMemory.commonMemory!.sources.length) {
+            if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
+              break;
+            }
+            if (partCount >= maxPartCount) {
               break;
             }
 
@@ -193,6 +212,9 @@ export class SpawningApi {
           case "transferer":
           case "transfererLD":
             // Check if input role is less then max creeps allowed //
+            if (partCount >= maxPartCount) {
+              break;
+            }
             if (role === "transfererLD") {
               if (creeps.length >= targetRoomMemory.commonMemory!.sources.length * 1.5) {
                 break;
@@ -203,10 +225,7 @@ export class SpawningApi {
                   break;
                 }
               } else {
-                if (
-                  creeps.length >=
-                  CREEP_COUNT_MAX[shortRoleName] * targetRoomMemory.commonMemory!.sources.length
-                ) {
+                if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
                   break;
                 }
               }
@@ -237,6 +256,10 @@ export class SpawningApi {
               break;
             }
 
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             if (room.controller && room.controller.ticksToDowngrade <= 1 * 1000) {
               // Check if input role is less then max creeps allowed //
               if (creeps.length >= 1) {
@@ -254,15 +277,9 @@ export class SpawningApi {
               }
 
               // Check if input role is less then max creeps allowed //
-              if (
-                creeps.length >= CREEP_COUNT_MAX[shortRoleName] &&
-                targetRoomMemory.constructionSites.data.length === 0
-              ) {
+              if (creeps.length >= maxCreepCount && targetRoomMemory.constructionSites.data.length === 0) {
                 break;
-              } else if (
-                creeps.length >= CREEP_COUNT_MAX[shortRoleName] / 2 &&
-                targetRoomMemory.constructionSites.data.length > 0
-              ) {
+              } else if (creeps.length >= maxCreepCount / 2 && targetRoomMemory.constructionSites.data.length > 0) {
                 break;
               }
             }
@@ -275,8 +292,12 @@ export class SpawningApi {
             break;
           case "builder":
           case "builderLD":
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -316,8 +337,12 @@ export class SpawningApi {
             break;
           case "repairer":
           case "repairerLD":
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -348,8 +373,12 @@ export class SpawningApi {
             break;
           case "harvester-0":
           case "harvesterLD-0":
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -377,13 +406,17 @@ export class SpawningApi {
             break;
           case "harvester-1":
           case "harvesterLD-1":
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             // If there is more then 1 source
             if (targetRoomMemory.commonMemory!.sources.length === 1) {
               break;
             }
 
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -410,8 +443,12 @@ export class SpawningApi {
             result = [true, role];
             break;
           case "reserverLD":
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -436,8 +473,12 @@ export class SpawningApi {
             result = [true, role];
             break;
           case "claimerLD":
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -459,8 +500,12 @@ export class SpawningApi {
             // }
             break;
           case "mineral":
+            if (partCount >= maxPartCount) {
+              break;
+            }
+
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -484,7 +529,7 @@ export class SpawningApi {
             break;
           case "scorePicker":
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= CREEP_COUNT_MAX[shortRoleName]) {
+            if (creeps.length >= maxCreepCount) {
               break;
             }
 
@@ -492,7 +537,7 @@ export class SpawningApi {
               result = [true, role];
             }
             break;
-          default: 
+          default:
             break;
         }
       }

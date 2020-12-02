@@ -12,11 +12,10 @@ export class CreepRole_Scout {
     const isRoomTypeRight = (oldType: string, newType: string): void => {
       if (oldType === newType) {
         return;
-      }
-      else {
+      } else {
         Game.flags[targetRoomName].remove();
       }
-    }
+    };
     if (targetRoom.memory.roomType) {
       if (spawnRoom.memory.scoreContainerRooms!.includes(targetRoomName)) {
         isRoomTypeRight(targetRoom.memory.roomType, "score");
@@ -25,8 +24,7 @@ export class CreepRole_Scout {
       } else {
         targetRoom.memory.roomType = "none";
       }
-    }
-    else { 
+    } else {
       if (spawnRoom.memory.scoreContainerRooms!.includes(targetRoomName)) {
         targetRoom.memory.roomType = "score";
       } else if (spawnRoom.memory.remoteRooms!.includes(targetRoomName)) {
