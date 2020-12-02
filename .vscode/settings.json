@@ -36,6 +36,11 @@
   ],
   "cSpell.words": [
     "STRUCT",
+    "XGHO",
+    "XKHO",
+    "XLHO",
+    "XUHO",
+    "XZHO",
     "averager",
     "buble",
     "codacy",
@@ -48,15 +53,19 @@
     "microsoft",
     "microsoft tsdoc",
     "nodent",
+    "organoid",
     "piete",
     "privateserver",
     "pserver",
+    "reductant",
     "rivaryn",
     "tsdoc",
     "typedoc",
     "typescript",
     "typescript eslint estree",
-    "upgrader"
+    "upgrader",
+    "visiblity",
+    "zynthium"
   ],
   "mocha.subdirectory": "..\\..\\..\\..\\..\\c:\\Users\\piete\\Source\\repos\\Pansiep\\src",
 }
