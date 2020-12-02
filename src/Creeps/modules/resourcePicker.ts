@@ -4,7 +4,7 @@ import { JobsApi } from "Utils/importer/internals";
 
 //#region Class
 export class CreepRole_ResourcePicker {
-  public static resourcePicker(creep: Creep): string | undefined {
+  public static droppedResource(creep: Creep): string | undefined {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
     const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
@@ -13,8 +13,14 @@ export class CreepRole_ResourcePicker {
       return "empty";
     }
 
+    // Return full if current creep's storage is full
+    if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
+      return "full";
+    }
+
     if (!creepMemory.targetId) {
       const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.droppedResources);
+
       if (job === undefined) {
         return "empty";
       } else if (job.usable! > 0) {
@@ -46,7 +52,7 @@ export class CreepRole_ResourcePicker {
         return "empty";
       }
 
-      // Run the pickup function
+      // Run the pickUp function
       const result = creep.pickup(resource);
 
       // Switch based on the results

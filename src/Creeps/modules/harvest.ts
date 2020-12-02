@@ -131,7 +131,7 @@ export class CreepRole_Harvest {
           source.pos.x + 1,
           true
         ).length;
-        const roomPlannerTargetSource = roomMemory.roomPlanner.room.sources[sourceNumber];
+        const roomPlannerTargetSource = roomMemory.roomPlanner!.room.sources[sourceNumber];
         if (roomPlannerTargetSource === undefined) {
           return;
         }
@@ -144,7 +144,7 @@ export class CreepRole_Harvest {
           let i = 0;
           while (i < roomMemory.commonMemory!.sources.length) {
             const newSource = roomMemory.commonMemory!.sources[i];
-            const roomPlannerNewSource = roomMemory.roomPlanner.room.sources[i];
+            const roomPlannerNewSource = roomMemory.roomPlanner!.room.sources[i];
             if (roomPlannerNewSource !== null) {
               const creepsAroundNewSource = creep.room.lookForAtArea(
                 LOOK_CREEPS,

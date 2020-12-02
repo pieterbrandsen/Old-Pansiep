@@ -20,7 +20,7 @@ export class CreepRole_Withdraw {
         result = CreepRole_Withdraw.normal(creep);
         break;
         case "droppedResource": 
-        result = CreepRole_ResourcePicker.resourcePicker(creep);
+        result = CreepRole_ResourcePicker.droppedResource(creep);
         break;
       default:
         if (

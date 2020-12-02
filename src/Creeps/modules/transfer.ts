@@ -10,7 +10,7 @@ export class CreepRole_Transfer {
 
     // Make shortcut to memory
     const creepMemory = creep.memory;
-    const roomMemory = Memory.rooms[creepMemory.targetRoom];
+    const roomMemory = Memory.rooms[creepMemory.spawnRoom];
 
     switch (creep.memory.miniJob) {
       case "harvest":
@@ -153,8 +153,8 @@ export class CreepRole_Transfer {
     // If creep memory is missing a targetId, find one
     if (!creepMemory.targetId) {
       // Set the storage pos as found in memory
-      const storagePos = roomMemory.roomPlanner.room.sources[creepMemory.sourceNumber!]
-        ? roomMemory.roomPlanner.room.sources[creepMemory.sourceNumber!].pos
+      const storagePos = roomMemory.roomPlanner!.room.sources[creepMemory.sourceNumber!]
+        ? roomMemory.roomPlanner!.room.sources[creepMemory.sourceNumber!].pos
         : null;
       if (storagePos === null) {
         return;
@@ -196,7 +196,7 @@ export class CreepRole_Transfer {
         case ERR_INVALID_TARGET:
           // Delete targetId
           delete creep.memory.targetId;
-          roomMemory.roomPlanner.room.sources[creep.memory.sourceNumber!].id = "";
+          roomMemory.roomPlanner!.room.sources[creep.memory.sourceNumber!].id = "";
           break;
         default:
           break;
