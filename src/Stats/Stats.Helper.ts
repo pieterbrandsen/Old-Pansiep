@@ -41,10 +41,14 @@ export class StatsHelper {
       // Create a acces point to the roomMemory //
       const roomMemory: RoomMemory = room.memory;
 
+      if (!roomMemory) {
+        return;
+      }
+
       // Set all commonMemory related memory
       const commonMemory = roomStats["commonMemory"];
       if (typeof commonMemory === "object") {
-        commonMemory.constructionSitesCount = roomMemory.constructionSites.data?.length;
+        commonMemory.constructionSitesCount = roomMemory.constructionSites.data!.length;
 
         // eslint-disable-next-line guard-for-in
         for (const role in room.memory.myCreeps.data) {
