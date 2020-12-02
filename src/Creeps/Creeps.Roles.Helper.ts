@@ -11,7 +11,7 @@ import {
   CreepRole_Reserve,
   CreepRole_Transfer,
   CreepRole_Scout,
-  CreepRole_ResourcePicker
+  CreepRole_Seasonal
 } from "Utils/importer/internals";
 //#endregion
 
@@ -48,6 +48,9 @@ export class CreepsHelper_Role {
         break;
       case "scout":
         this.scout(creep);
+        break;
+      case "scorePicker":
+        this.scorePicker(creep);
         break;
       default:
         break;
@@ -136,9 +139,9 @@ export class CreepsHelper_Role {
           "+=",
           creep
         );
-      case "resourcePicker":
+      case "scoreWithdrawer":
         return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_ResourcePicker.resourcePicker,
+          CreepRole_Seasonal.scoreWithdrawer,
           Config.creepModuleCpuCost[creep.room.name],
           job,
           "+=",
@@ -348,10 +351,6 @@ export class CreepsHelper_Role {
       creep.memory.job = "withdraw";
       return;
     }
-
-    // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[creep.memory.spawnRoom];
-    const spawnRoom: Room = Game.rooms[creep.memory.spawnRoom];
 
     // Run the creep
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
@@ -599,5 +598,49 @@ export class CreepsHelper_Role {
     // Run the creep
     CreepsHelper_Role.executeCreep(creep, creep.memory.job);
   };
+
+  private static scorePicker(creep: Creep) {
+    // Get missing parts for the memory
+    CreepsHelper_Role.getMissingPartsCount(creep);
+
+    if (!creep.memory.job) {
+      creep.memory.job = "scoreWithdrawer";
+      return;
+    }
+
+    // Run the creep
+    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+
+    switch (result) {
+      case "full":
+        // Delete targetId
+        delete creep.memory.targetId;
+        delete creep.memory.miniJob;
+
+        // Check if creep needs to move to another room
+        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
+          return;
+        }
+
+        // Switch to one of the jobs that drains energy
+        creep.memory.job = "transfer";
+        break;
+      case "empty":
+        // Delete targetId
+        delete creep.memory.targetId;
+        delete creep.memory.miniJob;
+
+        // Check if creep needs to move to another room
+        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+          return;
+        }
+
+        // Switch to one of the roles that gets energy
+        creep.memory.job = "scoreWithdrawer";
+        break;
+      default:
+        break;
+    }
+  }
 }
 //#endregion
