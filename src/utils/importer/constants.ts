@@ -80,17 +80,17 @@ export const CREEP_ROLE_COUNT_MAX: { [key: string]: number } = {
   scorePicker: 1
 };
 
-export const CREEP_PART_COUNT_MAX: { [key: string]: {part: BodyPartConstant, amount:number} } = {
-  pioneer: {part: WORK, amount: 99},
-  transferer: {part: CARRY, amount: 100},
-  harvester: {part: WORK, amount: 7},
-  builder: {part: WORK, amount: 20},
-  repairer: {part: WORK, amount: 20},
-  upgrader: {part: WORK, amount: 20},
-  reserver: {part: CLAIM, amount: 5},
-  claimer: {part: CLAIM, amount: 99},
-  mineral: {part: CARRY, amount: 99},
-  scorePicker: {part: CARRY, amount: 99}
+export const CREEP_PART_COUNT_MAX: { [key: string]: { part: BodyPartConstant; amount: number } } = {
+  pioneer: { part: WORK, amount: 99 },
+  transferer: { part: CARRY, amount: 100 },
+  harvester: { part: WORK, amount: 7 },
+  builder: { part: WORK, amount: 20 },
+  repairer: { part: WORK, amount: 20 },
+  upgrader: { part: WORK, amount: 20 },
+  reserver: { part: CLAIM, amount: 5 },
+  claimer: { part: CLAIM, amount: 99 },
+  mineral: { part: CARRY, amount: 99 },
+  scorePicker: { part: CARRY, amount: 99 }
 };
 
 export const ALL_RESOURCE_TYPES: string[] = [

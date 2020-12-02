@@ -47,11 +47,10 @@ export class SpawningApi {
   private static getTotalAliveParts(partType: BodyPartConstant, creeps: Creep[]): number {
     const partCountArray: number[] = creeps.map((creep: Creep) => creep.getActiveBodyparts(partType));
     if (partCountArray.length > 0) {
-
       const partCount: number = partCountArray.reduce((total: number, num: number): number => {
         return total + num;
       });
-      
+
       return partCount;
     } else {
       return 0;
@@ -226,10 +225,7 @@ export class SpawningApi {
                   break;
                 }
               } else {
-                if (
-                  creeps.length >=
-                  maxCreepCount * targetRoomMemory.commonMemory!.sources.length
-                ) {
+                if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
                   break;
                 }
               }
@@ -281,15 +277,9 @@ export class SpawningApi {
               }
 
               // Check if input role is less then max creeps allowed //
-              if (
-                creeps.length >= maxCreepCount &&
-                targetRoomMemory.constructionSites.data.length === 0
-              ) {
+              if (creeps.length >= maxCreepCount && targetRoomMemory.constructionSites.data.length === 0) {
                 break;
-              } else if (
-                creeps.length >= maxCreepCount / 2 &&
-                targetRoomMemory.constructionSites.data.length > 0
-              ) {
+              } else if (creeps.length >= maxCreepCount / 2 && targetRoomMemory.constructionSites.data.length > 0) {
                 break;
               }
             }
@@ -420,7 +410,7 @@ export class SpawningApi {
               break;
             }
 
-          // If there is more then 1 source
+            // If there is more then 1 source
             if (targetRoomMemory.commonMemory!.sources.length === 1) {
               break;
             }
@@ -513,7 +503,7 @@ export class SpawningApi {
             if (partCount >= maxPartCount) {
               break;
             }
-            
+
             // Check if input role is less then max creeps allowed //
             if (creeps.length >= maxCreepCount) {
               break;

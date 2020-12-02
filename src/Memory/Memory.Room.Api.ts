@@ -541,7 +541,11 @@ export class MemoryApi_Room {
     return remoteRooms;
   }
 
-  public static getScoreContainerRooms(room: Room, filterFunction?: (object: RoomMemory) => boolean, targetRoom?: string) {
+  public static getScoreContainerRooms(
+    room: Room,
+    filterFunction?: (object: RoomMemory) => boolean,
+    targetRoom?: string
+  ) {
     if (Memory.rooms[room.name] === undefined || Memory.rooms[room.name]!.remoteRooms === undefined) {
       return [];
     }
@@ -614,7 +618,7 @@ export class MemoryApi_Room {
 
   public static getSpawnRoomOfDependentRoom(room: Room): Room | null {
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
-    let spawnRoom: Room| null = null;
+    let spawnRoom: Room | null = null;
     _.forEach(ownedRooms, (r: Room): void | Room => {
       const indexRemote: number = r.memory.remoteRooms!.indexOf(room.name);
       const indexScoreContainer: number = r.memory.scoreContainerRooms!.indexOf(room.name);

@@ -30,8 +30,8 @@ export class CreepRole_Harvest {
         // Move to mineral
         creep.moveTo(mineral);
         break;
-        case ERR_INVALID_TARGET:
-                // Move to mineral
+      case ERR_INVALID_TARGET:
+        // Move to mineral
         creep.moveTo(mineral);
         creep.room.createConstructionSite(mineral, STRUCTURE_EXTRACTOR);
         break;
