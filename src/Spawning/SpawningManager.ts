@@ -45,16 +45,26 @@ export class SpawningManager {
       return;
     }
 
-    if (room.energyAvailable >= 1000) {
-      const remoteRoomsArray = room.memory.remoteRooms!;
-      _.forEach(remoteRoomsArray, (roomName: string) => {
-        // const roomName = remoteRoomsArray[index];
-        const remoteRoom: Room = Game.rooms[roomName];
-        const remoteSpawnReturn = SpawningHelper.spawnRemoteCreep(room, remoteRoom, roomName);
-        if (remoteSpawnReturn !== OK) {
+    if (room.storage) {
+      const scoreContainerRoomsArray = room.memory.scoreContainerRooms!;
+      _.forEach(scoreContainerRoomsArray, (roomName: string) => {
+        const scoreContainerRoom: Room = Game.rooms[roomName];
+        const scoreContainerSpawnReturn = SpawningHelper.spawnScoreContainerCreep(room, scoreContainerRoom, roomName);
+        if (scoreContainerSpawnReturn !== OK) {
           return;
         }
       });
+
+      if (room.energyAvailable >= 1000) {
+        const remoteRoomsArray = room.memory.remoteRooms!;
+        _.forEach(remoteRoomsArray, (roomName: string) => {
+          const remoteRoom: Room = Game.rooms[roomName];
+          const remoteSpawnReturn = SpawningHelper.spawnRemoteCreep(room, remoteRoom, roomName);
+          if (remoteSpawnReturn !== OK) {
+            return;
+          }
+        });
+      }
     }
   }
 }
