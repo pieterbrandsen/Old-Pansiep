@@ -1,16 +1,16 @@
-//#region Require('./)
-import _ from "lodash";
-import { MemoryApi_Room, MemoryApi_All, JobsApi } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { JobsApi, MemoryApi_All, MemoryApi_Room } from 'Utils/importer/internals';
+// #endregion
 
-//#region Class
-export class RoomHelper_Structure {
+// #region Class
+export cUtils/Importer/internalse {
   public static towerRepairing(room: Room): void {
     if (room.memory.jobs.damagedStructures.data.length === 0) {
       return;
     }
 
-    const hitsTarget: number = room.memory.jobs.damagedStructures.hitsTarget;
+    const { hitsTarget } = room.memory.jobs.damagedStructures;
 
     const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
       room,
@@ -91,10 +91,10 @@ export class RoomHelper_Structure {
     }
 
     // Define all possible sources
-    const source0: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["source0"]);
-    const source1: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["source1"]);
-    const head: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["head"]);
-    const controller: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["controller"]);
+    const source0: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links.source0);
+    const source1: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links.source1);
+    const head: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links.head);
+    const controller: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links.controller);
 
     // Define function to check if there is space in target link
     const sendEnergy = (fromLink: StructureLink, toLink: StructureLink) => {
@@ -126,4 +126,4 @@ export class RoomHelper_Structure {
     }
   }
 }
-//#endregion
+// #endregion

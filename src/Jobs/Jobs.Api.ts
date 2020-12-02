@@ -1,9 +1,9 @@
-//#region Require('./)
-import _, { any } from "lodash";
-import {} from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _, { any } from 'lodash';
+import {} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class JobsApi {
   public static getClosestJob(position: RoomPos, jobs: JobTemplate[]): JobTemplate | undefined {
     if (jobs.length >= 2) {
@@ -20,11 +20,11 @@ export class JobsApi {
       });
 
       return result;
-    } else if (jobs.length === 1) {
-      return jobs[0];
-    } else {
-      return undefined;
     }
+    if (jobs.length === 1) {
+      return jobs[0];
+    }
+    return undefined;
   }
 
   public static getFirstJob(jobs: JobTemplate[]): JobTemplate | undefined {
@@ -35,13 +35,13 @@ export class JobsApi {
     const job: JobTemplate | undefined = this.findJob(jobId, jobs);
     if (!job) {
       return jobs;
-    } else if (jobs.length > 1) {
+    }
+    if (jobs.length > 1) {
       _.remove(jobs, job);
       return jobs;
-    } else {
-      jobs.shift();
-      return jobs;
     }
+    jobs.shift();
+    return jobs;
   }
 
   public static findJob(jobId: string, jobs: JobTemplate[]): JobTemplate | undefined {
@@ -49,4 +49,4 @@ export class JobsApi {
     return job;
   }
 }
-//#endregion
+// #endregion

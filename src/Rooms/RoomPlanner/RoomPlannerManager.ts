@@ -1,7 +1,7 @@
-//#region Require('./)
-import {} from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import {} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class RoomPlannerManager {}
-//#endregion
+// #endregion

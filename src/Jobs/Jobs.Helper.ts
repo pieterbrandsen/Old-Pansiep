@@ -1,9 +1,9 @@
-//#region Require('./)
-import _ from "lodash";
-import { Config, MemoryApi_Room } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { Config, MemoryApi_Room } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class JobsHelper {
   public static updateAllConstructionSitesJobs(room: Room): void {
     const allConstructionSites: ConstructionSite[] = MemoryApi_Room.getAllConstructionSites(room);
@@ -22,7 +22,7 @@ export class JobsHelper {
   public static updateAllEnergyStoragesJobs(room: Room): void {
     let controllerStorage: any = MemoryApi_Room.getUpgraderStructure(room);
     if (controllerStorage === null) {
-      controllerStorage = { id: "" };
+      controllerStorage = { id: '' };
     }
     const allEnergyStructures: Structure[] = MemoryApi_Room.getStructures(
       room,
@@ -36,8 +36,8 @@ export class JobsHelper {
     );
 
     // Set energyUsable and energyCapacity to zero
-    let energyUsable: number = 0;
-    let energyCapacity: number = 0;
+    let energyUsable = 0;
+    let energyCapacity = 0;
 
     room.memory.jobs.energyStorages = [];
     _.forEach(allEnergyStructures, (str: StructureStorage) => {
@@ -59,7 +59,10 @@ export class JobsHelper {
       }
     });
 
-    room.memory.commonMemory!.energyStored = { usable: energyUsable, capacity: energyCapacity };
+    room.memory.commonMemory!.energyStored = {
+      usable: energyUsable,
+      capacity: energyCapacity
+    };
   }
 
   public static getAllContainerEnergyStoragesJobs(room: Room): JobTemplate[] {
@@ -139,7 +142,13 @@ export class JobsHelper {
 
     // Reset the memory for enemies
     roomMemory.jobs.enemies = {
-      parts: { WORK: 0, ATTACK: 0, RANGED_ATTACK: 0, TOUGH: 0, HEAL: 0 },
+      parts: {
+        WORK: 0,
+        ATTACK: 0,
+        RANGED_ATTACK: 0,
+        TOUGH: 0,
+        HEAL: 0
+      },
       creeps: []
     };
 
@@ -154,10 +163,10 @@ export class JobsHelper {
       }
 
       // Create variables for creep part counts
-      let netToughCount: number = 0;
-      let netAttackCount: number = 0;
-      let netRangedAttackCount: number = 0;
-      let netHealCount: number = 0;
+      let netToughCount = 0;
+      let netAttackCount = 0;
+      let netRangedAttackCount = 0;
+      let netHealCount = 0;
 
       // Loop though all the parts in the body to check for boost.
       creep.body.forEach(part => {
@@ -206,16 +215,16 @@ export class JobsHelper {
         } else {
           // Else switch between the parts that needs to be saved
           switch (part.type) {
-            case "tough":
+            case 'tough':
               netToughCount += 1;
               break;
-            case "attack":
+            case 'attack':
               netAttackCount += 1;
               break;
-            case "ranged_attack":
+            case 'ranged_attack':
               netRangedAttackCount += 1;
               break;
-            case "heal":
+            case 'heal':
               netHealCount += 1;
               break;
             default:
@@ -283,4 +292,4 @@ export class JobsHelper {
     });
   }
 }
-//#endregion
+// #endregion

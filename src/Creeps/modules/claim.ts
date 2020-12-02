@@ -1,10 +1,10 @@
-//#region Require('./)
-import {} from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import {} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Claim {
-  //#region Functions()
+  // #region Functions()
   public static claim(creep: Creep) {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
@@ -21,8 +21,8 @@ export class CreepRole_Claim {
     switch (result) {
       case OK:
         // Delete flag and memory
-        Game.flags["claim"].remove();
-        delete Memory.rooms["claim"];
+        Game.flags.claim.remove();
+        delete Memory.rooms.claim;
 
         // Create a builderLD flag and give it memory
         creep.room.createFlag(creep.pos, `builderLD${creepMemory.spawnRoom}`);
@@ -35,10 +35,10 @@ export class CreepRole_Claim {
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to target
         creep.moveTo(creep.room.controller);
-        return;
+
       default:
         break;
     }
   }
 }
-//#endregion
+// #endregion

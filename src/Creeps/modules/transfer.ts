@@ -1,9 +1,9 @@
-//#region Require('./)
-import _ from "lodash";
-import { JobsApi } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { JobsApi } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Transfer {
   public static transfer(creep: Creep): void | string {
     let result;
@@ -13,46 +13,46 @@ export class CreepRole_Transfer {
     const roomMemory = Memory.rooms[creepMemory.spawnRoom];
 
     switch (creep.memory.miniJob) {
-      case "harvest":
+      case 'harvest':
         result = CreepRole_Transfer.harvest(creep);
         break;
-      case "spawner":
+      case 'spawner':
         result = CreepRole_Transfer.spawner(creep);
         break;
-      case "storage":
+      case 'storage':
         result = CreepRole_Transfer.storage(creep);
         break;
-      case "controller":
+      case 'controller':
         result = CreepRole_Transfer.controller(creep);
         break;
-      case "mineral":
+      case 'mineral':
         result = CreepRole_Transfer.mineral(creep);
         break;
-      case "droppedResource":
+      case 'droppedResource':
         result = CreepRole_Transfer.droppedResource(creep);
         break;
       default:
         // If creep is a mineral harvester, only transfer to storage
-        if (creepMemory.role === "mineral") {
-          creep.memory.miniJob = "mineral";
+        if (creepMemory.role === 'mineral') {
+          creep.memory.miniJob = 'mineral';
           break;
-        } else if (creepMemory.role.includes("LD")) {
-          creep.memory.miniJob = "storage";
+        } else if (creepMemory.role.includes('LD')) {
+          creep.memory.miniJob = 'storage';
           break;
         }
 
         if (creep.store.energy === 0 && creep.store.getUsedCapacity() > 0) {
-          creep.memory.miniJob = "droppedResource";
+          creep.memory.miniJob = 'droppedResource';
         }
 
         if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
-          creep.memory.miniJob = "spawner";
+          creep.memory.miniJob = 'spawner';
           break;
         } else if (
           roomMemory.commonMemory!.energyStored.capacity > 10000 &&
           roomMemory.commonMemory!.energyStored.capacity / 10 > roomMemory.commonMemory!.energyStored.usable
         ) {
-          creep.memory.miniJob = "storage";
+          creep.memory.miniJob = 'storage';
           break;
         } else if (
           roomMemory.commonMemory!.controllerStorage &&
@@ -60,17 +60,17 @@ export class CreepRole_Transfer {
           roomMemory.commonMemory!.controllerStorage.type === STRUCTURE_CONTAINER &&
           Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null
         ) {
-          creep.memory.miniJob = "controller";
+          creep.memory.miniJob = 'controller';
           break;
         } else if (
           roomMemory.commonMemory!.energyStored.capacity > 10000 &&
           roomMemory.commonMemory!.energyStored.capacity / 2 > roomMemory.commonMemory!.energyStored.usable
         ) {
-          creep.memory.miniJob = "storage";
+          creep.memory.miniJob = 'storage';
         }
 
         // Return full if no condition hit
-        return "full";
+        return 'full';
     }
 
     // Return result
@@ -84,7 +84,7 @@ export class CreepRole_Transfer {
 
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // Get the storage and resource
@@ -93,7 +93,7 @@ export class CreepRole_Transfer {
 
     // Return empty if transferStructure is null
     if (target === undefined || resource === undefined) {
-      return "empty";
+      return 'empty';
     }
     // Run the transfer function
     const result = creep.transfer(target, resource);
@@ -116,7 +116,7 @@ export class CreepRole_Transfer {
 
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // Get the storage
@@ -124,7 +124,7 @@ export class CreepRole_Transfer {
 
     // Return empty if transferStructure is null
     if (target === undefined) {
-      return "empty";
+      return 'empty';
     }
     // Run the transfer function
     const result = creep.transfer(target, roomMemory.commonMemory!.mineral!.type);
@@ -147,7 +147,7 @@ export class CreepRole_Transfer {
 
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // If creep memory is missing a targetId, find one
@@ -167,7 +167,10 @@ export class CreepRole_Transfer {
       let sourceStructure: any;
       foundStructures.forEach((structure: StructureLink | StructureContainer) => {
         if (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_LINK) {
-          sourceStructure = { type: structure.structureType, id: structure.id };
+          sourceStructure = {
+            type: structure.structureType,
+            id: structure.id
+          };
         }
       });
 
@@ -181,7 +184,7 @@ export class CreepRole_Transfer {
 
       // Return empty if transferStructure is null
       if (transferStructure === null) {
-        return "empty";
+        return 'empty';
       }
 
       // Run the transfer function
@@ -196,7 +199,7 @@ export class CreepRole_Transfer {
         case ERR_INVALID_TARGET:
           // Delete targetId
           delete creep.memory.targetId;
-          roomMemory.roomPlanner!.room.sources[creep.memory.sourceNumber!].id = "";
+          roomMemory.roomPlanner!.room.sources[creep.memory.sourceNumber!].id = '';
           break;
         default:
           break;
@@ -211,7 +214,7 @@ export class CreepRole_Transfer {
 
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // If Target is already full of energy
@@ -221,11 +224,11 @@ export class CreepRole_Transfer {
       // @ts-ignore
       Game.getObjectById(creepMemory.targetId).store.getFreeCapacity(RESOURCE_ENERGY) === 0
     ) {
-      return "full";
+      return 'full';
     }
 
     if (roomMemory.jobs.spawnerEnergyStructures!.length === 0 && !creepMemory.targetId) {
-      return "empty";
+      return 'empty';
     }
 
     // If creep is missing targetId
@@ -254,7 +257,7 @@ export class CreepRole_Transfer {
 
       // Return empty if transferStructure is null
       if (transferStructure === null) {
-        return "empty";
+        return 'empty';
       }
 
       // Run the transfer function
@@ -290,7 +293,7 @@ export class CreepRole_Transfer {
 
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0 || spawnRoom === undefined) {
-      return "empty";
+      return 'empty';
     }
 
     // If there is enough energy in storage
@@ -298,17 +301,17 @@ export class CreepRole_Transfer {
       roomMemory.commonMemory!.energyStored.capacity > 10000 &&
       roomMemory.commonMemory!.energyStored.capacity / 2 < roomMemory.commonMemory!.energyStored.usable
     ) {
-      return "empty";
+      return 'empty';
     }
 
     // If room is in need of more energy in the storage/terminal
     if (creepMemory.targetId === undefined) {
       // If there is enough space in storage
       if (spawnRoom.storage && spawnRoom.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 400 * 1000) {
-        creepMemory.targetId = spawnRoom.storage!.id;
+        creepMemory.targetId = spawnRoom.storage.id;
         // If there is enough space in terminal
       } else if (spawnRoom.terminal && spawnRoom.terminal.store.getUsedCapacity(RESOURCE_ENERGY) < 100 * 1000) {
-        creepMemory.targetId = spawnRoom.terminal!.id;
+        creepMemory.targetId = spawnRoom.terminal.id;
       }
     } else {
       // Get the saved structure from memory
@@ -316,7 +319,7 @@ export class CreepRole_Transfer {
 
       // Return empty if transferStructure is null
       if (transferStructure === null) {
-        return "empty";
+        return 'empty';
       }
 
       // Run the transfer function
@@ -333,7 +336,7 @@ export class CreepRole_Transfer {
         case ERR_NOT_IN_RANGE:
           // If creep is not in range, move to target
           creep.moveTo(transferStructure);
-          return;
+
         default:
           break;
       }
@@ -347,12 +350,12 @@ export class CreepRole_Transfer {
 
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // Return if controller object is undefined
     if (roomMemory.commonMemory!.controllerStorage === undefined) {
-      return "empty";
+      return 'empty';
     }
 
     // If controller structure has enough energy
@@ -361,7 +364,7 @@ export class CreepRole_Transfer {
         roomMemory.commonMemory!.controllerStorage.type !== STRUCTURE_CONTAINER) &&
       !creep.memory.targetId
     ) {
-      return "empty";
+      return 'empty';
     }
 
     // Get the saved structure from memory
@@ -369,7 +372,7 @@ export class CreepRole_Transfer {
 
     // Return empty if transferStructure is null
     if (transferStructure === null) {
-      return "empty";
+      return 'empty';
     }
 
     // Run the transfer function
@@ -383,16 +386,16 @@ export class CreepRole_Transfer {
         // Delete targetId
         delete creep.memory.targetId;
         if (result === ERR_INVALID_TARGET) {
-          roomMemory.commonMemory!.controllerStorage.id! = "";
+          roomMemory.commonMemory!.controllerStorage.id! = '';
         }
         break;
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to target
         creep.moveTo(transferStructure);
-        return;
+
       default:
         break;
     }
   }
 }
-//#endregion
+// #endregion

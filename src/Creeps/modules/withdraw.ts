@@ -1,9 +1,9 @@
-//#region Require('./)
-import _ from "lodash";
-import { Config, CreepRole_ResourcePicker, JobsHelper } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { Config, CreepRole_ResourcePicker, JobsHelper } from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Withdraw {
   public static withdraw(creep: Creep): string | undefined {
     let result: string | undefined;
@@ -13,34 +13,34 @@ export class CreepRole_Withdraw {
     const roomMemory = Memory.rooms[creepMemory.targetRoom];
 
     switch (creepMemory.miniJob) {
-      case "upgrade":
+      case 'upgrade':
         result = CreepRole_Withdraw.upgrade(creep);
         break;
-      case "normal":
+      case 'normal':
         result = CreepRole_Withdraw.normal(creep);
         break;
-      case "droppedResource":
+      case 'droppedResource':
         result = CreepRole_ResourcePicker.droppedResource(creep);
         break;
       default:
         if (
           roomMemory.commonMemory!.controllerStorage &&
-          creepMemory.role.includes("upgrade") &&
+          creepMemory.role.includes('upgrade') &&
           Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null &&
           roomMemory.commonMemory!.controllerStorage.usable > 250
         ) {
-          creep.memory.miniJob = "upgrade";
+          creep.memory.miniJob = 'upgrade';
         } else if (
           roomMemory.commonMemory!.energyStored.usable > 500 &&
           roomMemory.jobs.spawnerEnergyStructures!.length > 0
         ) {
-          creep.memory.miniJob = "normal";
+          creep.memory.miniJob = 'normal';
         } else if (roomMemory.jobs.droppedResources.length > 0) {
-          creep.memory.miniJob = "droppedResource";
+          creep.memory.miniJob = 'droppedResource';
         } else if (roomMemory.commonMemory!.energyStored.usable > 500) {
-          creep.memory.miniJob = "normal";
+          creep.memory.miniJob = 'normal';
         } else {
-          return "empty";
+          return 'empty';
         }
         break;
     }
@@ -56,7 +56,7 @@ export class CreepRole_Withdraw {
 
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
-      return "full";
+      return 'full';
     }
 
     // If there is not enough to withdraw from, return empty to get another goal if possible
@@ -64,16 +64,16 @@ export class CreepRole_Withdraw {
       roomMemory.commonMemory!.energyStored.usable <= creep.store.getCapacity() &&
       creep.memory.targetId === undefined
     ) {
-      return "empty";
+      return 'empty';
     }
 
     // If creep memory is missing a targetId, find one
     if (!creep.memory.targetId) {
       let job: JobTemplate;
-      if (creepMemory.role === "transferer" && roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
+      if (creepMemory.role === 'transferer' && roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
         job = roomMemory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
       } else if (
-        (creepMemory.role === "transferer" || creepMemory.role === "pioneer") &&
+        (creepMemory.role === 'transferer' || creepMemory.role === 'pioneer') &&
         roomMemory.jobs.spawnerEnergyStructures!.length === 0
       ) {
         const allContainerStoragesJobs: JobTemplate[] = JobsHelper.getAllContainerEnergyStoragesJobs(creep.room);
@@ -82,9 +82,8 @@ export class CreepRole_Withdraw {
           if (creep.pos.inRangeTo(creep.room.storage!, 10)) {
             creep.moveTo(creep.room.controller!);
             return;
-          } else {
-            return;
           }
+          return;
         }
       } else {
         job = roomMemory.jobs.energyStorages.sort((a, b) => b.usable! - a.usable!)[0];
@@ -139,8 +138,6 @@ export class CreepRole_Withdraw {
           break;
       }
     }
-
-    return;
   }
 
   private static upgrade(creep: Creep): string | undefined {
@@ -150,10 +147,10 @@ export class CreepRole_Withdraw {
 
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
-      return "full";
+      return 'full';
     }
     if (roomMemory.commonMemory!.controllerStorage === undefined) {
-      return "empty";
+      return 'empty';
     }
 
     // Get the saved structure from memory
@@ -162,7 +159,7 @@ export class CreepRole_Withdraw {
     );
 
     if (withdrawStructure === null) {
-      return "empty";
+      return 'empty';
     }
 
     // Run the withdraw function
@@ -179,11 +176,10 @@ export class CreepRole_Withdraw {
       case ERR_INVALID_TARGET:
       case ERR_NOT_ENOUGH_RESOURCES:
         // Return
-        return "empty";
+        return 'empty';
       default:
         break;
     }
-    return;
   }
 }
-//#endregion
+// #endregion

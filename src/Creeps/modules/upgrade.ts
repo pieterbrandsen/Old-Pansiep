@@ -1,17 +1,17 @@
-//#region Require('./)
-import { Config } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { Config } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Upgrade {
   public static upgrade(creep: Creep): string | undefined {
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
-    if (creep.room.controller === undefined || creep.memory.role.includes("LD")) {
-      return "empty";
+    if (creep.room.controller === undefined || creep.memory.role.includes('LD')) {
+      return 'empty';
     }
 
     // Run upgradeController function
@@ -25,12 +25,9 @@ export class CreepRole_Upgrade {
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to controller
         creep.moveTo(creep.room.controller);
-        return;
-      default:
-        return;
-    }
 
-    return;
+      default:
+    }
   }
 }
-//#endregion
+// #endregion

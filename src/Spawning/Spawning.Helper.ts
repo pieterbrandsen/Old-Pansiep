@@ -1,12 +1,12 @@
-//#region Require('./)
-import _ from "lodash";
-import { Config, JobsHelper, SpawningApi } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { Config, JobsHelper, SpawningApi } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class SpawningHelper {
   public static spawnNormalCreep(spawnRoom: Room): ScreepsReturnCode {
-    const nextCreep = SpawningApi.getNextRoleName(spawnRoom, "owned");
+    const nextCreep = SpawningApi.getNextRoleName(spawnRoom, 'owned');
     if (!nextCreep[0]) {
       return OK;
     }
@@ -21,13 +21,12 @@ export class SpawningHelper {
         JobsHelper.updateAllSpawnerEnergyStructuresJobs(spawnRoom);
       }
       return spawnResult;
-    } else {
-      return ERR_BUSY;
     }
+    return ERR_BUSY;
   }
 
   public static spawnRemoteCreep(spawnRoom: Room, targetRoom: Room, targetRoomName: string): ScreepsReturnCode {
-    const nextCreep = SpawningApi.getNextRoleName(targetRoom, "remote", targetRoom);
+    const nextCreep = SpawningApi.getNextRoleName(targetRoom, 'remote', targetRoom);
     if (!nextCreep[0]) {
       return OK;
     }
@@ -42,13 +41,12 @@ export class SpawningHelper {
         JobsHelper.updateAllSpawnerEnergyStructuresJobs(spawnRoom);
       }
       return spawnResult;
-    } else {
-      return ERR_BUSY;
     }
+    return ERR_BUSY;
   }
 
   public static spawnScoreContainerCreep(spawnRoom: Room, targetRoom: Room, targetRoomName: string): ScreepsReturnCode {
-    const nextCreep = SpawningApi.getNextRoleName(targetRoom, "score", targetRoom);
+    const nextCreep = SpawningApi.getNextRoleName(targetRoom, 'score', targetRoom);
     if (!nextCreep[0]) {
       return OK;
     }
@@ -63,9 +61,8 @@ export class SpawningHelper {
         JobsHelper.updateAllSpawnerEnergyStructuresJobs(spawnRoom);
       }
       return spawnResult;
-    } else {
-      return ERR_BUSY;
     }
+    return ERR_BUSY;
   }
 
   private static spawnCreep(
@@ -80,4 +77,4 @@ export class SpawningHelper {
     });
   }
 }
-//#endregion
+// #endregion

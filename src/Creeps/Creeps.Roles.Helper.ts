@@ -1,55 +1,55 @@
-//#region Require('./)
+// #region Require('./)
 import {
   Config,
-  MemoryApi_All,
   CreepRole_Build,
-  CreepRole_Withdraw,
-  CreepRole_Upgrade,
   CreepRole_Claim,
   CreepRole_Harvest,
   CreepRole_Repair,
   CreepRole_Reserve,
-  CreepRole_Transfer,
   CreepRole_Scout,
-  CreepRole_Seasonal
-} from "Utils/importer/internals";
-//#endregion
+  CreepRole_Seasonal,
+  CreepRole_Transfer,
+  CreepRole_Upgrade,
+  CreepRole_Withdraw,
+  MemoryApi_All
+} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepsHelper_Role {
   public static runCreepRoles(creep: Creep, shortRoleName: string) {
     switch (shortRoleName) {
-      case "pioneer":
+      case 'pioneer':
         this.pioneer(creep);
         break;
-      case "transferer":
+      case 'transferer':
         this.transferer(creep);
         break;
-      case "harvester":
+      case 'harvester':
         this.harvester(creep);
         break;
-      case "builder":
+      case 'builder':
         this.builder(creep);
         break;
-      case "repairer":
+      case 'repairer':
         this.repairer(creep);
         break;
-      case "upgrader":
+      case 'upgrader':
         this.upgrader(creep);
         break;
-      case "reserver":
+      case 'reserver':
         this.reserver(creep);
         break;
-      case "claimer":
+      case 'claimer':
         this.claimer(creep);
         break;
-      case "mineral":
+      case 'mineral':
         this.mineral(creep);
         break;
-      case "scout":
+      case 'scout':
         this.scout(creep);
         break;
-      case "scorePicker":
+      case 'scorePicker':
         this.scorePicker(creep);
         break;
       default:
@@ -59,92 +59,92 @@ export class CreepsHelper_Role {
 
   private static executeCreep(creep: Creep, job: string): void | string {
     switch (job) {
-      case "build":
+      case 'build':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Build.build,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "claim":
+      case 'claim':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Claim.claim,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "harvest":
+      case 'harvest':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Harvest.source,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "mineral":
+      case 'mineral':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Harvest.mineral,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "repair":
+      case 'repair':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Repair.repair,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "reserve":
+      case 'reserve':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Reserve.reserve,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "transfer":
+      case 'transfer':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Transfer.transfer,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "upgrade":
+      case 'upgrade':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Upgrade.upgrade,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "withdraw":
+      case 'withdraw':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Withdraw.withdraw,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "scout":
+      case 'scout':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Scout.scout,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
-      case "scoreWithdrawer":
+      case 'scoreWithdrawer':
         return MemoryApi_All.functionRunnerWithCpu(
           CreepRole_Seasonal.scoreWithdrawer,
           Config.creepModuleCpuCost[creep.room.name],
           job,
-          "+=",
+          '+=',
           creep
         );
       default:
@@ -156,9 +156,8 @@ export class CreepsHelper_Role {
     // Check if current room is target room, return true if not false
     if (Game.rooms[targetRoom] !== undefined) {
       return true;
-    } else {
-      return this.moveToRoom(creep, targetRoom);
     }
+    return this.moveToRoom(creep, targetRoom);
   }
 
   private static getMissingPartsCount(creep: Creep): void {
@@ -173,14 +172,14 @@ export class CreepsHelper_Role {
 
   public static moveToRoom(creep: Creep, targetRoom: string): boolean {
     // Define the way how the creep is going to this room
-    let travelWay = "unknown";
+    let travelWay = 'unknown';
     const targetRoomFlag = Game.flags[targetRoom];
 
     if (targetRoomFlag) {
-      travelWay = "flag";
+      travelWay = 'flag';
     }
     switch (travelWay) {
-      case "flag":
+      case 'flag':
         creep.moveTo(targetRoomFlag);
         break;
       default:
@@ -191,9 +190,8 @@ export class CreepsHelper_Role {
     // Return true if creep is in targetRoom after moving
     if (creep.room.name === targetRoom) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   private static pioneer = (creep: Creep): void => {
@@ -210,7 +208,7 @@ export class CreepsHelper_Role {
     }
 
     if (!creep.memory.job) {
-      creep.memory.job = "withdraw";
+      creep.memory.job = 'withdraw';
       return;
     }
 
@@ -218,7 +216,7 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId and miniJob
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
@@ -227,27 +225,27 @@ export class CreepsHelper_Role {
 
         // Switch to one of the jobs that drains energy
         if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
-          creep.memory.job = "transfer";
+          creep.memory.job = 'transfer';
         } else if (
           roomMemory.commonMemory!.energyStored.capacity > 10000 &&
           roomMemory.commonMemory!.energyStored.capacity / 10 > roomMemory.commonMemory!.energyStored.usable
         ) {
-          creep.memory.job = "transfer";
+          creep.memory.job = 'transfer';
         } else if (
           roomMemory.commonMemory!.controllerStorage !== undefined &&
           roomMemory.commonMemory!.controllerStorage.usable < 1500 &&
           roomMemory.commonMemory!.controllerStorage.type === STRUCTURE_CONTAINER
         ) {
-          creep.memory.job = "transfer";
+          creep.memory.job = 'transfer';
         } else if (roomMemory.jobs.damagedStructures.data.length > 0) {
-          creep.memory.job = "repair";
+          creep.memory.job = 'repair';
         } else if (roomMemory.constructionSites.data.length > 0) {
-          creep.memory.job = "build";
+          creep.memory.job = 'build';
         } else {
-          creep.memory.job = "upgrade";
+          creep.memory.job = 'upgrade';
         }
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId and sourceId
         delete creep.memory.targetId;
         delete creep.memory.sourceId;
@@ -257,9 +255,9 @@ export class CreepsHelper_Role {
         // Switch to one of the roles that gets energy
         // Switch to one of the roles that gets energy
         if (roomMemory.commonMemory!.energyStored.usable > 1500) {
-          creep.memory.job = "withdraw";
+          creep.memory.job = 'withdraw';
         } else {
-          creep.memory.job = "harvest";
+          creep.memory.job = 'harvest';
         }
         break;
       default:
@@ -277,7 +275,7 @@ export class CreepsHelper_Role {
     }
 
     if (!creep.memory.job) {
-      creep.memory.job = "harvest";
+      creep.memory.job = 'harvest';
       return;
     }
 
@@ -285,20 +283,20 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId
         delete creep.memory.targetId;
-        creep.memory.miniJob = "harvest";
+        creep.memory.miniJob = 'harvest';
 
         // Switch to one of the jobs that drains energy
-        creep.memory.job = "transfer";
+        creep.memory.job = 'transfer';
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId
         delete creep.memory.targetId;
 
         // Switch to one of the roles that gets energy
-        creep.memory.job = "harvest";
+        creep.memory.job = 'harvest';
         break;
       default:
         break;
@@ -315,7 +313,7 @@ export class CreepsHelper_Role {
     }
 
     if (!creep.memory.job) {
-      creep.memory.job = "harvest";
+      creep.memory.job = 'harvest';
       return;
     }
 
@@ -323,20 +321,20 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId
         delete creep.memory.targetId;
-        creep.memory.miniJob = "mineral";
+        creep.memory.miniJob = 'mineral';
 
         // Switch to one of the jobs that drains energy
-        creep.memory.job = "transfer";
+        creep.memory.job = 'transfer';
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId
         delete creep.memory.targetId;
 
         // Switch to one of the roles that gets energy
-        creep.memory.job = "mineral";
+        creep.memory.job = 'mineral';
         break;
       default:
         break;
@@ -348,7 +346,7 @@ export class CreepsHelper_Role {
     CreepsHelper_Role.getMissingPartsCount(creep);
 
     if (!creep.memory.job) {
-      creep.memory.job = "withdraw";
+      creep.memory.job = 'withdraw';
       return;
     }
 
@@ -356,7 +354,7 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
@@ -367,9 +365,9 @@ export class CreepsHelper_Role {
         }
 
         // Switch to one of the jobs that drains energy
-        creep.memory.job = "transfer";
+        creep.memory.job = 'transfer';
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
@@ -380,7 +378,7 @@ export class CreepsHelper_Role {
         }
 
         // Switch to one of the roles that gets energy
-        creep.memory.job = "withdraw";
+        creep.memory.job = 'withdraw';
         break;
       default:
         break;
@@ -400,7 +398,7 @@ export class CreepsHelper_Role {
     const roomMemory = Memory.rooms[creep.memory.spawnRoom];
 
     if (!creep.memory.job) {
-      creep.memory.job = "withdraw";
+      creep.memory.job = 'withdraw';
       return;
     }
 
@@ -408,15 +406,15 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.sourceId;
 
         // Switch to one of the jobs that drains energy
-        creep.memory.job = "upgrade";
+        creep.memory.job = 'upgrade';
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.sourceId;
@@ -428,9 +426,9 @@ export class CreepsHelper_Role {
             roomMemory.commonMemory!.controllerStorage.usable >= 250 &&
             Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null)
         ) {
-          creep.memory.job = "withdraw";
+          creep.memory.job = 'withdraw';
         } else {
-          creep.memory.job = "harvest";
+          creep.memory.job = 'harvest';
         }
         break;
       default:
@@ -451,7 +449,7 @@ export class CreepsHelper_Role {
     const roomMemory = Memory.rooms[creep.memory.targetRoom];
 
     if (!creep.memory.job) {
-      creep.memory.job = "withdraw";
+      creep.memory.job = 'withdraw';
       return;
     }
 
@@ -459,7 +457,7 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
@@ -467,20 +465,18 @@ export class CreepsHelper_Role {
 
         // Switch to one of the jobs that drains energy
         if (roomMemory.jobs.damagedStructures.data.length > 0) {
-          creep.memory.job = "repair";
+          creep.memory.job = 'repair';
         } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
-          creep.memory.job = "upgrade";
-        } else {
-          if (!creep.pos.inRangeTo(25, 25, 20)) {
-            if (creep.room.controller) {
-              creep.moveTo(creep.room.controller);
-            } else {
-              creep.moveTo(25, 25);
-            }
+          creep.memory.job = 'upgrade';
+        } else if (!creep.pos.inRangeTo(25, 25, 20)) {
+          if (creep.room.controller) {
+            creep.moveTo(creep.room.controller);
+          } else {
+            creep.moveTo(25, 25);
           }
         }
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
@@ -488,9 +484,9 @@ export class CreepsHelper_Role {
 
         // Switch to one of the roles that gets energy
         if (roomMemory.commonMemory!.energyStored.usable >= 2000) {
-          creep.memory.job = "withdraw";
+          creep.memory.job = 'withdraw';
         } else {
-          creep.memory.job = "harvest";
+          creep.memory.job = 'harvest';
         }
         break;
       default:
@@ -511,7 +507,7 @@ export class CreepsHelper_Role {
     const roomMemory = Memory.rooms[creep.memory.targetRoom];
 
     if (!creep.memory.job) {
-      creep.memory.job = "withdraw";
+      creep.memory.job = 'withdraw';
       return;
     }
 
@@ -519,7 +515,7 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.sourceId;
@@ -527,26 +523,26 @@ export class CreepsHelper_Role {
 
         // Switch to one of the jobs that drains energy
         if (roomMemory.constructionSites.data.length > 0) {
-          creep.memory.job = "build";
+          creep.memory.job = 'build';
         } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
-          creep.memory.job = "upgrade";
+          creep.memory.job = 'upgrade';
         } else if (roomMemory.jobs.damagedStructures.data.length > 0) {
-          creep.memory.job = "repair";
+          creep.memory.job = 'repair';
         } else {
           creep.suicide();
         }
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.sourceId;
         delete creep.memory.miniJob;
 
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory!.energyStored.usable >= 2000 && !creep.memory.role.includes("LD")) {
-          creep.memory.job = "withdraw";
+        if (roomMemory.commonMemory!.energyStored.usable >= 2000 && !creep.memory.role.includes('LD')) {
+          creep.memory.job = 'withdraw';
         } else {
-          creep.memory.job = "harvest";
+          creep.memory.job = 'harvest';
         }
         break;
       default:
@@ -561,7 +557,7 @@ export class CreepsHelper_Role {
     }
 
     if (!creep.memory.job) {
-      creep.memory.job = "reserve";
+      creep.memory.job = 'reserve';
       return;
     }
 
@@ -576,7 +572,7 @@ export class CreepsHelper_Role {
     }
 
     if (!creep.memory.job) {
-      creep.memory.job = "claim";
+      creep.memory.job = 'claim';
       return;
     }
 
@@ -591,7 +587,7 @@ export class CreepsHelper_Role {
     }
 
     if (!creep.memory.job) {
-      creep.memory.job = "scout";
+      creep.memory.job = 'scout';
       return;
     }
 
@@ -604,7 +600,7 @@ export class CreepsHelper_Role {
     CreepsHelper_Role.getMissingPartsCount(creep);
 
     if (!creep.memory.job) {
-      creep.memory.job = "scoreWithdrawer";
+      creep.memory.job = 'scoreWithdrawer';
       return;
     }
 
@@ -612,7 +608,7 @@ export class CreepsHelper_Role {
     const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
 
     switch (result) {
-      case "full":
+      case 'full':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
@@ -623,9 +619,9 @@ export class CreepsHelper_Role {
         }
 
         // Switch to one of the jobs that drains energy
-        creep.memory.job = "transfer";
+        creep.memory.job = 'transfer';
         break;
-      case "empty":
+      case 'empty':
         // Delete targetId
         delete creep.memory.targetId;
         delete creep.memory.miniJob;
@@ -636,11 +632,11 @@ export class CreepsHelper_Role {
         }
 
         // Switch to one of the roles that gets energy
-        creep.memory.job = "scoreWithdrawer";
+        creep.memory.job = 'scoreWithdrawer';
         break;
       default:
         break;
     }
   }
 }
-//#endregion
+// #endregion

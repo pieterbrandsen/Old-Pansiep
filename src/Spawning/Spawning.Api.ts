@@ -1,17 +1,17 @@
-//#region Require('./)
-import _ from "lodash";
+// #region Require('./)
+import _ from 'lodash';
 import {
   ALL_OWNED_ROOM_CREEP_ROLES,
-  ALL_SCORE_CONTAINER_CREEP_ROLES,
   ALL_REMOTE_CREEP_ROLES,
-  Config,
-  MemoryApi_Room,
+  ALL_SCORE_CONTAINER_CREEP_ROLES,
+  CREEP_PART_COUNT_MAX,
   CREEP_ROLE_COUNT_MAX,
-  CREEP_PART_COUNT_MAX
-} from "Utils/importer/internals";
-//#endregion
+  Config,
+  MemoryApi_Room
+} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class SpawningApi {
   /**
    * Try to get a spawn in the inputted room
@@ -40,30 +40,26 @@ export class SpawningApi {
       targetRoom,
       spawnRoom: room.name,
       role,
-      job: ""
+      job: ''
     };
   }
 
   private static getTotalAliveParts(partType: BodyPartConstant, creeps: Creep[]): number {
     const partCountArray: number[] = creeps.map((creep: Creep) => creep.getActiveBodyparts(partType));
     if (partCountArray.length > 0) {
-      const partCount: number = partCountArray.reduce((total: number, num: number): number => {
-        return total + num;
-      });
+      const partCount: number = partCountArray.reduce((total: number, num: number): number => total + num);
 
       return partCount;
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   public static getCreepParts(room: Room, role: string): { body: BodyPartConstant[]; bodyCost: number } {
     const roomMemory = room.memory;
 
     // Get current body cost
-    const calcBodyCost = (body: BodyPartConstant[]): number => {
-      return _.reduce(body, (sum, part) => sum + BODYPART_COST[part], 0);
-    };
+    const calcBodyCost = (body: BodyPartConstant[]): number =>
+      _.reduce(body, (sum, part) => sum + BODYPART_COST[part], 0);
     let body: BodyPartConstant[] = [];
     const returnBody = (parts: BodyPartConstant[], bodyIteration: BodyPartConstant[], maxLoopCount = 50) => {
       body = parts;
@@ -85,23 +81,23 @@ export class SpawningApi {
     };
 
     switch (role) {
-      case "pioneer":
+      case 'pioneer':
         returnBody([CARRY, MOVE, WORK], [CARRY, MOVE]);
         break;
-      case "transferer":
-      case "transfererLD":
+      case 'transferer':
+      case 'transfererLD':
         returnBody([CARRY, CARRY, MOVE], [CARRY, CARRY, MOVE]);
         break;
-      case "harvester-0":
-      case "harvester-1":
-        if (typeof roomMemory.commonMemory!.sources[(role.split("-")[1] as unknown) as number] === "object") {
-          const sourceStructureType = roomMemory.roomPlanner!.room.sources[(role.split("-")[1] as unknown) as number]
+      case 'harvester-0':
+      case 'harvester-1':
+        if (typeof roomMemory.commonMemory!.sources[(role.split('-')[1] as unknown) as number] === 'object') {
+          const sourceStructureType = roomMemory.roomPlanner!.room.sources[(role.split('-')[1] as unknown) as number]
             .structureType;
           switch (sourceStructureType) {
-            case "container":
+            case 'container':
               returnBody([MOVE], [WORK], 7);
               break;
-            case "link":
+            case 'link':
               returnBody([MOVE, CARRY], [WORK], 7);
               break;
             default:
@@ -109,28 +105,28 @@ export class SpawningApi {
           }
         }
         break;
-      case "harvesterLD-0":
-      case "harvesterLD-1":
+      case 'harvesterLD-0':
+      case 'harvesterLD-1':
         returnBody([], [WORK, MOVE], 7);
         break;
-      case "builder":
-      case "builderLD":
-      case "repairer":
-      case "repairerLD":
-      case "mineral":
+      case 'builder':
+      case 'builderLD':
+      case 'repairer':
+      case 'repairerLD':
+      case 'mineral':
         returnBody([], [WORK, MOVE, CARRY], 10);
         break;
-      case "upgrader":
+      case 'upgrader':
         returnBody([CARRY, MOVE, CARRY, MOVE], [WORK]);
         break;
-      case "reserverLD":
-      case "claimerLD":
+      case 'reserverLD':
+      case 'claimerLD':
         returnBody([], [CLAIM, MOVE]);
         break;
-      case "scout":
+      case 'scout':
         returnBody([], [MOVE, MOVE], 1);
         break;
-      case "scorePicker":
+      case 'scorePicker':
         returnBody([], [MOVE, CARRY]);
         break;
       default:
@@ -147,42 +143,40 @@ export class SpawningApi {
 
   public static getCreepDirections(role: string, room: Room): DirectionConstant[] {
     if (room.terminal! && room.controller!.level >= 6) {
-      if (role === "transfererLiTe") {
+      if (role === 'transfererLiTe') {
         return [TOP_RIGHT];
-      } else {
-        return [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
       }
-    } else {
-      return [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+      return [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
     }
+    return [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
   }
 
   public static getNextRoleName(room: Room, roomType: string, targetRoom: Room = room): [boolean, string] {
-    if (roomType !== "owned" && targetRoom === undefined) {
-      return [true, "scout"];
+    if (roomType !== 'owned' && targetRoom === undefined) {
+      return [true, 'scout'];
     }
 
     let rolesNeededInRoom: string[] = [];
     switch (roomType) {
-      case "owned":
+      case 'owned':
         rolesNeededInRoom = ALL_OWNED_ROOM_CREEP_ROLES;
         break;
-      case "remote":
+      case 'remote':
         rolesNeededInRoom = ALL_REMOTE_CREEP_ROLES;
         break;
-      case "score":
+      case 'score':
         rolesNeededInRoom = ALL_SCORE_CONTAINER_CREEP_ROLES;
         break;
       default:
         break;
     }
 
-    let result: [boolean, string] = [false, ""];
+    let result: [boolean, string] = [false, ''];
 
     _.forEach(rolesNeededInRoom, (role: string) => {
       const targetRoomMemory = targetRoom.memory;
 
-      const shortRoleName: string = role.split("-")[0].replace("LD", "");
+      const shortRoleName: string = role.split('-')[0].replace('LD', '');
       const creeps: Creep[] = MemoryApi_Room.getMyCreepsOfType(targetRoom, role);
       const maxCreepCount: number = CREEP_ROLE_COUNT_MAX[shortRoleName];
       const partCount = this.getTotalAliveParts(CREEP_PART_COUNT_MAX[shortRoleName].part, creeps);
@@ -191,7 +185,7 @@ export class SpawningApi {
       if (!result[0]) {
         switch (role) {
           // Owned room roles
-          case "pioneer":
+          case 'pioneer':
             // Check if input role is less then max creeps allowed //
             if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
               break;
@@ -209,30 +203,29 @@ export class SpawningApi {
               result = [true, role];
             }
             break;
-          case "transferer":
-          case "transfererLD":
+          case 'transferer':
+          case 'transfererLD':
             // Check if input role is less then max creeps allowed //
             if (partCount >= maxPartCount) {
               break;
             }
-            if (role === "transfererLD") {
+            if (role === 'transfererLD') {
               if (creeps.length >= targetRoomMemory.commonMemory!.sources.length * 1.5) {
                 break;
               }
-            } else {
-              if ((room.controller && room.controller.level >= 6) || (room.controller && room.controller.level >= 7)) {
-                if (creeps.length >= 1) {
-                  break;
-                }
-              } else {
-                if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
-                  break;
-                }
+            } else if (
+              (room.controller && room.controller.level >= 6) ||
+              (room.controller && room.controller.level >= 7)
+            ) {
+              if (creeps.length >= 1) {
+                break;
               }
+            } else if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
+              break;
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+            if (room.energyAvailable <= 300 && !role.includes('LD')) {
               break;
             }
 
@@ -244,13 +237,13 @@ export class SpawningApi {
               break;
             }
 
-            if (role.includes("LD") && targetRoomMemory.constructionSites.data.length > 0) {
+            if (role.includes('LD') && targetRoomMemory.constructionSites.data.length > 0) {
               break;
             }
 
             result = [true, role];
             break;
-          case "upgrader":
+          case 'upgrader':
             // If energy is less then 300
             if (room.energyAvailable <= 300) {
               break;
@@ -290,8 +283,8 @@ export class SpawningApi {
 
             result = [true, role];
             break;
-          case "builder":
-          case "builderLD":
+          case 'builder':
+          case 'builderLD':
             if (partCount >= maxPartCount) {
               break;
             }
@@ -302,7 +295,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+            if (room.energyAvailable <= 300 && !role.includes('LD')) {
               break;
             }
 
@@ -314,7 +307,7 @@ export class SpawningApi {
               break;
             }
 
-            if (role.includes("LD") && roomType !== "remote") {
+            if (role.includes('LD') && roomType !== 'remote') {
               if (!Game.flags[`builderLD${room.name}`]) {
                 break;
               } else if (
@@ -335,8 +328,8 @@ export class SpawningApi {
 
             result = [true, role];
             break;
-          case "repairer":
-          case "repairerLD":
+          case 'repairer':
+          case 'repairerLD':
             if (partCount >= maxPartCount) {
               break;
             }
@@ -347,7 +340,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+            if (room.energyAvailable <= 300 && !role.includes('LD')) {
               break;
             }
 
@@ -360,7 +353,7 @@ export class SpawningApi {
             }
 
             // Break if there is a tower to repair from
-            if (room.controller!.level >= 3 && !role.includes("LD")) {
+            if (room.controller!.level >= 3 && !role.includes('LD')) {
               break;
             }
 
@@ -371,8 +364,8 @@ export class SpawningApi {
 
             result = [true, role];
             break;
-          case "harvester-0":
-          case "harvesterLD-0":
+          case 'harvester-0':
+          case 'harvesterLD-0':
             if (partCount >= maxPartCount) {
               break;
             }
@@ -383,7 +376,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+            if (room.energyAvailable <= 300 && !role.includes('LD')) {
               break;
             }
 
@@ -404,8 +397,8 @@ export class SpawningApi {
 
             result = [true, role];
             break;
-          case "harvester-1":
-          case "harvesterLD-1":
+          case 'harvester-1':
+          case 'harvesterLD-1':
             if (partCount >= maxPartCount) {
               break;
             }
@@ -421,7 +414,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes("LD")) {
+            if (room.energyAvailable <= 300 && !role.includes('LD')) {
               break;
             }
 
@@ -442,7 +435,7 @@ export class SpawningApi {
 
             result = [true, role];
             break;
-          case "reserverLD":
+          case 'reserverLD':
             if (partCount >= maxPartCount) {
               break;
             }
@@ -472,7 +465,7 @@ export class SpawningApi {
 
             result = [true, role];
             break;
-          case "claimerLD":
+          case 'claimerLD':
             if (partCount >= maxPartCount) {
               break;
             }
@@ -483,8 +476,8 @@ export class SpawningApi {
             }
 
             // If flag is removed, delete the memory
-            if (!Game.flags["claim"]) {
-              delete Memory.rooms["claim"];
+            if (!Game.flags.claim) {
+              delete Memory.rooms.claim;
               break;
             }
 
@@ -499,7 +492,7 @@ export class SpawningApi {
             //   result = [true, role];
             // }
             break;
-          case "mineral":
+          case 'mineral':
             if (partCount >= maxPartCount) {
               break;
             }
@@ -527,7 +520,7 @@ export class SpawningApi {
               result = [true, role];
             }
             break;
-          case "scorePicker":
+          case 'scorePicker':
             // Check if input role is less then max creeps allowed //
             if (creeps.length >= maxCreepCount) {
               break;
@@ -545,4 +538,4 @@ export class SpawningApi {
     return result;
   }
 }
-//#endregion
+// #endregion

@@ -1,4 +1,5 @@
-import { MemoryApi_Room } from "./Memory.Room.Api";
+import { MemoryApi_Room } from './Memory.Room.Api';
+
 export class MemoryApi_All {
   public static garbageCollection(): void {
     for (const name in Memory.creeps) {
@@ -37,7 +38,7 @@ export class MemoryApi_All {
     liveFunction: any,
     liveMemoryObject: { [key: string]: number } | undefined,
     memoryName: string,
-    calcSymbol: "=" | "+=",
+    calcSymbol: '=' | '+=',
     ...args: any[]
   ): any {
     // If memory object is not defined, return
@@ -60,10 +61,10 @@ export class MemoryApi_All {
     // Set the totalCpuUsed to the memoryObject path inputted
     if (totalCpuUsed >= 0) {
       switch (calcSymbol) {
-        case "=":
+        case '=':
           liveMemoryObject[memoryName] = this.memoryAverager(liveMemoryObject[memoryName], totalCpuUsed);
           break;
-        case "+=":
+        case '+=':
           liveMemoryObject[memoryName] += totalCpuUsed;
           break;
         default:
@@ -76,7 +77,7 @@ export class MemoryApi_All {
 
   public static isMemoryPathDefined(memoryPath: string): { [key: string]: number } | undefined {
     // Get all the smaller pieces of the full memoryPath
-    const memoryPathArray: string[] = memoryPath.split(".");
+    const memoryPathArray: string[] = memoryPath.split('.');
 
     // Set the new memoryPath object to use in the loop
     let testedMemoryObject: object | any = Memory;
@@ -92,21 +93,19 @@ export class MemoryApi_All {
           return undefined;
         }
         // If it is still a object, set it to the testedMemoryObject
-        else {
-          testedMemoryObject = testedMemoryObject[currentMemoryPart];
-        }
+
+        testedMemoryObject = testedMemoryObject[currentMemoryPart];
       }
 
       // If every piece of the path is defined, return the tested memoryObject
       return { testedMemoryObject };
     }
     // Return true if there is only one piece of memoryPath return the tested memoryObject
-    else {
-      return testedMemoryObject;
-    }
+
+    return testedMemoryObject;
   }
 
-  public static memoryAverager(currentValue: number, newValue: number, averageTime: number = 1000): number {
+  public static memoryAverager(currentValue: number, newValue: number, averageTime = 1000): number {
     // Get the percentage the current value should stay
     const mainDivider = 1 / averageTime;
     // Get the percentage the new value should be calculated at
@@ -115,9 +114,8 @@ export class MemoryApi_All {
     // If everything is good, return the new value, else the newValue to overwrite the null/undefined
     if (currentValue !== null && currentValue !== undefined) {
       return secondairDivider * currentValue + mainDivider * newValue;
-    } else {
-      return newValue;
     }
+    return newValue;
   }
 
   public static executeEachTicks(ticks: number): boolean {
@@ -126,9 +124,8 @@ export class MemoryApi_All {
       return true;
     }
     // Else return false
-    else {
-      return false;
-    }
+
+    return false;
   }
 
   public static initMainMemory(): void {
@@ -149,7 +146,13 @@ export class MemoryApi_All {
         gcl: {},
         rooms: {},
         common: {},
-        cpu: { bucket: 0, limit: 0, used: 0, headModules: {}, smallModules: {} }
+        cpu: {
+          bucket: 0,
+          limit: 0,
+          used: 0,
+          headModules: {},
+          smallModules: {}
+        }
       };
     }
   }

@@ -1,10 +1,10 @@
-//#region Require('./)
-import _ from "lodash";
-import { MemoryApi_All, MemoryApi_Empire, MemoryApi_Room } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { MemoryApi_All, MemoryApi_Empire, MemoryApi_Room } from 'Utils/importer/internals';
+// #endregion
 
-//#region Class
-export class MemoryManager {
+// #region Class
+export cUtils/Importer/internals
   public static runMemoryManager(): void {
     MemoryApi_All.garbageCollection();
     MemoryApi_All.initMainMemory();
@@ -12,7 +12,7 @@ export class MemoryManager {
     const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room): void => {
       MemoryApi_Room.isRoomSetup(room);
-      MemoryApi_Room.initRoomMemory(room, "owned");
+      MemoryApi_Room.initRoomMemory(room, 'owned');
       MemoryApi_Room.resetRoomTracking(room);
     });
 
@@ -26,7 +26,7 @@ export class MemoryManager {
     });
 
     // Set the ticks alive one tick higher
-    Memory.stats["ticksAlive"]++;
+    Memory.stats.ticksAlive++;
   }
 }
-//#endregion
+// #endregion

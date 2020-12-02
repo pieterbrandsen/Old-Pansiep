@@ -1,9 +1,9 @@
-//#region Require('./)
-import _ from "lodash";
-import { Config, RoomHelper_State } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { Config, RoomHelper_State } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class MemoryApi_Empire {
   public static getOwnedRooms(): Room[] {
     return _.filter(Game.rooms, currentRoom => RoomHelper_State.isMyRoom(currentRoom));
@@ -26,4 +26,4 @@ export class MemoryApi_Empire {
     Config.income.remoteHarvesting = {};
   }
 }
-//#endregion
+// #endregion

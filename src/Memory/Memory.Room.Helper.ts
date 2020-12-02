@@ -1,5 +1,5 @@
-//#region Require('./)
-import _ from "lodash";
+// #region Require('./)
+import _ from 'lodash';
 import {
   ALL_CREEP_ROLES,
   ALL_RESOURCE_TYPES,
@@ -7,26 +7,26 @@ import {
   JobsHelper,
   MemoryApi_Room,
   OldRoomPlanner
-} from "Utils/importer/internals";
-//#endregion
+} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class MemoryHelper_Room {
   public static updateRoomMemory(room: Room, roomType: string): void {
     this.updateStructures(room);
     this.updateConstructionSites(room);
     this.updateMyCreeps(room);
 
-    if (roomType === "owned") {
+    if (roomType === 'owned') {
       JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
       OldRoomPlanner.basePlanner(room);
     }
-    if (roomType !== "score") {
+    if (roomType !== 'score') {
       OldRoomPlanner.roomPlanner(room);
       MemoryHelper_Room.updateSourceStructures(room);
       JobsHelper.updateAllEnergyStoragesJobs(room);
     }
-    if (roomType === "score") {
+    if (roomType === 'score') {
       JobsHelper.updateScoreContainersJobs(room);
     }
 
@@ -89,7 +89,7 @@ export class MemoryHelper_Room {
       );
     });
 
-    room.memory.myCreeps!.data = sortedCreepsIDs;
+    room.memory.myCreeps.data = sortedCreepsIDs;
     room.memory.myCreeps.cache = Game.time;
   }
 
@@ -101,7 +101,7 @@ export class MemoryHelper_Room {
       const source = roomMemory.roomPlanner!.room.sources[i];
 
       // Break if there is still a live structure
-      if (Game.getObjectById(source!.id!) === null) {
+      if (Game.getObjectById(source.id!) === null) {
         // Get all structures at saved pos
         const structureExistResult = MemoryApi_Room.doesStructureExist(room, source.pos!, source.structureType!);
 
@@ -149,7 +149,7 @@ export class MemoryHelper_Room {
 
         // If a link is found, set it to the memory
         if (roomMemory.commonMemory!.links !== undefined && spawnLink !== undefined) {
-          roomMemory.commonMemory!.links["head"] = spawnLink.id;
+          roomMemory.commonMemory!.links.head = spawnLink.id;
         }
       }
 
@@ -159,7 +159,7 @@ export class MemoryHelper_Room {
 
       // If a link is found, set it to the memory
       if (roomMemory.commonMemory!.links !== undefined && controllerLink !== undefined) {
-        roomMemory.commonMemory!.links["controller"] = controllerLink.id;
+        roomMemory.commonMemory!.links.controller = controllerLink.id;
       }
     }
   }
@@ -167,9 +167,9 @@ export class MemoryHelper_Room {
   public static updateMineralAmount(room: Room): void {
     const mineral: Mineral = room.find(FIND_MINERALS)[0];
     if (mineral) {
-      room.memory.commonMemory!.mineral!.amount! = Math.round(room.find(FIND_MINERALS)[0].mineralAmount);
+      room.memory.commonMemory!.mineral!.amount = Math.round(room.find(FIND_MINERALS)[0].mineralAmount);
     } else {
-      room.memory.commonMemory!.mineral!.amount! = 0;
+      room.memory.commonMemory!.mineral!.amount = 0;
     }
   }
 
@@ -202,4 +202,4 @@ export class MemoryHelper_Room {
     room.memory.scoreContainers.cache = Game.time;
   }
 }
-//#endregion
+// #endregion

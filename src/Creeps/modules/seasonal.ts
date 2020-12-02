@@ -1,8 +1,8 @@
-//#region Require('./)
-import { JobsApi } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { JobsApi } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Seasonal {
   public static scoreWithdrawer(creep: Creep): string | undefined {
     // Make shortcut to memory
@@ -10,20 +10,21 @@ export class CreepRole_Seasonal {
     const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
 
     if (roomMemory.jobs.scoreContainers!.length === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
-      return "full";
+      return 'full';
     }
 
     if (!creepMemory.targetId) {
       const job: JobTemplate | undefined = JobsApi.getClosestJob(creep.pos, roomMemory.jobs.scoreContainers!);
 
       if (job === undefined) {
-        return "empty";
-      } else if (job.usable! > 0) {
+        return 'empty';
+      }
+      if (job.usable! > 0) {
         const usableResource: Resource | null = Game.getObjectById(job.id);
         if (usableResource && usableResource.amount > 0) {
           creep.memory.targetId = job.id;
@@ -49,7 +50,7 @@ export class CreepRole_Seasonal {
       // Return empty if withdrawStructure is null
       if (scoreContainer === null) {
         JobsApi.removeJob(creepMemory.targetId, roomMemory.jobs.scoreContainers!);
-        return "empty";
+        return 'empty';
       }
 
       // Run the withdraw function
@@ -72,8 +73,6 @@ export class CreepRole_Seasonal {
           break;
       }
     }
-
-    return;
   }
 }
-//#endregion
+// #endregion

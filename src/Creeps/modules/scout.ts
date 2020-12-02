@@ -1,8 +1,8 @@
-//#region Require('./)
-import { Config } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { Config } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Scout {
   public static scout(creep: Creep) {
     const spawnRoom: Room = Game.rooms[creep.memory.spawnRoom];
@@ -11,27 +11,24 @@ export class CreepRole_Scout {
 
     const isRoomTypeRight = (oldType: string, newType: string): void => {
       if (oldType === newType) {
-        return;
       } else {
         Game.flags[targetRoomName].remove();
       }
     };
     if (targetRoom.memory.roomType) {
       if (spawnRoom.memory.scoreContainerRooms!.includes(targetRoomName)) {
-        isRoomTypeRight(targetRoom.memory.roomType, "score");
+        isRoomTypeRight(targetRoom.memory.roomType, 'score');
       } else if (spawnRoom.memory.remoteRooms!.includes(targetRoomName)) {
-        targetRoom.memory.roomType = "remote";
+        targetRoom.memory.roomType = 'remote';
       } else {
-        targetRoom.memory.roomType = "none";
+        targetRoom.memory.roomType = 'none';
       }
+    } else if (spawnRoom.memory.scoreContainerRooms!.includes(targetRoomName)) {
+      targetRoom.memory.roomType = 'score';
+    } else if (spawnRoom.memory.remoteRooms!.includes(targetRoomName)) {
+      targetRoom.memory.roomType = 'remote';
     } else {
-      if (spawnRoom.memory.scoreContainerRooms!.includes(targetRoomName)) {
-        targetRoom.memory.roomType = "score";
-      } else if (spawnRoom.memory.remoteRooms!.includes(targetRoomName)) {
-        targetRoom.memory.roomType = "remote";
-      } else {
-        targetRoom.memory.roomType = "none";
-      }
+      targetRoom.memory.roomType = 'none';
     }
 
     if (!creep.pos.inRangeTo(25, 25, 20)) {
@@ -43,4 +40,4 @@ export class CreepRole_Scout {
     }
   }
 }
-//#endregion
+// #endregion

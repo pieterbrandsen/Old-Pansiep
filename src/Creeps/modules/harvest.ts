@@ -1,8 +1,8 @@
-//#region Require('./)
-import { Config, CreepsHelper_Role } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { Config, CreepsHelper_Role } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Harvest {
   public static mineral(creep: Creep): string | void {
     // Make shortcut to memory
@@ -11,14 +11,14 @@ export class CreepRole_Harvest {
 
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
-      return "full";
+      return 'full';
     }
 
     const mineral: Mineral | null = Game.getObjectById(roomMemory.commonMemory!.mineral!.id);
 
     // Return if structure is null
     if (mineral === null) {
-      return "full";
+      return 'full';
     }
 
     const result = creep.harvest(mineral);
@@ -40,7 +40,6 @@ export class CreepRole_Harvest {
     }
 
     // Return
-    return;
   }
 
   public static source(creep: Creep): string | void {
@@ -51,7 +50,7 @@ export class CreepRole_Harvest {
 
     // Return full if current creep's storage is full
     if (creep.store.getUsedCapacity() === creep.store.getCapacity()) {
-      return "full";
+      return 'full';
     }
 
     if (creep.room.name !== targetRoom.name) {
@@ -61,8 +60,8 @@ export class CreepRole_Harvest {
 
     // If creep has no sourceId saved
     if (creepMemory.sourceId === undefined) {
-      if (creepMemory.role.includes("harvester")) {
-        const sourceNumber: number = (creep.memory.role.split("-")[1] as unknown) as number;
+      if (creepMemory.role.includes('harvester')) {
+        const sourceNumber: number = (creep.memory.role.split('-')[1] as unknown) as number;
         creep.memory.sourceId = roomMemory.commonMemory!.sources[sourceNumber].id;
         creep.memory.sourceNumber = sourceNumber;
       } else {
@@ -76,9 +75,8 @@ export class CreepRole_Harvest {
           if (closestSource !== null && !creep.pos.inRangeTo(closestSource, 3)) {
             creep.moveTo(closestSource);
             return;
-          } else {
-            return;
           }
+          return;
         }
       }
 
@@ -97,19 +95,19 @@ export class CreepRole_Harvest {
     }
 
     // If not in range, move to source and then return
-    if (!creep.pos.inRangeTo(source, 1) || (!creepMemory.onPosition && creepMemory.role.includes("harvester"))) {
+    if (!creep.pos.inRangeTo(source, 1) || (!creepMemory.onPosition && creepMemory.role.includes('harvester'))) {
       let sourcePos: RoomPos = source.pos;
-      const sourceNumber = creepMemory.sourceNumber;
+      const { sourceNumber } = creepMemory;
 
       // If no sourceNumber is found, assign one.
       if (sourceNumber === undefined) {
         // If sourceNumber is in creep's role
         if (
-          creepMemory.role.split("-").length > 0 &&
+          creepMemory.role.split('-').length > 0 &&
           // @ts-ignore
-          !isNaN(creep.memory.role.split("-")[1])
+          !isNaN(creep.memory.role.split('-')[1])
         ) {
-          creep.memory.sourceNumber = Number(creep.memory.role.split("-")[1]);
+          creep.memory.sourceNumber = Number(creep.memory.role.split('-')[1]);
         } else {
           // Else loop until assigned source's id is found
           let i = 0;
@@ -136,8 +134,8 @@ export class CreepRole_Harvest {
           return;
         }
 
-        if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround! || creepMemory.role.includes("harvester")) {
-          if (creepMemory.role.includes("harvester") && roomPlannerTargetSource.pos) {
+        if (creepsAroundTargetSource < roomPlannerTargetSource.spotsAround! || creepMemory.role.includes('harvester')) {
+          if (creepMemory.role.includes('harvester') && roomPlannerTargetSource.pos) {
             sourcePos = roomPlannerTargetSource.pos;
           }
         } else {
@@ -166,9 +164,8 @@ export class CreepRole_Harvest {
           if (!creep.pos.inRangeTo(source, 5)) {
             creep.moveTo(source);
             return;
-          } else {
-            return;
           }
+          return;
         }
       }
 
@@ -179,20 +176,16 @@ export class CreepRole_Harvest {
         } else {
           creep.moveTo(sourcePos.x, sourcePos.y);
         }
+      } else if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 1)) {
+        creep.memory.onPosition = true;
       } else {
-        if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 1)) {
-          creep.memory.onPosition = true;
-        } else {
-          creep.moveTo(sourcePos.x, sourcePos.y);
-        }
+        creep.moveTo(sourcePos.x, sourcePos.y);
       }
-
-      return;
     } else {
       const result = creep.harvest(source);
       switch (result) {
         case OK:
-          if (creepMemory.role.includes("LD")) {
+          if (creepMemory.role.includes('LD')) {
             Config.income.remoteHarvesting[creep.room.name] += creep.memory.parts!.work * 2;
           } else {
             Config.income.ownedHarvesting[creep.room.name] += creep.memory.parts!.work * 2;
@@ -200,7 +193,7 @@ export class CreepRole_Harvest {
           break;
         case ERR_NOT_ENOUGH_RESOURCES:
         case ERR_INVALID_TARGET:
-          if (creep.memory.role.includes("-")) {
+          if (creep.memory.role.includes('-')) {
             break;
           }
           delete creep.memory.sourceId;
@@ -210,8 +203,6 @@ export class CreepRole_Harvest {
           break;
       }
     }
-
-    return;
   }
 }
-//#endregion
+// #endregion

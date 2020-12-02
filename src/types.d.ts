@@ -39,7 +39,7 @@ interface RoomMemory {
   commonMemory?: {
     sourceCount: number;
     mineral?: { id: string; type: any; amount: number };
-    sources: Array<{ id: string; pos: RoomPos }>;
+    sources: { id: string; pos: RoomPos }[];
     controllerLevel?: number;
     headSpawnId?: string;
     energyStored: { usable: number; capacity: number };
@@ -89,11 +89,22 @@ interface Stats {
       energyStored: any;
       spawnerEnergy: any;
       controller: any;
-      cpu: { used: number; headModules: { creeps: any }; smallModules: { [key: string]: number }; creepModules: any };
+      cpu: {
+        used: number;
+        headModules: { creeps: any };
+        smallModules: { [key: string]: number };
+        creepModules: any;
+      };
     };
   };
   common: any;
-  cpu: { bucket: number; limit: number; used: number; headModules: any; smallModules: any };
+  cpu: {
+    bucket: number;
+    limit: number;
+    used: number;
+    headModules: any;
+    smallModules: any;
+  };
 }
 
 interface Config {
@@ -113,7 +124,10 @@ interface Config {
     repairing: { [key: string]: number };
     upgrading: { [key: string]: number };
   };
-  income: { ownedHarvesting: { [key: string]: number }; remoteHarvesting: { [key: string]: number } };
+  income: {
+    ownedHarvesting: { [key: string]: number };
+    remoteHarvesting: { [key: string]: number };
+  };
 }
 
 interface BestPosition {

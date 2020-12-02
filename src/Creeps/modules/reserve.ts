@@ -1,8 +1,8 @@
-//#region Require('./)
-import {} from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import {} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Reserve {
   public static reserve(creep: Creep) {
     const targetRoom = Game.rooms[creep.memory.targetRoom];
@@ -21,4 +21,4 @@ export class CreepRole_Reserve {
     }
   }
 }
-//#endregion
+// #endregion

@@ -1,5 +1,5 @@
 // #region Require('./)
-import { ManagerManager, ErrorMapper } from "Utils/importer/internals";
+import { ErrorMapper, ManagerManager } fromUtils/Importer/internalsls';
 // #endregion
 
 // #region Functions()

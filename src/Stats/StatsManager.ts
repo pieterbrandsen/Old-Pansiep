@@ -1,13 +1,13 @@
-//#region Require('./)
-import _ from "lodash";
-import { MemoryApi_Empire, MemoryApi_Room, StatsHelper } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import _ from 'lodash';
+import { MemoryApi_Empire, MemoryApi_Room, StatsHelper } from 'Utils/importer/internals';
+// #endregion
 
-//#region Class
-export class StatsManager {
+// #region Class
+export cUtils/Importer/internals
   /**
    * Get all ownedRooms and run the runSpawningForRoom function on the rooms
-   * @returns {void} Only calls other class member functions
+   * @return {void} Only calls other class member functions
    */
   public static runStatsManager(): void {
     // Get all ownedRooms and run for each room found the runSpawningForRoom function
@@ -32,4 +32,4 @@ export class StatsManager {
     StatsHelper.global();
   }
 }
-//#endregion
+// #endregion

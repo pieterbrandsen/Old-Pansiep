@@ -1,10 +1,10 @@
-//#region Require('./)
-import { Config, JobsApi } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { Config, JobsApi } fromUtils/Importer/internalsls';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepRole_Repair {
-  //#endregion
+  // #endregion
   public static repair(creep: Creep, data?: any | undefined): string | undefined {
     if (data === undefined) {
       data = {};
@@ -16,7 +16,7 @@ export class CreepRole_Repair {
 
     // Return empty if current creep's storage is empty or no targets left to repair
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
@@ -24,7 +24,7 @@ export class CreepRole_Repair {
       if (targetRoom.controller && !creep.pos.inRangeTo(targetRoom.controller, 5)) {
         creep.moveTo(targetRoom.controller);
       }
-      return "full";
+      return 'full';
     }
 
     // Set targetId to saved in memory if no id was passed into using the data object
@@ -46,7 +46,7 @@ export class CreepRole_Repair {
           roomMemory.jobs.constructionSites
         );
         delete creep.memory.targetId;
-        return "empty";
+        return 'empty';
       }
 
       // Run the repair function
@@ -80,13 +80,11 @@ export class CreepRole_Repair {
         case ERR_NOT_IN_RANGE:
           // If creep is not in range, move to target
           creep.moveTo(repairTarget);
-          return;
+
         default:
           break;
       }
     }
-
-    return;
   }
 }
-//#endregion
+// #endregion

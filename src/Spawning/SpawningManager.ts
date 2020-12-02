@@ -1,20 +1,20 @@
-//#region Require('./)
-import _ from "lodash";
+// #region Require('./)
+import _ from 'lodash';
 import {
   Config,
-  MemoryApi_Empire,
-  SpawningApi,
-  SpawningHelper,
   MemoryApi_All,
-  SPAWN_CREEP_TIMER
-} from "Utils/importer/internals";
-//#endregion
+  MemoryApi_Empire,
+  SPAWN_CREEP_TIMER,
+  SpawningApi,
+  SpawningHelper
+} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class SpawningManager {
   /**
    * Get all ownedRooms and run the runSpawningForRoom function on the rooms
-   * @returns {void} Only calls other class member functions
+   * @return {void} Only calls other class member functions
    */
   public static runSpawningManager(): void {
     // Get all ownedRooms and run for each room found the runSpawningForRoom function
@@ -25,12 +25,12 @@ export class SpawningManager {
         MemoryApi_All.functionRunnerWithCpu(
           SpawningManager.runSpawningForRoom,
           MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`),
-          "spawnCreep",
-          "=",
+          'spawnCreep',
+          '=',
           room
         );
       } else if (MemoryApi_All.isMemoryPathDefined(`Memory.stats.rooms.${room.name}.cpu.smallModules`) !== undefined) {
-        MemoryApi_All.memoryAverager(Memory.stats.rooms[room.name].cpu.smallModules["spawnCreep"], 0);
+        MemoryApi_All.memoryAverager(Memory.stats.rooms[room.name].cpu.smallModules.spawnCreep, 0);
       }
     });
   }
@@ -51,7 +51,6 @@ export class SpawningManager {
         const scoreContainerRoom: Room = Game.rooms[roomName];
         const scoreContainerSpawnReturn = SpawningHelper.spawnScoreContainerCreep(room, scoreContainerRoom, roomName);
         if (scoreContainerSpawnReturn !== OK) {
-          return;
         }
       });
 
@@ -61,11 +60,10 @@ export class SpawningManager {
           const remoteRoom: Room = Game.rooms[roomName];
           const remoteSpawnReturn = SpawningHelper.spawnRemoteCreep(room, remoteRoom, roomName);
           if (remoteSpawnReturn !== OK) {
-            return;
           }
         });
       }
     }
   }
 }
-//#endregion
+// #endregion

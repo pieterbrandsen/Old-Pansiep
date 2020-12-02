@@ -1,5 +1,5 @@
-//#region Require('./)
-import _ from "lodash";
+// #region Require('./)
+import _ from 'lodash';
 import {
   BASE_PLANNER_TIMER,
   MemoryApi_All,
@@ -7,21 +7,21 @@ import {
   MemoryApi_Room,
   MemoryHelper_Room,
   OldRoomPlanner,
-  RoomHelper_State,
-  RoomHelper_Structure,
   ROOM_PLANNER_TIMER,
   RUN_LINKS_TIMER,
+  RoomHelper_State,
+  RoomHelper_Structure,
   UPDATE_LINKS_TIMER,
   UPDATE_MINERAL_AMOUNT_TIMER,
   UPDATE_SOURCE_STRUCTURES_TIMER
-} from "Utils/importer/internals";
-//#endregion
+} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class RoomManager {
   /**
    * Get all ownedRooms and run the runSingleRoom function on the rooms
-   * @returns {void} Only calls other class member functions
+   * @return {void} Only calls other class member functions
    */
   public static runRoomManager(): void {
     // Get all ownedRooms and run for each room found the runSingleRoom function
@@ -40,7 +40,7 @@ export class RoomManager {
     const roomState: string = RoomHelper_State.getRoomState(room);
 
     if (room.controller!.level >= 3) {
-      if (roomState === "ATTACK") {
+      if (roomState === 'ATTACK') {
         RoomHelper_Structure.towerAttacking(room);
       } else {
         RoomHelper_Structure.towerRepairing(room);
@@ -79,7 +79,7 @@ export class RoomManager {
   private static runSingleDependentRoom(room: Room): void {
     const roomType: string = MemoryApi_Room.getRoomType(room);
 
-    if (roomType !== "score") {
+    if (roomType !== 'score') {
       if (MemoryApi_All.executeEachTicks(ROOM_PLANNER_TIMER)) {
         OldRoomPlanner.roomPlanner(room);
       }
@@ -87,7 +87,7 @@ export class RoomManager {
       if (MemoryApi_All.executeEachTicks(UPDATE_SOURCE_STRUCTURES_TIMER)) {
         MemoryHelper_Room.updateSourceStructures(room);
       }
-    } else if (roomType === "score") {
+    } else if (roomType === 'score') {
       const spawnRoom: Room | null = MemoryApi_Room.getSpawnRoomOfDependentRoom(room);
 
       if (spawnRoom !== null) {
@@ -96,4 +96,4 @@ export class RoomManager {
     }
   }
 }
-//#endregion
+// #endregion
