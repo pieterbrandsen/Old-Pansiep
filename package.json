@@ -65,7 +65,7 @@
         "push-main": "rollup -c --environment DEST:main",
         "push-pserver": "rollup -c --environment DEST:pserver",
         "push-sim": "rollup -c --environment DEST:sim",
-        "push-season": "rollup -c --environment DEST:season",
+        "push-seasonal": "rollup -c --environment DEST:seasonal",
         "test": "jest",
         "test-watch": "jest --watch",
         "test-cov": "jest --coverage",
