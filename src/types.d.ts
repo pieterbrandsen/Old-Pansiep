@@ -21,7 +21,6 @@ interface RoomMemory {
   constructionSites: Cache;
   myCreeps: Cache;
   droppedResources: Cache;
-  scoreContainers?: Cache;
 
   // Jobs
   jobs: {
@@ -32,13 +31,12 @@ interface RoomMemory {
     spawnerEnergyStructures?: JobTemplate[];
     enemies: { parts: { [key: string]: number }; creeps: JobTemplate[] };
     droppedResources: JobTemplate[];
-    scoreContainers?: JobTemplate[];
   };
 
   // Room memory
   commonMemory?: {
     sourceCount: number;
-    mineral?: { id: string; type: any; amount: number };
+    mineral?: { id: string; type: MineralConstant | undefined; amount: number };
     sources: { id: string; pos: RoomPos }[];
     controllerLevel?: number;
     headSpawnId?: string;
@@ -67,7 +65,6 @@ interface RoomMemory {
   isSetup?: boolean;
 
   remoteRooms?: string[];
-  scoreContainerRooms?: string[];
 
   // BuilderLD
   spawnRoom?: string;
@@ -81,23 +78,56 @@ interface Memory {
 
 interface Stats {
   ticksAlive: number;
-  gcl: any;
+  gcl: {
+    level: number;
+    progress: number;
+    progressTotal: number;
+  };
   rooms: {
     [key: string]: {
-      commonMemory: any;
-      performance: { expenses: any; income: any };
-      energyStored: any;
-      spawnerEnergy: any;
-      controller: any;
+      commonMemory: {
+        constructionSitesCount: number;
+        creepCountByRole: { [key: string]: number };
+        remote?: { sourceCount: number };
+        owned?: { sourceCount: number };
+      };
+      performance: {
+        expenses: {
+          spawnExpenses: StringMap;
+          building: number;
+          repairing: number;
+          upgrading: number;
+        };
+        income: { ownedHarvesting: number; remoteHarvesting: number };
+      };
+      energyStored: {
+        capacity: number;
+        total: number;
+        storage: number;
+        terminal: number;
+      };
+      spawnerEnergy: {
+        available: number;
+        capacityAvailable: number;
+      };
+      controller: {
+        level: number;
+        progress: number;
+        progressTotal: number;
+      };
       cpu: {
         used: number;
-        headModules: { creeps: any };
-        smallModules: { [key: string]: number };
-        creepModules: any;
+        headModules: { creeps: { [key: string]: number } };
+        creepModules: StringMap;
+        smallModules: {
+          spawnCreep: number;
+        };
       };
     };
   };
-  common: any;
+  common: {
+    energyEachTickPerSource: number;
+  };
   cpu: {
     bucket: number;
     limit: number;
@@ -112,7 +142,7 @@ interface Config {
   whitelist: string[];
   tracking: boolean;
   rooms: {
-    [key: string]: number | object;
+    [key: string]: number;
     minBucket: number;
     remoteMinBucket: number;
   };
@@ -173,7 +203,6 @@ declare namespace NodeJS {
     Memory: Memory;
     age?: number;
     addRemoteRoom(spawnRoom: string, remoteRoom: string): void;
-    addScoreContainerRoom(spawnRoom: string, targetRoom: string): void;
     help(): void;
   }
 }

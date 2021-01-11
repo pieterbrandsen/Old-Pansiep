@@ -1,12 +1,11 @@
 // #region Require('./)
-import _ from 'lodash';
-import { Config, CreepRole_ResourcePicker, JobsHelper } from 'Utils/Importer/internals';
+import { CreepRoleResourcePicker, JobsHelper } from 'Utils/Importer/internals';
 // #endregion
 
 // #region Class
-export class CreepRole_Withdraw {
-  public static withdraw(creep: Creep): string | undefined {
-    let result: string | undefined;
+export class CreepRoleWithdraw {
+  public static withdraw(creep: Creep): string | void {
+    let result: string | void;
 
     // Make shortcut to memory
     const creepMemory = creep.memory;
@@ -14,13 +13,13 @@ export class CreepRole_Withdraw {
 
     switch (creepMemory.miniJob) {
       case 'upgrade':
-        result = CreepRole_Withdraw.upgrade(creep);
+        result = CreepRoleWithdraw.upgrade(creep);
         break;
       case 'normal':
-        result = CreepRole_Withdraw.normal(creep);
+        result = CreepRoleWithdraw.normal(creep);
         break;
       case 'droppedResource':
-        result = CreepRole_ResourcePicker.droppedResource(creep);
+        result = CreepRoleResourcePicker.droppedResource(creep);
         break;
       default:
         if (
@@ -49,7 +48,7 @@ export class CreepRole_Withdraw {
     return result;
   }
 
-  private static normal(creep: Creep): string | undefined {
+  private static normal(creep: Creep): string | void {
     // Make shortcut to memory
     const creepMemory = creep.memory;
     const roomMemory = Memory.rooms[creepMemory.targetRoom];
@@ -92,8 +91,8 @@ export class CreepRole_Withdraw {
       if (job === undefined) {
         return;
       }
-      roomMemory.jobs.energyStorages.forEach((structureInMem: any) => {
-        if (structureInMem.id === job.id) {
+      roomMemory.jobs.energyStorages.forEach((structureInMem: JobTemplate) => {
+        if (structureInMem.id === job.id && structureInMem.usable) {
           if (structureInMem.usable > 0) {
             roomMemory.commonMemory!.energyStored.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
             structureInMem.usable -= creep.store.getFreeCapacity(RESOURCE_ENERGY);
@@ -140,7 +139,7 @@ export class CreepRole_Withdraw {
     }
   }
 
-  private static upgrade(creep: Creep): string | undefined {
+  private static upgrade(creep: Creep): string | void {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
     const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];

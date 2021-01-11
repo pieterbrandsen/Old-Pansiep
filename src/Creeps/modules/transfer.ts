@@ -1,10 +1,10 @@
 // #region Require('./)
+import { JobsApi } from 'Utils/Importer/internals';
 import _ from 'lodash';
-import { JobsApi } fromUtils/Importer/internalsls';
 // #endregion
 
 // #region Class
-export class CreepRole_Transfer {
+export class CreepRoleTransfer {
   public static transfer(creep: Creep): void | string {
     let result;
 
@@ -14,22 +14,22 @@ export class CreepRole_Transfer {
 
     switch (creep.memory.miniJob) {
       case 'harvest':
-        result = CreepRole_Transfer.harvest(creep);
+        result = CreepRoleTransfer.harvest(creep);
         break;
       case 'spawner':
-        result = CreepRole_Transfer.spawner(creep);
+        result = CreepRoleTransfer.spawner(creep);
         break;
       case 'storage':
-        result = CreepRole_Transfer.storage(creep);
+        result = CreepRoleTransfer.storage(creep);
         break;
       case 'controller':
-        result = CreepRole_Transfer.controller(creep);
+        result = CreepRoleTransfer.controller(creep);
         break;
       case 'mineral':
-        result = CreepRole_Transfer.mineral(creep);
+        result = CreepRoleTransfer.mineral(creep);
         break;
       case 'droppedResource':
-        result = CreepRole_Transfer.droppedResource(creep);
+        result = CreepRoleTransfer.droppedResource(creep);
         break;
       default:
         // If creep is a mineral harvester, only transfer to storage
@@ -78,10 +78,6 @@ export class CreepRole_Transfer {
   }
 
   private static droppedResource(creep: Creep): void | string {
-    // Make shortcut to memory
-    const creepMemory: CreepMemory = creep.memory;
-    const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
-
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0) {
       return 'empty';
@@ -89,14 +85,14 @@ export class CreepRole_Transfer {
 
     // Get the storage and resource
     const target: StructureStorage | undefined = creep.room.storage;
-    const resource: ResourceConstant | undefined = _.first(Object.values(creep.store));
+    const resource: ResourceConstant | undefined = _.first(Object.values(creep.store)) as ResourceConstant;
 
     // Return empty if transferStructure is null
     if (target === undefined || resource === undefined) {
       return 'empty';
     }
     // Run the transfer function
-    const result = creep.transfer(target, resource);
+    const result: ScreepsReturnCode = creep.transfer(target, resource);
 
     // Switch based on the results
     switch (result) {
@@ -123,11 +119,16 @@ export class CreepRole_Transfer {
     const target: StructureStorage | undefined = creep.room.storage;
 
     // Return empty if transferStructure is null
-    if (target === undefined) {
+    if (
+      target === undefined ||
+      !roomMemory.commonMemory ||
+      !roomMemory.commonMemory.mineral ||
+      !roomMemory.commonMemory.mineral.type
+    ) {
       return 'empty';
     }
     // Run the transfer function
-    const result = creep.transfer(target, roomMemory.commonMemory!.mineral!.type);
+    const result = creep.transfer(target, roomMemory.commonMemory.mineral.type as ResourceConstant);
 
     // Switch based on the results
     switch (result) {
@@ -164,7 +165,7 @@ export class CreepRole_Transfer {
       const foundStructures: any[] = creep.room.lookForAt(LOOK_STRUCTURES, storagePos!.x, storagePos!.y);
 
       // Loop through all structures that are found at storagePos and try to find a container or link
-      let sourceStructure: any;
+      let sourceStructure: { type: StructureConstant; id: string } | undefined;
       foundStructures.forEach((structure: StructureLink | StructureContainer) => {
         if (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_LINK) {
           sourceStructure = {
@@ -180,7 +181,7 @@ export class CreepRole_Transfer {
       }
     } else {
       // Get the saved structure from memory
-      const transferStructure: AnyStructure | null = Game.getObjectById(creepMemory.targetId);
+      const transferStructure: Structure | null = Game.getObjectById(creepMemory.targetId);
 
       // Return empty if transferStructure is null
       if (transferStructure === null) {
@@ -221,8 +222,7 @@ export class CreepRole_Transfer {
     if (
       creepMemory.targetId &&
       Game.getObjectById(creepMemory.targetId) !== null &&
-      // @ts-ignore
-      Game.getObjectById(creepMemory.targetId).store.getFreeCapacity(RESOURCE_ENERGY) === 0
+      (Game.getObjectById(creepMemory.targetId) as StructureStorage).store.getFreeCapacity(RESOURCE_ENERGY) === 0
     ) {
       return 'full';
     }
@@ -336,7 +336,7 @@ export class CreepRole_Transfer {
         case ERR_NOT_IN_RANGE:
           // If creep is not in range, move to target
           creep.moveTo(transferStructure);
-
+          break;
         default:
           break;
       }
@@ -392,7 +392,7 @@ export class CreepRole_Transfer {
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to target
         creep.moveTo(transferStructure);
-
+        break;
       default:
         break;
     }

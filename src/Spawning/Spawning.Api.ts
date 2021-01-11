@@ -1,14 +1,13 @@
 // #region Require('./)
-import _ from 'lodash';
 import {
   ALL_OWNED_ROOM_CREEP_ROLES,
   ALL_REMOTE_CREEP_ROLES,
-  ALL_SCORE_CONTAINER_CREEP_ROLES,
   CREEP_PART_COUNT_MAX,
   CREEP_ROLE_COUNT_MAX,
   Config,
-  MemoryApi_Room
+  MemoryApiRoom
 } from 'Utils/Importer/internals';
+import _ from 'lodash';
 // #endregion
 
 // #region Class
@@ -18,9 +17,9 @@ export class SpawningApi {
    * If no spawn is found, return null
    * @param room Room to find spawn in
    */
-  public static getAllOpenSpawn(room: Room): any {
+  public static getAllOpenSpawn(room: Room): StructureSpawn[] {
     // Get all spawns and filter them on spawns not spawning
-    const openSpawns: Structure[] = MemoryApi_Room.getStructuresOfType(
+    const openSpawns: StructureSpawn[] = MemoryApiRoom.getStructuresOfType(
       room,
       STRUCTURE_SPAWN,
       (spawn: StructureSpawn) => !spawn.spawning
@@ -28,7 +27,7 @@ export class SpawningApi {
 
     // If the openSpawns array is empty, return null
     if (openSpawns.length === 0) {
-      return null;
+      return [];
     }
 
     // Return the first item out of the OpenSpawns array
@@ -58,8 +57,8 @@ export class SpawningApi {
     const roomMemory = room.memory;
 
     // Get current body cost
-    const calcBodyCost = (body: BodyPartConstant[]): number =>
-      _.reduce(body, (sum, part) => sum + BODYPART_COST[part], 0);
+    const calcBodyCost = (inputBody: BodyPartConstant[]): number =>
+      _.reduce(inputBody, (sum, part) => sum + BODYPART_COST[part], 0);
     let body: BodyPartConstant[] = [];
     const returnBody = (parts: BodyPartConstant[], bodyIteration: BodyPartConstant[], maxLoopCount = 50) => {
       body = parts;
@@ -90,9 +89,9 @@ export class SpawningApi {
         break;
       case 'harvester-0':
       case 'harvester-1':
-        if (typeof roomMemory.commonMemory!.sources[(role.split('-')[1] as unknown) as number] === 'object') {
-          const sourceStructureType = roomMemory.roomPlanner!.room.sources[(role.split('-')[1] as unknown) as number]
-            .structureType;
+        if (typeof roomMemory.commonMemory?.sources[(role.split('-')[1] as unknown) as number] === 'object') {
+          const sourceStructureType =
+            roomMemory.roomPlanner?.room.sources[(role.split('-')[1] as unknown) as number].structureType;
           switch (sourceStructureType) {
             case 'container':
               returnBody([MOVE], [WORK], 7);
@@ -126,9 +125,6 @@ export class SpawningApi {
       case 'scout':
         returnBody([], [MOVE, MOVE], 1);
         break;
-      case 'scorePicker':
-        returnBody([], [MOVE, CARRY]);
-        break;
       default:
         break;
     }
@@ -142,7 +138,7 @@ export class SpawningApi {
   }
 
   public static getCreepDirections(role: string, room: Room): DirectionConstant[] {
-    if (room.terminal! && room.controller!.level >= 6) {
+    if (room.terminal && room.controller && room.controller.level >= 6) {
       if (role === 'transfererLiTe') {
         return [TOP_RIGHT];
       }
@@ -164,9 +160,6 @@ export class SpawningApi {
       case 'remote':
         rolesNeededInRoom = ALL_REMOTE_CREEP_ROLES;
         break;
-      case 'score':
-        rolesNeededInRoom = ALL_SCORE_CONTAINER_CREEP_ROLES;
-        break;
       default:
         break;
     }
@@ -177,7 +170,7 @@ export class SpawningApi {
       const targetRoomMemory = targetRoom.memory;
 
       const shortRoleName: string = role.split('-')[0].replace('LD', '');
-      const creeps: Creep[] = MemoryApi_Room.getMyCreepsOfType(targetRoom, role);
+      const creeps: Creep[] = MemoryApiRoom.getMyCreepsOfType(targetRoom, role);
       const maxCreepCount: number = CREEP_ROLE_COUNT_MAX[shortRoleName];
       const partCount = this.getTotalAliveParts(CREEP_PART_COUNT_MAX[shortRoleName].part, creeps);
       const maxPartCount: number = CREEP_PART_COUNT_MAX[shortRoleName].amount;
@@ -187,7 +180,10 @@ export class SpawningApi {
           // Owned room roles
           case 'pioneer':
             // Check if input role is less then max creeps allowed //
-            if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
+            if (
+              targetRoomMemory.commonMemory &&
+              creeps.length >= maxCreepCount * targetRoomMemory.commonMemory.sources.length
+            ) {
               break;
             }
             if (partCount >= maxPartCount) {
@@ -210,7 +206,10 @@ export class SpawningApi {
               break;
             }
             if (role === 'transfererLD') {
-              if (creeps.length >= targetRoomMemory.commonMemory!.sources.length * 1.5) {
+              if (
+                targetRoomMemory.commonMemory &&
+                creeps.length >= targetRoomMemory.commonMemory.sources.length * 1.5
+              ) {
                 break;
               }
             } else if (
@@ -220,7 +219,10 @@ export class SpawningApi {
               if (creeps.length >= 1) {
                 break;
               }
-            } else if (creeps.length >= maxCreepCount * targetRoomMemory.commonMemory!.sources.length) {
+            } else if (
+              targetRoomMemory.commonMemory &&
+              creeps.length >= maxCreepCount * targetRoomMemory.commonMemory.sources.length
+            ) {
               break;
             }
 
@@ -233,11 +235,14 @@ export class SpawningApi {
               break;
             }
 
-            if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1000) {
+            if (
+              targetRoomMemory === undefined ||
+              (targetRoomMemory.commonMemory && targetRoomMemory.commonMemory.energyStored.usable < 1000)
+            ) {
               break;
             }
 
-            if (role.includes('LD') && targetRoomMemory.constructionSites.data.length > 0) {
+            if (role.includes('LD') && (targetRoomMemory.constructionSites.data as string[]).length > 0) {
               break;
             }
 
@@ -262,17 +267,24 @@ export class SpawningApi {
               }
             } else {
               if (
-                targetRoomMemory.commonMemory!.energyStored.capacity > 10000 &&
-                targetRoomMemory.commonMemory!.energyStored.capacity / 10 >
-                  targetRoomMemory.commonMemory!.energyStored.usable
+                targetRoomMemory.commonMemory &&
+                targetRoomMemory.commonMemory.energyStored.capacity > 10000 &&
+                targetRoomMemory.commonMemory.energyStored.capacity / 10 >
+                  targetRoomMemory.commonMemory.energyStored.usable
               ) {
                 break;
               }
 
               // Check if input role is less then max creeps allowed //
-              if (creeps.length >= maxCreepCount && targetRoomMemory.constructionSites.data.length === 0) {
+              if (
+                creeps.length >= maxCreepCount &&
+                (targetRoomMemory.constructionSites.data as string[]).length === 0
+              ) {
                 break;
-              } else if (creeps.length >= maxCreepCount / 2 && targetRoomMemory.constructionSites.data.length > 0) {
+              } else if (
+                creeps.length >= maxCreepCount / 2 &&
+                (targetRoomMemory.constructionSites.data as string[]).length > 0
+              ) {
                 break;
               }
             }
@@ -307,22 +319,20 @@ export class SpawningApi {
               break;
             }
 
-            if (role.includes('LD') && roomType !== 'remote') {
-              if (!Game.flags[`builderLD${room.name}`]) {
-                break;
-              } else if (
-                Memory.rooms[`builderLD${room.name}`] &&
-                Memory.rooms[`builderLD${room.name}`].spawnRoom === room.name
-              ) {
-                // @ts-ignore
-                if (Memory.rooms[`builderLD${room.name}`].room !== undefined) {
-                  // @ts-ignore
-                  memory.targetRoom = Memory.rooms[`builderLD${room.name}`].room;
-                }
-              }
-            }
+            // if (role.includes('LD') && roomType !== 'remote') {
+            //   if (!Game.flags[`builderLD${room.name}`]) {
+            //     break;
+            //   } else if (
+            //     Memory.rooms[`builderLD${room.name}`] &&
+            //     Memory.rooms[`builderLD${room.name}`].spawnRoom === room.name
+            //   ) {
+            //     if (Memory.rooms[`builderLD${room.name}`].room !== undefined) {
+            //       memory.targetRoom = Memory.rooms[`builderLD${room.name}`].room;
+            //     }
+            //   }
+            // }
 
-            if (targetRoomMemory.constructionSites.data.length === 0) {
+            if ((targetRoomMemory.constructionSites.data as string[]).length === 0) {
               break;
             }
 
@@ -348,12 +358,15 @@ export class SpawningApi {
               break;
             }
 
-            if (targetRoomMemory === undefined || targetRoomMemory.commonMemory!.energyStored.usable < 1500) {
+            if (
+              targetRoomMemory === undefined ||
+              (targetRoomMemory.commonMemory && targetRoomMemory.commonMemory.energyStored.usable < 1500)
+            ) {
               break;
             }
 
             // Break if there is a tower to repair from
-            if (room.controller!.level >= 3 && !role.includes('LD')) {
+            if (room.controller && room.controller.level >= 3 && !role.includes('LD')) {
               break;
             }
 
@@ -389,8 +402,10 @@ export class SpawningApi {
             }
 
             if (
-              !targetRoomMemory.roomPlanner!.room.sources[0] ||
-              Game.getObjectById(targetRoomMemory.roomPlanner!.room.sources[0].id!) === null
+              targetRoomMemory.roomPlanner &&
+              (!targetRoomMemory.roomPlanner.room.sources[0] ||
+                (targetRoomMemory.roomPlanner.room.sources[0].id &&
+                  Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[0].id) === null))
             ) {
               break;
             }
@@ -404,7 +419,7 @@ export class SpawningApi {
             }
 
             // If there is more then 1 source
-            if (targetRoomMemory.commonMemory!.sources.length === 1) {
+            if (targetRoomMemory.commonMemory && targetRoomMemory.commonMemory.sources.length === 1) {
               break;
             }
 
@@ -427,8 +442,10 @@ export class SpawningApi {
             }
 
             if (
-              !targetRoomMemory.roomPlanner!.room.sources[1] ||
-              Game.getObjectById(targetRoomMemory.roomPlanner!.room.sources[1].id!) === null
+              targetRoomMemory.roomPlanner &&
+              (!targetRoomMemory.roomPlanner.room.sources[1] ||
+                (targetRoomMemory.roomPlanner.room.sources[1].id &&
+                  Game.getObjectById(targetRoomMemory.roomPlanner.room.sources[1].id) === null))
             ) {
               break;
             }
@@ -484,7 +501,6 @@ export class SpawningApi {
             // If room is missing claim roomMemory, assign it
             // TODO FIX THIS TO CLAIM ANOTHER ROOM
             // if (!Memory.rooms["claim"]) {
-            //   // @ts-ignore
             //   Memory.rooms["claim"] = { spawnRoom: "", room: "" };
             //   break;
             // } else if (Memory.rooms["claim"].spawnRoom === room.name && Memory.rooms["claim"].room !== undefined) {
@@ -507,26 +523,16 @@ export class SpawningApi {
               break;
             }
 
-            // @ts-ignore
             if (
-              targetRoomMemory.commonMemory!.mineral!.amount &&
-              targetRoomMemory.commonMemory!.mineral!.amount > 0 &&
+              targetRoomMemory.commonMemory &&
+              targetRoomMemory.commonMemory.mineral &&
+              targetRoomMemory.commonMemory.mineral.amount &&
+              targetRoomMemory.commonMemory.mineral.amount > 0 &&
               room.controller &&
               room.controller.level >= 6 &&
               room.storage &&
-              // @ts-ignore
               room.storage.store.getUsedCapacity(targetRoomMemory.commonMemory.mineral.type) < 200 * 1000
             ) {
-              result = [true, role];
-            }
-            break;
-          case 'scorePicker':
-            // Check if input role is less then max creeps allowed //
-            if (creeps.length >= maxCreepCount) {
-              break;
-            }
-
-            if (targetRoomMemory && targetRoomMemory.jobs.scoreContainers!.length > 0) {
               result = [true, role];
             }
             break;

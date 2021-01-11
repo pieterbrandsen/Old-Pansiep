@@ -1,23 +1,22 @@
 // #region Require('./)
 import {
   Config,
-  CreepRole_Build,
-  CreepRole_Claim,
-  CreepRole_Harvest,
-  CreepRole_Repair,
-  CreepRole_Reserve,
-  CreepRole_Scout,
-  CreepRole_Seasonal,
-  CreepRole_Transfer,
-  CreepRole_Upgrade,
-  CreepRole_Withdraw,
-  MemoryApi_All
+  CreepRoleBuild,
+  CreepRoleClaim,
+  CreepRoleHarvest,
+  CreepRoleRepair,
+  CreepRoleReserve,
+  CreepRoleScout,
+  CreepRoleTransfer,
+  CreepRoleUpgrade,
+  CreepRoleWithdraw,
+  MemoryApiAll
 } from 'Utils/Importer/internals';
 // #endregion
 
 // #region Class
-export class CreepsHelper_Role {
-  public static runCreepRoles(creep: Creep, shortRoleName: string) {
+export class CreepsHelperRole {
+  public static runCreepRoles(creep: Creep, shortRoleName: string): void {
     switch (shortRoleName) {
       case 'pioneer':
         this.pioneer(creep);
@@ -49,9 +48,6 @@ export class CreepsHelper_Role {
       case 'scout':
         this.scout(creep);
         break;
-      case 'scorePicker':
-        this.scorePicker(creep);
-        break;
       default:
         break;
     }
@@ -60,93 +56,85 @@ export class CreepsHelper_Role {
   private static executeCreep(creep: Creep, job: string): void | string {
     switch (job) {
       case 'build':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Build.build,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleBuild.build, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'claim':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Claim.claim,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleClaim.claim, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'harvest':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Harvest.source,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleHarvest.source, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'mineral':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Harvest.mineral,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleHarvest.mineral, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'repair':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Repair.repair,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleRepair.repair, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'reserve':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Reserve.reserve,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleReserve.reserve, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'transfer':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Transfer.transfer,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleTransfer.transfer, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'upgrade':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Upgrade.upgrade,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleUpgrade.upgrade, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'withdraw':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Withdraw.withdraw,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleWithdraw.withdraw, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
+        ) as string;
       case 'scout':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Scout.scout,
+        return MemoryApiAll.functionRunnerWithCpu(
+          CreepRoleScout.scout, // eslint-disable-line @typescript-eslint/unbound-method
           Config.creepModuleCpuCost[creep.room.name],
           job,
           '+=',
           creep
-        );
-      case 'scoreWithdrawer':
-        return MemoryApi_All.functionRunnerWithCpu(
-          CreepRole_Seasonal.scoreWithdrawer,
-          Config.creepModuleCpuCost[creep.room.name],
-          job,
-          '+=',
-          creep
-        );
+        ) as string;
       default:
         break;
     }
@@ -196,14 +184,13 @@ export class CreepsHelper_Role {
 
   private static pioneer = (creep: Creep): void => {
     // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
+    CreepsHelperRole.getMissingPartsCount(creep);
 
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[creep.memory.spawnRoom];
-    const spawnRoom: Room = Game.rooms[creep.memory.spawnRoom];
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -213,7 +200,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    const result = CreepsHelperRole.executeCreep(creep, creep.memory.job);
 
     switch (result) {
       case 'full':
@@ -223,23 +210,27 @@ export class CreepsHelper_Role {
         delete creep.memory.sourceId;
         delete creep.memory.sourceNumber;
 
+        if (!roomMemory.jobs.spawnerEnergyStructures || !roomMemory.commonMemory) {
+          return;
+        }
+
         // Switch to one of the jobs that drains energy
-        if (roomMemory.jobs.spawnerEnergyStructures!.length > 0) {
+        if (roomMemory.jobs.spawnerEnergyStructures.length > 0) {
           creep.memory.job = 'transfer';
         } else if (
-          roomMemory.commonMemory!.energyStored.capacity > 10000 &&
-          roomMemory.commonMemory!.energyStored.capacity / 10 > roomMemory.commonMemory!.energyStored.usable
+          roomMemory.commonMemory.energyStored.capacity > 10000 &&
+          roomMemory.commonMemory.energyStored.capacity / 10 > roomMemory.commonMemory.energyStored.usable
         ) {
           creep.memory.job = 'transfer';
         } else if (
-          roomMemory.commonMemory!.controllerStorage !== undefined &&
-          roomMemory.commonMemory!.controllerStorage.usable < 1500 &&
-          roomMemory.commonMemory!.controllerStorage.type === STRUCTURE_CONTAINER
+          roomMemory.commonMemory.controllerStorage !== undefined &&
+          roomMemory.commonMemory.controllerStorage.usable < 1500 &&
+          roomMemory.commonMemory.controllerStorage.type === STRUCTURE_CONTAINER
         ) {
           creep.memory.job = 'transfer';
         } else if (roomMemory.jobs.damagedStructures.data.length > 0) {
           creep.memory.job = 'repair';
-        } else if (roomMemory.constructionSites.data.length > 0) {
+        } else if ((roomMemory.constructionSites.data as string[]).length > 0) {
           creep.memory.job = 'build';
         } else {
           creep.memory.job = 'upgrade';
@@ -252,9 +243,13 @@ export class CreepsHelper_Role {
         delete creep.memory.sourceNumber;
         delete creep.memory.miniJob;
 
+        if (!roomMemory.jobs.spawnerEnergyStructures || !roomMemory.commonMemory) {
+          return;
+        }
+
         // Switch to one of the roles that gets energy
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory!.energyStored.usable > 1500) {
+        if (roomMemory.commonMemory.energyStored.usable > 1500) {
           creep.memory.job = 'withdraw';
         } else {
           creep.memory.job = 'harvest';
@@ -267,10 +262,10 @@ export class CreepsHelper_Role {
 
   private static harvester(creep: Creep) {
     // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
+    CreepsHelperRole.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -280,7 +275,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    const result = CreepsHelperRole.executeCreep(creep, creep.memory.job);
 
     switch (result) {
       case 'full':
@@ -305,10 +300,10 @@ export class CreepsHelper_Role {
 
   private static mineral(creep: Creep) {
     // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
+    CreepsHelperRole.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -318,7 +313,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    const result = CreepsHelperRole.executeCreep(creep, creep.memory.job);
 
     switch (result) {
       case 'full':
@@ -343,7 +338,7 @@ export class CreepsHelper_Role {
 
   private static transferer(creep: Creep) {
     // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
+    CreepsHelperRole.getMissingPartsCount(creep);
 
     if (!creep.memory.job) {
       creep.memory.job = 'withdraw';
@@ -351,7 +346,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    const result = CreepsHelperRole.executeCreep(creep, creep.memory.job);
 
     switch (result) {
       case 'full':
@@ -360,7 +355,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Check if creep needs to move to another room
-        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
+        if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
           return;
         }
 
@@ -373,7 +368,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Check if creep needs to move to another room
-        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+        if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
           return;
         }
 
@@ -387,10 +382,10 @@ export class CreepsHelper_Role {
 
   private static upgrader(creep: Creep) {
     // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
+    CreepsHelperRole.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -403,7 +398,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    const result = CreepsHelperRole.executeCreep(creep, creep.memory.job);
 
     switch (result) {
       case 'full':
@@ -419,12 +414,20 @@ export class CreepsHelper_Role {
         delete creep.memory.targetId;
         delete creep.memory.sourceId;
 
+        if (
+          !roomMemory.commonMemory ||
+          !roomMemory.commonMemory.controllerStorage ||
+          !roomMemory.commonMemory.controllerStorage.id
+        ) {
+          return;
+        }
+
         // Switch to one of the roles that gets energy
         if (
-          roomMemory.commonMemory!.energyStored.usable >= 10 * 1000 ||
-          (roomMemory.commonMemory!.controllerStorage &&
-            roomMemory.commonMemory!.controllerStorage.usable >= 250 &&
-            Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null)
+          roomMemory.commonMemory.energyStored.usable >= 10 * 1000 ||
+          (roomMemory.commonMemory.controllerStorage &&
+            roomMemory.commonMemory.controllerStorage.usable >= 250 &&
+            Game.getObjectById(roomMemory.commonMemory.controllerStorage.id) !== null)
         ) {
           creep.memory.job = 'withdraw';
         } else {
@@ -438,10 +441,10 @@ export class CreepsHelper_Role {
 
   private static repairer(creep: Creep) {
     // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
+    CreepsHelperRole.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -454,7 +457,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    const result = CreepsHelperRole.executeCreep(creep, creep.memory.job);
 
     switch (result) {
       case 'full':
@@ -482,8 +485,12 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
         delete creep.memory.sourceId;
 
+        if (!roomMemory.commonMemory) {
+          return;
+        }
+
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory!.energyStored.usable >= 2000) {
+        if (roomMemory.commonMemory.energyStored.usable >= 2000) {
           creep.memory.job = 'withdraw';
         } else {
           creep.memory.job = 'harvest';
@@ -496,10 +503,10 @@ export class CreepsHelper_Role {
 
   private static builder = (creep: Creep) => {
     // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
+    CreepsHelperRole.getMissingPartsCount(creep);
 
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -512,7 +519,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    const result = CreepsHelperRole.executeCreep(creep, creep.memory.job);
 
     switch (result) {
       case 'full':
@@ -522,7 +529,7 @@ export class CreepsHelper_Role {
         delete creep.memory.miniJob;
 
         // Switch to one of the jobs that drains energy
-        if (roomMemory.constructionSites.data.length > 0) {
+        if ((roomMemory.constructionSites.data as string[]).length > 0) {
           creep.memory.job = 'build';
         } else if (creep.memory.spawnRoom === creep.memory.targetRoom) {
           creep.memory.job = 'upgrade';
@@ -538,8 +545,12 @@ export class CreepsHelper_Role {
         delete creep.memory.sourceId;
         delete creep.memory.miniJob;
 
+        if (!roomMemory.commonMemory) {
+          return;
+        }
+
         // Switch to one of the roles that gets energy
-        if (roomMemory.commonMemory!.energyStored.usable >= 2000 && !creep.memory.role.includes('LD')) {
+        if (roomMemory.commonMemory.energyStored.usable >= 2000 && !creep.memory.role.includes('LD')) {
           creep.memory.job = 'withdraw';
         } else {
           creep.memory.job = 'harvest';
@@ -552,7 +563,7 @@ export class CreepsHelper_Role {
 
   private static reserver = (creep: Creep) => {
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -562,12 +573,12 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    CreepsHelperRole.executeCreep(creep, creep.memory.job);
   };
 
   private static claimer = (creep: Creep) => {
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -577,12 +588,12 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    CreepsHelperRole.executeCreep(creep, creep.memory.job);
   };
 
   private static scout = (creep: Creep) => {
     // Check if creep needs to move to another room
-    if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
+    if (!CreepsHelperRole.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
       return;
     }
 
@@ -592,51 +603,7 @@ export class CreepsHelper_Role {
     }
 
     // Run the creep
-    CreepsHelper_Role.executeCreep(creep, creep.memory.job);
+    CreepsHelperRole.executeCreep(creep, creep.memory.job);
   };
-
-  private static scorePicker(creep: Creep) {
-    // Get missing parts for the memory
-    CreepsHelper_Role.getMissingPartsCount(creep);
-
-    if (!creep.memory.job) {
-      creep.memory.job = 'scoreWithdrawer';
-      return;
-    }
-
-    // Run the creep
-    const result = CreepsHelper_Role.executeCreep(creep, creep.memory.job);
-
-    switch (result) {
-      case 'full':
-        // Delete targetId
-        delete creep.memory.targetId;
-        delete creep.memory.miniJob;
-
-        // Check if creep needs to move to another room
-        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.spawnRoom)) {
-          return;
-        }
-
-        // Switch to one of the jobs that drains energy
-        creep.memory.job = 'transfer';
-        break;
-      case 'empty':
-        // Delete targetId
-        delete creep.memory.targetId;
-        delete creep.memory.miniJob;
-
-        // Check if creep needs to move to another room
-        if (!CreepsHelper_Role.HasVisionInTargetRoom(creep, creep.room.name, creep.memory.targetRoom)) {
-          return;
-        }
-
-        // Switch to one of the roles that gets energy
-        creep.memory.job = 'scoreWithdrawer';
-        break;
-      default:
-        break;
-    }
-  }
 }
 // #endregion

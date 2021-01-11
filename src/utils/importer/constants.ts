@@ -63,8 +63,7 @@ export const ALL_CREEP_MODULES: string[] = [
   'transfer',
   'upgrade',
   'withdraw',
-  'scout',
-  'scoreWithdrawer'
+  'scout'
 ];
 
 export const CREEP_ROLE_COUNT_MAX: { [key: string]: number } = {
@@ -203,14 +202,12 @@ export const DAMAGED_CREEPS_JOBS_CACHE_TTL = 250;
 export const SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL = 50;
 export const HOSTILE_CREEPS_JOBS_CACHE_TTL = 50;
 export const DROPPED_RESOURCE_JOBS_CACHE_TTL = 50;
-export const SCORE_CONTAINERS_JOBS_CACHE_TTL = 50;
 
 // Cache ticks
 export const CONST_CACHE_TTL = 1000;
 export const CREEPS_CACHE_TTL = 9;
 export const STRUCT_CACHE_TTL = 100;
 export const DROPPED_RESOURCES_CACHE_TTL = 50;
-export const SCORE_CONTAINER_CACHE_TTL = 50;
 
 // Timer ticks
 export const UPDATE_LINKS_TIMER = 500;

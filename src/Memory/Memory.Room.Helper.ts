@@ -1,17 +1,16 @@
 // #region Require('./)
-import _ from 'lodash';
 import {
   ALL_CREEP_ROLES,
-  ALL_RESOURCE_TYPES,
   ALL_STRUCTURE_TYPES,
   JobsHelper,
-  MemoryApi_Room,
+  MemoryApiRoom,
   OldRoomPlanner
 } from 'Utils/Importer/internals';
+import _ from 'lodash';
 // #endregion
 
 // #region Class
-export class MemoryHelper_Room {
+export class MemoryHelperRoom {
   public static updateRoomMemory(room: Room, roomType: string): void {
     this.updateStructures(room);
     this.updateConstructionSites(room);
@@ -21,13 +20,10 @@ export class MemoryHelper_Room {
       JobsHelper.updateAllSpawnerEnergyStructuresJobs(room);
       OldRoomPlanner.basePlanner(room);
     }
-    if (roomType !== 'score') {
+    if (roomType === 'owned' || roomType === 'remote') {
       OldRoomPlanner.roomPlanner(room);
-      MemoryHelper_Room.updateSourceStructures(room);
+      MemoryHelperRoom.updateSourceStructures(room);
       JobsHelper.updateAllEnergyStoragesJobs(room);
-    }
-    if (roomType === 'score') {
-      JobsHelper.updateScoreContainersJobs(room);
     }
 
     JobsHelper.updateAllHostileCreepsJobs(room);
@@ -96,22 +92,24 @@ export class MemoryHelper_Room {
   public static updateSourceStructures(room: Room): void {
     const roomMemory: RoomMemory = room.memory;
     // Check all source structures
-    for (let i = 0; i < roomMemory.roomPlanner!.room.sources.length; i++) {
-      // Get source
-      const source = roomMemory.roomPlanner!.room.sources[i];
 
+    if (!roomMemory.roomPlanner) {
+      return;
+    }
+
+    for (const source of roomMemory.roomPlanner.room.sources) {
       // Break if there is still a live structure
-      if (Game.getObjectById(source.id!) === null) {
+      if (source.pos && source.id && Game.getObjectById(source.id) === null && source.structureType) {
         // Get all structures at saved pos
-        const structureExistResult = MemoryApi_Room.doesStructureExist(room, source.pos!, source.structureType!);
+        const structureExistResult = MemoryApiRoom.doesStructureExist(room, source.pos, source.structureType);
 
         // If structure was found
         if (structureExistResult[0]) {
           // Save the id back to memory
-          roomMemory.roomPlanner!.room.sources[i].id = structureExistResult[1];
+          source.id = structureExistResult[1];
         } else {
           // Remove id from memory if its removed
-          roomMemory.roomPlanner!.room.sources[i].id = undefined;
+          source.id = undefined;
         }
       }
     }
@@ -123,11 +121,11 @@ export class MemoryHelper_Room {
 
     // Check all links to see if its still there //
     // Check each source for a link
-    if (room.controller!.level >= 5) {
-      const links: StructureLink[] = MemoryApi_Room.getStructuresOfType(room, STRUCTURE_LINK);
-      for (let i = 0; i < roomMemory.commonMemory!.sources.length; i++) {
+    if (room.controller && room.controller.level >= 5 && roomMemory.commonMemory) {
+      const links: StructureLink[] = MemoryApiRoom.getStructuresOfType(room, STRUCTURE_LINK);
+      for (let i = 0; i < roomMemory.commonMemory.sources.length; i++) {
         // Get the source
-        const source: Source | null = Game.getObjectById(roomMemory.commonMemory!.sources[i].id);
+        const source: Source | null = Game.getObjectById(roomMemory.commonMemory.sources[i].id);
 
         // If source is not null
         if (source !== null) {
@@ -135,21 +133,21 @@ export class MemoryHelper_Room {
           const sourceLink: StructureLink = source.pos.findInRange(links, 2)[0];
 
           // If a link is found, set it to the memory
-          if (roomMemory.commonMemory!.links !== undefined && sourceLink !== undefined) {
-            roomMemory.commonMemory!.links[`source${i}`] = sourceLink.id;
+          if (roomMemory.commonMemory.links !== undefined && sourceLink !== undefined) {
+            roomMemory.commonMemory.links[`source${i}`] = sourceLink.id;
           }
         }
       }
 
       // Check if there is a link at the headSpawn
-      const headSpawn: StructureSpawn | null = MemoryApi_Room.getHeadSpawn(room);
+      const headSpawn: StructureSpawn | null = MemoryApiRoom.getHeadSpawn(room);
       if (headSpawn !== null) {
         // Find a link
         const spawnLink: StructureLink = headSpawn.pos.findInRange(links, 2)[0];
 
         // If a link is found, set it to the memory
-        if (roomMemory.commonMemory!.links !== undefined && spawnLink !== undefined) {
-          roomMemory.commonMemory!.links.head = spawnLink.id;
+        if (roomMemory.commonMemory.links !== undefined && spawnLink !== undefined) {
+          roomMemory.commonMemory.links.head = spawnLink.id;
         }
       }
 
@@ -158,18 +156,20 @@ export class MemoryHelper_Room {
       const controllerLink: StructureLink | undefined = room.controller?.pos.findInRange(links, 2)[0];
 
       // If a link is found, set it to the memory
-      if (roomMemory.commonMemory!.links !== undefined && controllerLink !== undefined) {
-        roomMemory.commonMemory!.links.controller = controllerLink.id;
+      if (roomMemory.commonMemory.links !== undefined && controllerLink !== undefined) {
+        roomMemory.commonMemory.links.controller = controllerLink.id;
       }
     }
   }
 
   public static updateMineralAmount(room: Room): void {
     const mineral: Mineral = room.find(FIND_MINERALS)[0];
-    if (mineral) {
-      room.memory.commonMemory!.mineral!.amount = Math.round(room.find(FIND_MINERALS)[0].mineralAmount);
-    } else {
-      room.memory.commonMemory!.mineral!.amount = 0;
+    if (room.memory.commonMemory && room.memory.commonMemory.mineral) {
+      if (mineral) {
+        room.memory.commonMemory.mineral.amount = Math.round(room.find(FIND_MINERALS)[0].mineralAmount);
+      } else {
+        room.memory.commonMemory.mineral.amount = 0;
+      }
     }
   }
 
@@ -185,21 +185,6 @@ export class MemoryHelper_Room {
 
     room.memory.droppedResources.data = allDroppedResourceIds;
     room.memory.droppedResources.cache = Game.time;
-  }
-
-  public static updateScoreContainers(room: Room): void {
-    // If we have no vision of the room, return
-    if (!room.memory) {
-      return;
-    }
-
-    room.memory.scoreContainers = { data: [], cache: null };
-
-    // @ts-ignore
-    const allDroppedResourceIds: string[] = room.find(FIND_SCORE_CONTAINERS).map(c => c.id);
-
-    room.memory.scoreContainers.data = allDroppedResourceIds;
-    room.memory.scoreContainers.cache = Game.time;
   }
 }
 // #endregion

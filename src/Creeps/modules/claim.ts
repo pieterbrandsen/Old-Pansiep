@@ -3,9 +3,9 @@ import {} from 'Utils/Importer/internals';
 // #endregion
 
 // #region Class
-export class CreepRole_Claim {
+export class CreepRoleClaim {
   // #region Functions()
-  public static claim(creep: Creep) {
+  public static claim(creep: Creep): string | void {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
 
@@ -26,16 +26,14 @@ export class CreepRole_Claim {
 
         // Create a builderLD flag and give it memory
         creep.room.createFlag(creep.pos, `builderLD${creepMemory.spawnRoom}`);
-        // @ts-ignore
-        Memory.rooms[`builderLD${creepMemory.spawnRoom}`] = {
-          spawnRoom: creepMemory.spawnRoom,
-          room: creep.room.name
-        };
+        // eslint-disable-line
+        Memory.rooms[`builderLD${creepMemory.spawnRoom}`].spawnRoom = creepMemory.spawnRoom;
+        Memory.rooms[`builderLD${creepMemory.spawnRoom}`].room = creep.room.name;
         break;
       case ERR_NOT_IN_RANGE:
         // If creep is not in range, move to target
         creep.moveTo(creep.room.controller);
-
+        break;
       default:
         break;
     }

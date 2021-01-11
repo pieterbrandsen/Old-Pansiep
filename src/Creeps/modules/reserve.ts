@@ -3,8 +3,8 @@ import {} from 'Utils/Importer/internals';
 // #endregion
 
 // #region Class
-export class CreepRole_Reserve {
-  public static reserve(creep: Creep) {
+export class CreepRoleReserve {
+  public static reserve(creep: Creep): void {
     const targetRoom = Game.rooms[creep.memory.targetRoom];
     if (targetRoom.controller === undefined) {
       return;

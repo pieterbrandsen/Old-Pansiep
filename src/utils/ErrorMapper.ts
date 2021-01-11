@@ -1,16 +1,16 @@
-import _ from 'lodash';
 import { SourceMapConsumer } from 'source-map';
+import _ from 'lodash';
 
 export class ErrorMapper {
   // Cache consumer
-  private static _consumer?: SourceMapConsumer;
+  private static consumer?: SourceMapConsumer;
 
-  public static get consumer(): SourceMapConsumer {
-    if (this._consumer == null) {
-      this._consumer = new SourceMapConsumer(require('main.js.map'));
+  public static get Consumer(): SourceMapConsumer {
+    if (this.consumer == null) {
+      this.consumer = new SourceMapConsumer(require('main.js.map'));
     }
 
-    return this._consumer;
+    return this.consumer;
   }
 
   // Cache previously mapped traces to improve performance
@@ -39,7 +39,7 @@ export class ErrorMapper {
     // tslint:disable-next-line: no-conditional-assignment
     while ((match = re.exec(stack))) {
       if (match[2] === 'main') {
-        const pos = this.consumer.originalPositionFor({
+        const pos = this.Consumer.originalPositionFor({
           column: parseInt(match[4], 10),
           line: parseInt(match[3], 10)
         });

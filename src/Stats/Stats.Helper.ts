@@ -1,12 +1,12 @@
 // #region Require('./)
-import { Config, MemoryApi_All } from "Utils/Importer/internals";
+import { ALL_CREEP_ROLES, Config, MemoryApiAll } from 'Utils/Importer/internals';
 // #endregion
 
 // #region Functions()
 export class StatsHelper {
   public static global = (): void => {
     // Define stats memory link
-    const statsMemory = Memory.stats;
+    const statsMemory: Stats = Memory.stats;
 
     // Set all gcl related memory
     const gclMemory = statsMemory.gcl;
@@ -21,7 +21,7 @@ export class StatsHelper {
     if (typeof cpuMemory === 'object') {
       cpuMemory.bucket = Game.cpu.bucket;
       cpuMemory.limit = Game.cpu.limit;
-      cpuMemory.used = MemoryApi_All.memoryAverager(cpuMemory.used, Game.cpu.getUsed());
+      cpuMemory.used = MemoryApiAll.memoryAverager(cpuMemory.used, Game.cpu.getUsed());
     }
 
     // Set all commonMemory related memory
@@ -46,49 +46,45 @@ export class StatsHelper {
       }
 
       // Set all commonMemory related memory
-      const { commonMemory } = roomStats;
+      const commonMemory = roomStats.commonMemory;
       if (typeof commonMemory === 'object') {
-        commonMemory.constructionSitesCount = roomMemory.constructionSites.data.length;
+        commonMemory.constructionSitesCount = (roomMemory.constructionSites.data as string[]).length;
 
-        // eslint-disable-next-line guard-for-in
-        for (const role in room.memory.myCreeps.data) {
-          commonMemory.creepCountByRole[role] = MemoryApi_All.memoryAverager(
+        _.forEach(ALL_CREEP_ROLES, (role: string) => {
+          commonMemory.creepCountByRole[role] = MemoryApiAll.memoryAverager(
             commonMemory.creepCountByRole[role],
-            room.memory.myCreeps.data[role].length
+            (room.memory.myCreeps.data as { [key: string]: string })[role].length
           );
-        }
+        });
       }
 
       // Set all performance related memory
       const performanceMemory = roomStats.performance;
       if (typeof performanceMemory === 'object') {
-        if (!performanceMemory.expenses.spawnExpenses) {
-          performanceMemory.expenses.spawnExpenses = {};
-        }
-        for (const role in Config.expenses.spawnExpenses[room.name]) {
-          performanceMemory.expenses.spawnExpenses[role] = MemoryApi_All.memoryAverager(
+        _.forEach(ALL_CREEP_ROLES, (role: string) => {
+          performanceMemory.expenses.spawnExpenses[role] = MemoryApiAll.memoryAverager(
             performanceMemory.expenses.spawnExpenses[role],
             Config.expenses.spawnExpenses[room.name][role]
           );
-        }
+        });
 
-        performanceMemory.expenses.building = MemoryApi_All.memoryAverager(
+        performanceMemory.expenses.building = MemoryApiAll.memoryAverager(
           performanceMemory.expenses.building,
           Config.expenses.building[room.name]
         );
-        performanceMemory.expenses.repairing = MemoryApi_All.memoryAverager(
+        performanceMemory.expenses.repairing = MemoryApiAll.memoryAverager(
           performanceMemory.expenses.repairing,
           Config.expenses.repairing[room.name]
         );
-        performanceMemory.expenses.upgrading = MemoryApi_All.memoryAverager(
+        performanceMemory.expenses.upgrading = MemoryApiAll.memoryAverager(
           performanceMemory.expenses.upgrading,
           Config.expenses.upgrading[room.name]
         );
-        performanceMemory.income.ownedHarvesting = MemoryApi_All.memoryAverager(
+        performanceMemory.income.ownedHarvesting = MemoryApiAll.memoryAverager(
           performanceMemory.income.ownedHarvesting,
           Config.income.ownedHarvesting[room.name]
         );
-        performanceMemory.income.remoteHarvesting = MemoryApi_All.memoryAverager(
+        performanceMemory.income.remoteHarvesting = MemoryApiAll.memoryAverager(
           performanceMemory.income.remoteHarvesting,
           Config.income.remoteHarvesting[room.name]
         );
@@ -96,31 +92,32 @@ export class StatsHelper {
 
       // Set all energy stored related memory
       const energyMemory = roomStats.energyStored;
-      if (typeof energyMemory === 'object') {
-        energyMemory.capacity = roomMemory.commonMemory!.energyStored.capacity;
-        energyMemory.total = roomMemory.commonMemory!.energyStored.usable;
+      if (typeof energyMemory === 'object' && roomMemory.commonMemory) {
+        energyMemory.capacity = roomMemory.commonMemory.energyStored.capacity;
+        energyMemory.total = roomMemory.commonMemory.energyStored.usable;
       }
 
       // Set all cpu related memory
       const cpuMemory = roomStats.cpu;
       if (typeof cpuMemory === 'object') {
-        for (const role in Config.cpuUsedByRoomByRole[room.name]) {
-          cpuMemory.headModules.creeps[role] = MemoryApi_All.memoryAverager(
+        _.forEach(ALL_CREEP_ROLES, (role: string) => {
+          cpuMemory.headModules.creeps[role] = MemoryApiAll.memoryAverager(
             cpuMemory.headModules.creeps[role],
             Config.cpuUsedByRoomByRole[room.name][role]
           );
-        }
-        for (const role in Config.creepModuleCpuCost[room.name]) {
-          cpuMemory.creepModules[role] = MemoryApi_All.memoryAverager(
+        });
+
+        _.forEach(ALL_CREEP_ROLES, (role: string) => {
+          cpuMemory.creepModules[role] = MemoryApiAll.memoryAverager(
             cpuMemory.creepModules[role],
             Config.creepModuleCpuCost[room.name][role]
           );
-        }
+        });
       }
     }
   };
 
-  public static ownedRoom(room: Room) {
+  public static ownedRoom(room: Room): void {
     StatsHelper.globalRoom(room);
 
     // Define stats memory link
@@ -133,39 +130,39 @@ export class StatsHelper {
       const roomMemory: RoomMemory = room.memory;
 
       // Set all spawner energy related memory
-      const { spawnerEnergy } = roomStats;
+      const spawnerEnergy = roomStats.spawnerEnergy;
       if (typeof spawnerEnergy === 'object') {
         spawnerEnergy.available = room.energyAvailable;
         spawnerEnergy.capacityAvailable = room.energyCapacityAvailable;
       }
 
       // Set all controller related memory
-      const { controller } = roomStats;
-      if (typeof controller === 'object') {
-        controller.level = room.controller?.level;
-        controller.progress = room.controller?.progress;
-        controller.progressTotal = room.controller?.progressTotal;
+      const controller = roomStats.controller;
+      if (typeof controller === 'object' && room.controller) {
+        controller.level = room.controller.level;
+        controller.progress = room.controller.progress;
+        controller.progressTotal = room.controller.progressTotal;
       }
 
       // Set all commonMemory related memory
       const { commonMemory } = roomStats;
       if (typeof commonMemory === 'object') {
         const ownedCommonMemory = roomStats.commonMemory.owned;
-        if (typeof ownedCommonMemory === 'object') {
-          ownedCommonMemory.sourceCount = roomMemory.commonMemory!.sources.length;
+        if (typeof ownedCommonMemory === 'object' && roomMemory.commonMemory) {
+          ownedCommonMemory.sourceCount = roomMemory.commonMemory.sources.length;
         }
       }
 
       // Set all energy stored related memory
       const energyMemory = roomStats.energyStored;
       if (typeof energyMemory === 'object') {
-        energyMemory.storage = room.storage ? room.storage.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
-        energyMemory.terminal = room.terminal ? room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) : 0;
+        energyMemory.storage = room.storage ? room.storage.store.getUsedCapacity(RESOURCE_ENERGY) : -1;
+        energyMemory.terminal = room.terminal ? room.terminal.store.getUsedCapacity(RESOURCE_ENERGY) : -1;
       }
     }
   }
 
-  public static remoteRoom(room: Room) {
+  public static remoteRoom(room: Room): void {
     StatsHelper.globalRoom(room);
 
     // Define stats memory link
@@ -181,8 +178,8 @@ export class StatsHelper {
       const { commonMemory } = roomStats;
       if (typeof commonMemory === 'object') {
         const remoteCommonMemory = roomStats.commonMemory.remote;
-        if (typeof remoteCommonMemory === 'object') {
-          remoteCommonMemory.sourceCount = roomMemory.commonMemory!.sources.length;
+        if (typeof remoteCommonMemory === 'object' && roomMemory.commonMemory) {
+          remoteCommonMemory.sourceCount = roomMemory.commonMemory.sources.length;
         }
       }
     }

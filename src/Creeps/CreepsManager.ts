@@ -1,11 +1,11 @@
 // #region Require('./)
+import { Config, CreepsHelperRole, MemoryApiAll } from 'Utils/Importer/internals';
 import _ from 'lodash';
-import { Config, CreepsHelper_Role, MemoryApi_All } from 'Utils/importer/internals';
 // #endregion
 
 // #region Class
-export cUtils/Importer/internals
-  public static runCreepsManager = () => {
+export class CreepsManager {
+  public static runCreepsManager(): void {
     // Loop through each creep known in the memory
     _.forEach(Object.keys(Memory.creeps), creepName => {
       // Acces Creep object
@@ -19,7 +19,7 @@ export cUtils/Importer/internals
         CreepsManager.creepHandler(creep);
       }
     });
-  };
+  }
 
   private static creepHandler(creep: Creep): void {
     // Get the creepMemory
@@ -34,8 +34,8 @@ export cUtils/Importer/internals
     }
 
     // Run the role
-    MemoryApi_All.functionRunnerWithCpu(
-      this.roleHandler,
+    MemoryApiAll.functionRunnerWithCpu(
+      this.roleHandler, // eslint-disable-line
       // Hope it works....
       Config.cpuUsedByRoomByRole[creep.room.name],
       creepMemory.role,
@@ -50,7 +50,7 @@ export cUtils/Importer/internals
     const shortRoleName: string = roleName.replace('LD', '');
 
     // Run the role with the shorter role name and the liveCreep object
-    CreepsHelper_Role.runCreepRoles(creep, shortRoleName);
+    CreepsHelperRole.runCreepRoles(creep, shortRoleName);
   }
 }
 // #endregion

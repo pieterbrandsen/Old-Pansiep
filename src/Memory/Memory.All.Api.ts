@@ -1,6 +1,6 @@
-import { MemoryApi_Room } from './Memory.Room.Api';
+import { MemoryApiRoom } from './Memory.Room.Api';
 
-export class MemoryApi_All {
+export class MemoryApiAll {
   public static garbageCollection(): void {
     for (const name in Memory.creeps) {
       if (!Game.creeps[name]) {
@@ -11,7 +11,8 @@ export class MemoryApi_All {
     if (Memory.stats?.rooms) {
       for (const roomName in Memory.stats.rooms) {
         if (!Game.rooms[roomName]) {
-          MemoryApi_Room.resetStatsMemory(roomName);
+          const roomType: string = Memory.rooms[roomName].roomType as string;
+          MemoryApiRoom.resetStatsMemory(roomName, roomType);
         }
       }
     }
@@ -29,13 +30,14 @@ export class MemoryApi_All {
     return this.cpuGetter();
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public static functionRunner(liveFunction: any, ...args: any[]): any {
     // Run the inputted function with the args inputted
-    return liveFunction(...args);
+    return liveFunction(...args); // eslint-disable-line
   }
 
   public static functionRunnerWithCpu(
-    liveFunction: any,
+    liveFunction: any, // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     liveMemoryObject: { [key: string]: number } | undefined,
     memoryName: string,
     calcSymbol: '=' | '+=',
@@ -43,14 +45,14 @@ export class MemoryApi_All {
   ): any {
     // If memory object is not defined, return
     if (liveMemoryObject === undefined) {
-      return this.functionRunner(liveFunction, ...args);
+      return this.functionRunner(liveFunction, ...args); // eslint-disable-line @typescript-eslint/no-unsafe-return
     }
 
     // Get the cpu before executing the function
     const preCpu: number = this.preCpuGetter();
 
     // Run the inputted function with the args inputted
-    const functionResult = this.functionRunner(liveFunction, ...args);
+    const functionResult: any = this.functionRunner(liveFunction, ...args); // eslint-disable-line
 
     // Get the cpu after executing the function
     const endCpu: number = this.endCpuGetter();
@@ -72,7 +74,7 @@ export class MemoryApi_All {
       }
     }
 
-    return functionResult;
+    return functionResult; // eslint-disable-line @typescript-eslint/no-unsafe-return
   }
 
   public static isMemoryPathDefined(memoryPath: string): { [key: string]: number } | undefined {
@@ -80,7 +82,7 @@ export class MemoryApi_All {
     const memoryPathArray: string[] = memoryPath.split('.');
 
     // Set the new memoryPath object to use in the loop
-    let testedMemoryObject: object | any = Memory;
+    let testedMemoryObject: StringMap = Memory;
 
     if (memoryPathArray.length >= 0) {
       // Loop through all the smaller pieces of the memoryPath expect "Memory"
@@ -92,13 +94,13 @@ export class MemoryApi_All {
         if (testedMemoryObject[currentMemoryPart] === undefined) {
           return undefined;
         }
-        // If it is still a object, set it to the testedMemoryObject
 
-        testedMemoryObject = testedMemoryObject[currentMemoryPart];
+        // If it is still a object, set it to the testedMemoryObject
+        testedMemoryObject = testedMemoryObject[currentMemoryPart]; // eslint-disable-line
       }
 
       // If every piece of the path is defined, return the tested memoryObject
-      return { testedMemoryObject };
+      return testedMemoryObject;
     }
     // Return true if there is only one piece of memoryPath return the tested memoryObject
 
@@ -143,9 +145,9 @@ export class MemoryApi_All {
     if (!Memory.stats) {
       Memory.stats = {
         ticksAlive: 0,
-        gcl: {},
+        gcl: { level: 0, progress: 0, progressTotal: 0 },
         rooms: {},
-        common: {},
+        common: { energyEachTickPerSource: 10 },
         cpu: {
           bucket: 0,
           limit: 0,

@@ -1,10 +1,9 @@
 // #region Require('./)
-import _ from 'lodash';
-import { MemoryApi_Room } fromUtils/Importer/internalsls';
+import {} from 'Utils/Importer/internals';
 // #endregion
 
 // #region Class
-export class RoomHelper_State {
+export class RoomHelperState {
   /**
    * Check if the room inputted is my room
    * @param room The room to check for if it is my room

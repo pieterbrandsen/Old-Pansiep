@@ -1,9 +1,9 @@
 // #region Require('./)
-import { Config, CreepsHelper_Role } fromUtils/Importer/internalsls';
+import { Config, CreepsHelperRole } from 'Utils/Importer/internals';
 // #endregion
 
 // #region Class
-export class CreepRole_Harvest {
+export class CreepRoleHarvest {
   public static mineral(creep: Creep): string | void {
     // Make shortcut to memory
     const creepMemory = creep.memory;
@@ -54,7 +54,7 @@ export class CreepRole_Harvest {
     }
 
     if (creep.room.name !== targetRoom.name) {
-      CreepsHelper_Role.moveToRoom(creep, creepMemory.targetRoom);
+      CreepsHelperRole.moveToRoom(creep, creepMemory.targetRoom);
       return;
     }
 
@@ -102,11 +102,7 @@ export class CreepRole_Harvest {
       // If no sourceNumber is found, assign one.
       if (sourceNumber === undefined) {
         // If sourceNumber is in creep's role
-        if (
-          creepMemory.role.split('-').length > 0 &&
-          // @ts-ignore
-          !isNaN(creep.memory.role.split('-')[1])
-        ) {
+        if (creepMemory.role.split('-').length > 0) {
           creep.memory.sourceNumber = Number(creep.memory.role.split('-')[1]);
         } else {
           // Else loop until assigned source's id is found

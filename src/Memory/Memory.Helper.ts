@@ -1,6 +1,6 @@
 // #region Require('./)
-import _ from 'lodash';
 import {} from 'Utils/Importer/internals';
+import _ from 'lodash';
 // #endregion
 
 // #region Class
