@@ -1,9 +1,9 @@
-//#region Require('./)
-import { Config, JobsApi } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { Config, JobsApi } from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
-export class CreepRole_Build {
+// #region Class
+export class CreepRoleBuild {
   public static build(creep: Creep): string | void {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
@@ -11,7 +11,7 @@ export class CreepRole_Build {
 
     // Return empty if current creep's storage is empty
     if (creep.store.getUsedCapacity() === 0) {
-      return "empty";
+      return 'empty';
     }
 
     // If there are no construction sites left and no target, return full to get another goal if possible
@@ -19,7 +19,7 @@ export class CreepRole_Build {
       if (creep.room.controller && !creep.pos.inRangeTo(creep.room.controller, 5)) {
         creep.moveTo(creep.room.controller);
       }
-      return "full";
+      return 'full';
     }
 
     // If creep is missing a targetId
@@ -35,33 +35,37 @@ export class CreepRole_Build {
       const constructionSite: ConstructionSite | null = Game.getObjectById(creepMemory.targetId);
 
       // If construction site doesn't exist, remove it
-      if (constructionSite === null) {
-        roomMemory.jobs.constructionSites = JobsApi.removeJob(
-          creep.memory.targetId!,
-          roomMemory.jobs.constructionSites
-        );
+      if (constructionSite === null && creep.memory.targetId) {
+        roomMemory.jobs.constructionSites = JobsApi.removeJob(creep.memory.targetId, roomMemory.jobs.constructionSites);
         delete creep.memory.targetId;
-        return "empty";
+        return 'empty';
+      } else if (constructionSite === null) {
+        return;
       }
 
       // Run the build function
       const result = creep.build(constructionSite);
+
+      if (!creep.memory.parts || !creep.memory.targetId) {
+        return;
+      }
+
       // Switch based on the results
       switch (result) {
         case OK:
-          Config.expenses.building[creep.room.name] += creep.memory.parts!.work * 5;
+          Config.expenses.building[creep.room.name] += creep.memory.parts.work * 5;
           break;
         case ERR_INVALID_TARGET:
           roomMemory.jobs.constructionSites = JobsApi.removeJob(
-            creep.memory.targetId!,
+            creep.memory.targetId,
             roomMemory.jobs.constructionSites
           );
           delete creep.memory.targetId;
-          return "full";
+          return 'full';
         case ERR_NOT_IN_RANGE:
           // If creep is not in range, move to target
           creep.moveTo(constructionSite);
-          return;
+          break;
         default:
           break;
       }
@@ -69,4 +73,4 @@ export class CreepRole_Build {
   }
 }
 
-//#endregion
+// #endregion

@@ -1,18 +1,18 @@
-//#region Require('./)
-import _ from "lodash";
-import { MemoryApi_Room, MemoryApi_All, JobsApi } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { JobsApi, MemoryApiAll, MemoryApiRoom } from 'Utils/Importer/internals';
+import _ from 'lodash';
+// #endregion
 
-//#region Class
-export class RoomHelper_Structure {
+// #region Class
+export class RoomHelperStructure {
   public static towerRepairing(room: Room): void {
     if (room.memory.jobs.damagedStructures.data.length === 0) {
       return;
     }
 
-    const hitsTarget: number = room.memory.jobs.damagedStructures.hitsTarget;
+    const { hitsTarget } = room.memory.jobs.damagedStructures;
 
-    const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
+    const towers: Structure[] = MemoryApiRoom.getStructuresOfType(
       room,
       STRUCTURE_TOWER,
       (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
@@ -25,17 +25,14 @@ export class RoomHelper_Structure {
         if (structure && structure.hits > 0 && structure.hits < hitsTarget) {
           tower.repair(structure);
         } else {
-          room.memory.jobs.damagedStructures.data = JobsApi.removeJob(
-            structure!.id,
-            room.memory.jobs.damagedStructures.data
-          );
+          room.memory.jobs.damagedStructures.data = JobsApi.removeJob(job.id, room.memory.jobs.damagedStructures.data);
         }
       }
     });
   }
 
   public static towerAttacking(room: Room): void {
-    const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
+    const towers: Structure[] = MemoryApiRoom.getStructuresOfType(
       room,
       STRUCTURE_TOWER,
       (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
@@ -60,7 +57,7 @@ export class RoomHelper_Structure {
       return;
     }
 
-    const towers: Structure[] = MemoryApi_Room.getStructuresOfType(
+    const towers: Structure[] = MemoryApiRoom.getStructuresOfType(
       room,
       STRUCTURE_TOWER,
       (tower: StructureTower) => tower.store.getUsedCapacity(RESOURCE_ENERGY) > 50
@@ -73,28 +70,28 @@ export class RoomHelper_Structure {
         if (creep && creep.hits < creep.hitsMax) {
           tower.heal(creep);
         } else {
-          room.memory.jobs.damagedCreeps = JobsApi.removeJob(creep!.id, room.memory.jobs.damagedCreeps);
+          room.memory.jobs.damagedCreeps = JobsApi.removeJob(job.id, room.memory.jobs.damagedCreeps);
         }
       }
     });
   }
 
   public static runLinks(room: Room): void {
-    const roomMemory: RoomMemory | undefined = room.memory;
+    const roomMemory: RoomMemory = room.memory;
 
     if (
-      roomMemory === undefined ||
-      roomMemory.commonMemory!.links === undefined ||
-      !MemoryApi_All.isMemoryPathDefined(`Memory.rooms.${room.name}.commonMemory.links`)
+      roomMemory.commonMemory === undefined ||
+      roomMemory.commonMemory.links === undefined ||
+      !MemoryApiAll.isMemoryPathDefined(`Memory.rooms.${room.name}.commonMemory.links`)
     ) {
       return;
     }
 
     // Define all possible sources
-    const source0: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["source0"]);
-    const source1: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["source1"]);
-    const head: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["head"]);
-    const controller: StructureLink | null = Game.getObjectById(roomMemory.commonMemory!.links["controller"]);
+    const source0: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links.source0);
+    const source1: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links.source1);
+    const head: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links.head);
+    const controller: StructureLink | null = Game.getObjectById(roomMemory.commonMemory.links.controller);
 
     // Define function to check if there is space in target link
     const sendEnergy = (fromLink: StructureLink, toLink: StructureLink) => {
@@ -126,4 +123,4 @@ export class RoomHelper_Structure {
     }
   }
 }
-//#endregion
+// #endregion

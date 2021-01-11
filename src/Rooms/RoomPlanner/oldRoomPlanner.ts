@@ -1,55 +1,58 @@
-//#region Require('./)
-import _ from "lodash";
-import { object } from "lodash";
-import { BunkerLayoutConst } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { BunkerLayoutConst } from 'Utils/Importer/internals';
+import _ from 'lodash';
+// #endregion
 
-//#region Class
+// #region Class
 export class OldRoomPlanner {
   public static roomPlanner(room: Room): void {
     // Create a acces point to the roomMemory //
     const roomMemory: RoomMemory = Memory.rooms[room.name];
 
-    if (room.controller === undefined) {
+    if (room.controller === undefined || !roomMemory.commonMemory || !roomMemory.roomPlanner) {
       return;
     }
 
-    // Loop through all sources in the room
-    for (let i = 0; i < roomMemory.commonMemory!.sources.length; i++) {
-      // Default is container
-      let structureType: STRUCTURE_LINK | STRUCTURE_CONTAINER = STRUCTURE_CONTAINER;
+    // Default is container
+    let structureType: STRUCTURE_LINK | STRUCTURE_CONTAINER = STRUCTURE_CONTAINER;
+    let returnConstruction: ScreepsReturnCode = OK;
 
+    // Loop through all sources in the room
+    for (let i = 0; i < roomMemory.commonMemory.sources.length; i++) {
       // Is 7 (3 links needed) and 6 otherwise (2 links needed)
-      if (room.controller.level >= 5 + roomMemory.commonMemory!.sources.length) {
+      if (room.controller.level >= 5 + roomMemory.commonMemory.sources.length) {
         structureType = STRUCTURE_LINK;
       }
 
       // Check if room already has this source planned
       if (
-        roomMemory.roomPlanner!.room.sources[i] !== undefined &&
-        roomMemory.roomPlanner!.room.sources[i].structureType === structureType &&
-        Game.getObjectById(roomMemory.roomPlanner!.room.sources[i]!.id!) !== null
+        roomMemory.roomPlanner.room.sources[i] !== undefined &&
+        roomMemory.roomPlanner.room.sources[i].structureType === structureType &&
+        Game.getObjectById(roomMemory.roomPlanner.room.sources[i].id as string) !== null
       ) {
         break;
       }
 
-      const source = roomMemory.commonMemory!.sources[i];
+      const source = roomMemory.commonMemory.sources[i];
       if (
-        roomMemory.roomPlanner!.room.sources[i] !== undefined &&
-        roomMemory.roomPlanner!.room.sources[i].structureType !== structureType
+        roomMemory.roomPlanner.room.sources[i] !== undefined &&
+        roomMemory.roomPlanner.room.sources[i].structureType !== structureType
       ) {
-        const bestSource = roomMemory.roomPlanner!.room.sources[i];
-        const structureExistResult = OldRoomPlanner.structureExist(room, bestSource.pos!, structureType);
+        const bestSource = roomMemory.roomPlanner.room.sources[i];
+        if (!bestSource || !bestSource.pos) {
+          return;
+        }
+        const structureExistResult = OldRoomPlanner.structureExist(room, bestSource.pos, structureType);
         if (structureExistResult[0]) {
           const structureObject: StructureLink | StructureContainer | null = Game.getObjectById(
             structureExistResult[1]
           );
           if (structureObject !== null) {
             structureObject.destroy();
-            roomMemory.roomPlanner!.room.sources[i].id = undefined;
+            roomMemory.roomPlanner.room.sources[i].id = undefined;
           }
         } else {
-          const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSource.pos!.x, bestSource.pos!.y);
+          const constructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, bestSource.pos.x, bestSource.pos.y);
           if (constructionSite.length > 0) {
             break;
           }
@@ -57,7 +60,7 @@ export class OldRoomPlanner {
       }
 
       const bestSourcePosition: BestPosition = {};
-      const returnBestFreeSpot: any = OldRoomPlanner.getBestFreeSpot(room, source.pos, structureType);
+      const returnBestFreeSpot: BestPosition = OldRoomPlanner.getBestFreeSpot(room, source.pos, structureType);
       if (returnBestFreeSpot === undefined) {
         break;
       }
@@ -65,12 +68,12 @@ export class OldRoomPlanner {
       bestSourcePosition.pos = returnBestFreeSpot.pos;
       bestSourcePosition.spotsAround = returnBestFreeSpot.spotsAround;
       // Check if best position is found, otherwise return
-      if (bestSourcePosition === undefined) {
+      if (bestSourcePosition === undefined || !returnBestFreeSpot.pos) {
         break;
       }
 
       // Build a structure there //
-      const returnConstruction = OldRoomPlanner.createConstructionSite(room, returnBestFreeSpot.pos, structureType);
+      returnConstruction = OldRoomPlanner.createConstructionSite(room, returnBestFreeSpot.pos, structureType);
       // Check if structure is successfully constructed
       if (returnConstruction !== OK) {
         break;
@@ -80,10 +83,10 @@ export class OldRoomPlanner {
       bestSourcePosition.structureType = structureType;
       bestSourcePosition.spotsAround = room
         .lookForAtArea(LOOK_TERRAIN, source.pos.y - 1, source.pos.x - 1, source.pos.y + 1, source.pos.x + 1, true)
-        .filter(t => t.terrain !== "wall").length;
+        .filter(t => t.terrain !== 'wall').length;
       bestSourcePosition.id = undefined;
       if (bestSourcePosition !== null) {
-        roomMemory.roomPlanner!.room.sources[i] = bestSourcePosition;
+        roomMemory.roomPlanner.room.sources[i] = bestSourcePosition;
       }
 
       // // * Handle visual to show target //
@@ -109,7 +112,7 @@ export class OldRoomPlanner {
     // #region Controller structure
     // Add new room data of the controller //
     // Default is container
-    let structureType: STRUCTURE_LINK | STRUCTURE_CONTAINER = STRUCTURE_CONTAINER;
+    structureType = STRUCTURE_CONTAINER;
 
     // Is 7 (3 links needed) and 6 otherwise (2 links needed)
     if (room.controller.level >= 6) {
@@ -118,49 +121,52 @@ export class OldRoomPlanner {
 
     // Check if room already has the controller planned
     if (
-      (roomMemory.roomPlanner!.room.controller &&
-        roomMemory.roomPlanner!.room.controller.structureType === structureType &&
-        roomMemory.commonMemory!.controllerStorage !== undefined &&
-        Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null) ||
+      (roomMemory.roomPlanner.room.controller &&
+        roomMemory.roomPlanner.room.controller.structureType === structureType &&
+        roomMemory.commonMemory.controllerStorage !== undefined &&
+        Game.getObjectById(roomMemory.commonMemory.controllerStorage.id as string) !== null) ||
       (room.controller && !room.controller.my)
     ) {
       return;
     }
 
-    const controller = room.controller;
+    const { controller } = room;
     if (
-      roomMemory.roomPlanner!.room.controller !== undefined &&
-      roomMemory.roomPlanner!.room.controller.structureType !== structureType
+      roomMemory.roomPlanner.room.controller !== undefined &&
+      roomMemory.roomPlanner.room.controller.structureType !== structureType
     ) {
-      const bestControllerPosition: any = roomMemory.roomPlanner!.room.controller;
-      const structureExistResult = OldRoomPlanner.structureExist(room, bestControllerPosition.pos, structureType);
-      if (structureExistResult[0]) {
-        const structureObject: StructureLink | StructureContainer | null = Game.getObjectById(structureExistResult[1]);
-        if (structureObject !== null && roomMemory.commonMemory!.controllerStorage) {
-          structureObject.destroy();
-          roomMemory.commonMemory!.controllerStorage.id! = "";
-        }
-      } else {
-        const constructionSite = room.lookForAt(
-          LOOK_CONSTRUCTION_SITES,
-          bestControllerPosition.pos.x,
-          bestControllerPosition.pos.y
-        );
-        if (constructionSite.length > 0) {
-          return;
+      const currentControllerPosition: BestPosition = roomMemory.roomPlanner.room.controller;
+      if (currentControllerPosition !== undefined && currentControllerPosition.pos) {
+        const structureExistResult = OldRoomPlanner.structureExist(room, currentControllerPosition.pos, structureType);
+        if (structureExistResult[0]) {
+          const structureObject: StructureLink | StructureContainer | null = Game.getObjectById(
+            structureExistResult[1]
+          );
+          if (structureObject !== null && roomMemory.commonMemory.controllerStorage) {
+            structureObject.destroy();
+            roomMemory.commonMemory.controllerStorage.id = '';
+          }
+        } else {
+          const constructionSite = room.lookForAt(
+            LOOK_CONSTRUCTION_SITES,
+            currentControllerPosition.pos.x,
+            currentControllerPosition.pos.y
+          );
+          if (constructionSite.length > 0) {
+            return;
+          }
         }
       }
     }
 
-    const bestControllerPosition: any = OldRoomPlanner.getBestFreeSpot(room, controller.pos, structureType, 3);
+    const bestControllerPosition: BestPosition = OldRoomPlanner.getBestFreeSpot(room, controller.pos, structureType, 3);
     // Check if best position is found, otherwise return
-    if (bestControllerPosition === undefined) {
+    if (bestControllerPosition === undefined || !bestControllerPosition.pos) {
       return;
     }
 
     // Build a structure there //
-    // @ts-ignore: FIX LATER
-    const returnConstruction = OldRoomPlanner.createConstructionSite(room, bestControllerPosition.pos, structureType);
+    returnConstruction = OldRoomPlanner.createConstructionSite(room, bestControllerPosition.pos, structureType);
 
     // Check if structure is successfully constructed
     if (returnConstruction !== OK) {
@@ -170,9 +176,7 @@ export class OldRoomPlanner {
     // Set best position to room planner memory for this source
     bestControllerPosition.structureType = structureType;
     if (bestControllerPosition !== null) {
-      roomMemory.roomPlanner!.room.controller = bestControllerPosition;
-    } else {
-      return;
+      roomMemory.roomPlanner.room.controller = bestControllerPosition;
     }
   }
 
@@ -182,29 +186,34 @@ export class OldRoomPlanner {
     const roomMemory: RoomMemory = Memory.rooms[roomName];
 
     // Wait until all other construction sites are build
-    if (roomMemory.constructionSites.data?.length > 0) {
+    if ((roomMemory.constructionSites.data as string[]).length > 0) {
       return;
     }
 
-    if (roomMemory.roomPlanner!.base === undefined) {
+    if (!roomMemory.roomPlanner || roomMemory.roomPlanner.base === undefined) {
       return;
     }
 
-    if (!roomMemory.roomPlanner!.base.type) {
+    if (!roomMemory.roomPlanner.base.type) {
       OldRoomPlanner.getBaseLayoutType(room);
     }
-    if (roomMemory.roomPlanner!.base.type) {
-      OldRoomPlanner.getBaseLayoutBasedOnType(room, roomMemory.roomPlanner!.base.type);
+    if (roomMemory.roomPlanner.base.type) {
+      OldRoomPlanner.getBaseLayoutBasedOnType(room, roomMemory.roomPlanner.base.type);
     }
   }
 
   private static getBaseLayoutType(room: Room) {
     // Acces roomMemory
     const roomMemory: RoomMemory = Memory.rooms[room.name];
+    // Define terrain
+    const terrain = new Room.Terrain(room.name);
 
-    const doesBunkerFitAtPosition = (terrain: RoomTerrain, position: { x: number; y: number; roomName: string }) => {
+    const doesBunkerFitAtPosition = (
+      inputTerrain: RoomTerrain,
+      position: { x: number; y: number; roomName: string }
+    ) => {
       // If terrain is wall, return
-      if (terrain.get(position.x, position.y) === TERRAIN_MASK_WALL) {
+      if (inputTerrain.get(position.x, position.y) === TERRAIN_MASK_WALL) {
         return;
       }
 
@@ -276,9 +285,9 @@ export class OldRoomPlanner {
         const currentColumnPosition = bunkerPositions[i];
 
         const topToBottomArray = range(currentColumnPosition.top.y, currentColumnPosition.bottom.y);
-        for (const i in topToBottomArray) {
-          if (Object.prototype.hasOwnProperty.call(topToBottomArray, i)) {
-            const posY = topToBottomArray[i];
+        for (const j of topToBottomArray) {
+          if (Object.prototype.hasOwnProperty.call(topToBottomArray, j)) {
+            const posY = topToBottomArray[j];
             if (terrain.get(currentColumnPosition.top.x, posY) === TERRAIN_MASK_WALL) {
               wrongTerrainIsNotFound = false;
             }
@@ -332,43 +341,40 @@ export class OldRoomPlanner {
     //   return wrongTerrainIsNotFound;
     // };
 
-    // Define terrain
-    const terrain = new Room.Terrain(room.name);
-
     // Return if roomPlanner base is undefined
-    if (roomMemory.roomPlanner!.base === undefined) {
+    if (!roomMemory.roomPlanner || roomMemory.roomPlanner.base === undefined || !roomMemory.commonMemory) {
       return;
     }
 
     // Check if there is already a spawn
     if (
-      roomMemory.commonMemory!.headSpawnId !== undefined &&
-      roomMemory.roomPlanner!.base &&
-      roomMemory.roomPlanner!.base.type === undefined
+      roomMemory.commonMemory.headSpawnId !== undefined &&
+      roomMemory.roomPlanner.base &&
+      roomMemory.roomPlanner.base.type === undefined
     ) {
       // Make a base based on current already placed layout
-      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory!.headSpawnId);
+      const headSpawn: StructureSpawn | null = Game.getObjectById(roomMemory.commonMemory.headSpawnId);
       if (headSpawn === null) {
         return;
       }
 
       // Get middle position of bunker
-      const midPos: any = { x: headSpawn.pos.x + 1, y: headSpawn.pos.y - 1 };
+      const midPos: RoomPos = { x: headSpawn.pos.x + 1, y: headSpawn.pos.y - 1, roomName: room.name };
 
       if (doesBunkerFitAtPosition(terrain, midPos)) {
-        roomMemory.roomPlanner!.base.type = "bunker";
-        roomMemory.roomPlanner!.base.midPos = midPos;
+        roomMemory.roomPlanner.base.type = 'bunker';
+        roomMemory.roomPlanner.base.midPos = midPos;
       } else {
-        roomMemory.roomPlanner!.base.type = "generated";
+        roomMemory.roomPlanner.base.type = 'generated';
       }
     } else {
       let foundPlaceForBunker = false;
       for (let x = 5; x < 45 && !foundPlaceForBunker; x++) {
         for (let y = 5; y < 45 && !foundPlaceForBunker; y++) {
           if (doesBunkerFitAtPosition(terrain, { x, y, roomName: room.name })) {
-            roomMemory.roomPlanner!.base.midPos = { x, y, roomName: room.name };
+            roomMemory.roomPlanner.base.midPos = { x, y, roomName: room.name };
           }
-          roomMemory.roomPlanner!.base.type = "bunker";
+          roomMemory.roomPlanner.base.type = 'bunker';
           foundPlaceForBunker = true;
         }
       }
@@ -379,9 +385,9 @@ export class OldRoomPlanner {
     //   for (let x = 1; x < 49 && !foundPlaceForGenerated; x++) {
     //     for (let y = 1; y < 49 && !foundPlaceForGenerated; y++) {
     //       if (doesGeneratedFitAtPosition(terrain, {x: x, y: y})) {
-    //         roomMemory.roomPlanner!.base.midPos = {x: x, y: y};
+    //         roomMemory.roomPlanner.base.midPos = {x: x, y: y};
     //         foundPlaceForGenerated = true;
-    //         roomMemory.roomPlanner!.base.type = 'generated';
+    //         roomMemory.roomPlanner.base.type = 'generated';
     //       }
     //     }
     //   }
@@ -391,9 +397,11 @@ export class OldRoomPlanner {
   private static getBaseLayoutBasedOnType(room: Room, layoutType: string) {
     // Acces roomMemory
     const roomMemory = Memory.rooms[room.name];
-    let midPos: any = {};
+    if (!roomMemory.roomPlanner || !roomMemory.roomPlanner.base) {
+      return;
+    }
 
-    midPos = roomMemory.roomPlanner!.base!.midPos;
+    const midPos: RoomPos = roomMemory.roomPlanner.base.midPos;
 
     if (midPos === undefined) {
       return;
@@ -406,29 +414,32 @@ export class OldRoomPlanner {
 
     if (room.controller !== undefined) {
       switch (layoutType) {
-        case "generated":
+        case 'generated':
           // #region Generated layout
 
           break;
         // #endregion
-        case "bunker":
+        case 'bunker':
           // #region Bunker layout
           // * Bunker layout //
           // Build everything from the controller level and all below //
           while (i <= room.controller.level) {
             // Loop through all bunker structures for this level //
+            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let y = 0; y < bunker[i].length; y++) {
               // Get structureObject
-              structureObject = undefined;
               structureObject = bunker[i][y];
               if (structureObject !== null) {
                 // Create the construction site
                 OldRoomPlanner.createConstructionSite(
                   room,
-                  { x: structureObject!.x, y: structureObject!.y, roomName: room.name },
-                  // @ts-ignore
+                  {
+                    x: structureObject.x,
+                    y: structureObject.y,
+                    roomName: room.name
+                  },
                   structureObject.type,
-                  structureObject.name ? structureObject.name.replace("{ roomName }", room.name) : undefined
+                  structureObject.name ? structureObject.name.replace('{ roomName }', room.name) : undefined
                 );
               }
             }
@@ -447,14 +458,11 @@ export class OldRoomPlanner {
     room: Room,
     startPos: { x: number; y: number; roomName: string },
     structureType: STRUCTURE_LINK | STRUCTURE_CONTAINER = STRUCTURE_LINK,
-    inputRange?: number
-  ): any[] | void {
+    defaultRange = 0
+  ): BestPosition {
     const terrain = new Room.Terrain(room.name);
     // Get range based on structure type (container is 1, link is 2)
-    if (inputRange === undefined) {
-      inputRange = 0;
-    }
-    const range = inputRange > 0 ? inputRange : structureType === STRUCTURE_LINK ? 2 : 1;
+    const range = defaultRange > 0 ? defaultRange : structureType === STRUCTURE_LINK ? 2 : 1;
 
     // getAllPositions function
     // Returns a position array based on inputPosition and inputRange
@@ -465,7 +473,7 @@ export class OldRoomPlanner {
         // Add all corners of the inputPosition + inputRange //
         // Top left
         positionsArray.push({
-          x: inputPosition.x - inputRange,
+          x: inputPosition.x - range,
           y: inputPosition.y + inputRange,
           roomName: inputPosition.roomName
         });
@@ -592,11 +600,11 @@ export class OldRoomPlanner {
 
     // Return if positions is empty //
     if (positions.length === 0) {
-      return;
+      return {};
     }
 
     // Check all possible positions and assign the best one (compare to last best one)
-    let bestPosition: any = {
+    let bestPosition: { pos: RoomPos; spotsAround: number } = {
       pos: { x: 0, y: 0, roomName: room.name },
       spotsAround: 0
     };
@@ -629,24 +637,18 @@ export class OldRoomPlanner {
     if (bestPosition.spotsAround > 0) {
       return bestPosition;
     } else {
-      return;
+      return {};
     }
   }
 
   private static createConstructionSite(
     room: Room,
     position: { x: number; y: number; roomName: string },
-    structureType: STRUCTURE_LINK | STRUCTURE_CONTAINER,
+    structureType: string,
     structureName?: string
   ) {
     // Create a construction site based on the inputPosition and inputStructureType
-    let constructionSite = room.createConstructionSite(
-      position.x,
-      position.y,
-      // @ts-ignore
-      structureType,
-      structureName
-    );
+    let constructionSite = room.createConstructionSite(position.x, position.y, structureType as any, structureName);
 
     const placedConstructionSite = room.lookForAt(LOOK_CONSTRUCTION_SITES, position.x, position.y);
     const foundStructures = room.lookForAt(LOOK_STRUCTURES, position.x, position.y);
@@ -664,9 +666,7 @@ export class OldRoomPlanner {
         break;
       default:
         if (
-          (placedConstructionSite[0] !== undefined &&
-            // @ts-ignore
-            placedConstructionSite[0].structureType === structureType) ||
+          (placedConstructionSite[0] !== undefined && placedConstructionSite[0].structureType === structureType) ||
           foundStructures[0] !== undefined
         ) {
           // Target structureType was found so set construction site to OK (good)
@@ -690,7 +690,7 @@ export class OldRoomPlanner {
         return [true, structure.id];
       }
     }
-    return [false, ""];
+    return [false, ''];
   }
 }
-//#endregion
+// #endregion

@@ -1,17 +1,16 @@
-//#region Require('./)
-import _ from "lodash";
-import { Config, RoomHelper_State } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { Config, RoomHelperState } from 'Utils/Importer/internals';
+import _ from 'lodash';
+// #endregion
 
-//#region Class
-export class MemoryApi_Empire {
+// #region Class
+export class MemoryApiEmpire {
   public static getOwnedRooms(): Room[] {
-    return _.filter(Game.rooms, currentRoom => RoomHelper_State.isMyRoom(currentRoom));
+    return _.filter(Game.rooms, currentRoom => RoomHelperState.isMyRoom(currentRoom));
   }
 
   public static memoryLoader(): void {
-    // tslint:disable-next-line: no-unused-expression
-    Memory;
+    Memory; // eslint-disable-line @typescript-eslint/no-unused-expressions
   }
 
   public static resetMainTracking(): void {
@@ -26,4 +25,4 @@ export class MemoryApi_Empire {
     Config.income.remoteHarvesting = {};
   }
 }
-//#endregion
+// #endregion

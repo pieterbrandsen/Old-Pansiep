@@ -24,47 +24,46 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
 ];
 
 export const ALL_OWNED_ROOM_CREEP_ROLES: string[] = [
-  "pioneer",
-  "transferer",
-  "harvester-0",
-  "harvester-1",
-  "builder",
-  "repairer",
-  "upgrader",
-  "mineral"
+  'pioneer',
+  'transferer',
+  'harvester-0',
+  'harvester-1',
+  'builder',
+  'repairer',
+  'upgrader',
+  'mineral'
 ];
 
 export const ALL_REMOTE_CREEP_ROLES: string[] = [
-  "claimerLD",
-  "builderLD",
-  "transfererLD",
-  "reserverLD",
-  "repairerLD",
-  "harvesterLD-0",
-  "harvesterLD-1"
+  'claimerLD',
+  'builderLD',
+  'transfererLD',
+  'reserverLD',
+  'repairerLD',
+  'harvesterLD-0',
+  'harvesterLD-1'
 ];
 
-export const ALL_SCORE_CONTAINER_CREEP_ROLES: string[] = ["scorePicker"];
+export const ALL_SCORE_CONTAINER_CREEP_ROLES: string[] = ['scorePicker'];
 
-export const EXTRA_ROLES: string[] = ["scout"];
+export const EXTRA_ROLES: string[] = ['scout'];
 
 export const ALL_CREEP_ROLES: string[] = ALL_OWNED_ROOM_CREEP_ROLES.concat(ALL_REMOTE_CREEP_ROLES)
   .concat(ALL_SCORE_CONTAINER_CREEP_ROLES)
   .concat(EXTRA_ROLES);
 
 export const ALL_CREEP_MODULES: string[] = [
-  "build",
-  "claim",
-  "harvest",
-  "mineral",
-  "repair",
-  "reserve",
-  "transfer",
-  "transfer",
-  "upgrade",
-  "withdraw",
-  "scout",
-  "scoreWithdrawer"
+  'build',
+  'claim',
+  'harvest',
+  'mineral',
+  'repair',
+  'reserve',
+  'transfer',
+  'transfer',
+  'upgrade',
+  'withdraw',
+  'scout'
 ];
 
 export const CREEP_ROLE_COUNT_MAX: { [key: string]: number } = {
@@ -80,7 +79,9 @@ export const CREEP_ROLE_COUNT_MAX: { [key: string]: number } = {
   scorePicker: 1
 };
 
-export const CREEP_PART_COUNT_MAX: { [key: string]: { part: BodyPartConstant; amount: number } } = {
+export const CREEP_PART_COUNT_MAX: {
+  [key: string]: { part: BodyPartConstant; amount: number };
+} = {
   pioneer: { part: WORK, amount: 99 },
   transferer: { part: CARRY, amount: 100 },
   harvester: { part: WORK, amount: 7 },
@@ -94,103 +95,103 @@ export const CREEP_PART_COUNT_MAX: { [key: string]: { part: BodyPartConstant; am
 };
 
 export const ALL_RESOURCE_TYPES: string[] = [
-  "energy",
-  "power",
+  'energy',
+  'power',
 
-  "H",
-  "O",
-  "U",
-  "L",
-  "K",
-  "Z",
-  "X",
-  "G",
+  'H',
+  'O',
+  'U',
+  'L',
+  'K',
+  'Z',
+  'X',
+  'G',
 
-  "silicon",
-  "metal",
-  "biomass",
-  "mist",
+  'silicon',
+  'metal',
+  'biomass',
+  'mist',
 
-  "OH",
-  "ZK",
-  "UL",
+  'OH',
+  'ZK',
+  'UL',
 
-  "UH",
-  "UO",
-  "KH",
-  "KO",
-  "LH",
-  "LO",
-  "ZH",
-  "ZO",
-  "GH",
-  "GO",
+  'UH',
+  'UO',
+  'KH',
+  'KO',
+  'LH',
+  'LO',
+  'ZH',
+  'ZO',
+  'GH',
+  'GO',
 
-  "UH2O",
-  "UHO2",
-  "KH2O",
-  "KHO2",
-  "LH2O",
-  "LHO2",
-  "ZH2O",
-  "ZHO2",
-  "GH2O",
-  "GHO2",
+  'UH2O',
+  'UHO2',
+  'KH2O',
+  'KHO2',
+  'LH2O',
+  'LHO2',
+  'ZH2O',
+  'ZHO2',
+  'GH2O',
+  'GHO2',
 
-  "XUH2O",
-  "XUHO2",
-  "XKH2O",
-  "XKHO2",
-  "XLH2O",
-  "XLHO2",
-  "XZH2O",
-  "XZHO2",
-  "XGH2O",
-  "XGHO2",
+  'XUH2O',
+  'XUHO2',
+  'XKH2O',
+  'XKHO2',
+  'XLH2O',
+  'XLHO2',
+  'XZH2O',
+  'XZHO2',
+  'XGH2O',
+  'XGHO2',
 
-  "ops",
+  'ops',
 
-  "utrium_bar",
-  "lemergium_bar",
-  "zynthium_bar",
-  "keanium_bar",
-  "ghodium_melt",
-  "oxidant",
-  "reductant",
-  "purifier",
-  "battery",
+  'utrium_bar',
+  'lemergium_bar',
+  'zynthium_bar',
+  'keanium_bar',
+  'ghodium_melt',
+  'oxidant',
+  'reductant',
+  'purifier',
+  'battery',
 
-  "composite",
-  "crystal",
-  "liquid",
+  'composite',
+  'crystal',
+  'liquid',
 
-  "wire",
-  "switch",
-  "transistor",
-  "microchip",
-  "circuit",
-  "device",
+  'wire',
+  'switch',
+  'transistor',
+  'microchip',
+  'circuit',
+  'device',
 
-  "cell",
-  "phlegm",
-  "tissue",
-  "muscle",
-  "organoid",
-  "organism",
+  'cell',
+  'phlegm',
+  'tissue',
+  'muscle',
+  'organoid',
+  'organism',
 
-  "alloy",
-  "tube",
-  "fixtures",
-  "frame",
-  "hydraulics",
+  'alloy',
+  'tube',
+  'fixtures',
+  'frame',
+  'hydraulics',
 
-  "machine",
-  "condensate",
-  "concentrate",
-  "extract",
-  "spirit",
-  "emanation",
-  "essence"
+  'machine',
+  'condensate',
+  'concentrate',
+  'extract',
+  'spirit',
+  'emanation',
+  'essence'
 ];
 
 // Jobs ticks
@@ -201,14 +202,12 @@ export const DAMAGED_CREEPS_JOBS_CACHE_TTL = 250;
 export const SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL = 50;
 export const HOSTILE_CREEPS_JOBS_CACHE_TTL = 50;
 export const DROPPED_RESOURCE_JOBS_CACHE_TTL = 50;
-export const SCORE_CONTAINERS_JOBS_CACHE_TTL = 50;
 
 // Cache ticks
 export const CONST_CACHE_TTL = 1000;
 export const CREEPS_CACHE_TTL = 9;
 export const STRUCT_CACHE_TTL = 100;
 export const DROPPED_RESOURCES_CACHE_TTL = 50;
-export const SCORE_CONTAINER_CACHE_TTL = 50;
 
 // Timer ticks
 export const UPDATE_LINKS_TIMER = 500;

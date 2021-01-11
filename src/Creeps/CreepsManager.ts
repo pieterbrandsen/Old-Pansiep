@@ -1,11 +1,11 @@
-//#region Require('./)
-import _ from "lodash";
-import { Config, MemoryApi_All, CreepsHelper_Role } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { Config, CreepsHelperRole, MemoryApiAll } from 'Utils/Importer/internals';
+import _ from 'lodash';
+// #endregion
 
-//#region Class
+// #region Class
 export class CreepsManager {
-  public static runCreepsManager = () => {
+  public static runCreepsManager(): void {
     // Loop through each creep known in the memory
     _.forEach(Object.keys(Memory.creeps), creepName => {
       // Acces Creep object
@@ -19,14 +19,14 @@ export class CreepsManager {
         CreepsManager.creepHandler(creep);
       }
     });
-  };
+  }
 
   private static creepHandler(creep: Creep): void {
     // Get the creepMemory
     const creepMemory: CreepMemory = Memory.creeps[creep.name];
 
     // Get the roleName without what is after the "-"
-    const creepRoleName: string = creepMemory.role.split("-")[0];
+    const creepRoleName: string = creepMemory.role.split('-')[0];
 
     // If there is no role name, return
     if (!creepRoleName) {
@@ -34,12 +34,12 @@ export class CreepsManager {
     }
 
     // Run the role
-    MemoryApi_All.functionRunnerWithCpu(
-      this.roleHandler,
+    MemoryApiAll.functionRunnerWithCpu(
+      this.roleHandler, // eslint-disable-line
       // Hope it works....
       Config.cpuUsedByRoomByRole[creep.room.name],
       creepMemory.role,
-      "+=",
+      '+=',
       creep,
       creepRoleName
     );
@@ -47,10 +47,10 @@ export class CreepsManager {
 
   private static roleHandler(creep: Creep, roleName: string): void {
     // Remove the reference to the long distance part
-    const shortRoleName: string = roleName.replace("LD", "");
+    const shortRoleName: string = roleName.replace('LD', '');
 
     // Run the role with the shorter role name and the liveCreep object
-    CreepsHelper_Role.runCreepRoles(creep, shortRoleName);
+    CreepsHelperRole.runCreepRoles(creep, shortRoleName);
   }
 }
-//#endregion
+// #endregion

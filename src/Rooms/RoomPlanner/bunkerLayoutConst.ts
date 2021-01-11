@@ -1,13 +1,13 @@
-//#region Require('./)
-import {} from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import {} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class BunkerLayoutConst {
   public static getBunkerLayout(
     midPos: RoomPos,
     roomName: string
-  ): Array<Array<{ x: number; y: number; type: string; name?: string }>> {
+  ): { x: number; y: number; type: string; name?: string }[][] {
     // * Create bunker array //
     const bunker = [
       [],
@@ -501,4 +501,4 @@ export class BunkerLayoutConst {
     return bunker;
   }
 }
-//#endregion
+// #endregion

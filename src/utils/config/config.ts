@@ -1,6 +1,6 @@
 export const Config: Config = {
-  username: "PandaMaster",
-  whitelist: ["Rivaryn", "Fiskmans"],
+  username: 'PandaMaster',
+  whitelist: ['Rivaryn', 'Fiskmans'],
   tracking: true,
   // tracking: {
   //   rooms: true,
@@ -13,6 +13,11 @@ export const Config: Config = {
   },
   cpuUsedByRoomByRole: {},
   creepModuleCpuCost: {},
-  expenses: { spawnExpenses: {}, building: {}, repairing: {}, upgrading: {} },
+  expenses: {
+    spawnExpenses: {},
+    building: {},
+    repairing: {},
+    upgrading: {}
+  },
   income: { ownedHarvesting: {}, remoteHarvesting: {} }
 };

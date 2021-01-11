@@ -1,33 +1,33 @@
-//#region Require('./)
+// #region Require('./)
 import {
-  RoomManager,
-  MemoryManager,
-  SpawningManager,
-  MemoryApi_All,
-  MemoryApi_Empire,
+  ConsoleCommands,
   CreepsManager,
-  StatsManager,
   JobsManager,
-  ConsoleCommands
-} from "Utils/importer/internals";
-//#endregion
+  MemoryApiAll,
+  MemoryApiEmpire,
+  MemoryManager,
+  RoomManager,
+  SpawningManager,
+  StatsManager
+} from 'Utils/Importer/internals';
+// #endregion
 
-//#region Class
+// #region Class
 export class ManagerManager {
   /**
    * Run all managers that need to be called by the ManagerManager
    */
   public static runManagerManager(): void {
-    if (MemoryApi_All.executeEachTicks(1000)) {
+    if (MemoryApiAll.executeEachTicks(1000)) {
       ConsoleCommands.init();
     }
 
     // Load memory and save cpu before another function does this
-    MemoryApi_All.functionRunnerWithCpu(
-      MemoryApi_Empire.memoryLoader,
-      MemoryApi_All.isMemoryPathDefined("Memory.stats.cpu.headModules"),
-      "loadMemory",
-      "="
+    MemoryApiAll.functionRunnerWithCpu(
+      MemoryApiEmpire.memoryLoader, // eslint-disable-line
+      MemoryApiAll.isMemoryPathDefined('Memory.stats.cpu.headModules'),
+      'loadMemory',
+      '='
     );
 
     // Run the memoryManager

@@ -1,32 +1,32 @@
-//#region Require('./)
-import _ from "lodash";
-import { MemoryApi_All, MemoryApi_Empire, MemoryApi_Room } from "Utils/importer/internals";
-//#endregion
+// #region Require('./)
+import { MemoryApiAll, MemoryApiEmpire, MemoryApiRoom } from 'Utils/Importer/internals';
+import _ from 'lodash';
+// #endregion
 
-//#region Class
+// #region Class
 export class MemoryManager {
   public static runMemoryManager(): void {
-    MemoryApi_All.garbageCollection();
-    MemoryApi_All.initMainMemory();
+    MemoryApiAll.garbageCollection();
+    MemoryApiAll.initMainMemory();
 
-    const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
+    const ownedRooms: Room[] = MemoryApiEmpire.getOwnedRooms();
     _.forEach(ownedRooms, (room: Room): void => {
-      MemoryApi_Room.isRoomSetup(room);
-      MemoryApi_Room.initRoomMemory(room, "owned");
-      MemoryApi_Room.resetRoomTracking(room);
+      MemoryApiRoom.isRoomSetup(room);
+      MemoryApiRoom.initRoomMemory(room, 'owned');
+      MemoryApiRoom.resetRoomTracking(room);
     });
 
     // Run all dependent rooms we have visiblity in
-    const dependentRooms: Room[] = MemoryApi_Room.getVisibleDependentRooms();
+    const dependentRooms: Room[] = MemoryApiRoom.getVisibleDependentRooms();
     _.forEach(dependentRooms, (room: Room): void => {
-      const roomType: string = MemoryApi_Room.getRoomType(room);
-      MemoryApi_Room.isRoomSetup(room);
-      MemoryApi_Room.initRoomMemory(room, roomType);
-      MemoryApi_Room.resetRoomTracking(room);
+      const roomType: string = MemoryApiRoom.getRoomType(room);
+      MemoryApiRoom.isRoomSetup(room);
+      MemoryApiRoom.initRoomMemory(room, roomType);
+      MemoryApiRoom.resetRoomTracking(room);
     });
 
     // Set the ticks alive one tick higher
-    Memory.stats["ticksAlive"]++;
+    Memory.stats.ticksAlive++;
   }
 }
-//#endregion
+// #endregion
