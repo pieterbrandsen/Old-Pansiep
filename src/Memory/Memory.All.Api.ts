@@ -10,9 +10,9 @@ export class MemoryApiAll {
 
     if (Memory.stats?.rooms) {
       for (const roomName in Memory.stats.rooms) {
-        if (!Game.rooms[roomName]) {
-          const roomType: string = Memory.rooms[roomName].roomType as string;
-          MemoryApiRoom.resetStatsMemory(roomName, roomType);
+        if (!Game.rooms[roomName] && MemoryApiAll.executeEachTicks(10000)) {
+          delete Memory.rooms[roomName];
+          delete Memory.stats.rooms[roomName];
         }
       }
     }

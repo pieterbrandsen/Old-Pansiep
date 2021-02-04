@@ -97,12 +97,12 @@ export class CreepRoleHarvest {
     // If not in range, move to source and then return
     if (!creep.pos.inRangeTo(source, 1) || (!creepMemory.onPosition && creepMemory.role.includes('harvester'))) {
       let sourcePos: RoomPos = source.pos;
-      const { sourceNumber } = creepMemory;
+      const sourceNumber = creepMemory.sourceNumber;
 
       // If no sourceNumber is found, assign one.
       if (sourceNumber === undefined) {
         // If sourceNumber is in creep's role
-        if (creepMemory.role.split('-').length > 0) {
+        if (creepMemory.role.split('-').length > 1) {
           creep.memory.sourceNumber = Number(creep.memory.role.split('-')[1]);
         } else {
           // Else loop until assigned source's id is found
@@ -166,6 +166,15 @@ export class CreepRoleHarvest {
       }
 
       // Move to source
+      const sourceMemory = roomMemory.roomPlanner!.room.sources[creepMemory.sourceNumber!];
+      if (sourceMemory.structureType == STRUCTURE_LINK) {
+        if (creep.pos.inRangeTo(source, 1)) {
+          creep.memory.onPosition = true;
+        } else {
+          creep.moveTo(source);
+        }
+      }
+      else { 
       if (sourcePos.x !== source.pos.x || sourcePos.y !== source.pos.y) {
         if (creep.pos.inRangeTo(sourcePos.x, sourcePos.y, 0)) {
           creep.memory.onPosition = true;
@@ -177,7 +186,8 @@ export class CreepRoleHarvest {
       } else {
         creep.moveTo(sourcePos.x, sourcePos.y);
       }
-    } else {
+    }
+  } else {
       const result = creep.harvest(source);
       switch (result) {
         case OK:

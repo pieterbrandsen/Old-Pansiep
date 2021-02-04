@@ -31,7 +31,8 @@ export const ALL_OWNED_ROOM_CREEP_ROLES: string[] = [
   'builder',
   'repairer',
   'upgrader',
-  'mineral'
+  'dj',
+  //'mineral'
 ];
 
 export const ALL_REMOTE_CREEP_ROLES: string[] = [
@@ -44,12 +45,10 @@ export const ALL_REMOTE_CREEP_ROLES: string[] = [
   'harvesterLD-1'
 ];
 
-export const ALL_SCORE_CONTAINER_CREEP_ROLES: string[] = ['scorePicker'];
-
 export const EXTRA_ROLES: string[] = ['scout'];
 
-export const ALL_CREEP_ROLES: string[] = ALL_OWNED_ROOM_CREEP_ROLES.concat(ALL_REMOTE_CREEP_ROLES)
-  .concat(ALL_SCORE_CONTAINER_CREEP_ROLES)
+export const ALL_CREEP_ROLES: string[] = ALL_OWNED_ROOM_CREEP_ROLES
+  .concat(ALL_REMOTE_CREEP_ROLES)
   .concat(EXTRA_ROLES);
 
 export const ALL_CREEP_MODULES: string[] = [
@@ -63,20 +62,21 @@ export const ALL_CREEP_MODULES: string[] = [
   'transfer',
   'upgrade',
   'withdraw',
-  'scout'
+  'scout',
+  'dj'
 ];
 
 export const CREEP_ROLE_COUNT_MAX: { [key: string]: number } = {
-  pioneer: 4,
-  transferer: 3,
+  pioneer: 5,
+  transferer: 4,
   harvester: 1,
   builder: 4,
   repairer: 1,
   upgrader: 4,
-  reserver: 1,
+  reserver: 2,
   claimer: 1,
   mineral: 1,
-  scorePicker: 1
+  dj: 1
 };
 
 export const CREEP_PART_COUNT_MAX: {
@@ -87,11 +87,11 @@ export const CREEP_PART_COUNT_MAX: {
   harvester: { part: WORK, amount: 7 },
   builder: { part: WORK, amount: 20 },
   repairer: { part: WORK, amount: 20 },
-  upgrader: { part: WORK, amount: 20 },
+  upgrader: { part: WORK, amount: 30 },
   reserver: { part: CLAIM, amount: 5 },
-  claimer: { part: CLAIM, amount: 99 },
+  claimer: { part: CLAIM, amount: 5 },
   mineral: { part: CARRY, amount: 99 },
-  scorePicker: { part: CARRY, amount: 99 }
+  dj: { part: CARRY, amount: 10 },
 };
 
 export const ALL_RESOURCE_TYPES: string[] = [
@@ -194,25 +194,25 @@ export const ALL_RESOURCE_TYPES: string[] = [
   'essence'
 ];
 
+// Cache ticks
+export const CONST_CACHE_TTL = 100;
+export const CREEPS_CACHE_TTL = 9;
+export const STRUCT_CACHE_TTL = 100;
+export const DROPPED_RESOURCES_CACHE_TTL = 500;
+
 // Jobs ticks
 export const CONST_JOBS_CACHE_TTL = 100;
-export const ENERGY_STORAGES_JOBS_CACHE_TTL = 50;
-export const DAMAGED_STRUCTURES_JOBS_CACHE_TTL = 500;
+export const ENERGY_STORAGES_JOBS_CACHE_TTL = 25;
+export const DAMAGED_STRUCTURES_JOBS_CACHE_TTL = 100;
 export const DAMAGED_CREEPS_JOBS_CACHE_TTL = 250;
 export const SPAWNER_ENERGY_STRUCTURES_JOBS_CACHE_TTL = 50;
 export const HOSTILE_CREEPS_JOBS_CACHE_TTL = 50;
-export const DROPPED_RESOURCE_JOBS_CACHE_TTL = 50;
-
-// Cache ticks
-export const CONST_CACHE_TTL = 1000;
-export const CREEPS_CACHE_TTL = 9;
-export const STRUCT_CACHE_TTL = 100;
-export const DROPPED_RESOURCES_CACHE_TTL = 50;
+export const DROPPED_RESOURCE_JOBS_CACHE_TTL = 500;
 
 // Timer ticks
 export const UPDATE_LINKS_TIMER = 500;
 export const RUN_LINKS_TIMER = 10;
-export const UPDATE_SOURCE_STRUCTURES_TIMER = 500;
+export const UPDATE_SOURCE_STRUCTURES_TIMER = 250;
 export const UPDATE_MINERAL_AMOUNT_TIMER = 5000;
 export const SPAWN_CREEP_TIMER = 10;
 export const ROOM_PLANNER_TIMER = 500;

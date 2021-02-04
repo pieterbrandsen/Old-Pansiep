@@ -15,7 +15,14 @@ export class SpawningHelper {
     const memory: CreepMemory = SpawningApi.getCreepMemory(spawnRoom, nextCreep[1]);
     if (spawns && spawns.length > 0) {
       const bodyResult = SpawningApi.getCreepParts(spawnRoom, memory.role);
-      const spawnResult = this.spawnCreep(spawnRoom, _.first(spawns), memory, bodyResult.body);
+      let spawnResult: ScreepsReturnCode = ERR_BUSY;
+      if (nextCreep[1] != "dj") {
+        spawnResult = this.spawnCreep(spawnRoom, _.first(spawns), memory, bodyResult.body);
+      }
+      else { 
+        const spawn = SpawningApi.getDjSpawn(spawnRoom);
+        if (spawn !== null) spawnResult = this.spawnCreep(spawnRoom, spawn, memory, bodyResult.body);
+      }
       if (spawnResult === OK) {
         Config.expenses.spawnExpenses[spawnRoom.name][memory.role] += bodyResult.bodyCost;
         JobsHelper.updateAllSpawnerEnergyStructuresJobs(spawnRoom);
@@ -26,6 +33,8 @@ export class SpawningHelper {
   }
 
   public static spawnRemoteCreep(spawnRoom: Room, targetRoom: Room, targetRoomName: string): ScreepsReturnCode {
+    if (spawnRoom.energyAvailable * 2 <= spawnRoom.energyCapacityAvailable) return ERR_BUSY;
+
     const nextCreep = SpawningApi.getNextRoleName(targetRoom, 'remote', targetRoom);
     if (!nextCreep[0]) {
       return OK;

@@ -203,6 +203,7 @@ declare namespace NodeJS {
     Memory: Memory;
     age?: number;
     addRemoteRoom(spawnRoom: string, remoteRoom: string): void;
+    removeRemoteRoom(spawnRoom: string, remoteRoom: string): void;
     help(): void;
   }
 }

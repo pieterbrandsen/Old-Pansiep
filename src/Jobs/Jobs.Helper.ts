@@ -95,6 +95,8 @@ export class JobsHelper {
       };
       roomMemory.jobs.damagedStructures.data.push(jobStr);
     });
+
+    if (allDamagedStructures.length == 0) roomMemory.jobs.damagedStructures.hitsTarget = roomMemory.jobs.damagedStructures.hitsTarget * 1.01;
   }
 
   public static updateAllDamagedCreepsJobs(room: Room): void {
@@ -124,7 +126,7 @@ export class JobsHelper {
           s.structureType === STRUCTURE_SPAWN ||
           s.structureType === STRUCTURE_TOWER ||
           s.structureType === STRUCTURE_LAB) &&
-        s.store.energy > 0
+        s.store.energy >= 0
     );
 
     room.memory.jobs.spawnerEnergyStructures = [];
@@ -142,7 +144,7 @@ export class JobsHelper {
 
   public static updateAllHostileCreepsJobs(room: Room): void {
     // Create a acces point to the roomMemory //
-    const roomMemory: RoomMemory = Memory.rooms[room.name];
+    const roomMemory: RoomMemory = room.memory;
 
     // Reset the memory for enemies
     roomMemory.jobs.enemies = {

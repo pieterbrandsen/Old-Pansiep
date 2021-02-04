@@ -35,14 +35,13 @@ export class OldRoomPlanner {
 
       const source = roomMemory.commonMemory.sources[i];
       if (
-        roomMemory.roomPlanner.room.sources[i] !== undefined &&
-        roomMemory.roomPlanner.room.sources[i].structureType !== structureType
+        roomMemory.roomPlanner.room.sources[i] !== undefined
       ) {
         const bestSource = roomMemory.roomPlanner.room.sources[i];
         if (!bestSource || !bestSource.pos) {
           return;
         }
-        const structureExistResult = OldRoomPlanner.structureExist(room, bestSource.pos, structureType);
+        const structureExistResult = OldRoomPlanner.structureExist(room, bestSource.pos, STRUCTURE_CONTAINER);
         if (structureExistResult[0]) {
           const structureObject: StructureLink | StructureContainer | null = Game.getObjectById(
             structureExistResult[1]
@@ -122,7 +121,6 @@ export class OldRoomPlanner {
     // Check if room already has the controller planned
     if (
       (roomMemory.roomPlanner.room.controller &&
-        roomMemory.roomPlanner.room.controller.structureType === structureType &&
         roomMemory.commonMemory.controllerStorage !== undefined &&
         Game.getObjectById(roomMemory.commonMemory.controllerStorage.id as string) !== null) ||
       (room.controller && !room.controller.my)
@@ -159,7 +157,7 @@ export class OldRoomPlanner {
       }
     }
 
-    const bestControllerPosition: BestPosition = OldRoomPlanner.getBestFreeSpot(room, controller.pos, structureType, 3);
+    const bestControllerPosition: BestPosition = OldRoomPlanner.getBestFreeSpot(room, controller.pos, structureType, 2);
     // Check if best position is found, otherwise return
     if (bestControllerPosition === undefined || !bestControllerPosition.pos) {
       return;

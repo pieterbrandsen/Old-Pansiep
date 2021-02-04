@@ -257,13 +257,13 @@ export class MemoryApiRoom {
   public static resetRoomTracking(room: Room): void {
     // Reset all creepModules
     Config.creepModuleCpuCost[room.name] = {};
-    ALL_CREEP_MODULES.forEach(module => {
+    _.forEach(ALL_CREEP_MODULES, (module: string) => {
       Config.creepModuleCpuCost[room.name][module] = 0;
     });
 
-    // Reset all role related memory
-    Config.cpuUsedByRoomByRole[room.name] = {};
-    ALL_CREEP_ROLES.forEach(role => {
+        // Reset all role related memory
+        Config.cpuUsedByRoomByRole[room.name] = {};
+    _.forEach(ALL_CREEP_ROLES, (role: string) => {
       Config.cpuUsedByRoomByRole[room.name][role] = 0;
     });
 
@@ -522,11 +522,10 @@ export class MemoryApiRoom {
   }
 
   public static getHeadSpawn(room: Room): StructureSpawn | null {
-    if (!room.memory.commonMemory || !room.memory.commonMemory.headSpawnId) {
+    if (!room.memory.commonMemory) {
       return null;
     }
 
-    if (Game.getObjectById(room.memory.commonMemory.headSpawnId) === null) {
       // Get all spawns and filter them on spawns not spawning
       const spawns: StructureSpawn[] = MemoryApiRoom.getStructuresOfType(room, STRUCTURE_SPAWN);
       const headSpawn: StructureSpawn[] | null = room.terminal ? room.terminal.pos.findInRange(spawns, 2) : null;
@@ -539,8 +538,6 @@ export class MemoryApiRoom {
         return spawns[0];
       }
       return null;
-    }
-    return Game.getObjectById(room.memory.commonMemory.headSpawnId);
   }
 
   public static doesStructureExist(room: Room, pos: RoomPos, structureType: string): [boolean, string] {

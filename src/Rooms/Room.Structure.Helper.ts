@@ -101,7 +101,7 @@ export class RoomHelperStructure {
       }
 
       // If there is enough energy in the sending link to send to target
-      if (fromLink.store.getUsedCapacity(RESOURCE_ENERGY) < 100) {
+      if (fromLink.store.getUsedCapacity(RESOURCE_ENERGY) < 10) {
         return;
       }
 
@@ -120,6 +120,17 @@ export class RoomHelperStructure {
     if (head !== null && controller !== null) {
       // Send energy from head link to controller link
       sendEnergy(head, controller);
+    }
+    else if (controller == null && room.controller !== undefined && room.controller.level >= 6) {
+      const links: Structure[] = MemoryApiRoom.getStructuresOfType(
+        room,
+        STRUCTURE_LINK,
+        (link: StructureLink) => link.pos.inRangeTo(room.controller!, 3)
+      );
+
+      if (links.length > 0) {
+        room.memory.commonMemory!.links!.controller = links[0].id;
+      }
     }
   }
 }

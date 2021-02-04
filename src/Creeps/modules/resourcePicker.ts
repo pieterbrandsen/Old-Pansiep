@@ -4,7 +4,7 @@ import { JobsApi } from 'Utils/Importer/internals';
 
 // #region Class
 export class CreepRoleResourcePicker {
-  public static droppedResource(creep: Creep): string | undefined {
+  public static droppedResource(creep: Creep): string | void {
     // Make shortcut to memory
     const creepMemory: CreepMemory = creep.memory;
     const roomMemory: RoomMemory = Memory.rooms[creepMemory.targetRoom];
@@ -23,7 +23,7 @@ export class CreepRoleResourcePicker {
 
       if (job === undefined) {
         return 'empty';
-      } else if (job.usable > 0) {
+      } else if (job.usable && job.usable > 0) {
         const usableResource: Resource | null = Game.getObjectById(job.id);
         if (usableResource && usableResource.amount > 0) {
           creep.memory.targetId = job.id;
@@ -31,7 +31,7 @@ export class CreepRoleResourcePicker {
 
           roomMemory.jobs.droppedResources.forEach((structureInMem: JobTemplate) => {
             if (structureInMem.id === job.id) {
-              if (structureInMem.usable > 0) {
+              if (structureInMem.usable && structureInMem.usable > 0) {
                 structureInMem.usable -= creep.store.getFreeCapacity();
               }
             }
@@ -60,7 +60,7 @@ export class CreepRoleResourcePicker {
         case OK:
         case ERR_INVALID_TARGET:
         case ERR_FULL:
-          roomMemory.jobs.droppedResources = JobsApi.removeJob(creep.memory.targetId, roomMemory.jobs.droppedResources);
+          if (creep.memory.targetId) roomMemory.jobs.droppedResources = JobsApi.removeJob(creep.memory.targetId, roomMemory.jobs.droppedResources);
           delete creep.memory.targetId;
           break;
         case ERR_NOT_IN_RANGE:

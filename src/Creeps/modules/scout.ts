@@ -9,6 +9,10 @@ export class CreepRoleScout {
     const targetRoom: Room = Game.rooms[creep.memory.targetRoom];
     const targetRoomName: string = creep.memory.targetRoom;
 
+    if (creep.room.name != targetRoomName) {
+      creep.suicide();
+    }
+
     // const isRoomTypeRight = (oldType: string, newType: string): void => {
     //   if (oldType !== newType) {
     //     Game.flags[targetRoomName].remove();
@@ -27,7 +31,7 @@ export class CreepRoleScout {
       targetRoom.memory.roomType = 'none';
     }
 
-    if (!creep.pos.inRangeTo(25, 25, 20)) {
+    if (!creep.pos.inRangeTo(25, 25, 10)) {
       if (creep.room.controller) {
         creep.moveTo(creep.room.controller);
       } else {

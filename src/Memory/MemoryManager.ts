@@ -19,9 +19,8 @@ export class MemoryManager {
     // Run all dependent rooms we have visiblity in
     const dependentRooms: Room[] = MemoryApiRoom.getVisibleDependentRooms();
     _.forEach(dependentRooms, (room: Room): void => {
-      const roomType: string = MemoryApiRoom.getRoomType(room);
       MemoryApiRoom.isRoomSetup(room);
-      MemoryApiRoom.initRoomMemory(room, roomType);
+      MemoryApiRoom.initRoomMemory(room, "remote");
       MemoryApiRoom.resetRoomTracking(room);
     });
 

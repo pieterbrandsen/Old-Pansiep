@@ -34,6 +34,23 @@ export class SpawningApi {
     return openSpawns;
   }
 
+  public static getDjSpawn(room: Room): StructureSpawn | null {
+    // Get all spawns and filter them on spawns not spawning
+    const spawns: StructureSpawn[] = MemoryApiRoom.getStructuresOfType(
+      room,
+      STRUCTURE_SPAWN,
+      (spawn: StructureSpawn) => spawn.pos.inRangeTo(room.storage!, 1)
+    );
+
+    // If the spawns array is empty, return null
+    if (spawns.length === 0) {
+      return null;
+    }
+
+    // Return the first item out of the spawns array
+    return spawns[0];
+  }
+
   public static getCreepMemory(room: Room, role: string, targetRoom: string = room.name): CreepMemory {
     return {
       targetRoom,
@@ -97,7 +114,7 @@ export class SpawningApi {
               returnBody([MOVE], [WORK], 7);
               break;
             case 'link':
-              returnBody([MOVE, CARRY], [WORK], 7);
+              returnBody([MOVE, MOVE, CARRY, CARRY,CARRY, CARRY], [WORK, WORK], 4);
               break;
             default:
               break;
@@ -113,18 +130,21 @@ export class SpawningApi {
       case 'repairer':
       case 'repairerLD':
       case 'mineral':
-        returnBody([], [WORK, MOVE, CARRY], 10);
+        returnBody([], [WORK, MOVE, CARRY], 8);
         break;
       case 'upgrader':
-        returnBody([CARRY, MOVE, CARRY, MOVE], [WORK]);
+        returnBody([CARRY, MOVE, CARRY, MOVE], [WORK], 15);
         break;
       case 'reserverLD':
       case 'claimerLD':
-        returnBody([], [CLAIM, MOVE]);
+        returnBody([], [CLAIM, MOVE], 1);
         break;
       case 'scout':
         returnBody([], [MOVE, MOVE], 1);
         break;
+        case 'dj':
+          returnBody([], [CARRY], 5);
+          break;
       default:
         break;
     }
@@ -134,12 +154,12 @@ export class SpawningApi {
   }
 
   public static getCreepName(role: string): string {
-    return `${role}-${Math.floor(Math.random() * 10000)}`;
+    return `${role}_${Math.floor(Math.random() * 10000)}`;
   }
 
   public static getCreepDirections(role: string, room: Room): DirectionConstant[] {
     if (room.terminal && room.controller && room.controller.level >= 6) {
-      if (role === 'transfererLiTe') {
+      if (role === 'dj') {
         return [TOP_RIGHT];
       }
       return [BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
@@ -191,11 +211,11 @@ export class SpawningApi {
             }
 
             // If energy capacity is more then 300
-            if (room.energyAvailable > 300) {
+            if (room.energyAvailable > 315) {
               break;
             }
 
-            if (room.energyAvailable === 300) {
+            if (room.energyAvailable >= 300) {
               result = [true, role];
             }
             break;
@@ -227,7 +247,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes('LD')) {
+            if (room.energyAvailable <= 315 && !role.includes('LD')) {
               break;
             }
 
@@ -250,7 +270,7 @@ export class SpawningApi {
             break;
           case 'upgrader':
             // If energy is less then 300
-            if (room.energyAvailable <= 300) {
+            if (room.energyAvailable <= 315) {
               break;
             }
 
@@ -307,7 +327,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes('LD')) {
+            if (room.energyAvailable <= 315 && !role.includes('LD')) {
               break;
             }
 
@@ -332,7 +352,7 @@ export class SpawningApi {
             //   }
             // }
 
-            if ((targetRoomMemory.constructionSites.data as string[]).length === 0) {
+            if (targetRoomMemory.jobs.constructionSites.length === 0) {
               break;
             }
 
@@ -350,7 +370,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes('LD')) {
+            if (room.energyAvailable <= 315 && !role.includes('LD')) {
               break;
             }
 
@@ -389,7 +409,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes('LD')) {
+            if (room.energyAvailable <= 315 && !role.includes('LD')) {
               break;
             }
 
@@ -429,7 +449,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300 && !role.includes('LD')) {
+            if (room.energyAvailable <= 315 && !role.includes('LD')) {
               break;
             }
 
@@ -519,7 +539,7 @@ export class SpawningApi {
             }
 
             // If energy is less then 300
-            if (room.energyAvailable <= 300) {
+            if (room.energyAvailable <= 315) {
               break;
             }
 
@@ -536,6 +556,23 @@ export class SpawningApi {
               result = [true, role];
             }
             break;
+            case 'dj':
+              if (partCount >= maxPartCount) {
+                break;
+              }
+  
+              // Check if input role is less then max creeps allowed //
+              if (creeps.length >= maxCreepCount) {
+                break;
+              }
+  
+              // If energy is less then 300
+              if (room.energyAvailable <= 315) {
+                break;
+              }
+  
+              result = [true, role];
+              break;
           default:
             break;
         }

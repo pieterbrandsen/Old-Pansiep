@@ -268,6 +268,7 @@ export class CreepRoleTransfer {
         case OK:
         case ERR_INVALID_TARGET:
         case ERR_FULL:
+          case ERR_NO_PATH:
           // Delete targetId
           roomMemory.jobs.spawnerEnergyStructures = JobsApi.removeJob(
             creep.memory.targetId!,

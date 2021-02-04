@@ -1,5 +1,5 @@
 // #region Require('./)
-import { CreepRoleResourcePicker, JobsHelper } from 'Utils/Importer/internals';
+import { CreepRoleResourcePicker, JobsApi, JobsHelper } from 'Utils/Importer/internals';
 // #endregion
 
 // #region Class
@@ -23,14 +23,14 @@ export class CreepRoleWithdraw {
         break;
       default:
         if (
-          roomMemory.commonMemory!.controllerStorage &&
           creepMemory.role.includes('upgrade') &&
-          Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null &&
-          roomMemory.commonMemory!.controllerStorage.usable > 250
+          roomMemory.commonMemory!.controllerStorage &&
+          Game.getObjectById(roomMemory.commonMemory!.controllerStorage.id!) !== null
         ) {
           creep.memory.miniJob = 'upgrade';
         } else if (
           roomMemory.commonMemory!.energyStored.usable > 500 &&
+          roomMemory.roomType === "owned" &&
           roomMemory.jobs.spawnerEnergyStructures!.length > 0
         ) {
           creep.memory.miniJob = 'normal';
@@ -63,6 +63,7 @@ export class CreepRoleWithdraw {
       roomMemory.commonMemory!.energyStored.usable <= creep.store.getCapacity() &&
       creep.memory.targetId === undefined
     ) {
+      if (creep.room.name !== creepMemory.targetRoom && !creep.pos.inRangeTo(creep.room.controller!, 10)) creep.moveTo(creep.room.controller!);
       return 'empty';
     }
 
@@ -89,6 +90,7 @@ export class CreepRoleWithdraw {
       }
 
       if (job === undefined) {
+        creep.moveTo(creep.room.controller!);
         return;
       }
       roomMemory.jobs.energyStorages.forEach((structureInMem: JobTemplate) => {
@@ -119,7 +121,6 @@ export class CreepRoleWithdraw {
 
       // Run the withdraw function
       const result = creep.withdraw(withdrawStructure, RESOURCE_ENERGY);
-
       // Switch based on the results
       switch (result) {
         case OK:

@@ -14,6 +14,7 @@ export * from 'Creeps/modules/upgrade';
 export * from 'Creeps/modules/withdraw';
 export * from 'Creeps/modules/resourcePicker';
 export * from 'Creeps/modules/scout';
+export * from 'Creeps/modules/dj';
 
 // * Jobs
 export * from 'Jobs/JobsManager';

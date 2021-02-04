@@ -101,6 +101,7 @@ export class StatsHelper {
       const cpuMemory = roomStats.cpu;
       if (typeof cpuMemory === 'object') {
         _.forEach(ALL_CREEP_ROLES, (role: string) => {
+          if (cpuMemory.headModules.creeps[role] == undefined) cpuMemory.headModules.creeps[role] = 0;
           cpuMemory.headModules.creeps[role] = MemoryApiAll.memoryAverager(
             cpuMemory.headModules.creeps[role],
             Config.cpuUsedByRoomByRole[room.name][role]
@@ -108,6 +109,7 @@ export class StatsHelper {
         });
 
         _.forEach(ALL_CREEP_ROLES, (role: string) => {
+          if (cpuMemory.creepModules[role] == undefined) cpuMemory.creepModules[role] = 0;
           cpuMemory.creepModules[role] = MemoryApiAll.memoryAverager(
             cpuMemory.creepModules[role],
             Config.creepModuleCpuCost[room.name][role]
