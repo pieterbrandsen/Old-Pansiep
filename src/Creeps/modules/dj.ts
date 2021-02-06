@@ -8,20 +8,20 @@ export class CreepRoleDj {
         const storageUsable = creep.room.storage.store.energy;
         const terminalUsable = creep.room.terminal.store.energy;
 
-        if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-          creep.say("CapT")
-          if (storageUsable < 500 * 1000) {
-            creep.transfer(creep.room.storage, RESOURCE_ENERGY);
-          }
-          else if (terminalUsable < 100 * 1000) {
-            creep.transfer(creep.room.terminal, RESOURCE_ENERGY);
-          }
-          else if (link && link.store.energy < 450-creep.store.getCapacity()) {
-            creep.transfer(link, RESOURCE_ENERGY);
-          }
+        // if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
+        //   creep.say("CapC")
+        //   if (terminalUsable < 100 * 1000) {
+        //     creep.transfer(creep.room.terminal, RESOURCE_ENERGY);
+        //   }
+        //   else if (storageUsable < 500 * 1000) {
+        //     creep.transfer(creep.room.storage, RESOURCE_ENERGY);
+        //   }
+        //   else if (link && link.store.energy < 450-creep.store.getCapacity()) {
+        //     creep.transfer(link, RESOURCE_ENERGY);
+        //   }
 
-          return;
-        }
+        //   return;
+        // }
 
         if (link && link.store.energy > 450) {
           creep.say("WLink");

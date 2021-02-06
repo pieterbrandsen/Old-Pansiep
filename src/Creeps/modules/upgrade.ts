@@ -21,7 +21,7 @@ export class CreepRoleUpgrade {
     switch (result) {
       case OK:
         if (creep.memory.parts) {
-          Config.expenses.upgrading[creep.room.name] += creep.memory.parts.work * 2;
+          Config.expenses.upgrading[creep.room.name] += creep.memory.parts.work;
         }
         break;
       case ERR_NOT_IN_RANGE:
