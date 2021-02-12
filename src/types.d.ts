@@ -86,6 +86,7 @@ interface Stats {
   rooms: {
     [key: string]: {
       commonMemory: {
+        sourceCount: number;
         constructionSitesCount: number;
         creepCountByRole: { [key: string]: number };
         remote?: { sourceCount: number };
